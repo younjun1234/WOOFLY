@@ -1,0 +1,175 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WOOFLY</title>
+<link rel="icon" href="image/woofly.png">
+<style>
+	.active {
+		color: black !important;
+		font-weight: 700 !important;
+	}
+</style>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10 pt-3 mb-5 me-4">
+				<div class="border-bottom border-3 border-black mb-5">
+					<h3>로그인 정보</h3>
+				</div>
+				<h4>내 계정</h4>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">이메일 주소</p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p>q********8@privaterelay.appleid.com</p>
+						<div>
+							<button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#emailModal">변경</button>
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="col-6 mb-5">
+					<p class="text-secondary">비밀번호<p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p>●●●●●●●●●</p>
+						<div>
+							<button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#pwdModal">변경</button>
+						</div>
+					</div>
+				</div>
+				
+				<h4>개인 정보</h4>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">휴대폰 번호</p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p>010-5***-*469</p>
+						<div>
+							<button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#phoneModal">변경</button>
+						</div>
+					</div>
+				</div>
+				<br>
+				<br>
+				<p><a href="#" class="link-underline-secondary text-secondary">회원 탈퇴</a></p>
+			</div>
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+		</div>
+	</main>
+	
+	<div class="modal fade" id="emailModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+	        		<h1 class="modal-title fs-5" id="emailModalToggleLabel">이메일 변경</h1>
+ 				        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="mb-3">
+					    <label for="email" class="form-label">Email address</label>
+						<input type="text" class="form-control" id="email" placeholder="새 이메일 주소">
+					</div>
+					<div class="text-center">
+						<button class="btn btn-outline-dark btn-sm">인증번호 받기</button>
+					</div>
+					<div class="mb-3">
+					    <label for="verification" class="form-label">Verification code</label>
+						<input type="text" class="form-control" id="verification" placeholder="인증번호">
+					</div>
+					<div class="text-center">
+						<button class="btn btn-outline-dark btn-sm">인증 번호 확인</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-outline-primary">저장하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	<div class="modal fade" id="pwdModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+	        		<h1 class="modal-title fs-5" id="">비밀번호 변경</h1>
+		        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body text-start">
+					<div class="mb-3">
+						<label class="form-label" for="currentPwd">현재 비밀번호</label>					
+						<input type="password" class="form-control" id="currentPwd" placeholder="현재 비밀번호">
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="newPwd">새 비밀번호</label>
+						<input type="password" class="form-control" placeholder="새 비밀번호">
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="checkPwd">비밀번호 확인</label>					
+						<input type="password" class="form-control" id="checkPwd" placeholder="비밀번호 확인">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-outline-primary">변경하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="phoneModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+	        		<h1 class="modal-title fs-5" id="">전화번호 변경</h1>
+ 				        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body text-left">
+					<div class="mb-3">
+					    <label for="email" class="form-label">PHONE</label>
+						<input type="text" class="form-control" id="email" placeholder="- 없이 핸드폰 번호를 적어주세요">
+					</div>
+					<div class="text-center">
+						<button class="btn btn-outline-dark btn-sm">인증번호 받기</button>
+					</div>
+					<div class="mb-3">
+					    <label for="verification" class="form-label">Verification code</label>
+						<input type="text" class="form-control" id="verification" placeholder="인증번호">
+					</div>
+					<div class="text-center">
+						<button class="btn btn-outline-dark btn-sm">인증 번호 확인</button>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-outline-primary">변경하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+						
+	<script>
+		const myNav = document.getElementById("myNav4");
+		$(myNav).removeClass('text-secondary');
+		$(myNav).addClass('active');
+	</script>
+</body>
+</html>

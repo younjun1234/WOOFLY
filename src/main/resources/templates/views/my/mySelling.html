@@ -1,0 +1,118 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WOOFLY</title>
+<link rel="icon" href="image/woofly.png">
+<style>
+	.active {
+		color: black !important;
+		font-weight: 700 !important;
+	}
+</style>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10 mb-5 pt-3 me-4">
+				<h3>판매 내역</h3>
+				<div class="border-top border-bottom bg-body-tertiary d-flex align-items-center justify-content-center" style="height: 70px;">
+					<div>
+						<button class="btn btn-outline-dark btn-sm">최근 2개월</button>
+						<button class="btn btn-outline-dark btn-sm">4개월</button>
+						<button class="btn btn-outline-dark btn-sm">6개월</button>
+					</div>
+					&nbsp;&nbsp;&nbsp;
+					<div class="d-flex">
+						<input type="date" class="form-control d-block">
+						<span class="my-auto">~</span>
+						<input type="date" class="form-control d-block">
+					</div>
+					&nbsp;&nbsp;&nbsp;
+					
+					<div>
+						<button class="btn btn-dark btn-sm">조회</button>
+					</div>
+				</div>
+				<p class="text-secondary" style="font-size: 13px;">한 번에 조회 가능한 기간은 최대 6개월입니다.</p>
+				<div class="border-bottom d-flex justify-content-between pb-3">
+					<div>
+						<button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modal">
+							전체
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+							  	<path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+							</svg>
+						</button>
+					</div>
+					<div class="d-flex col-10 justify-content-end">
+						<div class="col-3 text-end">
+							판매 가격
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-numeric-down" viewBox="0 0 16 16">
+							  	<path d="M12.438 1.668V7H11.39V2.684h-.051l-1.211.859v-.969l1.262-.906h1.046z"/>
+							  	<path fill-rule="evenodd" d="M11.36 14.098c-1.137 0-1.708-.657-1.762-1.278h1.004c.058.223.343.45.773.45.824 0 1.164-.829 1.133-1.856h-.059c-.148.39-.57.742-1.261.742-.91 0-1.72-.613-1.72-1.758 0-1.148.848-1.835 1.973-1.835 1.09 0 2.063.636 2.063 2.687 0 1.867-.723 2.848-2.145 2.848zm.062-2.735c.504 0 .933-.336.933-.972 0-.633-.398-1.008-.94-1.008-.52 0-.927.375-.927 1 0 .64.418.98.934.98z"/>
+							  	<path d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"/>
+							</svg>
+						</div>
+						<div class="col-3 text-end">
+							만료일
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-numeric-down" viewBox="0 0 16 16">
+							  	<path d="M12.438 1.668V7H11.39V2.684h-.051l-1.211.859v-.969l1.262-.906h1.046z"/>
+							  	<path fill-rule="evenodd" d="M11.36 14.098c-1.137 0-1.708-.657-1.762-1.278h1.004c.058.223.343.45.773.45.824 0 1.164-.829 1.133-1.856h-.059c-.148.39-.57.742-1.261.742-.91 0-1.72-.613-1.72-1.758 0-1.148.848-1.835 1.973-1.835 1.09 0 2.063.636 2.063 2.687 0 1.867-.723 2.848-2.145 2.848zm.062-2.735c.504 0 .933-.336.933-.972 0-.633-.398-1.008-.94-1.008-.52 0-.927.375-.927 1 0 .64.418.98.934.98z"/>
+							  	<path d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"/>
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						<p>판매 내역이 없습니다.</p>
+						<div>
+							<button class="btn btn-outline-dark">SHOP 바로가기</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal fade" id="modal" tabindex="-1">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+				        		<h1 class="modal-title fs-5" id="modalToggleLabel">선택한 상태 보기</h1>
+    				        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+							</div>
+							<div class="modal-body text-center">
+								<button class="btn btn-outline-dark btn-lg col-3">전체</button>&nbsp;&nbsp;&nbsp;
+								<button class="btn btn-outline-dark btn-lg col-3">상품</button>&nbsp;&nbsp;&nbsp;
+								<button class="btn btn-outline-dark btn-lg col-3">중고</button>&nbsp;&nbsp;&nbsp;
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+		</div>
+	</main>
+	<script>
+		const myNav = document.getElementById("myNav2");
+		$(myNav).removeClass('text-secondary');
+		$(myNav).addClass('active');
+	</script>
+</body>
+</html>

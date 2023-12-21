@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>WOOFLY</title>
+<link rel="icon" href="image/woofly.png">
+<style>
+	.active {
+		color: black !important;
+		font-weight: 700 !important;
+	}
+</style>
+<script src="https://js.tosspayments.com/v1/payment"></script>
+
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10 pt-3 mb-5 me-4">
+				<div class="d-flex justify-content-between mb-5 border-bottom border-3 border-black">
+					<div>
+						<h3>결제 정보</h3>
+						<p>수수료(페널티, 착불배송비 등)가 정산되지 않을 경우, 별도 고지 없이 해당 금액을 결제 시도할 수 있습니다.</p>
+					</div>
+					<div class="my-auto">
+						<button class="btn btn-outline-dark btn-sm" onclick="addPayment()">+새 카드 추가하기</button>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between border-bottom border-black border-2 pb-5">
+					<div class="d-flex">
+						<div class="d-flex align-items-center">
+							<button class="btn btn-outline-dark disabled">BC</button>
+						</div>
+						&nbsp;&nbsp;&nbsp;
+						<div>
+							<p class="mb-0">●●●●-●●●●-●●●●-2015</p>
+							<span class="badge rounded-pill text-bg-secondary">기본 결제</span>
+						</div>
+					</div>
+					<div class="my-auto">
+						<button class="btn btn-sm btn-outline-dark">삭제</button>
+					</div>
+				</div>
+			</div>
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+		</div>
+	</main>
+	<script>
+		const myNav = document.getElementById("myNav7");
+		$(myNav).removeClass('text-secondary');
+		$(myNav).addClass('active');
+		
+		// API 개별 테스트 연동 키
+		// 토스페이먼츠에 회원 가입하기 전이라면 아래 키는 문서 테스트 키입니다.
+		// 토스페이먼츠에 회원 가입하고 로그인한 상태라면 아래 키는 내 테스트 키입니다.
+		const clientKey = 'test_ck_Z1aOwX7K8myj1aOG70ga8yQxzvNP'
+		const secretKey = 'test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA'
+		
+		// ------ 클라이언트 키로 객체 초기화 ------
+	    var tossPayments = TossPayments(clientKey)
+		const addPayment = () => {
+		    tossPayments
+		    	.requestBillingAuth('카드', {
+		        	// 결제수단 파라미터 (자동결제는 카드만 지원합니다.)
+		        	// 결제 정보 파라미터
+		        	customerKey: 'younjun1234', // 고객 ID로 상점에서 만들어야 합니다. 빌링키와 매핑됩니다. 자세한 파라미터 설명은 파라미터 설명을 참고하세요: https://docs.tosspayments.com/reference/js-sdk#결제-정보-5
+		        	successUrl: 'http://localhost:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
+		        	failUrl: 'http://localhost:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
+		      	})
+				.catch(function (error) {
+		        	if (error.code === 'USER_CANCEL') {
+		          		// 결제 고객이 결제창을 닫았을 때 에러 처리
+		        	}
+		      	})
+		}
+		
+	</script>
+</body>
+</html>
