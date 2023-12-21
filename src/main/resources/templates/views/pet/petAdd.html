@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>WOOFLY</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link rel="icon" href="/image/woofly.png">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<style>
+	.active {
+		color: black !important;
+		font-weight: 700 !important;
+	}
+</style>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10 pt-3 mb-5 me-4">
+				<div class="border-bottom border-3 border-black mb-3">
+					<h3>마이펫 추가</h3>
+				</div>
+				
+				<h4>마이펫 정보</h4>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">마이펫 프로필 사진</p>
+						<div class="d-flex align-items-center mt-2 mb-4" style="height: 150px;">
+		                  <img src="..." class="mx-3" alt="편집" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
+		               </div>
+		               <div class="d-flex">
+		              	 <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal1">파일 찾기</button>
+		   			   </div>
+		   			   <div class="modal" id="modal1" tabindex="-1">
+		   			   		<div class="modal-dialog">
+		   			   			<div class="modal-content">
+		   			   				<div class="modal-header">
+		   			   					<h1 class="modal-title fs-5">프로필 편집</h1>
+		   			   					<button class="btn-close" data-bs-dismiss="modal"></button>
+		   			   				</div>
+		   			   				<div class="modal-body">
+		   			   					<div class="form-group">
+											<label for="InputSubject1">파일찾기</label>
+											<input id="fileInput" filestyle="" type="file" data-class-button="btn btn-default" data-class-input="form-control" data-button-text="" data-icon-name="fa fa-upload" class="form-control" tabindex="-1" style="position: absolute; clip: rect(0px 0px 0px 0px);">
+											<div class="bootstrap-filestyle input-group">
+												<input type="text" id="userfile" class="form-control" name="userfile" disabled="">
+												<span class="group-span-filestyle input-group-btn" tabindex="0">
+													<label for="fileInput" class="btn btn-default">
+														<span class="glyphicon fa fa-upload"></span>
+													</label>
+												</span>
+											</div>
+										</div>
+		   			   				</div>
+		   			   				<div class="modal-footer">
+		   			   					<button class="btn bnt-secondary" data-bs-dismiss="modal">취소</button>
+		   			   					<button class="btn btn-dark">수정</button>
+		   			   				</div>
+		   			   			</div>
+		   			   		</div>
+		   			   </div>
+		   		</div>
+   			   
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">강아지 이름</p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p></p>
+					</div>
+				</div>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">생년월일<p>
+					<div class="d-flex">
+						<input type="date" class="form-control d-block" style="width: 200px;">
+					</div>
+				</div>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">견종<p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p></p>
+					</div>
+				</div>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">몸무게<p>
+					<div class="border-bottom d-flex justify-content-between">
+						<p></p>
+					</div>
+				</div>
+				<br>
+				<div class="col-6">
+					<p class="text-secondary">성별<p>
+					<div class="dropdown d-flex justify-content-between">
+					  <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+					   선택
+					  </button>
+					  <ul class="dropdown-menu">
+					    <li><a class="dropdown-item" href="#">남아</a></li>
+					    <li><a class="dropdown-item" href="#">여아</a></li>
+					  </ul>
+					</div>
+				</div>
+				<div class="col-6 mt-4">
+					<p class="text-secondary">특이사항<p>
+					  <label for="exampleFormControlTextarea1" class="form-label"></label>
+					  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+				</div>
+				<div class="d-flex justify-content-start mt-5">
+				    <button class="btn btn-dark btn-sm">확인</button>
+				</div>
+			</div>
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+			<!-- 여기까지가 수정 -->
+		</div>
+	</main>
+	<script>
+		const myNav = document.getElementById("myNav5");
+		$(myNav).removeClass('text-secondary');
+		$(myNav).addClass('active');
+	</script>
+</body>
+</html>

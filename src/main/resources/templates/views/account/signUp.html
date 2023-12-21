@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WOOFLY</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="icon" href="/image/woofly.png">
+<style>
+.active {
+	color: black !important;
+	font-weight: 700 !important;
+}
+
+.border-bottom input:focus {
+	outline: none;
+}
+
+p {
+	margin-bottom: 0 !important;
+}
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10 pt-3 mb-5 d-flex justify-content-center">
+				<div style="width: 400px">
+					<div class="text-center border-bottom border-3 border-black">
+						<h2 style="font-weight: 800">회원가입</h2>
+					</div>
+					<br>
+					<form>
+						<div class="mt-2">
+							<p>이름</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>아이디</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>비밀번호</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="password" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>비밀번호 확인</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="password" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>이메일</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="email" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>휴대폰 번호</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<button class="btn btn-outline-dark mb-3 btn-sm">전송</button>
+						<br>
+						<div class="mb-1">
+							<p>인증번호 입력</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-1">
+							<p>주소</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="text" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<button class="btn btn-outline-dark mb-3 btn-sm">검색</button>
+						<br>
+						<div class="form-group">
+							<label>개인정보 수집 및 이용 동의(필수)</label>
+							<a role="button" class="text-secondary" id="privacyBtn">내용보기</a>
+							<div class="modal fade" id="privacyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-scrollable" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">개인정보 수집 내용</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											1. 개인정보 수집목적 및 이용목적<br> <br> 가. 서비스 제공에 관한 계약 이행 및
+											서비스 제공에 따른 요금정산<br> 콘텐츠 제공 , 구매 및 요금 결제 , 물품배송 또는 청구지 등
+											발송 , 금융거래 본인 인증 및 금융 서비스<br> <br> 나. 회원 관리<br>
+											회원제 서비스 이용에 따른 본인확인 , 개인 식별 , 불량회원의 부정 이용 방지와 비인가 사용 방지 , 가입
+											의사 확인 , 연령확인 , 만14세 미만 아동 개인정보 수집 시 법정 대리인 동의여부 확인, 불만처리 등
+											민원처리 , 고지사항 전달<br> <br> 2. 수집하는 개인정보 항목 <br>:
+											이름 , 생년월일 , 성별 , 로그인ID , 비밀번호 , 자택 전화번호 , 휴대전화번호 , 이메일 , 펫 정보<br>
+											<br> 3. 개인정보의 보유기간 및 이용기간<br> <br> 원칙적으로, 개인정보
+											수집 및 이용목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 단, 다음의 정보에 대해서는 아래의
+											이유로 명시한 기간 동안 보존합니다.<br> <br> 가. 회사 내부 방침에 의한 정보 보유
+											사유<br> <br> o 부정거래 방지 및 쇼핑몰 운영방침에 따른 보관 : 1년<br>
+											<br> 나. 관련 법령에 의한 정보보유 사유<br> <br> o 계약 또는
+											청약철회 등에 관한 기록<br> <br> -보존이유 : 전자상거래등에서의소비자보호에관한법률<br>
+											<br> -보존기간 : 5년<br> <br> o 대금 결제 및 재화 등의 공급에
+											관한 기록<br> <br> -보존이유: 전자상거래등에서의소비자보호에관한법률<br>
+											<br> -보존기간 : 5년<br> <br> o 소비자 불만 또는 분쟁처리에 관한
+											기록<br> <br> -보존기간 : 3년<br> <br> o 로그 기록<br>
+											<br> -보존이유: 통신비밀보호법<br> <br> -보존기간 : 3개월<br>
+											<br> ※ 동의를 거부할 수 있으나 거부시 회원 가입이 불가능합니다.<br> <br>
+											4. 개인정보의 위탁 처리 (2020-09-28)<br> <br> “(주)Woofly”는
+											서비스 향상을 위해 관계법령에 따라 회원의 동의를 얻거나 관련 사항을 공개 또는 고지 후 회원의 개인정보를
+											외부에 위탁하여 처리하고 있습니다.<br> <br> “(주)Woofly”의 개인정보처리
+											업무의 내용은 다음과 같습니다.<br> <br> - 위탁 업무 내용 : 신규 서비스(제품)
+											개발 및 맞춤 서비스 제공, 이벤트 및 광고성 정보 및 참여기회 제공<br> - 수집항목 : 이름,
+											아이디, 휴대전화번호, 펫 정보<br> - 보유기간 : 회원 탈퇴 시 혹은 법정 보유기간<br>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="privacy" id="agree" value="agree">
+									<label class="form-check-label" for="agree">동의함</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="privacy" id="disagree" value="disagree"> 
+									<label class="form-check-label" for="disagree">동의안함</label>
+								</div>
+							</div>
+						</div>
+						<div class="mt-4">
+							<a role="button" type="submit" class="btn btn-dark btn-sm" href="/account/login" style="width: 100%; text-align: center;">가입하기</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		<!-- 여기까지가 수정 -->
+		</div>
+	</main>
+	<script>
+		const myNav = document.getElementById("myNav4");
+		$(myNav).removeClass('text-secondary');
+		$(myNav).addClass('active');
+		
+		$('#privacyBtn').click(function(e) {
+			e.preventDefault();
+			$('#privacyModal').modal("show");
+		});
+	</script>
+</body>
+</html>

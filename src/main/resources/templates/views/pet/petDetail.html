@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>petInfo</title>
+<link rel="icon" href="/image/woofly.png">
+<style>
+   .active {
+      color: black !important;
+      font-weight: 700 !important;
+   }
+</style>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+         <div class="col-10">
+            <div class="border-bottom border-3 border-black">
+               <h3>마이펫 프로필 관리</h3>
+            </div>   
+               <div class="d-flex align-items-center mt-5 mb-2 justify-content-center" style="height: 150px;">
+                  <img src="/image/happy1.jpg" class="mx-3" alt="편집" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid gery; font-size: 1rem">
+               </div>
+               <div class="d-flex align-items-center justify-content-center">
+              	 <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal1">편집</button>
+   			   </div>
+   			   <div class="modal" id="modal1" tabindex="-1">
+   			   		<div class="modal-dialog">
+   			   			<div class="modal-content">
+   			   				<div class="modal-header">
+   			   					<h1 class="modal-title fs-5">프로필 편집</h1>
+   			   					<button class="btn-close" data-bs-dismiss="modal"></button>
+   			   				</div>
+   			   				<div class="modal-body">
+   			   					<div class="form-group">
+									<label for="InputSubject1">파일찾기</label>
+									<input id="fileInput" filestyle="" type="file" data-class-button="btn btn-default" data-class-input="form-control" data-button-text="" data-icon-name="fa fa-upload" class="form-control" tabindex="-1" style="position: absolute; clip: rect(0px 0px 0px 0px);">
+									<div class="bootstrap-filestyle input-group">
+										<input type="text" id="userfile" class="form-control" name="userfile" disabled="">
+										<span class="group-span-filestyle input-group-btn" tabindex="0">
+											<label for="fileInput" class="btn btn-default">
+												<span class="glyphicon fa fa-upload"></span>
+											</label>
+										</span>
+									</div>
+								</div>
+   			   				</div>
+   			   				<div class="modal-footer">
+   			   					<button class="btn bnt-secondary" data-bs-dismiss="modal">취소</button>
+   			   					<button class="btn btn-dark">수정</button>
+   			   				</div>
+   			   			</div>
+   			   		</div>
+   			   </div>
+   			               
+               <!-- <p><a href="#" class="link-underline-secondary text-secondary d-flex justify-content-center ">변경</a></p>  -->
+            <div class="d-flex align-items-center justify-content-center mt-4">
+               <div class="col-6">
+                  <p class="text-secondary">마이펫 이름</p>
+                  <div class="border-bottom d-flex justify-content-between">
+                     <p>해피</p>
+	                     <div>
+	                        <button class="btn btn-outline-dark btn-sm">변경</button>
+	                     </div>
+                 	 </div>
+              	 </div>
+               </div>
+                <div class="d-flex align-items-center justify-content-center">
+               <div class="col-6 mt-4 mb-5">
+                  <p class="text-secondary">마이펫 소개</p>
+                  <div class="border-bottom d-flex justify-content-between">
+                     <p>해피는 오늘도 해피해</p>
+                     <div>
+                        <button class="btn btn-outline-dark btn-sm">변경</button>
+                     </div>
+                  </div>
+               </div>
+               </div>
+            <p><a href="#" class="link-underline-secondary text-secondary d-flex justify-content-end me-5">마이펫 프로필 삭제</a></p>
+         	<div class="d-flex justify-content-center my-5">
+				<button class="btn btn-dark col-3">수정</button>
+			</div>
+         </div>   
+      </div>
+   </main>
+   
+   <script>
+   </script>
+</body>
+</html>
