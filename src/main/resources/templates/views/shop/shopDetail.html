@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
+    <style>
+    .sticky-top {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        background-color: white; /* Add a background color if needed */
+        z-index: 100; /* Adjust the z-index as needed */
+    }
+
+    .fixed-top{
+        position: fixed;
+        top: 0; /* 화면 전체 너비에 맞게 설정 */
+        background-color: white; /* 필요에 따라 배경 색상 추가 */
+        z-index: 100; /* 필요에 따라 z-index 조절 */
+        width:auto;
+    }
+
+    .product-image {
+         height: 200px;
+     }
+
+    .img-thumbnail {
+         height: 500px;
+    }
+
+    .btn-outline-success.btn-lg {
+        font-size: 1.5rem;
+        padding: 0.75rem 1.25rem;
+    }
+
+    .product_btns {
+        align-items: center;
+        top: 0;
+        right: 0;
+        margin: 10px;
+    }
+
+    .product_btns > * {
+        margin-bottom: 10px;
+        width: 100%;
+        max-width: 150px;
+    }
+        
+    </style>
+</head>
+<body>
+    <!-- tap -->
+    <nav class="navbar sticky-top bg-white">
+		<div class="container-fluid justify-content-end mx-5">
+			<ul class="nav bg-white">
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
+			</ul>
+		</div>
+		<div class="container-fluid mx-5">
+    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
+    		<ul class="nav">
+    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
+    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
+    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
+    		</ul>
+		</div>
+	</nav>
+    <main>
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <div class="col-8">
+                    <div class="mb-2">
+                        <img class="product-image img-thumbnail rounded mx-auto d-block" src="../common/image/report.jpg" alt="상품이름" width="80%">
+                    </div>
+                    <div class="d-flex ">
+                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog1.jpg" width="20%">
+                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog2.jpg" width="20%">
+                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog3.jpg" width="20%">
+                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog4.jpg" width="20%">
+                    </div>
+                </div>
+                
+                <div class="product m-2 col-4">
+                    <div class="product_info border-1 border-secondary border-bottom">
+                        <div class="fw-bold">
+                            <p class="fs-2">소프트 겨울 외출 강아지아우터</p>
+                        </div>
+                        <div>
+                            <p class="fs-4">★★★★★ 리뷰 : 3건</p>
+                        </div>
+                        <div>
+                            <p class="fs-4">가격 : 9,000원</p>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled pt-4">
+                        <li class="fs-3 d-flex p-2 justify-content-between">
+                            <div class="fw-bold">배송정보</div>
+                            <div>내일 12월 19일 도착</div>
+                        </li>
+                        <li class="fs-2 pt-4 d-flex justify-content-between">
+                            <div class="fw-bold">사이즈</div>
+                            <div class="">
+                                <input type="radio" class="btn-check" name="options-base" id="optionS" autocomplete="off">
+                                <label class="btn btn-outline-success btn-lg" for="optionS">S</label>
+                                <input type="radio" class="btn-check" name="options-base" id="optionM" autocomplete="off">
+                                <label class="btn btn-outline-success btn-lg" for="optionM">M</label>
+                                <input type="radio" class="btn-check" name="options-base" id="optionL" autocomplete="off">
+                                <label class="btn btn-outline-success btn-lg" for="optionL">L</label>
+                                <input type="radio" class="btn-check" name="options-base" id="optionXL" autocomplete="off">
+                                <label class="btn btn-outline-success btn-lg" for="optionXL">XL</label>
+                            </div>
+                        </li>
+                        <li></li>
+                    </ul>
+                    <div class="p-2 col product_btns" aria-label="Large button group">
+                        <button class="btn btn-outline-info rounded-pill m-1">구매하기</button>
+                        <button class="btn btn-outline-info rounded-pill m-1">찜하기</button>
+                        <button class="btn btn-outline-info rounded-pill m-1">장바구니에 담기</button>
+                        <button class="btn btn-outline-info rounded-pill m-1">리뷰 보기</button>
+                    </div>
+                </div>
+            </div>
+            <div class="product-detail pt-4">
+                <table class="table border">
+                    <tr>
+                        <th>사이즈 정보</th>
+                        <th>S</th>
+                        <th>M</th>
+                        <th>L</th>
+                        <th>XL</th>
+                    </tr>
+                    <tr>
+                        <th>몸무게</th>
+                        <td>2~3KG</td>
+                        <td>4~5KG</td>
+                        <td>5~7KG</td>
+                        <td>5~7KG</td>
+                    </tr>
+                    <tr>
+                        <th>CHEST</th>
+                        <td>48cm</td>
+                        <td>49cm</td>
+                        <td>51cm</td>
+                        <td>57cm</td>
+                    </tr>
+                    <tr>
+                        <th>NECK</th>
+                        <td>35cm</td>
+                        <td>38cm</td>
+                        <td>43cm</td>
+                        <td>46cm</td>
+                    </tr>
+                </table>
+                <div class="d-flex border-top border-bottom border-3 border-black row">
+                    <div class="pt-2 pb-3 fw-bold fs-4">
+                        상품 유의사항
+                    </div>
+                    <div class="table-bordered m-2">
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>재화등의 배송방법에 관한 정보</span>
+                            </div>
+                            <div class="col-9">
+                                <p>배송방식 및 출고일 등은 상품 상세페이지 참조</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>주문 이후 예상되는 배송기간</span>
+                            </div>
+                            <div class="col-9">
+                                <p>주문일로부터 평균 3일 이내에 발송 (천재지변 또는 상품 수급 상황, 택배사 사정 등에 따라 지연될 수 있습니다.)</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>제품하자·오배송 등에 따른 청약철회 등의 경우 청약철회 등을 할 수 있는 기간 및 통신판매업자가 부담하는 반품비용 등에 관한 정보</span>
+                            </div>
+                            <div class="col-9">
+                                <p>전자상거래등에서의소비자보호에관한법률 등에 의한 제품의 하자 또는 오배송 등으로 인한 청약철회의 경우에는 상품 수령 후 3개월 이내, 그 사실을 안 날 또는 알 수 있었던 날로부터 30일 이내에 청약철회를 할 수 있으며, 반품 비용은 통신판매업자가 부담합니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>제품하자가 아닌 소비자의 단순변심, 착오구매에 따른 청약철회 등의 경우 청약철회 등을 할 수 있는 기간 및 소비자가 부담하는 반품비용 등에 관한 정보</span>
+                            </div>
+                            <div class="col-9">
+                                <p>편도 3,000 원 (최초 배송비가 무료인 경우 왕복으로 부과될 수 있습니다.)</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>제품하자가 아닌 소비자의 단순변심, 착오구매에 따른 청약철회가 불가능한 경우 그 구체적 사유와 근거</span>
+                            </div>
+                            <div class="col-9">
+                                <p>전자상거래등에서의 소비자보호에관한법률 등에 의한 청약철회 제한 사유에 해당하는 경우 및 기타 객관적으로 이에 준하는 것으로 인정되는 경우 청약철회가 제한될 수 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>재화 등의 교환·반품·보증 조건 및 품질보증기준</span>
+                            </div>
+                            <div class="col-9">
+                                <p>소비자분쟁해결기준(공정거래위원회 고시) 및 관계법령에 따릅니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2" >
+                            <div class="col-3 fw-bold">
+                                <span>대금을 환불받기 위한 방법과 환불이 지연될 경우 지연에 따른 배상금을 지급받을 수 있다는 사실 및 배상금 지급의 구체적 조건 및 절차준</span>
+                            </div>
+                            <div class="col-9">
+                                <p>주문 취소 및 대금의 환불은 마이페이지에서 신청할 수 있으며, 전자상거래 등에서의 소비자보호에 관한 법률에 따라 소비자의 청약철회 후 판매자가 재화 등을 반환 받은 날로부터 3영업일 이내에 지급받은 대금의 환급을 정당한 사유 없이 지연하는 때에는 소비자는 지연기간에 대해서 연 15%의 지연배상금을 판매자에게 청구할 수 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>소비자피해보상의 처리, 재화 등에 대한 불만 처리 및 소비자와 사업자 사이의 분쟁처리에 관한 사항</span>
+                            </div>
+                            <div class="col-9">
+                                <p>소비자분쟁해결기준(공정거래위원회 고시) 및 관계법령에 따릅니다.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex pb-2">
+                            <div class="col-3 fw-bold">
+                                <span>거래에 관한 약관의 내용 또는 확인할 수 있는 방법</span>
+                            </div>
+                            <div class="col-9">
+                                <p>페이지 하단의 이용약관 링크를 통해 확인할 수 있습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="product_images pt-4 text-center">
+                    <h1 class="pb-4">상품 상세정보</h1>
+                    <img class="h-auto" src="../common/image/content1.jpg">
+                </div>
+                <div class="reply mt-4 border-1 border-dark border-top">
+                    <h1 class="pt-4 text-center">상품 리뷰</h1>
+                    <div class="input-group">
+                        <span class="input-group-text">댓글<br>내용</span>
+                        <textarea class="form-control" rows="4" placeholder="소중한 리뷰를 남겨주세요." style="resize: none;"></textarea>
+                        <button type="button" class="btn btn-outline-success btn-lg">등록</button>                        
+                    </div>                                           
+                    
+                    <!-- 댓글 조회 영역 -->
+                    
+                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
+                        <div class="col-1" style="line-height: 40px;">꼬미</div>
+                        <div class="col-8" style="line-height: 40px;">생각보다 음료 종류도 많네요</div>
+                        <div class="col-1" style="line-height: 40px;">작성일자</div>
+                        <div class="col-2 d-flex align-items-center justify-content-end">
+                        <div class="dropdown ms-2 me-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                            </svg>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
+                        <div class="col-1" style="line-height: 40px;">뽀또</div>
+                        <div class="col-8" style="line-height: 40px;">주말 동안 가보기 좋은 곳이네요</div>
+                        <div class="col-1" style="line-height: 40px;">작성일자</div>
+                        <div class="col-2 d-flex align-items-center justify-content-end">
+                        <div class="dropdown ms-2 me-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                            </svg>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
+                        <div class="col-1" style="line-height: 40px;">콩</div>
+                        <div class="col-8" style="line-height: 40px;">오 안 가본 곳이네요~  한번 가봐야겠어요</div>
+                        <div class="col-1" style="line-height: 40px;">작성일자</div>
+                        <div class="col-2 d-flex align-items-center justify-content-end">
+                        <div class="dropdown ms-2 me-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                            </svg>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+                            </ul>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+        window.addEventListener('scroll', function () {
+            var scrollY = window.scrollY || document.documentElement.scrollTop;
+
+            // 일정 y축 좌표를 기준으로 확인
+            var triggerY = 200; // 조정 가능
+
+            // y축 좌표가 triggerY 이상이면 fixed-top으로 변경, 그렇지 않으면 기본 상태로 되돌림
+            if (scrollY > triggerY) {
+                document.querySelector('.product_btns').classList.add('fixed-top');
+            } else {
+                document.querySelector('.product_btns').classList.remove('fixed-top');
+            }
+        });
+</script>
+</html>
