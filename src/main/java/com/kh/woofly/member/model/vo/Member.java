@@ -1,6 +1,6 @@
 package com.kh.woofly.member.model.vo;
 
-import java.sql.Date;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,4 +26,5 @@ public class Member {
 	private int mbPoint;
 	private String mbStatus;
 	private String isAdmin;
+	private Date nextChange;
 }
