@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>petDiary</title>
+<link rel="icon" href="/image/woofly.png">
+<style>
+	.active {
+		color: black !important;
+		font-weight: 700 !important;
+	}
+</style>
+</head>
+<body>
+	<!-- top navigation bar -->
+	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
+	<div th:replace="~{common/top :: top}"></div>
+	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+	<main>
+		<div class="d-flex justify-content-between mx-5">
+			<div th:replace="~{common/myNav :: myNav}"></div>
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<!-- 아래만 수정해주세요 -->
+			<div class="col-10">
+				<div class="border-bottom border-3 border-black">
+					<h3>마이펫 다이어리</h3>
+				</div>	
+				<div class="border-top border-bottom bg-body-tertiary d-flex align-items-center justify-content-center" style="height: 70px;">
+					<div>
+						<button class="btn btn-outline-dark btn-sm">일주일</button>
+						<button class="btn btn-outline-dark btn-sm">한달</button>
+						<button class="btn btn-outline-dark btn-sm">3개월</button>
+					</div>
+					&nbsp;&nbsp;&nbsp;
+					<div class="d-flex">
+						<input type="date" class="form-control d-block">
+						<span class="my-auto">~</span>
+						<input type="date" class="form-control d-block">
+					</div>
+					&nbsp;&nbsp;&nbsp;
+					
+					<div>
+						<button class="btn btn-dark btn-sm">조회</button>
+					</div>
+				</div>
+				    <span class="text-secondary" style="font-size: 13px;">한 번에 조회 가능한 기간은 최대 3개월입니다.</span>
+				<div class="d-flex bd-highlight mb-2">
+				  <div class="p-2 bd-highlight">
+				  	<button class="btn btn-outline-secondary dropdown-toggle btn-sm me-2" type="button" data-bs-toggle="dropdown">
+					   강아지 선택
+					  </button>
+					  <ul class="dropdown-menu">
+					    <li><a class="dropdown-item" href="#">해피</a></li>
+					    <li><a class="dropdown-item" href="#">뽀또</a></li>
+					    <li><a class="dropdown-item" href="#">로피</a></li>
+					    <li><a class="dropdown-item" href="#">치즈</a></li>
+					  </ul>
+				  </div>
+				  <div class="p-2 bd-highlight">
+					  <button class="btn btn-outline-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+					   상태
+					  </button>
+					  <ul class="dropdown-menu">
+					    <li><a class="dropdown-item" href="#">😻 신나요</a></li>
+					    <li><a class="dropdown-item" href="#">😸 그냥 그래요</a></li>
+					    <li><a class="dropdown-item" href="#">😺 무기력해요</a></li>
+					    <li><a class="dropdown-item" href="#">😿 아파요</a></li>
+					  </ul>
+				  </div>
+				  <div class="ms-auto p-2 bd-highlight">
+				  	 <a href="/pet/petDiaryWrite" class="btn btn-dark btn-sm justify-content-end">다이어리 쓰기</a>
+				  </div>
+				</div>
+					<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
+						<div class="d-flex align-content-center ms-3">
+							<div class="ms-3" style="line-height: 100px;">
+							<strong>해피</strong>
+								<img src="/image/happy3.jpg" class="me-3" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey;">
+								<a href="/pet/petDiaryDetail" role="button">오늘 해피랑 뽀또랑 아주 신나게 놀았다!!!...</a>
+							</div>			
+						</div>
+						<div class="d-flex">
+							<div class="me-1" style="width: 100px; line-height: 100px;">😻 신나요</div>
+							<div class="me-3" style="width: 100px; line-height: 100px;">2023-12-14</div>
+						</div>
+					</div>
+					
+					<div class="rounded d-flex justify-content-between mb-3 me-3" style="border: 1px solid black; height: 100px">
+						<div class="d-flex align-content-center ms-3">
+							<div class="ms-3" style="line-height: 100px;">			
+							<strong>뽀또</strong>
+							<img src="/image/poodle2.jpg" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey;">
+							<a>뽀또가 오늘은 밥을 잘 못먹은 것 같다</a>
+						</div>
+						</div>
+						<div class="d-flex">
+							<div class="me-1" style="width: 100px; line-height: 100px;">😿 아파요</div>
+							<div class="me-3" style="width: 100px; line-height: 100px;">2023-12-13</div>
+						</div>
+					</div>
+					<div class="rounded d-flex justify-content-between mb-3 me-3" style="border: 1px solid black; height: 100px">
+						<div class="d-flex align-content-center ms-3">
+							<div class="ms-3" style="line-height: 100px;">
+							<strong>해피</strong>
+							<img src="/image/happy3.jpg" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey;">
+							<a>❤나의 해피 첫 다이어리❤ </a>
+						</div>			
+						</div>
+						<div class="d-flex">
+							<div class="me-1" style="width: 100px; line-height: 100px;">😻 신나요</div>
+							<div class="me-3" style="width: 100px; line-height: 100px;">2023-12-12</div>
+						</div>
+					</div>
+					<!-- 최대 7개만 보여주고 더보기 누를 때 마다 7개식 추가로 보여주면 될 듯..? -->
+					<div class="d-flex my-3 justify-content-center my-4">
+						<button class="btn btn-outline-dark col-3">더보기 ▼</button>
+					</div>
+				</div>
+			</div>
+	</main>
+</body>
+</html>

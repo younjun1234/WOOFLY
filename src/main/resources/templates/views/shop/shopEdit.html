@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑몰 수정페이지</title>
+    <link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- tap -->
+    <nav class="navbar sticky-top bg-white">
+		<div class="container-fluid justify-content-end mx-5">
+			<ul class="nav bg-white">
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
+				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
+			</ul>
+		</div>
+		<div class="container-fluid mx-5">
+    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
+    		<ul class="nav">
+    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
+    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
+    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
+    		</ul>
+		</div>
+	</nav>
+    <main>
+        <div class="container">
+            <h1 class="fw-bold mb-4 border-2 border-bottom border-black pb-2">쇼핑몰 상품 수정페이지</h1>
+            <form method="POST" id="editPage">
+                <div class="d-flex justify-content-between">
+                    <div class="col-6">
+                        <!-- 화면 들어올 때 image 보여야 함.. 서버 파서 작업하겠음. -->
+                        <div class="album bg-light m-4" id="thumbnail">
+                            <div class="card shadow-sm p-3">
+                                <svg class="bd-placeholder-img card-img-top" width="100%" height="225" name="thumbnailSvg">
+                                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <table>
+                            <tr>
+                                <td>제목</td>
+                                <td><input type="text" class="form-control" name="product_name" id="name">귀염뽀짝 큐티 잠옷</td>
+                            </tr>
+                            <tr>
+                                <td>가격</td>
+                                <td><input type="text" class="form-control" name="product_price" id="price">15000원</td>
+                            </tr>
+                        </table>
+                        <button type="button" class="btn btn-outline-info" id="addFile">이미지 추가</button>
+                        <div id="fileArea">
+                            <div class="mb-3 p-1" id="thumbnailParent">
+                                <input type="file" class="form-control form-control-lg" name="thumbnailFile">
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+                <div class="product-detail pt-4">
+                    <table class="table border text-center">
+                        <tr>
+                            <th>사이즈 정보</th>
+                            <th>S</th>
+                            <th>M</th>
+                            <th>L</th>
+                            <th>XL</th>
+                        </tr>
+                        <tr>
+                            <th>몸무게</th>
+                            <td><input type="text" class="form-control-sm">1.5</td>
+                            <td><input type="text" class="form-control-sm">2.5</td>
+                            <td><input type="text" class="form-control-sm">3.5</td>
+                            <td><input type="text" class="form-control-sm">4.5</td>
+                        </tr>
+                        <tr>
+                            <th>CHEST</th>
+                            <td><input type="text" class="form-control-sm">25cm</td>
+                            <td><input type="text" class="form-control-sm">28cm</td>
+                            <td><input type="text" class="form-control-sm">35cm</td>
+                            <td><input type="text" class="form-control-sm">42cm</td>
+                        </tr>
+                        <tr>
+                            <th>NECK</th>
+                            <td><input type="text" class="form-control-sm">18cm</td>
+                            <td><input type="text" class="form-control-sm">24cm</td>
+                            <td><input type="text" class="form-control-sm">29cm</td>
+                            <td><input type="text" class="form-control-sm">40cm</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="product-description d-flex justify-content-center border-2 border-black border-bottom">
+                    <!-- 미리보기 -->
+                    <!-- 이 부분도 들어올 때 이미지 띄어야 함 -->
+                    <div class="album bg-light m-4" id="contentImage">
+                        <div class="card shadow-sm p-3">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225">
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="m-4">
+                        <button type="button" class="btn btn-outline-info" id="addFileContent">내용 이미지 추가</button>
+                    <div id="contentFileArea">
+                        <div class="mb-3 p-1">
+                            <input type="file" class="form-control form-control-lg" name="contentFile">
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 float-end mt-3">
+                    <button type="button" class="btn btn-outline-success" id="editShop">등록</button>
+                    <button type="button" class="btn btn-outline-danger" id="deleteShop">삭제</button>
+                    <button type="button" class="btn btn-outline-dark" onclick="javascrpt:history.back();">취소</button>
+                </div>
+            </form>
+        </div>            
+    </main>
+
+    <!-- 모달 -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalChoice">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-1 shadow">
+                <div class="modal-body p-4 text-center">
+                    <h4 class="mb-1">썸네일 이미지와 내용 이미지는 최소 한장이 있어야 합니다.</h4>
+                    <p class="mb-1">이미지를 반드시 삽입해주세요.</p>
+                </div>
+                <div class="modal-footer flex-nowrap p-1">
+                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="checkFile">
+                        <strong>네</strong>
+                     </button>
+                     <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 삭제 모달 -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="modalDelete">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-1 shadow">
+                <div class="modal-body p-4 text-center">
+                    <h4 class="mb-1">삭제 시 복구가 불가능합니다.</h4>
+                    <p class="mb-1">정말 삭제하시겠습니까?</p>
+                </div>
+                <div class="modal-footer flex-nowrap p-1">
+                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="checkDelete">
+                        <strong>네</strong>
+                     </button>
+                     <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 구조 잘 파악해서 해야함 구조 잘못건들면 자스 안먹힘 -->
+    <!-- 미리보기 사진들 넓이랑 높이 고정될 수 있도록 CSS같은거 만져야 함. -->
+    <script>
+        let divChildren;// = thumbDiv.querySelectorAll('div');
+        let divContent;
+        window.onload = () =>{
+
+            var fileAreaCount = 2;
+            var contentFileAreaCount = 2;
+
+			const fileArea = document.querySelector('#fileArea');
+            const thumbDiv = document.getElementById('thumbnail');
+			document.getElementById('addFile').addEventListener('click', () =>{
+
+                if(fileAreaCount <= 5) {
+                    const newDiv = document.createElement('div');
+                    newDiv.classList.add('mb-3', 'p-1');
+                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="thumbnailFile">';
+                    
+                    fileArea.append(newDiv);
+
+                     // 역따옴표 쓰는거임(코드 블록 표현 시)
+                    const thumbSvgTemplate = `
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" name="thumbnailSvg">
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">${fileAreaCount}</text>
+                        </svg>
+                        `;
+
+                    const newSvg = document.createElement('div');
+                    newSvg.classList.add('card', 'shadow-sm', 'p-3');
+                    newSvg.innerHTML = thumbSvgTemplate;
+
+                    thumbDiv.append(newSvg);
+
+                    divChildren = thumbDiv.querySelectorAll('div');
+                    
+                    fileAreaCount += 1;
+
+                } else {
+                    alert("썸네일용 사진은 최대 5개까지 가능합니다.");
+                }
+				               
+			});
+
+            const contentFileArea = document.querySelector('#contentFileArea');
+            const contentDiv = document.getElementById('contentImage');
+            document.getElementById('addFileContent').addEventListener('click', () =>{
+
+                if(contentFileAreaCount <= 10) {
+                    const newDiv = document.createElement('div');
+                    newDiv.classList.add('mb-3', 'p-1');
+                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="contentFile">';             
+
+                    contentFileArea.append(newDiv);
+
+                    const thumbSvgTemplate = `
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225" name="contentSvg">
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">${contentFileAreaCount}</text>
+                        </svg>
+                        `;
+
+                    const newSvg = document.createElement('div');
+                    newSvg.classList.add('card', 'shadow-sm', 'p-3');
+                    newSvg.innerHTML = thumbSvgTemplate;
+
+                    contentDiv.append(newSvg);
+
+                    divContent = contentDiv.querySelectorAll('div');
+
+                    contentFileAreaCount += 1;
+                } else {
+                    alert("내용 사진은 최대 10개까지 가능합니다.");
+                }
+				
+			});
+		
+            let filesIsEmpty = true;
+            let contentIsEmpty = true;
+
+			const form = document.getElementById('editPage');
+			document.getElementById('editShop').addEventListener('click', () =>{
+				const files = document.getElementsByName('file');
+                const contentFiles = document.getElementsByName('fileContent');
+				console.log(files);
+                console.log(contentFiles);
+
+                <!-- 썸네일 이미지와 내용 이미지 둘 다 한장은 존재해야함.-->
+
+				for(const f of files) {
+					if(f.value != '') {
+						filesIsEmpty = false;
+					}
+				}
+
+                for(const f of contentFiles){
+                    if(f.value != '') {
+                        contentIsEmpty = false;
+                    }
+                }
+				
+				if(filesIsEmpty || contentIsEmpty) {
+					$('#modalChoice').modal('show');
+				} else {
+                    form.attr('action', 'updateProd.sp');
+					form.submit();
+				}
+
+			});
+            
+            document.getElementById('checkFile').addEventListener('click', () =>{
+                $('#modalChoice').modal('hide');
+
+                if(filesIsEmpty) {
+                    document.getElementById('addFile').focus();
+                } 
+                if(contentIsEmpty) {
+                    document.getElementById('addFileContent').focus();
+                }
+    
+            });
+
+
+            // thumbDiv의 자식 요소 divChildren을 innerHTML = "" 하면 아래 요소는 삭제 된다. == 초기화
+            // thumbDiv 아래에 넣기(썸네일의 최대 부모div)
+            const thumbInput = document.getElementsByName('thumbnailFile');
+            const preImage = document.createElement('img');
+            //let divChildren = thumbDiv.querySelectorAll('div'); // 아래에는 <svg>가 있음..
+
+            fileArea.addEventListener('change', function(event) {
+                console.log("File changed!");
+
+                // 이벤트 발생된 자식 요소
+                const target = event.target;
+
+                if(target.name === 'thumbnailFile'){
+                    const index = Array.from(fileArea.querySelectorAll('input[name="thumbnailFile"]')).indexOf(target);
+                    console.log("index : ", index);
+                    if(target.files.length > 0) {
+                        if(divChildren != null) {
+                            divChildren[index].innerHTML = '';
+
+                            const preImage = document.createElement('img');
+                            const selectedFile = target.files[0];
+                            const objectURL = URL.createObjectURL(selectedFile);
+                            preImage.src = objectURL;
+
+                            divChildren[index].append(preImage);
+
+                        }
+                    } else {
+                        divChildren[index].innerHTML = `
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" name="thumbnailSvg">
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">인덱스밸류+1</text>
+                            </svg>
+                         `;
+                    }
+
+                } 
+            });
+
+            contentFileArea.addEventListener('change', function(event){
+                const target = event.target;
+
+                if(target.name === 'contentFile'){
+                    const index = Array.from(contentFileArea.querySelectorAll('input[name="contentFile"]')).indexOf(target);
+                    console.log("index : ", index);
+                    if(target.files.length > 0){
+                        if(divContent != null){
+                            divContent[index].innerHTML = '';
+
+                            const preImage = document.createElement('img');
+                            const selectedFile = target.files[0];
+                            const objectURL = URL.createObjectURL(selectedFile);
+                            preImage.src = objectURL;
+
+                            divContent[index].append(preImage);
+
+                            console.log("contentFile" + divContent.length);
+                        }
+                    } else {
+                        divContent[index].innerHTML = `
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" name="contentSvg">
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" dy=".3em">${contentFileAreaCount}</text>
+                            </svg>
+                        `;
+                    }
+                }
+            });
+
+            $(document).on('click', '#deleteShop', function() {
+                $('#modalDelete').modal('show');
+            })
+
+            $(document).on('click', '#checkDelete', function() {
+                form.attr('action', '/deleteProd.sp');
+                form.submit();
+            });
+            
+
+		}	
+    </script>
+</body>
+</html>

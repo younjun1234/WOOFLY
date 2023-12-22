@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PetController {
-   @GetMapping("pet/petInfo")
+   
+	@GetMapping("pet/petInfo")
    public String petInfoView() {
       return "petInfo";
    }
@@ -23,5 +24,35 @@ public class PetController {
    @GetMapping("pet/petContest")
    public String petContestView() {
       return "petContest";
+   }
+   
+   @GetMapping("pet/petDetail")
+   public String petDetailtView() {
+      return "petDetail";
+   }
+   
+   @GetMapping("pet/petAdd")
+   public String petAddView() {
+      return "petAdd";
+   }
+   
+   @GetMapping("pet/petPhotoDetail")
+   public String petPhotoDetailView() {
+      return "petPhotoDetail";
+   }
+   
+   @GetMapping("pet/petPhotoWrite")
+   public String petpetPhotoWriteView() {
+      return "petPhotoWrite";
+   }
+   
+   @GetMapping("pet/petDiaryWrite")
+   public String petDiaryWriteView() {
+      return "petDiaryWrite";
+   }
+   
+   @GetMapping("pet/petDiaryDetail")
+   public String petDiaryDetailView() {
+      return "petDiaryDetail";
    }
 }
