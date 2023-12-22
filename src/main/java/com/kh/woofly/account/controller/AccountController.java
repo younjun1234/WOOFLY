@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
 import com.kh.woofly.account.model.exception.AccountException;
 import com.kh.woofly.account.model.service.AccountService;
@@ -51,9 +52,15 @@ public class AccountController {
 		
 	}
 	
-	@GetMapping("/account/signUpSns")
-	public String signUpSnsView() {
-		return "signUpSns";
+	@GetMapping("/account/signUp")
+	public String signUpView() {
+		return "signUp";
+	}
+	
+	@PostMapping("singUp.dw")
+	public String signUp() {
+		
+		return null;
 	}
 	
 	@GetMapping("/account/findId")
@@ -66,9 +73,12 @@ public class AccountController {
 		return "findPwd";
 	}
 	
-	@GetMapping("/account/signUp")
-	public String signUpView() {
-		return "signUp";
+	
+	
+	@GetMapping("/account/logout")
+	public String logout(SessionStatus status) {
+		status.setComplete();
+		return "redirect:/";
 	}
 
 }
