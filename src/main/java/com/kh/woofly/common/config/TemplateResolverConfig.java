@@ -37,6 +37,19 @@ public class TemplateResolverConfig {
 	}
 	
 	@Bean
+	public ClassLoaderTemplateResolver BoardResolver() {
+		ClassLoaderTemplateResolver bo = new ClassLoaderTemplateResolver();
+		bo.setPrefix("templates/views/board/");
+		bo.setSuffix(".html");
+		bo.setTemplateMode(TemplateMode.HTML);
+		bo.setCharacterEncoding("UTF-8");
+		bo.setOrder(3);
+		bo.setCacheable(false);
+		bo.setCheckExistence(true);
+		
+		return bo;
+	}
+	
 	public ClassLoaderTemplateResolver PetResolver() {
 		ClassLoaderTemplateResolver pet = new ClassLoaderTemplateResolver();
 		pet.setPrefix("templates/views/pet/");
