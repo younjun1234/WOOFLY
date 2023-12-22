@@ -83,7 +83,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 	        		<h1 class="modal-title fs-5" id="emailModalToggleLabel">이메일 변경</h1>
- 				        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body text-left">
 					<div class="mb-3">
@@ -107,41 +107,44 @@
 			</div>
 		</div>
 	</div>
-		
-	<div class="modal fade" id="pwdModal" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-	        		<h1 class="modal-title fs-5" id="">비밀번호 변경</h1>
-		        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body text-start">
-					<div class="mb-3">
-						<label class="form-label" for="currentPwd">현재 비밀번호</label>					
-						<input type="password" class="form-control" id="currentPwd" placeholder="현재 비밀번호">
+	<form action="/updatePwd.yj" method="POST">
+		<div class="modal fade" id="pwdModal" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+		        		<h1 class="modal-title fs-5" id="">비밀번호 변경</h1>
+			        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 					</div>
-					<div class="mb-3">
-						<label class="form-label" for="newPwd">새 비밀번호</label>
-						<input type="password" class="form-control" placeholder="새 비밀번호">
+					<div class="modal-body text-start">
+						<div class="mb-3">
+							<label class="form-label" for="currentPwd">현재 비밀번호</label>					
+							<input type="password" class="form-control" id="currentPwd" placeholder="현재 비밀번호">
+							<div class="form-text" id="currentPwdResult">123</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="newPwd">새 비밀번호</label>
+							<input type="password" class="form-control" placeholder="새 비밀번호" id="newPwd">
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="checkPwd">비밀번호 확인</label>					
+							<input type="password" class="form-control" id="checkPwd" placeholder="비밀번호 확인">
+							<div class="form-text" id="checkPwdResult">456</div>
+						</div>
 					</div>
-					<div class="mb-3">
-						<label class="form-label" for="checkPwd">비밀번호 확인</label>					
-						<input type="password" class="form-control" id="checkPwd" placeholder="비밀번호 확인">
+					<div class="modal-footer">
+						<button class="btn btn-outline-primary" type="button">변경하기</button>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-outline-primary">변경하기</button>
 				</div>
 			</div>
 		</div>
-	</div>
-	
+		
+	</form>
 	<div class="modal fade" id="phoneModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
 	        		<h1 class="modal-title fs-5" id="">전화번호 변경</h1>
- 				        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body text-left">
 					<div class="mb-3">
@@ -170,6 +173,46 @@
 		const myNav = document.getElementById("myNav4");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
+		
+		
+		// 현재 비밀번호 확인 란
+		const currentPwd = document.getElementById('currentPwd');
+		const currentPwdResult = document.getElementById("currentPwdResult");
+		currentPwd.addEventListener('keyup', () => {
+			$.ajax({
+				url: "/checkPwd.yj",
+				data: {'currentPwd': currentPwd.value},
+				success: (data) => {
+					console.log(data);
+					if(data == 'Y') {
+						currentPwdResult.innerText = '비밀번호가 일치 합니다';
+						currentPwdResult.style.color = 'green';
+					} else {
+						currentPwdResult.innerText = '비밀번호가 일치 하기 않습니다.';
+						currentPwdResult.style.color = 'red';
+					}
+				},
+				error: (data) => console.log(data)
+			})
+		})
+		
+		// 새 비밀번호 확인 란
+		const newPwd = document.getElementById('newPwd');
+		const checkPwd = document.getElementById('checkPwd');
+		const checkPwdResult = document.getElementById('checkPwdResult');
+		console.log(newPwd);
+		console.log(checkPwd);
+		checkPwd.addEventListener('keyup', () => {
+			if (checkPwd.value === newPwd.value) {
+				checkPwdResult.innerText = '비밀번호가 일치 합니다';
+				checkPwdResult.style.color = 'green';
+			} else {
+				checkPwdResult.innerText = '비밀번호가 일치 하기 않습니다.';
+				checkPwdResult.style.color = 'red';
+			}
+		})
+		
+		
 	</script>
 </body>
 </html>

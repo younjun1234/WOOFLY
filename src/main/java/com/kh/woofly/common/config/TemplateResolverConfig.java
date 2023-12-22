@@ -50,6 +50,7 @@ public class TemplateResolverConfig {
 		return bo;
 	}
 	
+	@Bean
 	public ClassLoaderTemplateResolver PetResolver() {
 		ClassLoaderTemplateResolver pet = new ClassLoaderTemplateResolver();
 		pet.setPrefix("templates/views/pet/");
