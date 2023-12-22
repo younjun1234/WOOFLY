@@ -44,58 +44,91 @@ p {
 						<h2 style="font-weight: 800">회원가입</h2>
 					</div>
 					<br>
-					<form>
-						<div class="mt-2">
-							<p>이름</p>
-							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="text" style="border: none; background: transparent;">
-							</div>
-						</div>
-						<div class="mb-1">
+					<form action="/singUp.dw" method="post">
+						
+						<div class="mt-2 mb-2">
 							<p>아이디</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="text" style="border: none; background: transparent;">
+								<input type="text" id="idCheck" name="mbId" style="border: none; background: transparent;">
+								<button class="btn btn-outline-dark mb-3 btn-sm">중복확인</button>
 							</div>
+							<label class="mt-1" id="idCheckWarn">아이디를 중복확인 해주세요.</label>
 						</div>
-						<div class="mb-1">
+						<br>
+						<div class="mb-2">
 							<p>비밀번호</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="password" name="text" style="border: none; background: transparent;">
+								<input type="password" name="mbPwd" style="border: none; background: transparent;">
 							</div>
 						</div>
-						<div class="mb-1">
+						<div class="mb-2">
 							<p>비밀번호 확인</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="password" name="text" style="border: none; background: transparent;">
+								<input type="password" name="mbPwd" style="border: none; background: transparent;">
 							</div>
 						</div>
-						<div class="mb-1">
+						<div class="mb-2">
+							<p>이름</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" name="mbName" style="border: none; background: transparent;">
+							</div>
+						</div>
+						<div class="mb-2">
+							<p>닉네임</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" id="mbNickname" name="mbNickname" style="border: none; background: transparent;">
+								<button class="btn btn-outline-dark mb-3 btn-sm">중복확인</button>
+							</div>
+							<label class="mt-1" id="nicknameCheckWarn">닉네임을 중복확인 해주세요.</label>
+						</div>
+						<br>
+						<div class="mb-2">
 							<p>이메일</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="email" name="text" style="border: none; background: transparent;">
+								<input type="email" name="mbEmail" style="border: none; background: transparent;">
 							</div>
 						</div>
-						<div class="mb-1">
+						<div class="mb-2">
 							<p>휴대폰 번호</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="text" style="border: none; background: transparent;">
+								<input type="text" name="mbPhone" style="border: none; background: transparent;">
+								<button class="btn btn-outline-dark mb-3 btn-sm">전송</button>
 							</div>
 						</div>
-						<button class="btn btn-outline-dark mb-3 btn-sm">전송</button>
 						<br>
-						<div class="mb-1">
+						<div class="mb-2">
 							<p>인증번호 입력</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="text" style="border: none; background: transparent;">
+								<input type="text" name="" style="border: none; background: transparent;">
 							</div>
 						</div>
-						<div class="mb-1">
-							<p>주소</p>
+						
+						<div class="mb-2">
+							<label for="postcode">우편번호</label>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="text" style="border: none; background: transparent;">
+								<input type="text" id="newPostcode" name="mbAddress" style="border: none; background: transparent;" readonly placeholder="우편 번호를 검색하세요">
+								<button class="btn btn-outline-dark mb-3 btn-sm">검색</button>
 							</div>
 						</div>
-						<button class="btn btn-outline-dark mb-3 btn-sm">검색</button>
+						<div class="mb-2">
+							<label for="postcode">주소</label>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" id="newAddr" name="mbAddress" style="border: none; background: transparent;" readonly placeholder="우편 번호 검색후 자동 입력됩니다">
+							</div>
+						</div>
+						<div class="mb-2">
+							<label for="postcode">상세주소</label>
+							<div class="border-bottom d-flex justify-content-between">
+								<input type="text" id="newDetailAddr" name="mbAddress" style="border: none; background: transparent;" placeholder="건물, 아파트, 동/호수 입력">
+							</div>
+						</div>
+						<br>
+						<div class="mb-2">
+							<p>생년월일</p>
+							<div class="d-flex me-5">
+								<input type="date" class="form-control d-block" style="width: 150px;">
+							</div>
+						</div>
 						<br>
 						<div class="form-group">
 							<label>개인정보 수집 및 이용 동의(필수)</label>
@@ -140,22 +173,21 @@ p {
 							<br>
 							<div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="privacy" id="agree" value="agree">
+									<input class="form-check-input" type="radio" name="privacy" id="agree" value="agree" style="color:black;">
 									<label class="form-check-label" for="agree">동의함</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="privacy" id="disagree" value="disagree"> 
+									<input class="form-check-input" type="radio" name="privacy" id="disagree" value="disagree" style="color:black;"> 
 									<label class="form-check-label" for="disagree">동의안함</label>
 								</div>
 							</div>
 						</div>
 						<div class="mt-4">
-							<a role="button" type="submit" class="btn btn-dark btn-sm" href="/account/login" style="width: 100%; text-align: center;">가입하기</a>
+							<button type="submit" class="btn btn-dark btn-sm" style="width: 100%; text-align: center;">가입하기</button>
 						</div>
 					</form>
 				</div>
 			</div>
-		</div>
 		<!-- 여기까지가 수정 -->
 		<!-- 여기까지가 수정 -->
 		<!-- 여기까지가 수정 -->
@@ -167,14 +199,90 @@ p {
 		</div>
 	</main>
 	<script>
-		const myNav = document.getElementById("myNav4");
-		$(myNav).removeClass('text-secondary');
-		$(myNav).addClass('active');
-		
 		$('#privacyBtn').click(function(e) {
 			e.preventDefault();
 			$('#privacyModal').modal("show");
 		});
+		
+		const updateAddr = () => {
+		    new daum.Postcode({
+		        oncomplete: function(data) {
+		        	// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+	                // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+	                var roadAddr = data.roadAddress; // 도로명 주소 변수
+	                var extraRoadAddr = ''; // 참고 항목 변수
+
+	                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+	                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+	                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+	                    extraRoadAddr += data.bname;
+	                }
+	                // 건물명이 있고, 공동주택일 경우 추가한다.
+	                if(data.buildingName !== ''){
+	                   extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	                }
+	                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+	                if(extraRoadAddr !== ''){
+	                    extraRoadAddr = ' (' + extraRoadAddr + ')';
+	                }
+
+	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+	                document.getElementById('postcode').value = data.zonecode;
+	                document.getElementById("addr").value = roadAddr + extraRoadAddr;
+	                
+            	}
+		    }).open();
+		}
+		
+		window.onload = () =>{
+			const checkId = document.getElementById('idCheck')
+	         checkId.addEventListener("blur",function () {
+	            const idCheckWarn = document.getElementById('idCheckWarn');
+	            let check;// 체크결과값
+				
+	            //정규표현식 값
+	            const idvalcheck = /^[a-z0-9_.]{4,12}$/;
+	           
+	            if(checkId.value.trim() != ""){
+	            	
+	            	if(!idvalcheck.test(checkId.value)){
+	                     idCheckWarn.style.color="black";
+	                     idCheckWarn.innerText = "아이디는 4~12자 영문소문자, 숫자, 언더라인(_), 온점(.) 사용가능 입니다."
+	                     return false;
+	            	 }
+	            	
+	            	
+	               $.ajax({
+	                  type : 'get',
+	                  url : 'idCheck.dw', 
+	                  data: {id:document.getElementById('idCheck').value},
+	                  success : function (data) {
+	                     console.log("data : " +  data);
+	                     check =$.trim(data);
+	                     /*중복체크 후 결과값 표시하는 부분*/
+	                      if(check=='yes'){
+	                         idCheckWarn.style.color="black";
+	                         idCheckWarn.innerText = "사용 가능한 아이디입니다🥰"
+	                          check_id =true;
+	                        }else if(check == 'no'){
+	                           idCheckWarn.style.color="black";
+	                           idCheckWarn.innerText = "이미 사용중인 아이디입니다."
+	                            check_id = false;
+	                           
+	                        }
+	                     
+	                  }         
+	               }); 
+	            }
+	         
+	         });
+		}
+	</script>
+	<!--카카오 지도 api 관련-->
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script>
 	</script>
 </body>
 </html>
