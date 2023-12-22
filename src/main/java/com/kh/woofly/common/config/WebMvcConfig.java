@@ -12,11 +12,6 @@ import com.kh.woofly.common.interceptor.CheckLoginInterceptor;
 public class WebMvcConfig implements WebMvcConfigurer{
 	
 	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/image/**").addResourceLocations("file:///C:/uploadFiles/");
-	}
-	
-	@Override
 	   public void addInterceptors(InterceptorRegistry registry) { // Interceptor 등록해주는 메소드
 	    //일반계정용  
 		registry.addInterceptor(new CheckLoginInterceptor())
