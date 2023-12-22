@@ -30,4 +30,19 @@ public class MemberServiceImpl implements MemberService{
 		return mDAO.editNickName(loginUser);
 	}
 
+	@Override
+	public int editName(Member loginUser) {
+		return mDAO.editName(loginUser);
+	}
+
+	@Override
+	public int editIntro(Member loginUser) {
+		return mDAO.editIntro(loginUser);
+	}
+
+	@Override
+	public int editIsPrivate(Member loginUser) {
+		return mDAO.editIsPrivate(loginUser);
+	}
+
 }

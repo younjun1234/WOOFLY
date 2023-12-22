@@ -26,5 +26,6 @@ public class Member {
 	private int mbPoint;
 	private String mbStatus;
 	private String isAdmin;
+	private String isPrivate;
 	private Date nextChange;
 }

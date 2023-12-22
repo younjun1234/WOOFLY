@@ -19,4 +19,22 @@
 		set mb_nickname = #{ mbNickName }, next_change = #{ nextChange }
 		where mb_id = #{mbId}
 	</update>
+	
+	<update id="editName">
+		update member
+		set mb_name = #{ mbName }
+		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="editIntro">
+ 		update member
+ 		set mb_intro = #{ mbIntro }
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="editIsPrivate">
+ 		update member
+ 		set is_private = #{ isPrivate }
+ 		where mb_id = #{mbId}
+ 	</update>
 </mapper>

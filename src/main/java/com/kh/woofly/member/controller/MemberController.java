@@ -133,7 +133,6 @@ public class MemberController {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_MONTH, 30);
 		Date date = cal.getTime();
-		System.out.println(date);
 		loginUser.setNextChange(date);
 		loginUser.setMbNickName(newNickName);
 		int result = mService.editNickName(loginUser);
@@ -143,9 +142,51 @@ public class MemberController {
 		} else {
 			throw new MemberException("프로필 이름 변경에 실패하였습니다.");
 		}
-		
 	}
 	
+	@PostMapping("editName.yj")
+	public String editName(@RequestParam("newName") String newName, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbName(newName);
+		
+		int result = mService.editName(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("이름 변경에 실패하였습니다.");
+		}
+	}
+	
+	@PostMapping("editIntro.yj")
+	public String editIntro(@RequestParam("newIntro") String newIntro, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbIntro(newIntro);
+		
+		int result = mService.editIntro(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("소개글 변경에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("editIsPrivate.yj")
+	public String editIsPrivate(@RequestParam("isPrivate") boolean isPrivate, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setIsPrivate(isPrivate ? "Y" : "N");
+		
+		int result = mService.editIsPrivate(loginUser);
+		
+		if( result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("공개 범위 변경에 실패하였습니다.");
+		}
+		
+		
+	}
 	
 	
 	

@@ -16,4 +16,10 @@ public interface MemberDAO {
 
 	int editNickName(Member loginUser);
 
+	int editName(Member loginUser);
+
+	int editIntro(Member loginUser);
+
+	int editIsPrivate(Member loginUser);
+
 }
