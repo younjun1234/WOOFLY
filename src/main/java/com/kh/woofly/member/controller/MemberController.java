@@ -7,23 +7,35 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Date;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.woofly.member.model.exception.MemberException;
+import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MemberController {
 
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
+	
+	@Autowired
+	private MemberService mService;
 
 	@GetMapping("/my")
 	public String profileHomeView() {
@@ -31,12 +43,15 @@ public class MemberController {
 	}
 
 	@GetMapping("my/login-edit")
-	public String loginView() {
+	public String loginView(Model model) {
 		return "myLogin";
 	}
 
 	@GetMapping("my/profile-edit")
-	public String profileView() {
+	public String profileView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Member>  list = mService.getBlackList(id);
+		model.addAttribute("list", list);
 		return "myProfile";
 	}
 
@@ -87,7 +102,6 @@ public class MemberController {
 	@GetMapping("checkPwd.yj")
 	@ResponseBody
 	public String checkPwd(@RequestParam("currentPwd") String currentPwd, Model model) {
-		System.out.println("controller");
 		String pwd = ((Member) model.getAttribute("loginUser")).getMbPwd();
 		String result = "N";
 		if (bcrypt.matches(currentPwd, pwd)) {
@@ -96,5 +110,95 @@ public class MemberController {
 
 		return result;
 	}
+	
+	@PostMapping("removeBlock.yj")
+	public String removeBlock(@RequestParam("blockedEntity") String blockedEntity, HttpSession session) {
+		HashMap<String, String> map = new HashMap<>();
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 
+		map.put("loginUser", id);
+		map.put("blockedEntity", blockedEntity);
+		int result = mService.removeBlock(map);
+		
+		if (result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("차단 해제에 실패하였습니다");
+		}
+	}
+	
+	@PostMapping("editNickName.yj")
+	public String editNickName(@RequestParam("newNickName") String newNickName, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 30);
+		Date date = cal.getTime();
+		System.out.println(date);
+		loginUser.setNextChange(date);
+		loginUser.setMbNickName(newNickName);
+		int result = mService.editNickName(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("프로필 이름 변경에 실패하였습니다.");
+		}
+		
+	}
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
