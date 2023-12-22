@@ -27,7 +27,7 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
 	         }
 	         
 	         response.setContentType("text/html; charset=UTF-8");
-	         response.getWriter().write("<script>alert('" + msg + "'); location.href='/account/login';</script>");
+	         response.getWriter().write("<script>location.href='/account/login';</script>");
 	         
 	         return false; //세션만료되었으면 login 화면으로 넘어가지 selectBoard.bo .at으로 넘어가면 안되기 때문에 false 반환
 		}
