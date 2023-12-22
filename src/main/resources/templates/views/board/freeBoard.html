@@ -12,8 +12,8 @@
 </head>
 <body>
 	<div th:replace="~{common/topAdd :: topAdd}"></div>
-	<div class="container mx-5 mt-5">
-		<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
+	 <div class="container mt-5 mb-3">
+      	<div class="container d-flex px-0 mb-3 border-bottom border-black border-3 justify-content-between align-items-center">
 			<h1>자유게시판</h1>
 			<a role="button" href="/board/free/write" class="btn btn-dark btn-sm h-50">글 작성</a>
 		</div>
@@ -23,8 +23,8 @@
 				<label for="search-box" class="form-label">게시글 검색</label>
 				<select class="col-1" style="border: 1px solid #D2D6D9; border-radius: 6px;">
 					<option value="" disabled selected>검색조건</option>
-					<!-- <option value="writer" ${ condition == 'writer' ? 'selected' : '' }>작성자</option>
-					<option value="title" ${ condition == 'title' ? 'selected' : '' }>제목</option> -->
+					<option value="writer">작성자</option>
+					<option value="title">제목</option>
 				</select>
 				<div class="col-10">						
 			    <input type="text" class="form-control" id="search-box" placeholder="검색어를 입력해주세요">
