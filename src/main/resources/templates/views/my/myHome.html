@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WOOFLY</title>
-<link rel="icon" href="image/woofly.png">
+<link rel="icon" href="/image/woofly.png">
 </head>
 <body>
 	<!-- top navigation bar -->
@@ -25,9 +25,9 @@
 				<img src="..." class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
 				<div class="ps-3">
 					<p class="mb-0">
-						이메일
+						[[${ session.loginUser.mbEmail }]]
 						<br>
-						아이디
+						[[${ session.loginUser.mbId }]]
 					</p>
 					<div>
 						<a class="btn btn-sm btn-outline-secondary" href="/my/profile-edit">프로필 관리</a>

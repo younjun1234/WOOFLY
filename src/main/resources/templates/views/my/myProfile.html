@@ -34,7 +34,7 @@
 					<img src="" class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
 					<div class="ps-3">
 						<p class="pb-1">
-							younjun1234
+							[[${ session.loginUser.mbNickName }]]
 						</p>
 						<div>
 							<button class="btn btn-sm btn-outline-dark" onclick="profileChange()">이미지 변경</button>
@@ -46,30 +46,38 @@
 				
 				<h4>프로필 정보</h4>
 				<br>
-				<div class="col-6">
-					<p class="text-secondary">프로필 이름</p>
-					<div class="border-bottom d-flex justify-content-between" id="nicknameCont">
-						<div>
-							<input type="text" class="form-control-plaintext text-dark" readonly value="younjun1234" id="nickname">
+				<form action="/editNickName.yj" method="POST">
+					<div class="col-6">
+						<p class="text-secondary">프로필 이름</p>
+						<div class="border-bottom d-flex justify-content-between" id="nicknameCont">
+							<div>
+								<input type="text" class="form-control-plaintext text-dark" readonly name="newNickName" th:value="${ session.loginUser.mbNickName }" id="nickname">
+							</div>
+							<div>
+								<button type="button" class="btn btn-outline-dark btn-sm" id="nicknameChangeBtn" th:disabled="${ session.loginUser.nextChange != null && #dates.createNow().before(session.loginUser.nextChange) }">
+									변경
+								</button>
+							</div>
 						</div>
-						<div id="nicknameChangeBtn">
-							<button class="btn btn-outline-dark btn-sm">변경</button>
+						
+						<div style="display: none;" id="nicknameHideCont">
+								<div class="text-secondary mb-3" style="font-size: 10px;">변경 후 30일이 지나야 다시 변경 가능하므로 신중히 변경해주세요.</div>
+								<div class="text-center">
+									<button type="button" class="btn btn-outline-secondary cancelBtn" id="nicknameCancelBtn">취소</button>
+									<button class="btn btn-dark">변경</button>
+								</div>
+						</div>
+						<div class="text-secondary mb-3" style="font-size: 10px;" th:if="${ session.loginUser.nextChange != null && #dates.createNow().before(session.loginUser.nextChange) }">
+							변경 가능 날짜 : [[${ #dates.format(session.loginUser.nextChange, 'yyyy-MM-dd' ) }]]
 						</div>
 					</div>
-					<div style="display: none;" id="nicknameHideCont">
-						<div class="text-secondary mb-3" style="font-size: 10px;">변경 후 30일이 지나야 다시 변경 가능하므로 신중히 변경해주세요.</div>
-						<div class="text-center">
-							<button class="btn btn-outline-secondary cancelBtn" id="nicknameCancelBtn">취소</button>
-							<button class="btn btn-dark">변경</button>
-						</div>
-					</div>
-				</div>
+				</form>
 				<br>
 				<div class="col-6">
 					<p class="text-secondary">이름 변경<p>
 					<div class="border-bottom d-flex justify-content-between" id="nameCont">
 						<div>
-							<input type="text" class="form-control-plaintext text-dark" readonly value="김연준" id="name">
+							<input type="text" class="form-control-plaintext text-dark" readonly th:value="${ session.loginUser.mbName }" id="name">
 						</div>
 						<div>
 							<button class="btn btn-outline-dark btn-sm" id="nameChangeBtn">변경</button>
@@ -88,7 +96,7 @@
 					<p class="text-secondary">소개<p>
 					<div class="border-bottom d-flex justify-content-between" id="introCont">
 						<div>
-							<input type="text" class="form-control-plaintext text-dark" readonly value="안녕하세요" id="intro">
+							<input type="text" class="form-control-plaintext text-dark" readonly th:value="${ session.loginUser.mbIntro }" id="intro">
 						</div>
 						<div id="introChangeBtn">
 							<button class="btn btn-outline-dark btn-sm">변경</button>
@@ -139,36 +147,17 @@
 		        			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 						</div>
 						<div class="modal-body text-start">
-							<div class="d-flex justify-content-between mb-3">
-								<h4>Ruby Choi</h4>
-								<div>
-									<button class="btn btn-sm btn-outline-dark">해제</button>
-								</div>
+							<div class="d-flex justify-content-center" th:if="${ #arrays.isEmpty(list) }" >
+								<p>차단한 프로필이 없습니다</p>
 							</div>
-							<div class="d-flex justify-content-between mb-3">
-								<h4>Yukyoung</h4>
+							<form class="d-flex justify-content-between "  mb-3"" action="/removeBlock.yj" method="POST" th:each="blockedEntity : ${ list }">
+								<input type="hidden" name="blockedEntity" th:value="${ blockedEntity.mbId }">
+								<h4>[[${ blockedEntity.mbNickName }]]</h4>
 								<div>
-									<button class="btn btn-sm btn-outline-dark">해제</button>
+									<button class="btn btn-sm btn-outline-dark removeBlockBtn">해제</button>
 								</div>
-							</div>
-							<div class="d-flex justify-content-between mb-3">
-								<h4>Youknow</h4>
-								<div>
-									<button class="btn btn-sm btn-outline-dark">해제</button>
-								</div>
-							</div>
-							<div class="d-flex justify-content-between mb-3">
-								<h4>Haeun Park</h4>
-								<div>
-									<button class="btn btn-sm btn-outline-dark">해제</button>
-								</div>
-							</div>
-							<div class="d-flex justify-content-between mb-3">
-								<h4>HwaJin Choi</h4>
-								<div>
-									<button class="btn btn-sm btn-outline-dark">해제</button>
-								</div>
-							</div>
+							</form>
+							
 							
 						</div>
 					</div>
@@ -242,6 +231,9 @@
 			$('#introChangeBtn').css('display', 'block');
 			$('#introCont').removeClass('border-2').removeClass('border-black');
 		});
+		
+		// 차단 해제
+		
 		
 	</script>
 </body>

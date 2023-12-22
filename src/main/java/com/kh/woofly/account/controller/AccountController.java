@@ -38,13 +38,15 @@ public class AccountController {
 		Member loginUser = aService.login(m);
 		if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
 			model.addAttribute("loginUser", loginUser);
-			if (loginUser.getIsAdmin().equals("N")) {
-				//로그 추가
-				logger.info(loginUser.getMbId());
-				return "redirect:/";
-			} else {
-				return "redirect:admin.ad";
-			}
+			System.out.println(loginUser);
+//			if (loginUser.getIsAdmin().equals("N")) {
+//				//로그 추가
+//				logger.info(loginUser.getMbId());
+//				return "redirect:/";
+//			} else {
+//				return "redirect:admin.ad";
+//			}
+			return "redirect:/";
 		} else {
 			throw new AccountException("로그인을 실패하였습니다.");
 		}

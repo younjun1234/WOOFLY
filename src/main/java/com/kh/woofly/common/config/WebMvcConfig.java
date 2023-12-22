@@ -21,9 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer{
 	    //일반계정용  
 		registry.addInterceptor(new CheckLoginInterceptor())
 //	      
-	         .addPathPatterns("/myInfo.me", "/editMyInfo.me","/updateMember.me","/uodatePassword.me","/deleteMember.me")
-	         .addPathPatterns("/*.bo","/*.at")
-	         .excludePathPatterns("/list.bo","list.at");
+	         .addPathPatterns("/my*");
 	      
 	      registry.addInterceptor(new CheckAdminInterceptor())
 	         .addPathPatterns("/*.ad");
