@@ -45,4 +45,19 @@ public class MemberServiceImpl implements MemberService{
 		return mDAO.editIsPrivate(loginUser);
 	}
 
+	@Override
+	public int editMbPhoto(Member loginUser) {
+		return mDAO.editMbPhoto(loginUser);
+	}
+
+	@Override
+	public int updatePwd(Member loginUser) {
+		return mDAO.updatePwd(loginUser);
+	}
+
+	@Override
+	public int updateEmail(Member loginUser) {
+		return mDAO.updateEmail(loginUser);
+	}
+
 }

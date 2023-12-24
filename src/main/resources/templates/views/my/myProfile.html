@@ -36,10 +36,14 @@
 						<p class="pb-1">
 							[[${ session.loginUser.mbNickName }]]
 						</p>
-						<div>
-							<button class="btn btn-sm btn-outline-dark" onclick="profileChange()">이미지 변경</button>
-							<input type="file" id="profile" style="display: none;">
-							<button class="btn btn-sm btn-outline-dark">삭제</button>
+						<div class="d-flex gap-2">
+							<form action="/editMbPhoto.yj" method="POST" enctype="multipart/form-data" id="mbPhotoForm">
+								<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">이미지 변경</button>
+								<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
+							</form>
+							<form action="/deleteMbPhoto.yj" method="POST">
+								<button type="button" class="btn btn-sm btn-outline-dark">삭제</button>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -235,6 +239,8 @@
 			$('#introCont').removeClass('border-2').removeClass('border-black');
 		});
 		
+		// 비공개 설정
+		
 		const switchBtn = document.getElementById('switchBtn');
 		switchBtn.addEventListener('click', () => {
 			$.ajax({
@@ -246,6 +252,15 @@
 				error: (data) => console.log(data)
 			})
 		})
+		
+		// 프로필 사진 수정
+		
+		const profile = document.getElementById('profile');
+		profile.addEventListener('change', () => {
+			if (profile.files.length > 0) {
+	 			document.getElementById("mbPhotoForm").submit();
+			}
+		})			
 		
 		
 	</script>
