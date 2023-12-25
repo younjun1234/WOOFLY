@@ -14,5 +14,14 @@ import lombok.ToString;
 public class QNA {
 	
 	private int qId;
+	private String qTitle;
+	private String qContent;
+	private Date qCreqteDate;
+	private Date qModifyDate;
+	private String qCategory;
+	private String qStatus;
+	private int qCount;
+	private String qWriter;
+	
 	
 }
