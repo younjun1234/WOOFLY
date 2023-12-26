@@ -31,7 +31,7 @@ p {
 	<div th:replace="~{common/top :: top}"></div>
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
-		<div class="d-flex justify-content-between mx-5">
+		<div class="d-flex justify-content-center mx-5">
 			<!-- 아래만 수정해주세요 -->
 			<!-- 아래만 수정해주세요 -->
 			<!-- 아래만 수정해주세요 -->
@@ -45,14 +45,13 @@ p {
 					</div>
 					<br>
 					<form action="/singUp.dw" method="post">
-						
-						<div class="mt-2 mb-2">
+						<div class="mt-1 mb-2">
 							<p>아이디</p>
 							<div class="border-bottom d-flex justify-content-between">
 								<input type="text" id="idCheck" name="mbId" style="border: none; background: transparent;">
 								<button class="btn btn-outline-dark mb-3 btn-sm">중복확인</button>
 							</div>
-							<label class="mt-1" id="idCheckWarn">아이디를 중복확인 해주세요.</label>
+							<label class="mt-1" id="idCheckWarn" style="font-weight: bolder;">아이디를 중복확인 해주세요.</label>
 						</div>
 						<br>
 						<div class="mb-2">
@@ -79,7 +78,7 @@ p {
 								<input type="text" id="mbNickname" name="mbNickname" style="border: none; background: transparent;">
 								<button class="btn btn-outline-dark mb-3 btn-sm">중복확인</button>
 							</div>
-							<label class="mt-1" id="nicknameCheckWarn">닉네임을 중복확인 해주세요.</label>
+							<label class="mt-1" id="nicknameCheckWarn" style="font-weight: bolder;">닉네임을 중복확인 해주세요.</label>
 						</div>
 						<br>
 						<div class="mb-2">
@@ -126,7 +125,7 @@ p {
 						<div class="mb-2">
 							<p>생년월일</p>
 							<div class="d-flex me-5">
-								<input type="date" class="form-control d-block" style="width: 150px;">
+								<input type="date" class="form-control d-block" style="width: 100%;">
 							</div>
 						</div>
 						<br>
