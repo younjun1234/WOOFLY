@@ -1,5 +1,6 @@
 package com.kh.woofly.member.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,13 +8,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,16 +26,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
 
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MemberController {
 
+	@Autowired
+	private JavaMailSender mailSender;
+
+	
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
 	
@@ -101,14 +113,29 @@ public class MemberController {
 
 	@GetMapping("checkPwd.yj")
 	@ResponseBody
-	public String checkPwd(@RequestParam("currentPwd") String currentPwd, Model model) {
-		String pwd = ((Member) model.getAttribute("loginUser")).getMbPwd();
+	public String checkPwd(@RequestParam("currentPwd") String currentPwd, HttpSession session) {
+		String pwd = ((Member) session.getAttribute("loginUser")).getMbPwd();
 		String result = "N";
 		if (bcrypt.matches(currentPwd, pwd)) {
 			result = "Y";
 		}
 
 		return result;
+	}
+	
+	@PostMapping("updatePwd.yj")
+	public String updatePwd(@RequestParam("newPwd") String mbPwd, HttpSession session) {
+		Member loginUser = ((Member) session.getAttribute("loginUser"));
+		loginUser.setMbPwd(bcrypt.encode(mbPwd));
+		
+		int result = mService.updatePwd(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("비밀번호 변경에 실패하였습니다");
+		}
+		
 	}
 	
 	@PostMapping("removeBlock.yj")
@@ -184,13 +211,117 @@ public class MemberController {
 		} else {
 			throw new MemberException("공개 범위 변경에 실패하였습니다.");
 		}
+	}
+	
+	@PostMapping("editMbPhoto.yj")
+	public String editMbPhoto(@RequestParam("file") ArrayList<MultipartFile> file, HttpServletRequest request) {
+		Member loginUser = ((Member)request.getSession().getAttribute("loginUser"));
+			
+		MultipartFile upload = file.get(0);
+		if(!upload.getOriginalFilename().equals("")) {
+			if (!loginUser.getMbPhoto().equals("default_profile.png")) {
+				deleteFile(loginUser.getMbPhoto());
+			}
+			String renameName = saveFile(upload);
+			if(renameName != null) {
+				loginUser.setMbPhoto(renameName);
+			}
+		}
 		
+		int result = mService.editMbPhoto(loginUser);
 		
+		if (result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("프로필 수정에 실패하였습니다.");
+		}
+	
 	}
 	
 	
+
+
+	private void deleteFile(String fileName) {
+		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/";
+		File f = new File(savePath + "/" + fileName);
+		if(f.exists()) {
+			f.delete();
+		}
+		
+	}
+
+	// 파일 저장소 파일 저장(copy)
+	public String saveFile(MultipartFile file) {
+		// 1. 파일 저장소 위치 지정
+		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		
+		File folder = new File(savePath);
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+		// 2. 저장된 file rename 
+		Date time = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		int ranNum = (int)(Math.random()*100000);
+		
+		String originFileName = file.getOriginalFilename();
+		String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+		
+		// 3. rename된 파일을 저장소에 저장
+		String renamePath = folder + "/" + renameFileName;
+		try {
+			file.transferTo(new File(renamePath));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		return renameFileName;
+	}
+	
+	@GetMapping("mailCheck.yj")
+	@ResponseBody
+	public String sendMail(@RequestParam("to") String to) throws Exception {
+		System.out.println(456);
+		Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		String subject = "인증코드";
+		String content = "인증코드" + checkNum + "입니다";
+		String from = "testyounjun@gmail.com";
+		System.out.println(to);
+		try {
+
+			MimeMessage mail = mailSender.createMimeMessage();
+			MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+
+			mailHelper.setFrom(from);
+
+			mailHelper.setTo(to);
+			mailHelper.setSubject(subject);
+			mailHelper.setText(content, true);
+
+			mailSender.send(mail);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return checkNum + "";
+	}
 	
 	
+	@PostMapping("updateEmail.yj")
+	public String updateEmail(@RequestParam("to") String to, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbEmail(to);
+		
+		int result = mService.updateEmail(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("이메일 수정에 실패하였습니다");
+		}
+		
+	}
 }
 
 

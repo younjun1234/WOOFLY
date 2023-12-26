@@ -37,4 +37,22 @@
  		set is_private = #{ isPrivate }
  		where mb_id = #{mbId}
  	</update>
+ 	
+ 	<update id="editMbPhoto">
+ 		update member
+ 		set mb_photo = #{ mbPhoto }
+ 		where mb_id = #{ mbId }
+ 	</update>
+ 	
+ 	<update id="updatePwd">
+ 		update member
+ 		set mb_pwd = #{mbPwd}
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="updateEmail">
+ 		update member
+ 		set mb_email = #{mbEmail}
+ 		where mb_id = #{mbId}
+ 	</update>
 </mapper>
