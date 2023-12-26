@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -52,6 +53,32 @@ public class AccountController {
 			throw new AccountException("로그인을 실패하였습니다.");
 		}
 		
+	}
+	
+	@GetMapping("/idCheck.dw")
+	@ResponseBody
+	public String idCheck(@RequestParam("id") String mbId) {
+		
+		int result = aService.idCheck(mbId);
+		
+		if(result > 0) {
+			return "false";
+		} else {
+			return "true";
+		}
+	}
+	
+	@GetMapping("/nickCheck.dw")
+	@ResponseBody
+	public String nickCheck(@RequestParam("nickName")String mbNickName) {
+		
+		int result = aService.nickCheck(mbNickName);
+		
+		if(result > 0) {
+			return "false";
+		} else {
+			return "true";
+		}
 	}
 	
 	@GetMapping("/account/signUp")
