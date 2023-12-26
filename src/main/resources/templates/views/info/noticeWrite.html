@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>WOOFLY</title>
-<link rel="icon" href="image/woofly.png">
+<link rel="icon" th:href="@{/image/woofly.png}">
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -32,48 +32,40 @@
 						<!-- 첫 번째 div: 신고에 관한 정보 -->
 						<div class="col-md-12 mb-4">
 							<div class="card">
-                                        <div class="card-header">
-                                            <h4>공지 등록</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table">
-                                                <tbody>
-                                                    
-                                                    <tr>
-                                                        <th>공지 제목</th>
-                                                        <td>
-															<textarea class="form-control" rows="2" placeholder="제목" style="resize: none;"></textarea>
-														</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>공지 내용</th>
-                                                        <td>
-															<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;"></textarea>
-														</td>
-                                                    </tr>
-                                                   <tr>
-                                                        <th>파일 등록</th>
-                                                        <td>															
-													        <div id="fileArea">
-													        	<div class="mb-3">
-													        		<input type="file" class="form-control form-control-sm" name="file">
-													        	</div>
-													        </div>
-													        <button type="button" class="w-15 btn btn-outline-dark" id="addFile">+ 파일추가</button>
-														</td>
-														
-                                                    </tr>
-                                                    
-                                                </tbody>
-                                            </table>
-                                            <div class="container text-center">
-							                	<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">등록</button>
-								        		<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark">이전</button>
-	      									</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+								<div class="card-header">
+									<h4>공지 등록</h4>
+								</div>
+								<div class="card-body">
+									<table class="table">
+										<tbody>
+											<tr>
+												<th>공지 제목</th>
+												<td>
+													<textarea class="form-control" rows="2" placeholder="제목" style="resize: none;"></textarea>
+												</td>
+											</tr>
+											<tr>
+												<th>공지 내용</th>
+												<td>
+													<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;"></textarea>
+												</td>
+											</tr>
+											<tr>
+												<th>파일 등록</th>
+												<td>
+													<input type="file">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="container text-center">
+										<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">등록</button>
+										<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark">이전</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -13,7 +13,7 @@
     <!-- 사용자와 관리자에 따라 nav 변경
          CSS 세세한 조정
          추가된 기능에 따른 nav 추가 및 변경 -->
-<link rel="stylesheet" href="css/noticeDetail.css" /> 
+<link rel="stylesheet" type="text/css" th:href="@{/css/noticeDetail.css}" /> 
 <title>Bootstrap demo</title>
 
 </head>
@@ -45,42 +45,42 @@
 						</div>
 						<div class="card-body">
 							<form class="formClass" method="POST" id="detailNotice">
-				            	<input type="hidden" value="" name="page">
-				            	<input type="hidden" value="" name="noticeNo">
-					            <div class="board_view_wrap"> <!-- 1.보드 리스트 2. 페이지영역 3. 버튼 영역 wrap으로 감쌈 -->
-					                <div class="board_view">
-					                    <div class="title"> <!--글 제목-->
-					                        이 글은 공지사항(제목) 
-					                    </div>
-					                    <div class="info"> <!--글 정보-->									                        
-					                        <dl>
-					                            <dt>글쓴이</dt>
+								<input type="hidden" value="" name="page">
+								<input type="hidden" value="" name="noticeNo">
+								<div class="board_view_wrap"> <!-- 1.보드 리스트 2. 페이지영역 3. 버튼 영역 wrap으로 감쌈 -->
+									<div class="board_view">
+										<div class="title"> <!--글 제목-->
+											이 글은 공지사항(제목) 
+										</div>
+										<div class="info"> <!--글 정보-->									                        
+											<dl>
+												<dt>글쓴이</dt>
 					                            <dd>관리자</dd>
-					                        </dl>
-					                        <dl>
-					                            <dt>작성일</dt>
-					                            <dd>2023-12-20</dd>
-					                        </dl>
-					                        <dl>
-					                            <dt>조회</dt>
-					                            <dd>197</dd>
-					                        </dl>
-					                    </div>
-					                    <div class="text"> <!--글 내용-->
-						                    <pre>가나다라마바사</pre>
-					                    </div>
-					                    <div class="text1"> <!--글 사진-->
-						                    <img alt="공지사진 사진있을때만">
-					                    </div>
-					                </div>
-					                <div style="text-align: center; margin-top: 10px;">
+											</dl>
+											<dl>
+												<dt>작성일</dt>
+												<dd>2023-12-20</dd>
+											</dl>
+											<dl>
+												<dt>조회</dt>
+												<dd>197</dd>
+											</dl>
+										</div>
+										<div class="text"> <!--글 내용-->
+											<pre>가나다라마바사</pre>
+										</div>
+										<div class="text1"> <!--글 사진-->
+											<img alt="공지사진 사진있을때만">
+										</div>
+									</div>
+									<div style="text-align: center; margin-top: 10px;">
 										<input class="btn btn-outline-dark" type="button" value="목 록" >
-					                </div>
-					            </div>
-				            </form>						            
-                        </div>     
-                    </div>
-                </div>
+									</div>
+								</div>
+							</form>						            
+						</div>     
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>	
