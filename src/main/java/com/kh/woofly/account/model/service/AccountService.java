@@ -6,4 +6,8 @@ public interface AccountService {
 
 	public Member login(Member m);
 
+	public int idCheck(String mbId);
+
+	public int nickCheck(String mbNickName);
+
 }

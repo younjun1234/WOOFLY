@@ -16,4 +16,14 @@ public class AccountServiceImpl implements AccountService{
 	public Member login(Member m) {
 		return aDAO.login(m);
 	}
+
+	@Override
+	public int idCheck(String mbId) {
+		return aDAO.idCheck(mbId);
+	}
+
+	@Override
+	public int nickCheck(String mbNickName) {
+		return aDAO.nickCheck(mbNickName);
+	}
 }
