@@ -1,5 +1,7 @@
 package com.kh.woofly.account.controller;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,12 @@ import com.kh.woofly.account.model.exception.AccountException;
 import com.kh.woofly.account.model.service.AccountService;
 import com.kh.woofly.member.model.vo.Member;
 
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+
 @SessionAttributes("loginUser")
 @Controller
 public class AccountController {
@@ -29,6 +37,12 @@ public class AccountController {
 	private BCryptPasswordEncoder bcrypt;
 	
 	private Logger logger = LoggerFactory.getLogger(AccountController.class);
+	
+	final DefaultMessageService messageService;
+
+    public AccountController() {
+        this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
+    }
 	
 	@GetMapping("/account/login")
 	public String loginView() {
@@ -88,9 +102,31 @@ public class AccountController {
 	
 	@PostMapping("singUp.dw")
 	public String signUp() {
-		
 		return null;
 	}
+	
+	@GetMapping("/send-one")
+	@ResponseBody
+    public String sendOne(@RequestParam("pNum") String mbPhone) {
+        Message message = new Message();
+        Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		
+        message.setFrom("01064954499");
+        message.setTo(mbPhone);
+        message.setText("인증코드는 " + checkNum + "입니다");
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
+        
+        if(response.getStatusCode().equals("2000")) {
+        	return "" + checkNum; //정상 발송되었다는 모달창
+        			
+        }else {
+        	return "bad"; //발송 오류 모달창
+        }
+    }
+
 	
 	@GetMapping("/account/findId")
 	public String findIdView() {
@@ -101,7 +137,6 @@ public class AccountController {
 	public String findPwdView() {
 		return "findPwd";
 	}
-	
 	
 	
 	@GetMapping("/account/logout")

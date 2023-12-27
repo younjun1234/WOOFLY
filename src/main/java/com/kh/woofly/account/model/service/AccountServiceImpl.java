@@ -26,4 +26,5 @@ public class AccountServiceImpl implements AccountService{
 	public int nickCheck(String mbNickName) {
 		return aDAO.nickCheck(mbNickName);
 	}
+
 }
