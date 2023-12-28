@@ -28,4 +28,8 @@ public interface MemberDAO {
 
 	int updateEmail(Member loginUser);
 
+	int updatePhone(Member loginUser);
+
+	int updateMbStatus(Member member);
+
 }

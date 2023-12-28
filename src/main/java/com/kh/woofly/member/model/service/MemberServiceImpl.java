@@ -51,13 +51,23 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int updatePwd(Member loginUser) {
+	public int updatePwd(Member loginUser) { 
 		return mDAO.updatePwd(loginUser);
 	}
 
 	@Override
 	public int updateEmail(Member loginUser) {
 		return mDAO.updateEmail(loginUser);
+	}
+
+	@Override
+	public int updatePhone(Member loginUser) {
+		return mDAO.updatePhone(loginUser);
+	}
+
+	@Override
+	public int updateMbStatus(Member member) {
+		return mDAO.updateMbStatus(member);
 	}
 
 }

@@ -55,4 +55,16 @@
  		set mb_email = #{mbEmail}
  		where mb_id = #{mbId}
  	</update>
+ 	
+ 	<update id="updatePhone">
+ 		update member
+ 		set mb_tel = #{mbTel}
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="updateMbStatus">
+ 		update member
+ 		set mb_status = 'N'
+ 		where mb_id = #{mbId}
+ 	</update>
 </mapper>
