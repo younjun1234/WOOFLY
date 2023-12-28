@@ -1,20 +1,132 @@
 package com.kh.woofly.account.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+
+import com.kh.woofly.account.model.exception.AccountException;
+import com.kh.woofly.account.model.service.AccountService;
+import com.kh.woofly.member.model.vo.Member;
+
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+
+@SessionAttributes("loginUser")
 @Controller
 public class AccountController {
+	
+	@Autowired
+	private AccountService aService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
+	
+	private Logger logger = LoggerFactory.getLogger(AccountController.class);
+	
+	final DefaultMessageService messageService;
+
+    public AccountController() {
+        this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
+    }
 	
 	@GetMapping("/account/login")
 	public String loginView() {
 		return "login";
 	}
 	
-	@GetMapping("/account/signUpSns")
-	public String signUpSnsView() {
-		return "signUpSns";
+	@PostMapping("login.dw")
+	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
+		Member loginUser = aService.login(m);
+		if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+			model.addAttribute("loginUser", loginUser);
+			System.out.println(loginUser);
+//			if (loginUser.getIsAdmin().equals("N")) {
+//				//로그 추가
+//				logger.info(loginUser.getMbId());
+//				return "redirect:/";
+//			} else {
+//				return "redirect:admin.ad";
+//			}
+			return "redirect:/";
+		} else {
+			throw new AccountException("로그인을 실패하였습니다.");
+		}
+		
 	}
+	
+	@GetMapping("/idCheck.dw")
+	@ResponseBody
+	public String idCheck(@RequestParam("id") String mbId) {
+		
+		int result = aService.idCheck(mbId);
+		
+		if(result > 0) {
+			return "false";
+		} else {
+			return "true";
+		}
+	}
+	
+	@GetMapping("/nickCheck.dw")
+	@ResponseBody
+	public String nickCheck(@RequestParam("nickName")String mbNickName) {
+		
+		int result = aService.nickCheck(mbNickName);
+		
+		if(result > 0) {
+			return "false";
+		} else {
+			return "true";
+		}
+	}
+	
+	@GetMapping("/account/signUp")
+	public String signUpView() {
+		return "signUp";
+	}
+	
+	@PostMapping("singUp.dw")
+	public String signUp() {
+		return null;
+	}
+	
+	@GetMapping("/send-one")
+	@ResponseBody
+    public String sendOne(@RequestParam("pNum") String mbPhone) {
+        Message message = new Message();
+        Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		
+        message.setFrom("01064954499");
+        message.setTo(mbPhone);
+        message.setText("인증코드는 " + checkNum + "입니다");
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
+        
+        if(response.getStatusCode().equals("2000")) {
+        	return "" + checkNum; //정상 발송되었다는 모달창
+        			
+        }else {
+        	return "bad"; //발송 오류 모달창
+        }
+    }
+
 	
 	@GetMapping("/account/findId")
 	public String findIdView() {
@@ -26,9 +138,11 @@ public class AccountController {
 		return "findPwd";
 	}
 	
-	@GetMapping("/account/signUp")
-	public String signUpView() {
-		return "signUp";
+	
+	@GetMapping("/account/logout")
+	public String logout(SessionStatus status) {
+		status.setComplete();
+		return "redirect:/";
 	}
 
 }

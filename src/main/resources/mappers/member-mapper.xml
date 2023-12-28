@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kh.woofly.member.model.dao.MemberDAO">
+	<select id="getBlackList" resultType="Member">
+		select *
+		from blacklist
+		     join member on (blocked_entity = mb_id)
+		where blocked_by = #{id} and mb_status = 'Y'
+	</select>
+	
+	<delete id="removeBlock">
+		delete from blacklist
+		where blocked_entity = #{blockedEntity} and blocked_by = #{loginUser}
+	</delete>
+	
+	<update id="editNickName">
+		update member
+		set mb_nickname = #{ mbNickName }, next_change = #{ nextChange }
+		where mb_id = #{mbId}
+	</update>
+	
+	<update id="editName">
+		update member
+		set mb_name = #{ mbName }
+		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="editIntro">
+ 		update member
+ 		set mb_intro = #{ mbIntro }
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="editIsPrivate">
+ 		update member
+ 		set is_private = #{ isPrivate }
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="editMbPhoto">
+ 		update member
+ 		set mb_photo = #{ mbPhoto }
+ 		where mb_id = #{ mbId }
+ 	</update>
+ 	
+ 	<update id="updatePwd">
+ 		update member
+ 		set mb_pwd = #{mbPwd}
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="updateEmail">
+ 		update member
+ 		set mb_email = #{mbEmail}
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="updatePhone">
+ 		update member
+ 		set mb_tel = #{mbTel}
+ 		where mb_id = #{mbId}
+ 	</update>
+ 	
+ 	<update id="updateMbStatus">
+ 		update member
+ 		set mb_status = 'N'
+ 		where mb_id = #{mbId}
+ 	</update>
+</mapper>

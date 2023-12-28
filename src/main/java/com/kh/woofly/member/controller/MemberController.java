@@ -1,5 +1,6 @@
 package com.kh.woofly.member.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,65 +8,430 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.kh.woofly.member.model.exception.MemberException;
+import com.kh.woofly.member.model.service.MemberService;
+import com.kh.woofly.member.model.vo.Member;
+
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Controller
 public class MemberController {
-   @GetMapping("/my")
-   public String profileHomeView() {
-      return "myHome";
-   }
 
-   @GetMapping("my/login-edit")
-   public String loginView() {
-      return "myLogin";
-   }
+	@Autowired
+	private JavaMailSender mailSender;
 
-   @GetMapping("my/profile-edit")
-   public String profileView() {
-      return "myProfile";
-   }
+	
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
+	
+	@Autowired
+	private MemberService mService;
+	
+	final DefaultMessageService messageService;
 
-   @GetMapping("my/address")
-   public String addressView() {
-      return "myAddress";
-   }
+    public MemberController() {
+        // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
+        this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
+    }
+	
 
-   @GetMapping("my/payment")
-   public String paymentView() {
-      return "myPayment";
-   }
+	@GetMapping("/my")
+	public String profileHomeView() {
+		return "myHome";
+	}
 
-   @GetMapping("my/point")
-   public String pointView() {
-      return "myPoint";
-   }
+	@GetMapping("my/login-edit")
+	public String loginView(Model model) {
+		return "myLogin";
+	}
 
-   @GetMapping("my/addPayment")
-   public String addPayment(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
-      System.out.println(authKey);
-      System.out.println(customerKey);
-      String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
-      System.out.println(billingKey);
-      HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue")).header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json").method("POST", BodyPublishers.ofString("{\"authKey\":\"" + authKey + "\",\"customerKey\":\"" + customerKey + "\"}")).build();
+	@GetMapping("my/profile-edit")
+	public String profileView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Member>  list = mService.getBlackList(id);
+		model.addAttribute("list", list);
+		return "myProfile";
+	}
 
-      try {
-         HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-         System.out.println((String)response.body());
-      } catch (InterruptedException | IOException var7) {
-         var7.printStackTrace();
-      }
+	@GetMapping("my/address")
+	public String addressView() {
+		return "myAddress";
+	}
 
-      return "myPayment";
-   }
+	@GetMapping("my/payment")
+	public String paymentView() {
+		return "myPayment";
+	}
 
-   @GetMapping("my/profile")
-   public String memberView() {
-      return "profile";
-   }
+	@GetMapping("my/point")
+	public String pointView() {
+		return "myPoint";
+	}
+
+	@GetMapping("my/addPayment")
+	public String addPayment(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
+		System.out.println(authKey);
+		System.out.println(customerKey);
+		String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
+		System.out.println(billingKey);
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue"))
+				.header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json")
+				.method("POST",
+						BodyPublishers
+								.ofString("{\"authKey\":\"" + authKey + "\",\"customerKey\":\"" + customerKey + "\"}"))
+				.build();
+
+		try {
+			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			System.out.println((String) response.body());
+		} catch (InterruptedException | IOException var7) {
+			var7.printStackTrace();
+		}
+
+		return "myPayment";
+	}
+
+	@GetMapping("my/profile")
+	public String memberView() {
+		return "profile";
+	}
+
+	@GetMapping("checkPwd.yj")
+	@ResponseBody
+	public String checkPwd(@RequestParam("currentPwd") String currentPwd, HttpSession session) {
+		String pwd = ((Member) session.getAttribute("loginUser")).getMbPwd();
+		String result = "N";
+		if (bcrypt.matches(currentPwd, pwd)) {
+			result = "Y";
+		}
+
+		return result;
+	}
+	
+	@PostMapping("updatePwd.yj")
+	public String updatePwd(@RequestParam("newPwd") String mbPwd, HttpSession session) {
+		Member loginUser = ((Member) session.getAttribute("loginUser"));
+		loginUser.setMbPwd(bcrypt.encode(mbPwd));
+		
+		int result = mService.updatePwd(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("비밀번호 변경에 실패하였습니다");
+		}
+		
+	}
+	
+	@PostMapping("removeBlock.yj")
+	public String removeBlock(@RequestParam("blockedEntity") String blockedEntity, HttpSession session) {
+		HashMap<String, String> map = new HashMap<>();
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+		map.put("loginUser", id);
+		map.put("blockedEntity", blockedEntity);
+		int result = mService.removeBlock(map);
+		
+		if (result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("차단 해제에 실패하였습니다");
+		}
+	}
+	
+	@PostMapping("editNickName.yj")
+	public String editNickName(@RequestParam("newNickName") String newNickName, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, 30);
+		Date date = cal.getTime();
+		loginUser.setNextChange(date);
+		loginUser.setMbNickName(newNickName);
+		int result = mService.editNickName(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("프로필 이름 변경에 실패하였습니다.");
+		}
+	}
+	
+	@PostMapping("editName.yj")
+	public String editName(@RequestParam("newName") String newName, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbName(newName);
+		
+		int result = mService.editName(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("이름 변경에 실패하였습니다.");
+		}
+	}
+	
+	@PostMapping("editIntro.yj")
+	public String editIntro(@RequestParam("newIntro") String newIntro, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbIntro(newIntro);
+		
+		int result = mService.editIntro(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("소개글 변경에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("editIsPrivate.yj")
+	public String editIsPrivate(@RequestParam("isPrivate") boolean isPrivate, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setIsPrivate(isPrivate ? "Y" : "N");
+		
+		int result = mService.editIsPrivate(loginUser);
+		
+		if( result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("공개 범위 변경에 실패하였습니다.");
+		}
+	}
+	
+	@PostMapping("editMbPhoto.yj")
+	public String editMbPhoto(@RequestParam("file") ArrayList<MultipartFile> file, HttpServletRequest request) {
+		Member loginUser = ((Member)request.getSession().getAttribute("loginUser"));
+			
+		MultipartFile upload = file.get(0);
+		if(!upload.getOriginalFilename().equals("")) {
+			if (!loginUser.getMbPhoto().equals("default_profile.png")) {
+				deleteFile(loginUser.getMbPhoto());
+			}
+			String renameName = saveFile(upload);
+			if(renameName != null) {
+				loginUser.setMbPhoto(renameName);
+			}
+		}
+		
+		int result = mService.editMbPhoto(loginUser);
+		
+		if (result > 0) {
+			return "redirect:/my/profile-edit";
+		} else {
+			throw new MemberException("프로필 수정에 실패하였습니다.");
+		}
+	
+	}
+	
+	
+
+
+	private void deleteFile(String fileName) {
+		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/";
+		File f = new File(savePath + "/" + fileName);
+		if(f.exists()) {
+			f.delete();
+		}
+		
+	}
+
+	// 파일 저장소 파일 저장(copy)
+	public String saveFile(MultipartFile file) {
+		// 1. 파일 저장소 위치 지정
+		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		
+		File folder = new File(savePath);
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+		// 2. 저장된 file rename 
+		Date time = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		int ranNum = (int)(Math.random()*100000);
+		
+		String originFileName = file.getOriginalFilename();
+		String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+		
+		// 3. rename된 파일을 저장소에 저장
+		String renamePath = folder + "/" + renameFileName;
+		try {
+			file.transferTo(new File(renamePath));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		return renameFileName;
+	}
+	
+	@GetMapping("mailCheck.yj")
+	@ResponseBody
+	public String sendMail(@RequestParam("to") String to) throws Exception {
+		Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		String subject = "인증코드";
+		String content = "인증코드" + checkNum + "입니다";
+		String from = "testyounjun@gmail.com";
+		System.out.println(to);
+		try {
+
+			MimeMessage mail = mailSender.createMimeMessage();
+			MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+
+			mailHelper.setFrom(from);
+
+			mailHelper.setTo(to);
+			mailHelper.setSubject(subject);
+			mailHelper.setText(content, true);
+
+			mailSender.send(mail);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return checkNum + "";
+	}
+	
+	
+	@PostMapping("updateEmail.yj")
+	public String updateEmail(@RequestParam("to") String to, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbEmail(to);
+		
+		int result = mService.updateEmail(loginUser);
+		
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("이메일 수정에 실패하였습니다");
+		}
+	}
+	
+
+    @GetMapping("/send-msg")
+    @ResponseBody
+    public String sendOne(@RequestParam("to") String to) {
+    	Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		String content = "인증코드" + checkNum + "입니다";
+		
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01054942469");
+        message.setTo(to);
+        message.setText(content);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
+        if(response.getStatusCode().equals("2000")) {
+        	return "" + checkNum;
+        } else {
+        	return "bad";
+        }
+    }
+    
+    @PostMapping("updatePhone.yj")
+    public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbTel(phone);
+		
+		int result = mService.updatePhone(loginUser);
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("핸드폰 번호 수정에 실패하였습니다");
+		}
+    	
+    }
+    
+    @GetMapping("updateMbStatus.yj")
+    public String updateMbStatus(HttpSession session) {
+    	Member loginUser = (Member)session.getAttribute("loginUser");
+    	int result = mService.updateMbStatus(loginUser);
+    	if (result > 0) {
+    		session.invalidate();
+    		return "redirect:/";
+    	} else {
+    		throw new MemberException("회원탈퇴에 실패하였습니다");
+    	}
+    }
+   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
