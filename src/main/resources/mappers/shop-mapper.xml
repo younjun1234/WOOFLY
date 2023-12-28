@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.woofly.shop.model.dao.ShopDAO">
+	<insert id="insertProduct" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int" keyProperty="productId">
+				SELECT PRODUCT_SEQ.NEXTVAL
+				FROM DUAL
+		</selectKey>
+		INSERT ALL
+			INTO PRODUCT					<!-- 1 = productCategoryNo -->
+			VALUES (#{productId}, #{productName}, #{price}, DEFAULT, DEFAULT, #{productDetailNo})
+			INTO PRODUCT_STOCK
+			VALUES (PRO_STOCK_SEQ.NEXTVAL, #{productId}, #{usedStandard}, #{quantity}, #{colorPicker})
+		SELECT *
+		FROM DUAL
+	</insert>
+	
+	<insert id="insertAttm">
+		INSERT ALL
+		<foreach collection="list" item="a">
+			INTO ATTACHMENT
+			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'P', #{a.attmRefNo}, #{a.attmLevel})
+		</foreach>
+		SELECT *
+		FROM DUAL
+	</insert>
+	
+	<select id="selectCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT_CATEGORY
+			<if test="i != null">
+		   		JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_CATEGORY_NO)
+		    </if>
+	</select>
+</mapper>
