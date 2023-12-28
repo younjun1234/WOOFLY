@@ -41,6 +41,10 @@ dependencies {
 	implementation 'net.nurigo:sdk:4.3.0'
 	
 	implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.0'
+	implementation 'org.springframework.boot:spring-boot-devtools:3.2.0'
+	implementation 'net.nurigo:sdk:4.3.0'
+	
+	
 
 }
 

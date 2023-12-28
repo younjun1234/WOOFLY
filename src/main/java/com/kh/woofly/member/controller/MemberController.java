@@ -35,6 +35,11 @@ import com.kh.woofly.member.model.vo.Member;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Controller
 public class MemberController {
@@ -48,6 +53,14 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService mService;
+	
+	final DefaultMessageService messageService;
+
+    public MemberController() {
+        // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
+        this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
+    }
+	
 
 	@GetMapping("/my")
 	public String profileHomeView() {
@@ -281,7 +294,6 @@ public class MemberController {
 	@GetMapping("mailCheck.yj")
 	@ResponseBody
 	public String sendMail(@RequestParam("to") String to) throws Exception {
-		System.out.println(456);
 		Random r = new Random();
 		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
 		String subject = "인증코드";
@@ -320,8 +332,57 @@ public class MemberController {
 		} else {
 			throw new MemberException("이메일 수정에 실패하였습니다");
 		}
-		
 	}
+	
+
+    @GetMapping("/send-msg")
+    @ResponseBody
+    public String sendOne(@RequestParam("to") String to) {
+    	Random r = new Random();
+		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
+		String content = "인증코드" + checkNum + "입니다";
+		
+        Message message = new Message();
+        // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
+        message.setFrom("01054942469");
+        message.setTo(to);
+        message.setText(content);
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
+        if(response.getStatusCode().equals("2000")) {
+        	return "" + checkNum;
+        } else {
+        	return "bad";
+        }
+    }
+    
+    @PostMapping("updatePhone.yj")
+    public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		loginUser.setMbTel(phone);
+		
+		int result = mService.updatePhone(loginUser);
+		if(result > 0) {
+			return "redirect:/my/login-edit";
+		} else {
+			throw new MemberException("핸드폰 번호 수정에 실패하였습니다");
+		}
+    	
+    }
+    
+    @GetMapping("updateMbStatus.yj")
+    public String updateMbStatus(HttpSession session) {
+    	Member loginUser = (Member)session.getAttribute("loginUser");
+    	int result = mService.updateMbStatus(loginUser);
+    	if (result > 0) {
+    		session.invalidate();
+    		return "redirect:/";
+    	} else {
+    		throw new MemberException("회원탈퇴에 실패하였습니다");
+    	}
+    }
+   
 }
 
 
