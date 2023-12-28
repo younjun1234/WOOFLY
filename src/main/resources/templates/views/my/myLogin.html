@@ -78,36 +78,40 @@
 		</div>
 	</main>
 	
-	<div class="modal fade" id="emailModal" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-	        		<h1 class="modal-title fs-5" id="emailModalToggleLabel">이메일 변경</h1>
-		        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body text-left">
-					<div class="mb-3">
-					    <label for="email" class="form-label">Email address</label>
-						<input type="text" class="form-control" id="email" placeholder="새 이메일 주소">
+	<form action="/updateEmail.yj" method="POST" id="updateEmailForm">
+		<div class="modal fade" id="emailModal" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+		        		<h1 class="modal-title fs-5" id="emailModalToggleLabel">이메일 변경</h1>
+			        	<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 					</div>
-					<div class="text-center">
-						<button class="btn btn-outline-dark btn-sm">인증번호 받기</button>
+					<div class="modal-body text-left">
+						<div class="mb-3">
+						    <label for="email" class="form-label">Email address</label>
+							<input type="text" class="form-control" name="to" id="email" placeholder="새 이메일 주소">
+						</div>
+						<div class="text-center">
+							<button type="button" class="btn btn-outline-dark btn-sm" id="emailSendBtn">인증번호 받기</button>
+						</div>
+						<div class="mb-3">
+						    <label for="verification" class="form-label">Verification code</label>
+							<input type="text" class="form-control" id="emailVerification" placeholder="인증번호">
+							<div class="form-text" id="checkEmailResult"></div>
+							<input type="hidden" id="emailCode">
+						</div>
+						<div class="text-center">
+							<button type="button" class="btn btn-outline-dark btn-sm" id="checkEmailBtn">인증 번호 확인</button>
+						</div>
 					</div>
-					<div class="mb-3">
-					    <label for="verification" class="form-label">Verification code</label>
-						<input type="text" class="form-control" id="verification" placeholder="인증번호">
+					<div class="modal-footer">
+						<button type="button" id="updateEmailBtn" class="btn btn-outline-primary">저장하기</button>
 					</div>
-					<div class="text-center">
-						<button class="btn btn-outline-dark btn-sm">인증 번호 확인</button>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-outline-primary">저장하기</button>
 				</div>
 			</div>
 		</div>
-	</div>
-	<form action="/updatePwd.yj" method="POST">
+	</form>
+	<form action="/updatePwd.yj" method="POST" id="updatePwdForm">
 		<div class="modal fade" id="pwdModal" tabindex="-1">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -119,25 +123,24 @@
 						<div class="mb-3">
 							<label class="form-label" for="currentPwd">현재 비밀번호</label>					
 							<input type="password" class="form-control" id="currentPwd" placeholder="현재 비밀번호">
-							<div class="form-text" id="currentPwdResult">123</div>
+							<div class="form-text" id="currentPwdResult"></div>
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="newPwd">새 비밀번호</label>
-							<input type="password" class="form-control" placeholder="새 비밀번호" id="newPwd">
+							<input type="password" class="form-control" name="newPwd" placeholder="새 비밀번호" id="newPwd">
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="checkPwd">비밀번호 확인</label>					
 							<input type="password" class="form-control" id="checkPwd" placeholder="비밀번호 확인">
-							<div class="form-text" id="checkPwdResult">456</div>
+							<div class="form-text" id="checkPwdResult"></div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-outline-primary" type="button">변경하기</button>
+						<button id="updatePwdBtn" class="btn btn-outline-primary" type="button">변경하기</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 	</form>
 	<div class="modal fade" id="phoneModal" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
@@ -148,15 +151,15 @@
 				</div>
 				<div class="modal-body text-left">
 					<div class="mb-3">
-					    <label for="email" class="form-label">PHONE</label>
-						<input type="text" class="form-control" id="email" placeholder="- 없이 핸드폰 번호를 적어주세요">
+					    <label for="phone" class="form-label">PHONE</label>
+						<input type="text" class="form-control" id="phone" placeholder="- 없이 핸드폰 번호를 적어주세요">
 					</div>
 					<div class="text-center">
 						<button class="btn btn-outline-dark btn-sm">인증번호 받기</button>
 					</div>
 					<div class="mb-3">
 					    <label for="verification" class="form-label">Verification code</label>
-						<input type="text" class="form-control" id="verification" placeholder="인증번호">
+						<input type="text" class="form-control" id="phoneVerification" placeholder="인증번호">
 					</div>
 					<div class="text-center">
 						<button class="btn btn-outline-dark btn-sm">인증 번호 확인</button>
@@ -200,8 +203,6 @@
 		const newPwd = document.getElementById('newPwd');
 		const checkPwd = document.getElementById('checkPwd');
 		const checkPwdResult = document.getElementById('checkPwdResult');
-		console.log(newPwd);
-		console.log(checkPwd);
 		checkPwd.addEventListener('keyup', () => {
 			if (checkPwd.value === newPwd.value) {
 				checkPwdResult.innerText = '비밀번호가 일치 합니다';
@@ -212,6 +213,53 @@
 			}
 		})
 		
+		// 비밀번호 변경 버튼
+		document.getElementById("updatePwdBtn").addEventListener("click", () => {
+			if (currentPwdResult.style.color == 'green' && checkPwdResult.style.color == 'green') {
+				document.getElementById("updatePwdForm").submit();
+			}
+		})
+		
+		// 이메일 전송
+		
+		document.getElementById("emailSendBtn").addEventListener('click', () => {
+			const email = document.getElementById('email').value;
+			$.ajax({
+				url: "/mailCheck.yj",
+				data: {"to": email},
+				success: (data) => {
+					console.log(data);
+					document.getElementById("emailCode").value = data;
+					
+				},
+				error: (data) => console.log(data)
+			})
+		})
+		
+		// 이메일 확인 란
+		const checkEmailBtn = document.getElementById('checkEmailBtn');
+		const emailResult = document.getElementById('checkEmailResult');
+		checkEmailBtn.addEventListener('click', () => {
+			const emailVerification = document.getElementById('emailVerification');
+			const emailCode = document.getElementById("emailCode");
+			if (emailVerification.value === emailCode.value) {
+				emailResult.innerText = '비밀번호가 일치 합니다';
+				emailResult.style.color = 'green';
+			} else {
+				emailResult.innerText = '비밀번호가 일치 하기 않습니다.';
+				emailResult.style.color = 'red';
+			}
+		})
+		
+		//이메일 수정
+		const updateEmailBtn = document.getElementById("updateEmailBtn");
+		updateEmailBtn.addEventListener("click", () => {
+			if(emailResult.style.color == 'green') {
+				document.getElementById('updateEmailForm').submit();
+			} else {
+				alert("인증번호를 확인해주세요");
+			}
+		})
 		
 	</script>
 </body>

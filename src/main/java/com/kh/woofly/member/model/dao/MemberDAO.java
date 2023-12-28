@@ -22,4 +22,10 @@ public interface MemberDAO {
 
 	int editIsPrivate(Member loginUser);
 
+	int editMbPhoto(Member loginUser);
+
+	int updatePwd(Member loginUser);
+
+	int updateEmail(Member loginUser);
+
 }
