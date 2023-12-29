@@ -25,6 +25,7 @@ public class UsedBoard {
 	private int uWant;
 	private String uEnd;
 	private String mbId;
+	private String mbNickName;
 	private String productName;
 	private String productStatus;
 	private int productPrice;
