@@ -24,4 +24,5 @@ public class DwBoard {
 	private String dwStatus;
 	private String dwEnd;
 	private String mbId;
+	private String mbNickName;
 }

@@ -15,7 +15,7 @@
 	 <div class="container mt-5 mb-3">
       	<div class="container d-flex px-0 mb-3 border-bottom border-black border-3 justify-content-between align-items-center">
 			<h1>자유게시판</h1>
-			<a role="button" href="/board/free/write" class="btn btn-dark btn-sm h-50">글 작성</a>
+			<a role="button" href="/board/free/write" class="btn btn-dark btn-sm h-50" th:if="${ session.loginUser != null}" >글 작성</a>
 		</div>
 		
 		<div class="mt-3" id="searchArea" >			
@@ -35,68 +35,33 @@
 			</div>
 		</div>
 		
+				
 		<div class="container board-list">
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-7" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
+			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;" th:each="b : ${list}" th:attr="data-bNo=${b.bNo}">
+				<div class="col-1 board" style="line-height: 80px;">[[${ b.bNo }]]</div>
+				<div class="col-2 board" style="line-height: 80px;">[[${ b.mbNickName }]]</div>
+				<div class="col-6 board" style="line-height: 80px;">[[${ b.bTitle }]]</div>
+				<div class="col-2 board" style="line-height: 80px;">[[${ b.bCreateDate }]]</div>
+				<div class="col-1 board" style="line-height: 80px;">[[${ b.bCount }]]</div>
+			</div> 	 
+			
 		</div>
 		
-		<nav class="border-top border-black pt-5">
+		<nav class="border-top border-black pt-5"  th:with="loc=${loc}">
 		  	<ul class="pagination justify-content-center">
 		    	<li class="page-item">
-			      	<a class="page-link" href="#">
-			        	<span aria-hidden="true">&laquo;</span>
-			      	</a>
-		    	</li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item"><a class="page-link" href="#">2</a></li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item"><a class="page-link" href="#">4</a></li>
-			    <li class="page-item"><a class="page-link" href="#">5</a></li>
-		    	<li class="page-item">	
-			      	<a class="page-link" href="#" aria-label="Next">
-				    	<span aria-hidden="true">&raquo;</span>
-			      	</a>
-		    	</li>
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous">
+	            		<span aria-hidden="true">&laquo;</span>
+	              	</a> 
+	            </li>
+            	<li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+            		<a class="page-link" th:href="@{${loc}(page=${p})}">[[${ p }]]</a>
+            	</li> <!-- 게시글 페이지 번호 점점 커지게 하는 것 -->
+	            <li class="page-item">
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next">
+	            		<span aria-hidden="true">&raquo;</span>
+	            	</a>
+	            </li>
 		  	</ul>
 		</nav>
 	</div>
@@ -107,21 +72,19 @@
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd3");
 		$(boardNav).addClass('active');
-		
-		// 각 게시물 별로 클릭 이벤트 넣는 부분
-		const boardList = document.getElementsByClassName("board-list");
-		for (const board of boardList) {
-			board.addEventListener('click', () => {
-				// 이 부분에서 boardId 가져와야함
-				// 추후에 넣어주세요
-				// 틀 단계에서는 무작위로 boardDetail로 넘어갑니다
-				window.location.href = '/board/free/detail';
-				
-			})
 			
-		}
+		// 각 게시물 별로 클릭 이벤트 넣는 부분
 		
-		
+		const boardList = document.querySelectorAll('.board-list .board');
+	    boardList.forEach(board => {
+	        board.addEventListener('click', () => {
+	            const boardId = board.parentElement.querySelector('.board:nth-child(1)').innerText;
+	            const currentPage = /*[[${pi.currentPage}]]*/1;
+	            window.location.href = `/board/free/detail?bNo=${boardId}&page=${currentPage}`;
+	        });
+	    });
+			
+    
 	</script>
 </body>
 </html>

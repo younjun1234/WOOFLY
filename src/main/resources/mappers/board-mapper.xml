@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
+
+	<select id="getListCount" resultType="_int">
+		select count(*)
+		from board
+		where b_status = 'Y'
+	</select>
+
+	<select id="selectBoardList" resultType="Board">
+		select *
+		from board
+		join member using (mb_id)
+		where b_status = 'Y' 
+		order by b_no desc
+	</select>
+
+	<select id="selectAttmBoardList" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status='Y'
+		<if test="bId != null">
+			and attm_ref_type = 'B'
+		</if>
+		order by attm_id
+	</select>
+	
+	<select id="selectBoard" parameterType="board" resultMap="BoardResult">
+		select *
+		from board
+		join member using (mb_id)
+		where b_status = 'Y' and b_no = #{ bNo }
+	</select>
+	
+	<resultMap type="Board" id="BoardResult">
+	    <result column="b_content" property="bContent" jdbcType="CLOB" javaType="java.lang.String"/>
+	</resultMap>
+
+	
+	
+	
+	<insert id="insertBoard" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int"	keyProperty="bNo">
+			select seq_b_No.nextval from dual
+		</selectKey>
+
+		insert into board
+		values (#{bNo}, #{bTitle}, #{bContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+	</insert>
+</mapper>

@@ -1,8 +1,5 @@
 package com.kh.woofly.board.model.vo;
 
-import java.sql.Clob;
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +11,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+public class PageInfo {
+	private int currentPage;
+	private int listCount;
+	private int pageLimit;
+	private int maxPage;
+	private int startPage;
+	private int endPage;
+	private int boardLimit;
 
-public class FreeBoard {
-	private int bNo;
-	private String bTitle;
-	private Clob bContent;
-	private int bCount;
-	private Date bCreateDate;
-	private String bStatus;
-	private String mbId;
 }
