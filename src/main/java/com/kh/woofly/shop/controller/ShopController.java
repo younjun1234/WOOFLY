@@ -28,8 +28,20 @@ public class ShopController {
 	private ShopService sService;
 
 	@GetMapping("/shopMain")
-	public String movoToShopMain() {
+	public String movoToShopMain(Model model) {
 		// 쇼핑 상품리스트 전체 가져와서 뿌리기
+		
+		// 상품리스트, 상품에 따른 썸네일 가져오고, 상품의 카테고리 가져오고 // 페이징처리(무한스크롤)
+		
+		ArrayList<Product> pList = sService.selectProducts();
+		ArrayList<ProductCategory> cList = sService.selectCategory(1);
+		// 썸네일의 첫번째만 가져오기....
+		ArrayList<ProductAttm> aList = sService.selectProductAttm("thumb");
+		
+		model.addAttribute("pList", pList);
+		model.addAttribute("cList", cList);
+		model.addAttribute("aList", aList);
+		
 		return "shopMain";
 	}
 	

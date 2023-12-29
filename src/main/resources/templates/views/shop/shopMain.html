@@ -125,32 +125,37 @@
 							</ul>
 						  </div>
 					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+					
+					<!-- 상품화면 시작 -->
+					<th:block th:each="p : ${pList}">
+						<div class="d-flex justify-content-between mb-3">
+							<div class="card" style="width: 20%;">
+								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+								<div class="card-body">
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								</div>
+							</div>
+							<div class="card" style="width: 20%;">
+								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+								<div class="card-body">
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								</div>
+							</div>
+							<div class="card" style="width: 20%;">
+								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+								<div class="card-body">
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								</div>
+							</div>
+							<div class="card" style="width: 20%;">
+								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+								<div class="card-body">
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								</div>
 							</div>
 						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-					</div>
+					</th:block>
+					
 					<div class="d-flex justify-content-between mb-3">
 						<div class="card" style="width: 20%;">
 							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
@@ -204,6 +209,13 @@
 						</div>
 					</div>
 				</div>
+				<div class="container">
+					<div id="items"></div>
+					<div id="loader"></div>
+				</div>
+				<div id="scrollable-area">
+			        <!-- Items will be appended here -->
+			    </div>
 				<!-- 무한스크롤 처리 -->
 				<!-- 여기까지가 수정 -->
 				<!-- 여기까지가 수정 -->
@@ -222,7 +234,64 @@
 		write.addEventListener('click', () =>{
 			location.href='/shop/shopWrite';
 		});
-	
+
+		
+		let itemsLoaded = 0;
+
+		function fetchData() {
+		    // 여기서는 예시로 간단한 fetch를 사용합니다.
+		    // 실제로는 API 호출 등을 사용할 수 있습니다.
+		    return new Promise(resolve => {
+		        setTimeout(() => {
+		            const items = Array.from({ length: 10 }, (_, i) => i + itemsLoaded);
+		            itemsLoaded += 10;
+		            resolve(items);
+		        }, 1000);
+		    });
+		}
+
+		function createItem(item) {
+		    const newItem = document.createElement('div');
+		    newItem.className = 'item';
+		    newItem.textContent = `Item ${item}`;
+		    return newItem;
+		}
+
+		async function loadMoreItems(entries, observer) {
+		    if (entries[0].isIntersecting) {
+		        const newItems = await fetchData();
+		        const container = document.getElementById('scrollable-area');
+		        newItems.forEach(item => {
+		            container.appendChild(createItem(item));
+		        });
+		    }
+		}
+
+		const observerOptions = {
+		    root: null,
+		    rootMargin: '0px',
+		    threshold: 0.1
+		};
+
+		const observer = new IntersectionObserver(loadMoreItems, observerOptions);
+		const sentinel = document.createElement('div');
+		sentinel.id = 'sentinel';
+		document.getElementById('scrollable-area').appendChild(sentinel);
+		observer.observe(sentinel);
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	
 	</script>
 </body>

@@ -18,4 +18,8 @@ public interface ShopDAO {
 
 	int insertAttm(ArrayList<ProductAttm> list);
 
+	ArrayList<Product> selectProducts();
+
+	ArrayList<ProductAttm> selectProductAttm(String string);
+
 }

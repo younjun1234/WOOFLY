@@ -31,4 +31,14 @@ public class ShopServiceImpl implements ShopService {
 		return sDAO.insertAttm(list);
 	}
 
+	@Override
+	public ArrayList<Product> selectProducts() {
+		return sDAO.selectProducts();
+	}
+
+	@Override
+	public ArrayList<ProductAttm> selectProductAttm(String string) {
+		return sDAO.selectProductAttm(string);
+	}
+
 }

@@ -15,4 +15,8 @@ public interface ShopService {
 
 	int insertAttm(ArrayList<ProductAttm> list);
 
+	ArrayList<Product> selectProducts();
+
+	ArrayList<ProductAttm> selectProductAttm(String string);
+
 }

@@ -32,4 +32,28 @@
 		   		JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_CATEGORY_NO)
 		    </if>
 	</select>
+	
+	<select id="selectProducts" resultType="Product">
+	    SELECT *
+	    FROM PRODUCT
+		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
+	    ORDER BY PRODUCT_ID
+	</select>
+	
+	<!-- 상품사진 전용 -->
+	<select id="selectProductAttm" resultType="ProductAttm">
+		SELECT *
+		FROM ATTACHMENT
+		WHERE ATTM_REF_TYPE = 'P' 
+		<if test="string != null">
+			AND ATTM_LEVEL = '1'
+		    AND (ATTM_REF_NO, ATTM_ID) IN (
+		        SELECT ATTM_REF_NO, MIN(ATTM_ID)
+		        FROM ATTACHMENT
+		        WHERE ATTM_REF_TYPE = 'P' AND ATTM_LEVEL = '1'
+		        GROUP BY ATTM_REF_NO
+		    )
+		</if>
+	</select>
+	
 </mapper>
