@@ -2,8 +2,10 @@ package com.kh.woofly.member.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 public interface MemberService {
 
@@ -28,5 +30,17 @@ public interface MemberService {
 	int updatePhone(Member loginUser);
 
 	int updateMbStatus(Member member);
+
+	int addAddress(MemberAddress mAddress);
+
+	ArrayList<MemberAddress> selectMyAddress(String id);
+
+	int checkAddrType(String mbId);
+
+	int checkAddr(MemberAddress mAddress);
+
+	int updateAddr(MemberAddress mAddress);
+
+	int deleteAddr(String addrId);
 
 }

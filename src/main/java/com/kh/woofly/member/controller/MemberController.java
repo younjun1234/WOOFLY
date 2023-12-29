@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,7 +83,10 @@ public class MemberController {
 	}
 
 	@GetMapping("my/address")
-	public String addressView() {
+	public String addressView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<MemberAddress> list = mService.selectMyAddress(id);
+		model.addAttribute("list", list);
 		return "myAddress";
 	}
 
@@ -97,10 +102,7 @@ public class MemberController {
 
 	@GetMapping("my/addPayment")
 	public String addPayment(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
-		System.out.println(authKey);
-		System.out.println(customerKey);
 		String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
-		System.out.println(billingKey);
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue"))
 				.header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json")
@@ -111,7 +113,6 @@ public class MemberController {
 
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-			System.out.println((String) response.body());
 		} catch (InterruptedException | IOException var7) {
 			var7.printStackTrace();
 		}
@@ -299,7 +300,6 @@ public class MemberController {
 		String subject = "인증코드";
 		String content = "인증코드" + checkNum + "입니다";
 		String from = "testyounjun@gmail.com";
-		System.out.println(to);
 		try {
 
 			MimeMessage mail = mailSender.createMimeMessage();
@@ -349,7 +349,6 @@ public class MemberController {
         message.setText(content);
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        System.out.println(response);
         if(response.getStatusCode().equals("2000")) {
         	return "" + checkNum;
         } else {
@@ -380,6 +379,76 @@ public class MemberController {
     		return "redirect:/";
     	} else {
     		throw new MemberException("회원탈퇴에 실패하였습니다");
+    	}
+    }
+    
+    @PostMapping("addAddress.yj")
+    public String addAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+    						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+    						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String addr = String.format("(%s)%s %s", postcode, address, addressDetail);
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.addAddress(mAddress);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    }
+    
+    @GetMapping("checkAddrType.yj")
+    @ResponseBody
+    public String checkAddrType(HttpSession session) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	int result = mService.checkAddrType(mbId);
+    	if(result > 0) {
+    		return "bad";
+    	} else {
+    		return "good";
+    	}
+    }
+    
+    @GetMapping("checkAddr.yj")
+    @ResponseBody
+    public String checkAddr(HttpSession session, @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+    						 @RequestParam("addressDetail") String addressDetail) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId();
+    	MemberAddress mAddress = new MemberAddress();
+    	mAddress.setAddr(address);
+    	mAddress.setPostcode(postcode);
+    	mAddress.setAddrDetail(addressDetail);
+    	mAddress.setMbId(mbId);
+    	int result = mService.checkAddr(mAddress);
+    	if(result > 0) {
+    		return "bad";
+    	} else {
+    		return "good";
+    	}
+    	
+    }
+    
+    @PostMapping("updateAddr.yj")
+    public String updateAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+    						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, @RequestParam("addrId") int addrId,
+    						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(addrId, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.updateAddr(mAddress);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    }
+    
+    @GetMapping("deleteAddr.yj")
+    public String deleteAddr(@RequestParam("addrId") String addrId) {
+    	int result = mService.deleteAddr(addrId);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 삭제에 실패하였습니다");
     	}
     }
    
