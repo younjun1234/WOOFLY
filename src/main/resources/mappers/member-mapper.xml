@@ -67,4 +67,35 @@
  		set mb_status = 'N'
  		where mb_id = #{mbId}
  	</update>
+ 	
+ 	<insert id="addAddress">
+ 		insert into member_address
+ 		values (address_seq.nextval, #{addr}, #{mbId}, #{addrType}, #{mbTel}, #{mbName}, #{postcode}, #{addrDetail})
+ 	</insert>
+ 	
+ 	<select id="selectMyAddress" resultType="MemberAddress">
+ 		select * from member_address
+ 		where mb_id = #{ id }
+ 	</select>
+ 	
+ 	<select id="checkAddrType" resultType="_int">
+ 		select count(*) from member_address
+ 		where mb_id = #{ mbId } and addr_type = 'Y'
+ 	</select>
+ 	
+ 	<select id="checkAddr" resultType="_int">
+ 		select count(*) from member_address
+ 		where mb_id = #{ mbId } and addr = #{addr} and postcode = #{postcode} and addr_detail = #{addrDetail}
+ 	</select>
+ 	
+ 	<update id="updateAddr">
+	 	 update member_address
+	 	 set addr = #{addr}, addr_type = #{addrType}, mb_tel = #{mbTel}, mb_name = #{mbName}, postcode = #{postcode}, addr_detail = #{addrDetail}
+	 	 where addr_id = #{ addrId }
+ 	</update>
+ 	
+ 	<delete id="deleteAddr">
+ 		delete from member_address
+ 		where addr_id = #{ addrId }
+ 	</delete>
 </mapper>

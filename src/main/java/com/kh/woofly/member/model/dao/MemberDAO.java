@@ -2,10 +2,12 @@ package com.kh.woofly.member.model.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 @Mapper
 public interface MemberDAO {
@@ -31,5 +33,17 @@ public interface MemberDAO {
 	int updatePhone(Member loginUser);
 
 	int updateMbStatus(Member member);
+
+	ArrayList<MemberAddress> selectMyAddress(String id);
+
+	int addAddress(MemberAddress mAddress);
+
+	int checkAddrType(String mbId);
+
+	int checkAddr(MemberAddress mAddress);
+
+	int updateAddr(MemberAddress mAddress);
+
+	int deleteAddr(String addrId);
 
 }

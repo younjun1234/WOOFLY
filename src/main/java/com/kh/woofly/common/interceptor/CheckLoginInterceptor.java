@@ -17,17 +17,13 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
 	      // preHandle은 컨트롤러 넘어가기 전이라 얘만 타입이 boolean임 return을 가지고서 넘길지 말지 정해짐
 	      HttpSession session = request.getSession();
 	      Member loginUser = (Member)session.getAttribute("loginUser");
+	      response.setContentType("text/html; charset=UTF-8");
 	      if(loginUser == null) {
 	         String url = request.getRequestURI();
-	         String msg = null;
+	         System.out.println(url);
 	         if(url.contains("my")) {
-	            msg = "로그인 후 이용하세요";
-	         }else {
-	            msg="로그인 세션이 만료되어 로그인 화면으로 넘어갑니다.";
+				response.getWriter().write("<script>location.href='/account/login';</script>");
 	         }
-	         
-	         response.setContentType("text/html; charset=UTF-8");
-	         response.getWriter().write("<script>location.href='/account/login';</script>");
 	         
 	         return false; //세션만료되었으면 login 화면으로 넘어가지 selectBoard.bo .at으로 넘어가면 안되기 때문에 false 반환
 		}
