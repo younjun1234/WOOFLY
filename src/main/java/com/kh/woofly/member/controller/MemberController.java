@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,8 @@ public class MemberController {
 	}
 
 	@GetMapping("my/address")
-	public String addressView() {
+	public String addressView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		return "myAddress";
 	}
 
@@ -97,10 +99,7 @@ public class MemberController {
 
 	@GetMapping("my/addPayment")
 	public String addPayment(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
-		System.out.println(authKey);
-		System.out.println(customerKey);
 		String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
-		System.out.println(billingKey);
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue"))
 				.header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json")
@@ -111,7 +110,6 @@ public class MemberController {
 
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-			System.out.println((String) response.body());
 		} catch (InterruptedException | IOException var7) {
 			var7.printStackTrace();
 		}
@@ -299,7 +297,6 @@ public class MemberController {
 		String subject = "인증코드";
 		String content = "인증코드" + checkNum + "입니다";
 		String from = "testyounjun@gmail.com";
-		System.out.println(to);
 		try {
 
 			MimeMessage mail = mailSender.createMimeMessage();
@@ -349,7 +346,6 @@ public class MemberController {
         message.setText(content);
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        System.out.println(response);
         if(response.getStatusCode().equals("2000")) {
         	return "" + checkNum;
         } else {
@@ -360,7 +356,6 @@ public class MemberController {
     @PostMapping("updatePhone.yj")
     public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
 		Member loginUser = ((Member)session.getAttribute("loginUser"));
-		loginUser.setMbTel(phone);
 		
 		int result = mService.updatePhone(loginUser);
 		if(result > 0) {
@@ -382,56 +377,4 @@ public class MemberController {
     		throw new MemberException("회원탈퇴에 실패하였습니다");
     	}
     }
-   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
