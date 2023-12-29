@@ -2,6 +2,8 @@ package com.kh.woofly.member.model.vo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,7 @@ public class Member {
 	private String mbIntro;
 	private String mbNickName;
 	private String mbEmail;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date mbBirth;
 	private String mbTel;
 	private int mbPoint;

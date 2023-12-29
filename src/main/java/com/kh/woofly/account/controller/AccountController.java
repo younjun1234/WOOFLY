@@ -19,6 +19,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import com.kh.woofly.account.model.exception.AccountException;
 import com.kh.woofly.account.model.service.AccountService;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -100,9 +101,26 @@ public class AccountController {
 		return "signUp";
 	}
 	
-	@PostMapping("singUp.dw")
-	public String signUp() {
-		return null;
+	@PostMapping("/signUp.dw")
+	public String signUp(@ModelAttribute Member m, @ModelAttribute MemberAddress ma, @RequestParam("mbAddress1")String postcode,@RequestParam("mbAddress2")String address,
+			@RequestParam("mbAddress3")String detailAddress,@RequestParam("mbAddress4")String extraAddress) {
+		
+		ma.setPostcode(postcode);
+		ma.setAddr(address);
+		ma.setAddrDetail(detailAddress);
+		
+		String encPwd = bcrypt.encode(m.getMbPwd());
+		m.setMbPwd(encPwd);
+		
+		int result1 = aService.signUpMember(m);
+		int result2 = aService.signUpMemberAddr(ma);
+		
+		if(result1 > 0 && result2 > 0) {
+			return "redirect:/account/login";
+		} else {
+			throw new AccountException("회원가입을 실패하였습니다.");
+		}
+		
 	}
 	
 	@GetMapping("/send-one")
@@ -144,5 +162,7 @@ public class AccountController {
 		status.setComplete();
 		return "redirect:/";
 	}
+	
+	
 
 }
