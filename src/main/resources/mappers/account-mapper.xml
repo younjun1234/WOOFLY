@@ -20,4 +20,14 @@
 		where MB_NICKNAME = #{mbNickname} and mb_status='Y'
 	</select>
 	
+	<insert id="signUpMember" parameterType="Member">
+		INSERT INTO MEMBER
+		VALUES (#{mbId}, #{mbPwd}, #{mbName}, default, null, #{mbNickName}, #{mbEmail}, #{mbBirth}, #{mbTel}, default, default, default, default, default, null)
+	</insert>
+	
+	<insert id="signUpMemberAddr" parameterType="MemberAddress">
+		INSERT INTO MEMBER_ADDRESS
+		VALUES (address_seq.nextval, #{addr}, #{mbId}, 'Y', #{mbTel}, #{mbName}, #{postcode}, #{addrDetail})
+	</insert>
+	
 </mapper>
