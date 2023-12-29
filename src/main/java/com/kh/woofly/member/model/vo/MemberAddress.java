@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,12 +14,11 @@ import lombok.ToString;
 @ToString
 public class MemberAddress {
 	private int addrId;
+	private String postcode;
 	private String addr;
+	private String addrDetail;
 	private String mbId;
 	private String addrType;
 	private String mbTel;
 	private String mbName;
-	private String postcode;
-	private String addrDetail;
-	
 }

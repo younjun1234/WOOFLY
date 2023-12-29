@@ -9,16 +9,20 @@ import com.kh.woofly.common.interceptor.CheckAdminInterceptor;
 import com.kh.woofly.common.interceptor.CheckLoginInterceptor;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer{
-	
+public class WebMvcConfig implements WebMvcConfigurer {
+
 	@Override
-	   public void addInterceptors(InterceptorRegistry registry) { // Interceptor 등록해주는 메소드
-	    //일반계정용  
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/image/**")
+				.addResourceLocations("file:/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/");
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) { // Interceptor 등록해주는 메소드
+		// 일반계정용
 		registry.addInterceptor(new CheckLoginInterceptor())
-//	      
-	         .addPathPatterns("/my*");
-	      
-	      registry.addInterceptor(new CheckAdminInterceptor())
-	         .addPathPatterns("/*.ad");
-	   }
+			.addPathPatterns("/my/**");
+
+		registry.addInterceptor(new CheckAdminInterceptor()).addPathPatterns("/*.ad");
+	}
 }
