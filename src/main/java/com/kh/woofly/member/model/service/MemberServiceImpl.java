@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.member.model.dao.MemberDAO;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -99,6 +100,41 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int deleteAddr(String addrId) {
 		return mDAO.deleteAddr(addrId);
+	}
+
+	@Override
+	public int deleteMbPhoto(Member loginUser) {
+		return mDAO.deleteMbPhoto(loginUser);
+	}
+
+	@Override
+	public int nicknameCheck(String nickname) {
+		return mDAO.nicknameCheck(nickname);
+	}
+
+	@Override
+	public int addPayment(HashMap<String, Object> map) {
+		return mDAO.addPayment(map);
+	}
+
+	@Override
+	public ArrayList<Payment> selectMyPayment(String id) {
+		return mDAO.selectMyPayment(id);
+	}
+
+	@Override
+	public int updatePayment(Payment payment) {
+		return mDAO.updatePayment(payment);
+	}
+
+	@Override
+	public int updatePaymentToN(Payment payment) {
+		return mDAO.updatePaymentToN(payment);
+	}
+
+	@Override
+	public int deletePayment(int paymentNo) {
+		return mDAO.deletePayment(paymentNo);
 	}
 
 }

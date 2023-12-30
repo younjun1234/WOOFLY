@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
 
 public interface MemberService {
 
@@ -42,5 +43,19 @@ public interface MemberService {
 	int updateAddr(MemberAddress mAddress);
 
 	int deleteAddr(String addrId);
+
+	int deleteMbPhoto(Member loginUser);
+
+	int nicknameCheck(String nickname);
+
+	int addPayment(HashMap<String, Object> map);
+
+	ArrayList<Payment> selectMyPayment(String id);
+
+	int updatePayment(Payment payment);
+
+	int updatePaymentToN(Payment payment);
+
+	int deletePayment(int paymentNo);
 
 }
