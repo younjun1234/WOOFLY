@@ -334,7 +334,13 @@ public class MemberController {
 
 
 	private void deleteFile(String fileName) {
-		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\uploadFiles\\woolfy";
+		} else if(os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
+		}
 		File f = new File(savePath + fileName);
 		if(f.exists()) {
 			f.delete();
@@ -344,8 +350,13 @@ public class MemberController {
 
 	// 파일 저장소 파일 저장(copy)
 	public String saveFile(MultipartFile file) {
-		// 1. 파일 저장소 위치 지정
-		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\uploadFiles\\woolfy";
+		} else if (os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		}
 		
 		File folder = new File(savePath);
 		if(!folder.exists()) {
