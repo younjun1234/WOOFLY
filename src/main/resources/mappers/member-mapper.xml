@@ -14,6 +14,12 @@
 		where blocked_entity = #{blockedEntity} and blocked_by = #{loginUser}
 	</delete>
 	
+	<select id="nicknameCheck" resultType="_int">
+		select count(*)
+		from member
+		where mb_nickname = #{nickname}
+	</select>
+	
 	<update id="editNickName">
 		update member
 		set mb_nickname = #{ mbNickName }, next_change = #{ nextChange }
@@ -41,6 +47,12 @@
  	<update id="editMbPhoto">
  		update member
  		set mb_photo = #{ mbPhoto }
+ 		where mb_id = #{ mbId }
+ 	</update>
+ 	
+ 	<update id="deleteMbPhoto">
+ 		update member
+ 		set mb_photo = default
  		where mb_id = #{ mbId }
  	</update>
  	
@@ -97,5 +109,34 @@
  	<delete id="deleteAddr">
  		delete from member_address
  		where addr_id = #{ addrId }
+ 	</delete>
+ 	
+ 	<insert id="addPayment">
+	 	 insert into payment
+	 	 values (payment_seq.nextval, #{billingKey}, #{cardNumber}, #{cardCompany}, #{customerKey}, default)
+ 	</insert>
+ 	
+ 	<select id="selectMyPayment" resultType="Payment">
+ 		select * from payment
+ 		where member_id = #{id}
+ 		order by payment_type desc
+ 	</select>
+ 	
+ 	<update id="updatePaymentToN">
+ 		update payment
+ 		set payment_type = 'N'
+ 		where member_id = #{memberId}
+ 	</update>
+ 	
+ 	
+ 	<update id="updatePayment">
+ 		update payment
+ 		set payment_type = 'Y'
+ 		where payment_no = #{paymentNo}
+ 	</update>
+ 	
+ 	<delete id="deletePayment">
+ 		delete from payment
+ 		where payment_no = #{paymentNo}
  	</delete>
 </mapper>

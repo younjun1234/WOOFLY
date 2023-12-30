@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
 
 @Mapper
 public interface MemberDAO {
@@ -45,5 +46,19 @@ public interface MemberDAO {
 	int updateAddr(MemberAddress mAddress);
 
 	int deleteAddr(String addrId);
+
+	int deleteMbPhoto(Member loginUser);
+
+	int nicknameCheck(String nickname);
+
+	int addPayment(HashMap<String, Object> map);
+
+	ArrayList<Payment> selectMyPayment(String id);
+
+	int updatePayment(Payment payment);
+
+	int updatePaymentToN(Payment payment);
+
+	int deletePayment(int paymentNo);
 
 }

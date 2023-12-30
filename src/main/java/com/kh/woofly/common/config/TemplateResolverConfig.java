@@ -15,7 +15,7 @@ public class TemplateResolverConfig {
 		slash.setSuffix(".html");
 		slash.setTemplateMode(TemplateMode.HTML);
 		slash.setCharacterEncoding("UTF-8");
-		slash.setOrder(1);
+		slash.setOrder(3);
 		slash.setCacheable(false);
 		slash.setCheckExistence(true);
 		
