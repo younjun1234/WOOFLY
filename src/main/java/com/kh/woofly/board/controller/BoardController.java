@@ -186,32 +186,32 @@ public class BoardController {
 		// 2. 실종신고 //
 		// 글 목록
 		//	첨부파일 게시글 조회 //
-//		@GetMapping("/board/lost")
-//		public String selectlostBoardView() {
-//			return "lostBoard";
-//		}
-		
 		@GetMapping("/board/lost")
-		public String selectlostBoardView(@RequestParam(value = "page", defaultValue = "1") int page, 
-											Model model, 
-											HttpServletRequest request) {
-			int listCount = bService.getListCount(2);
-			PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
-			ArrayList<LostBoard> bList = bService.selectBoardList(pi, 2);
-//			ArrayList<Attachment> aList = bService.selectAttmBoardList(null);
-			
-			if(bList != null) {
-				model.addAttribute("pi", pi);
-				model.addAttribute("bList", bList);
-//				model.addAttribute("aList", aList);
-				model.addAttribute("loc", request.getRequestURI());
-				
-				/* lostBoard */
-				return "lostBoard";
-			} else {
-				throw new BoardException("첨부파일 게시글 조회 실패");
-			}
+		public String selectlostBoardView() {
+			return "lostBoard";
 		}
+		
+//		@GetMapping("/board/lost")
+//		public String selectlostBoardView(@RequestParam(value = "page", defaultValue = "1") int page, 
+//											Model model, 
+//											HttpServletRequest request) {
+//			int listCount = bService.getListCount(2);
+//			PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
+//			ArrayList<LostBoard> bList = bService.selectBoardList(pi, 2);
+//			ArrayList<Attachment> aList = bService.selectAttmBoardList(null);
+//			
+//			if(bList != null) {
+//				model.addAttribute("pi", pi);
+//				model.addAttribute("bList", bList);
+//				model.addAttribute("aList", aList);
+//				model.addAttribute("loc", request.getRequestURI());
+//				
+//				/* lostBoard */
+//				return "lostBoard";
+//			} else {
+//				throw new BoardException("첨부파일 게시글 조회 실패");
+//			}
+//		}
 		
 		//	첨부파일 게시글 작성 //
 		// 글쓰기
@@ -258,14 +258,14 @@ public class BoardController {
 			
 			int result1 = 0;   // 보드 결과값
 			int result2 = 0;   // 사진 결과값
-//			 if(list.isEmpty()) { // 사진이 비어있으면 일반게시판으로 보냄.
-//		         b.setBoardType(1);
-//		         result1 = bService.insertBoard(b);
-//		      } else {
-//		         b.setBoardType(2);
-//		         result1 = bService.insertBoard(b);
-//		         
-//		         // 각 사진들 해당 보드 번호 달아주기
+//			 if(list.isEmpty()|| !list.isEmpty()) { // 사진이 비어있거나 사진이 있을 때
+////		         b.setBoardType(1);
+////		         result1 = bService.insertBoard(b);
+////		      } else {
+////		         b.setBoardType(2);
+////		         result1 = bService.insertBoard(b);
+////		         
+////		         // 각 사진들 해당 보드 번호 달아주기
 //		         for(Attachment a : list) {
 //		            //System.out.println(b);
 //		            a.setRefBoardId(b.getBoardId());

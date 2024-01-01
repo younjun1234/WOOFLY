@@ -20,7 +20,7 @@ public class LostBoard {
    private Clob mContent;
    private int mCount;
    private Date mCreateDate;
-   private String mStauts;
+   private String mStatus;
    private String mbId;
    private String mbNickName;
 }

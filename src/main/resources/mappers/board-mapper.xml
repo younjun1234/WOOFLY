@@ -8,7 +8,7 @@
 		where m_status = 'Y' 
 	</select> 
 
-	<select id="selectBoardList" resultType="lostBoard" >
+	<select id="selectBoardList" resultType="LostBoard" >
 		select *
 		from board
 			 join member on(board_writer = id)
