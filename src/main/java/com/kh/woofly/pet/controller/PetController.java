@@ -5,15 +5,18 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
+import com.kh.woofly.pet.model.vo.Pet;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PetController {
@@ -49,6 +52,20 @@ public class PetController {
 	@GetMapping("pet/petAdd")
 	public String petAddView() {
 		return "petAdd";
+	}
+	
+	@PostMapping("/petAdd.dw")
+	public String petAdd(@ModelAttribute Pet p, HttpSession session) {
+		System.out.println(p);
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		p.setOwnerId(id);
+		
+		int result = pService.petAdd(p);
+		if(result > 0) {
+			return "petDetail";
+		} else {
+			throw new PetException("마이펫 등록에 실패하였습니다.");
+		}
 	}
 
 	@PostMapping("/editPetPhoto.dw")
