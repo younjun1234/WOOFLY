@@ -37,19 +37,27 @@
 				<div class="col-6">
 					<p class="text-secondary">마이펫 프로필 사진</p>
 						<div class="d-flex align-items-center mt-2 mb-4" style="height: 150px;">
-		                  <img src="..." class="mx-3" alt="편집" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
+		                  <img th:src="@{ ${'/image/' + session.loginUser.mbPhoto } }" class="mx-3" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
 		               </div>
 		               <div class="d-flex">
-		              	 <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal1">파일 찾기</button>
+		              	 <!-- <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal1">편집</button> -->
+		              	 <!-- <button class="btn btn-dark btn-sm">삭제</button> -->
+	              	    <form action="/editPetPhoto.dw" method="POST" enctype="multipart/form-data" id="petPhotoForm">
+							<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 변경</button>
+							<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
+						</form>
+						<form action="/deletePetPhoto.dw" method="POST">
+							<button type="button" class="btn btn-dark btn-sm">삭제</button>
+						</form>
 		   			   </div>
 		   			   <div class="modal" id="modal1" tabindex="-1">
 		   			   		<div class="modal-dialog">
 		   			   			<div class="modal-content">
 		   			   				<div class="modal-header">
-		   			   					<h1 class="modal-title fs-5">프로필 편집</h1>
+		   			   					<h1 class="modal-title fs-5"></h1>
 		   			   					<button class="btn-close" data-bs-dismiss="modal"></button>
 		   			   				</div>
-		   			   				<div class="modal-body">
+		   			   				<!-- <div class="modal-body">
 		   			   					<div class="form-group">
 											<label for="InputSubject1">파일찾기</label>
 											<input id="fileInput" filestyle="" type="file" data-class-button="btn btn-default" data-class-input="form-control" data-button-text="" data-icon-name="fa fa-upload" class="form-control" tabindex="-1" style="position: absolute; clip: rect(0px 0px 0px 0px);">
@@ -62,7 +70,7 @@
 												</span>
 											</div>
 										</div>
-		   			   				</div>
+		   			   				</div> -->
 		   			   				<div class="modal-footer">
 		   			   					<button class="btn bnt-secondary" data-bs-dismiss="modal">취소</button>
 		   			   					<button class="btn btn-dark">수정</button>
@@ -136,6 +144,20 @@
 		const myNav = document.getElementById("myPet1");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
+		
+		const profileChange = () => {
+			const profile = document.getElementById("profile");
+			profile.click();
+		}
+		
+		const profile = document.getElementById('profile');
+		profile.addEventListener('change', () => {
+			if (profile.files.length > 0) {
+	 			document.getElementById("mbPhotoForm").submit();
+			}
+		})			
+		
+		
 	</script>
 </body>
 </html>
