@@ -48,23 +48,24 @@ p {
                   <div class="mt-1 mb-2">
                      <p>아이디</p>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="text" id="idCheck" name="mbId" style="border: none; background: transparent;" required>
-                        <button type="button" class="btn btn-outline-dark mb-3 btn-sm" id="idCheckBtn">중복확인</button>
+                        <input type="text" id="idCheck" name="mbId" style="border: none; background: transparent;">
+                        <button type="button" class="btn btn-outline-dark mb-3 btn-sm" id="idCheckBtn" disabled>중복확인</button>
                      </div>
                      <div class="mt-1 form-text" id="idCheckWarn" style="font-weight: bolder;" ></div>
+                     <div class="mt-1 form-text" id="idRegCheckWarn" style="font-weight: bolder;" ></div>
                   </div>
                   <br>
                   <div class="mb-2">
                      <p>비밀번호</p>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="password" name="mbPwd" id="mbPwd" style="border: none; background: transparent;" required>
+                        <input type="password" name="mbPwd" id="mbPwd" style="border: none; background: transparent;">
                      </div>
                      <div class="mt-1 form-text" id="regCheckWarn" style="font-weight: bolder;"></div>
                   </div>
                   <div class="mb-2">
                      <p>비밀번호 확인</p>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="password" id="mbPwd2" name="mbPwd2" style="border: none; background: transparent;" required>
+                        <input type="password" id="mbPwd2" name="mbPwd2" style="border: none; background: transparent;">
                      </div>
                      <div class="mt-1 form-text" id="pwdCheckWarn" style="font-weight: bolder;"></div>
                   </div>
@@ -77,7 +78,7 @@ p {
                   <div class="mb-2">
                      <p>닉네임</p>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="text" id="mbNickname" name="mbNickName" style="border: none; background: transparent;" required>
+                        <input type="text" id="mbNickname" name="mbNickName" style="border: none; background: transparent;">
                         <button type="button" class="btn btn-outline-dark mb-3 btn-sm" id="mbNicknameBtn">중복확인</button>
                      </div>
                      <div class="mt-1 form-text" id="nicknameCheckWarn" style="font-weight: bolder;"></div>
@@ -85,14 +86,14 @@ p {
                   <br>
                   <div class="mb-2">
                      <p>이메일</p>
-                     <div class="border-bottom d-flex justify-content-between" required>
-                        <input type="email" name="mbEmail" style="border: none; background: transparent;">
+                     <div class="border-bottom d-flex justify-content-between">
+                        <input type="email" name="mbEmail" style="border: none; background: transparent;" required>
                      </div>
                   </div>
                   <div class="mb-2">
-                     <p>휴대폰 번호('-'없이 입력)</p>
+                     <p>휴대폰 번호 ('-'없이 입력)</p>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="text" id="mbPhone" name="mbTel" style="border: none; background: transparent;" required>
+                        <input type="text" id="mbPhone" name="mbTel" style="border: none; background: transparent;">
                         <button type="button" id="injuengBtn" class="btn btn-outline-dark mb-3 btn-sm">전송</button>
                      </div>
                   </div>
@@ -101,16 +102,20 @@ p {
                      <p>인증번호 입력</p>
                      <div class="border-bottom d-flex justify-content-between">
                         <input type="hidden" value="" id="injeungbunho">
-                        <input type="text" id="injeung" name="injeung" style="border: none; background: transparent;" required>
+                        <input type="text" id="injeung" name="injeung" style="border: none; background: transparent;">
                         <button type="button" id="injeungCheckBtn" class="btn btn-outline-dark mb-3 btn-sm">확인</button>
                      </div>
                      <div class="mt-1 form-text" id="injuengCheckWarn" style="font-weight: bolder;"></div>
                   </div>
                   <div class="mb-2">
                      <label for="postcode">우편번호</label>
-                     <div class="border-bottom d-flex justify-content-between">
-                        <input type="text" class="form-control" id="postcode" name="mbAddress1" style="border: none; background: transparent;" readonly placeholder="우편 번호를 검색하세요" required>
-                        <button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
+                     <div class="border-bottom d-flex pb-2 justify-content-between">
+                        <div class="col-10 ps-0">
+                        	<input type="text" class="form-control" id="postcode" name="mbAddress1" style="border: none; background: transparent;" readonly placeholder="우편 번호를 검색하세요">
+                        </div>
+                        <div>
+                        	<button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
+                     	</div>
                      </div>
                   </div>
                   <div class="mb-2">
@@ -128,7 +133,7 @@ p {
                   <div class="mb-2">
                      <label for="postcode">참고항목</label>
                      <div class="border-bottom d-flex justify-content-between">
-                        <input type="text" id="extraAddress" class="form-control" name="mbAddress4" style="border: none; background: transparent;">
+                        <input type="text" id="extraAddress" class="form-control" name="mbAddress4" style="border: none; background: transparent;" readonly>
                      </div>
                   </div>
                   <br>
@@ -182,17 +187,17 @@ p {
                      <br>
                      <div>
                         <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="privacy" id="agree" value="agree" style="color:black;" required>
+                           <input onclick="validateForm()" class="form-check-input" type="radio" name="privacy" id="agree" value="agree" style="color:black;">
                            <label class="form-check-label" for="agree">동의함</label>
                         </div>
                         <div class="form-check form-check-inline">
-                           <input class="form-check-input" type="radio" name="privacy" id="disagree" value="disagree" style="color:black;"> 
+                           <input onclick="validateForm()" class="form-check-input" type="radio" name="privacy" id="disagree" value="disagree" style="color:black;"> 
                            <label class="form-check-label" for="disagree">동의안함</label>
                         </div>
                      </div>
                   </div>
                   <div class="mt-4">
-                     <button type="submit" class="btn btn-dark btn-sm" style="width: 100%; text-align: center;">가입하기</button>
+                     <button onclick="checkAll()" type="button" class="btn btn-dark btn-sm" style="width: 100%; text-align: center;">가입하기</button>
                   </div>
                </form>
             </div>
@@ -213,6 +218,35 @@ p {
          $('#privacyModal').modal("show");
       });
       
+      //필수항목 유효성 검사
+      let check_id = false;
+      let check_idReg = false;
+      let check_pwd = false;
+      let check_pwdReg = false;
+      let check_sms = false;
+      let check_nickName = false;
+      let check_privacy = false;
+      
+      function checkAll() {
+    	  if(!check_id) {
+    		  alert("아이디를 중복 확인 해주세요!");
+    	  } else if(!check_idReg && check_id){
+    		  alert("아이디 조건을 확인해 주세요!")
+    	  } else if(!check_pwd){
+    		  alert("비밀번호를 확인해 주세요!");
+    	  } else if(!check_pwdReg && check_pwd){
+    		  alert("비밀번호를 조건을 확인해 주세요!");
+    	  } else if(!check_nickName){
+    		  alert("닉네임을 중복 확인 해주세요!");
+    	  } else if(!check_sms) {
+    		  alert("문자인증을 완료해 주세요!");
+    	  } else if(!check_privacy) {
+    		  alert('개인정보 수집 이용 동의에 체크해 주세요!');
+    	  } else {
+    		  document.querySelector('form').submit()
+    	  }
+      }
+      
       //인증번호 입력 문구 
       $('#injeungCheckBtn').click(function() {
          const injeung = document.getElementById('injeung').value;
@@ -220,22 +254,26 @@ p {
          
          if (injeungbunho == "") {
             injuengCheckWarn.innerText = "인증을 진행해주세요.";
-               injuengCheckWarn.style.color = "red";
-         } else {
-            if (injeung == "") {
-               injuengCheckWarn.innerText = "인증번호를 입력해주세요.";
-                  injuengCheckWarn.style.color = "red";
-            } else {
-               if (injeung == injeungbunho) {
-                  // 인증 번호가 맞을때 실행할거
-                  injuengCheckWarn.innerText = "인증번호가 일치합니다.";
-                     injuengCheckWarn.style.color = "black";
-               } else {
-                  // 인증 번호가 맞지 않을때 실행할거
-                  injuengCheckWarn.innerText = "인증번호가 일치하지 않습니다.";
-                     injuengCheckWarn.style.color = "red";
-               }
-            }
+            injuengCheckWarn.style.color = "red";
+            check_sms=false;
+	         } else {
+	            if (injeung == "") {
+	               injuengCheckWarn.innerText = "인증번호를 입력해주세요.";
+	               injuengCheckWarn.style.color = "red";
+	               check_sms=false;
+	         } else {
+	            if (injeung == injeungbunho) {
+	               // 인증 번호가 맞을때 실행할거
+	               injuengCheckWarn.innerText = "인증번호가 일치합니다.";
+	               injuengCheckWarn.style.color = "black";
+	               check_sms=true;
+	         } else {
+	            // 인증 번호가 맞지 않을때 실행할거
+	            injuengCheckWarn.innerText = "인증번호가 일치하지 않습니다.";
+	            injuengCheckWarn.style.color = "red";
+	            check_sms=false;
+	         }
+           }
          }
       });
       
@@ -248,6 +286,7 @@ p {
                  data: { pNum: pNum },
                  success: data => {
                     if (data != 'bad') {
+                     alert("인증번호가 전송되었습니다!")
                      console.log(data);              
                         document.getElementById('injeungbunho').value = data;
                     } else {
@@ -310,6 +349,26 @@ p {
         }).open();
     }      
       window.onload = () =>{
+    	  //아이디 정규식
+    	  document.getElementById('idCheck').addEventListener('keyup', function() {
+    		  const idCheckWarn = document.getElementById('idCheckWarn');
+              const reg = /^[a-z0-9_.]{4,30}$/;
+              const regCheckWarn = document.getElementById('idRegCheckWarn');
+             if(document.getElementById('idCheck').value.match(reg) != null) {
+            	document.getElementById('idCheckBtn').disabled = false;
+                regCheckWarn.innerText = '';
+                regCheckWarn.style.color = 'grey';
+                check_idReg = true;
+             }else{
+            	document.getElementById('idCheckBtn').disabled = true;
+                idCheckWarn.innerText = '';
+                regCheckWarn.innerText = '아이디는 영문, 숫자, 특수문자(._) 포함 4~30자리 이상입니다.';
+                regCheckWarn.style.color = 'red';
+                check_idReg = false;
+             }
+             
+          });
+    	  
          //비밀번호 정규식
          document.getElementById('mbPwd').addEventListener('keyup', function() {
              const reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
@@ -317,9 +376,11 @@ p {
             if(document.getElementById('mbPwd').value.match(reg) != null) {
                regCheckWarn.innerText = '사용가능한 비밀번호 입니다.';
                regCheckWarn.style.color = 'grey';
+               check_pwdReg = true;
             }else{
                regCheckWarn.innerText = '비밀번호는 영문,숫자,특수문자 포함 8자리~15자리 이상입니다.';
                regCheckWarn.style.color = 'red';
+               check_pwdReg = false;
             }
             
          });
@@ -329,15 +390,17 @@ p {
             const pw1 = document.getElementById('mbPwd');
             const pw2 = document.getElementById('mbPwd2');
             const pwWarn = document.getElementById('pwdCheckWarn');   
-             const password = pw1.value;
-             const confirmPassword = pw2.value;
+            const password = pw1.value;
+            const confirmPassword = pw2.value;
 
              if (password !== confirmPassword) {
                 pwWarn.innerText = '비밀번호가 일치하지 않습니다.';
                 pwWarn.style.color = 'red';
+                check_pwd=false;
              } else {
                 pwWarn.innerText = '비밀번호가 일치합니다';
                 pwWarn.style.color = 'grey';
+                check_pwd=true;
              }
             
          });
@@ -356,9 +419,11 @@ p {
                        if(data == "true") {
                           idCheckWarn.innerText = "사용 가능한 아이디입니다.";
                           idCheckWarn.style.color = "black";
+                          check_id=true;
                        } else {
                           idCheckWarn.innerText = "사용 불가한 아이디입니다.";
                           idCheckWarn.style.color = "red";
+                          check_id=false;
                        }
                      }, 
                      error : (data)=> {
@@ -376,17 +441,31 @@ p {
                     if(data == "true") {
                           nicknameCheckWarn.innerText = "사용가능한 닉네임입니다.";
                           nicknameCheckWarn.style.color = "black";
+                          check_nickName=true;
                        } else {
                           nicknameCheckWarn.innerText = "사용불가한 닉네임입니다.";
                           nicknameCheckWarn.style.color = "red";
+                          check_nickName=false;
                        }
                  },
                  error: (data) => console.log(data)
               });
       })
       
+      //개인정보 수집 이용 동의
+       function validateForm() {
+          const privacy = document.getElementById('agree').checked;
+          if (!privacy) {
+        	 check_privacy = false;
+          } else {
+         	 check_privacy = true;;
+          }
+       }
+     
+      
    </script>
    <!--카카오 지도 api 관련-->
    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+   
 </body>
 </html>
