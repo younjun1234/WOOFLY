@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.member.model.dao.MemberDAO;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -68,6 +70,71 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int updateMbStatus(Member member) {
 		return mDAO.updateMbStatus(member);
+	}
+
+	@Override
+	public int addAddress(MemberAddress mAddress) {
+		return mDAO.addAddress(mAddress);
+	}
+
+	@Override
+	public ArrayList<MemberAddress> selectMyAddress(String id) {
+		return mDAO.selectMyAddress(id);
+	}
+
+	@Override
+	public int checkAddrType(String mbId) {
+		return mDAO.checkAddrType(mbId);
+	}
+
+	@Override
+	public int checkAddr(MemberAddress mAddress) {
+		return mDAO.checkAddr(mAddress);
+	}
+
+	@Override
+	public int updateAddr(MemberAddress mAddress) {
+		return mDAO.updateAddr(mAddress);
+	}
+
+	@Override
+	public int deleteAddr(String addrId) {
+		return mDAO.deleteAddr(addrId);
+	}
+
+	@Override
+	public int deleteMbPhoto(Member loginUser) {
+		return mDAO.deleteMbPhoto(loginUser);
+	}
+
+	@Override
+	public int nicknameCheck(String nickname) {
+		return mDAO.nicknameCheck(nickname);
+	}
+
+	@Override
+	public int addPayment(HashMap<String, Object> map) {
+		return mDAO.addPayment(map);
+	}
+
+	@Override
+	public ArrayList<Payment> selectMyPayment(String id) {
+		return mDAO.selectMyPayment(id);
+	}
+
+	@Override
+	public int updatePayment(Payment payment) {
+		return mDAO.updatePayment(payment);
+	}
+
+	@Override
+	public int updatePaymentToN(Payment payment) {
+		return mDAO.updatePaymentToN(payment);
+	}
+
+	@Override
+	public int deletePayment(int paymentNo) {
+		return mDAO.deletePayment(paymentNo);
 	}
 
 }

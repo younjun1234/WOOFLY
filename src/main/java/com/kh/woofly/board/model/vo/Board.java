@@ -14,13 +14,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class LostBoard {
-	private int mNo;
-	private String mTitle;
-	private Clob mContent;
-	private int mCount;
-	private Date mCreateDate;
-	private String mStauts;
+
+public class Board {
+	private int bNo;
+	private String bTitle;
+	private Clob bContent;
+	private int bCount;
+	private Date bCreateDate;
+	private String bStatus;
 	private String mbId;
 	private String mbNickName;
 }
