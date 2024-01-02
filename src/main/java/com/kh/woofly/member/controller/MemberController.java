@@ -64,12 +64,6 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
     }
 	
-
-	@GetMapping("/my")
-	public String profileHomeView() {
-		return "myHome";
-	}
-
 	@GetMapping("my/login-edit")
 	public String loginView(Model model) {
 		return "myLogin";
