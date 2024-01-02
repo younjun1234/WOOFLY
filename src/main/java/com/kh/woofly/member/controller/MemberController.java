@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -435,7 +436,6 @@ public class MemberController {
     @PostMapping("updatePhone.yj")
     public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
 		Member loginUser = ((Member)session.getAttribute("loginUser"));
-		loginUser.setMbTel(phone);
 		
 		int result = mService.updatePhone(loginUser);
 		if(result > 0) {
@@ -527,56 +527,4 @@ public class MemberController {
     		throw new MemberException("주소 삭제에 실패하였습니다");
     	}
     }
-   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

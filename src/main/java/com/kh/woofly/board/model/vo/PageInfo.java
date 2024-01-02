@@ -17,7 +17,27 @@ public class PageInfo {
 	private int pageLimit;
 	private int maxPage;
 	private int startPage;
-	private int endPage;
 	private int boardLimit;
+	private int endPage; // endPage 속성 추가
+
+    // getter 및 setter 메서드 추가
+    public int getEndPage() {
+        return endPage;
+    }
+
+    public void setEndPage(int endPage) {
+        this.endPage = endPage;
+    }
+
+	public int getLostBoardLimit() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+    
+//    // 실종신고
+//	public int getLostBoardLimit() {
+//		return LostBoardLimit;
+//	}
+	
 
 }

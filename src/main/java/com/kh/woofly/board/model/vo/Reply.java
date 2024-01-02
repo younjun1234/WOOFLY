@@ -1,6 +1,5 @@
 package com.kh.woofly.board.model.vo;
 
-import java.sql.Clob;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -14,18 +13,15 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class LostBoard {
-   private int mNo;
-   private String mTitle;
-   private String mContent;
-   private int mCount;
-   private Date mCreateDate;
-   private String mStatus;
-   private String mbId;
-   private String mbNickName;
+
+public class Reply {
+	private int replyId;
+	private String replyContent;
+	private int refBoardId;
+	private String replyWriter;
+	private String nickName;
+	private Date replyCreateDate;
+	private Date replyModifyDate;
+	private String replyStatus;
 }
-
-
-
-
 
