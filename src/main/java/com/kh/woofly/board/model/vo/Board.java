@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 
-public class FreeBoard {
+public class Board {
 	private int bNo;
 	private String bTitle;
 	private Clob bContent;
@@ -23,4 +23,5 @@ public class FreeBoard {
 	private Date bCreateDate;
 	private String bStatus;
 	private String mbId;
+	private String mbNickName;
 }

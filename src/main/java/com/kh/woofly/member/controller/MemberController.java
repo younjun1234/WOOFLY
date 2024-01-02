@@ -29,9 +29,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,18 +80,29 @@ public class MemberController {
 	public String profileView(HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		ArrayList<Member>  list = mService.getBlackList(id);
-		model.addAttribute("list", list);
+		if(list != null) {
+			model.addAttribute("list", list);
+		}
 		return "myProfile";
 	}
 
 	@GetMapping("my/address")
 	public String addressView(HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<MemberAddress> list = mService.selectMyAddress(id);
+		if(list != null) {
+			model.addAttribute("list", list);
+		}
 		return "myAddress";
 	}
 
 	@GetMapping("my/payment")
-	public String paymentView() {
+	public String paymentView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Payment> list = mService.selectMyPayment(id);
+		if(list != null) {
+			model.addAttribute("list", list);
+		}
 		return "myPayment";
 	}
 
@@ -107,14 +121,47 @@ public class MemberController {
 						BodyPublishers
 								.ofString("{\"authKey\":\"" + authKey + "\",\"customerKey\":\"" + customerKey + "\"}"))
 				.build();
-
+		int result = 0;
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			System.out.println(response.body());
+			HashMap<String, Object> map = new ObjectMapper().readValue(response.body(), HashMap.class);
+			System.out.println(map);
+			result = mService.addPayment(map);
+			
 		} catch (InterruptedException | IOException var7) {
 			var7.printStackTrace();
 		}
-
-		return "myPayment";
+		if(result > 0) {
+			return "redirect:/my/payment";
+		} else {
+			throw new MemberException("결제 정보 저장에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("updatePayment.yj")
+	public String updatePayment(@RequestParam("paymentNo") int paymentNo, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		Payment payment = new Payment();
+		payment.setPaymentNo(paymentNo);
+		payment.setMemberId(id);
+		int result1 = mService.updatePaymentToN(payment);
+		int result2 = mService.updatePayment(payment);
+		if (result1 + result2 > 0) {
+			return "redirect:/my/payment"; 
+		} else {
+			throw new MemberException("기본 결제 변경에 실패하였습니다");
+		}
+	}
+	
+	@GetMapping("deletePayment.yj")
+	public String deletePayment(@RequestParam("paymentNo") int paymentNo) {
+		int result = mService.deletePayment(paymentNo);
+		if(result > 0 ) {
+			return "redirect:/my/payment";
+		} else {
+			throw new MemberException("결제 정보에 실패하였습니다");
+		}
 	}
 
 	@GetMapping("my/profile")
@@ -163,6 +210,23 @@ public class MemberController {
 		} else {
 			throw new MemberException("차단 해제에 실패하였습니다");
 		}
+	}
+	
+	@GetMapping("nicknameCheck.yj")
+	@ResponseBody
+	public String nicknameCheck(@RequestParam("nickname") String nickname, HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		if (nickname.equals(loginUser.getMbNickName())) {
+			return "using";
+		} else {
+			int result = mService.nicknameCheck(nickname);
+			if (result > 0) {
+				return "bad";
+			} else {
+				return "good";
+			}
+		}
+		
 	}
 	
 	@PostMapping("editNickName.yj")
@@ -233,6 +297,7 @@ public class MemberController {
 			if (!loginUser.getMbPhoto().equals("default_profile.png")) {
 				deleteFile(loginUser.getMbPhoto());
 			}
+			
 			String renameName = saveFile(upload);
 			if(renameName != null) {
 				loginUser.setMbPhoto(renameName);
@@ -249,12 +314,35 @@ public class MemberController {
 	
 	}
 	
+	@GetMapping("deleteMbPhoto.yj")
+	public String deleteMbPhoto(HttpSession session) {
+		Member loginUser = ((Member)session.getAttribute("loginUser"));
+		if (!loginUser.getMbPhoto().equals("default_profile.png")) {
+			deleteFile(loginUser.getMbPhoto());
+			int result = mService.deleteMbPhoto(loginUser);
+			
+			if (result == 0) {
+				throw new MemberException("프로필 사진 삭제에 실패하였습니다");
+			} else {
+				loginUser.setMbPhoto("default_profile.png");
+			}
+		}
+		return "redirect:/my/profile-edit";
+		
+	}
+	
 	
 
 
 	private void deleteFile(String fileName) {
-		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/";
-		File f = new File(savePath + "/" + fileName);
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\uploadFiles\\woolfy";
+		} else if(os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
+		}
+		File f = new File(savePath + fileName);
 		if(f.exists()) {
 			f.delete();
 		}
@@ -263,8 +351,13 @@ public class MemberController {
 
 	// 파일 저장소 파일 저장(copy)
 	public String saveFile(MultipartFile file) {
-		// 1. 파일 저장소 위치 지정
-		String savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\uploadFiles\\woolfy";
+		} else if (os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		}
 		
 		File folder = new File(savePath);
 		if(!folder.exists()) {
@@ -375,6 +468,76 @@ public class MemberController {
     		return "redirect:/";
     	} else {
     		throw new MemberException("회원탈퇴에 실패하였습니다");
+    	}
+    }
+    
+    @PostMapping("addAddress.yj")
+    public String addAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+    						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+    						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String addr = String.format("(%s)%s %s", postcode, address, addressDetail);
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.addAddress(mAddress);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    }
+    
+    @GetMapping("checkAddrType.yj")
+    @ResponseBody
+    public String checkAddrType(HttpSession session) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	int result = mService.checkAddrType(mbId);
+    	if(result > 0) {
+    		return "bad";
+    	} else {
+    		return "good";
+    	}
+    }
+    
+    @GetMapping("checkAddr.yj")
+    @ResponseBody
+    public String checkAddr(HttpSession session, @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+    						 @RequestParam("addressDetail") String addressDetail) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId();
+    	MemberAddress mAddress = new MemberAddress();
+    	mAddress.setAddr(address);
+    	mAddress.setPostcode(postcode);
+    	mAddress.setAddrDetail(addressDetail);
+    	mAddress.setMbId(mbId);
+    	int result = mService.checkAddr(mAddress);
+    	if(result > 0) {
+    		return "bad";
+    	} else {
+    		return "good";
+    	}
+    	
+    }
+    
+    @PostMapping("updateAddr.yj")
+    public String updateAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+    						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, @RequestParam("addrId") int addrId,
+    						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(addrId, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.updateAddr(mAddress);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    }
+    
+    @GetMapping("deleteAddr.yj")
+    public String deleteAddr(@RequestParam("addrId") String addrId) {
+    	int result = mService.deleteAddr(addrId);
+    	if(result > 0) {
+    		return "redirect:/my/address";
+    	} else {
+    		throw new MemberException("주소 삭제에 실패하였습니다");
     	}
     }
 }

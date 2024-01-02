@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.account.model.dao.AccountDAO;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 @Service
 public class AccountServiceImpl implements AccountService{
@@ -25,6 +26,16 @@ public class AccountServiceImpl implements AccountService{
 	@Override
 	public int nickCheck(String mbNickName) {
 		return aDAO.nickCheck(mbNickName);
+	}
+
+	@Override
+	public int signUpMember(Member m) {
+		return aDAO.signUpMember(m);
+	}
+
+	@Override
+	public int signUpMemberAddr(MemberAddress ma) {
+		return aDAO.signUpMemberAddr(ma);
 	}
 
 }

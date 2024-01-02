@@ -27,4 +27,5 @@ public class Attachment {
 	private Date attmModifyDate;
 	private String attmRefType;
 	private int attmRefNo;
+
 }

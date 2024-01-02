@@ -41,8 +41,8 @@
 								<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">이미지 변경</button>
 								<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
 							</form>
-							<form action="/deleteMbPhoto.yj" method="POST">
-								<button type="button" class="btn btn-sm btn-outline-dark">삭제</button>
+							<form action="/deleteMbPhoto.yj" method="get">
+								<button class="btn btn-sm btn-outline-dark">삭제</button>
 							</form>
 						</div>
 					</div>
@@ -61,14 +61,18 @@
 								<button type="button" class="btn btn-outline-dark btn-sm" id="nicknameChangeBtn" th:disabled="${ session.loginUser.nextChange != null && #dates.createNow().before(session.loginUser.nextChange) }">
 									변경
 								</button>
+								<button type="button" class="btn btn-outline-dark btn-sm" id="nicknameCheck" th:disabled="${ session.loginUser.nextChange != null && #dates.createNow().before(session.loginUser.nextChange) }" style="display: none;">
+									중복확인
+								</button>
 							</div>
 						</div>
 						
 						<div style="display: none;" id="nicknameHideCont">
+								<div style="font-size: 10px;" id="nicknameCheckResult"></div>
 								<div class="text-secondary mb-3" style="font-size: 10px;">변경 후 30일이 지나야 다시 변경 가능하므로 신중히 변경해주세요.</div>
 								<div class="text-center">
 									<button type="button" class="btn btn-outline-secondary cancelBtn" id="nicknameCancelBtn">취소</button>
-									<button class="btn btn-dark">변경</button>
+									<button class="btn btn-dark disabled" disabled id="editNickNameBtn">변경</button>
 								</div>
 						</div>
 						<div class="text-secondary mb-3" style="font-size: 10px;" th:if="${ session.loginUser.nextChange != null && #dates.createNow().before(session.loginUser.nextChange) }">
@@ -157,7 +161,7 @@
 							<div class="d-flex justify-content-center" th:if="${ #arrays.isEmpty(list) }" >
 								<p>차단한 프로필이 없습니다</p>
 							</div>
-							<form class="d-flex justify-content-between mb-3" action="/removeBlock.yj" method="POST" th:each="blockedEntity : ${ list }">
+							<form class="d-flex justify-content-between" action="/removeBlock.yj" method="POST" th:each="blockedEntity : ${ list }">
 								<input type="hidden" name="blockedEntity" th:value="${ blockedEntity.mbId }">
 								<h4>[[${ blockedEntity.mbNickName }]]</h4>
 								<div>
@@ -182,6 +186,36 @@
 			profile.click();
 		}
 		
+		// 닉네임 중복 확인
+		$('#nicknameCheck').click(() =>{
+			$.ajax({
+				url: '/nicknameCheck.yj',
+				data: {nickname: document.getElementById('nickname').value},
+				success: data =>{
+					if (data == 'using') {
+						document.getElementById('nicknameCheckResult').innerText = '변경 하실 닉네임를 입력해주세요';
+						document.getElementById('nicknameCheckResult').style.color = 'red';
+						$('#editNickNameBtn').addClass('disabled');
+						$('#editNickNameBtn')[0].disabled = true;
+						
+					} else if (data == 'bad') {
+						document.getElementById('nicknameCheckResult').innerText = '사용할수 없는 닉네임입니다';
+						document.getElementById('nicknameCheckResult').style.color = 'red';
+						$('#editNickNameBtn').addClass('disabled');
+						$('#editNickNameBtn')[0].disabled = true;
+						
+					} else {
+						document.getElementById('nicknameCheckResult').innerText = '사용할수 있는 닉네임입니다';
+						document.getElementById('nicknameCheckResult').style.color = 'green';
+						$('#editNickNameBtn').removeClass('disabled');
+						$('#editNickNameBtn')[0].disabled = false;
+					}
+					console.log(data);
+				},
+				error: data => console.log(data)
+			})
+		})
+		
 		// 닉네임수정
 		
 		document.getElementById('nicknameChangeBtn').addEventListener('click', () => {
@@ -190,6 +224,7 @@
 			const nicknameLength = $('#nickname').val().length * 2;
 			$('#nickname')[0].setSelectionRange(nicknameLength, nicknameLength);
 			$('#nicknameHideCont').css('display', 'block');
+			$('#nicknameCheck').css('display', 'block');
 			$('#nicknameChangeBtn').css('display', 'none');
 			$('#nicknameCont').addClass('border-2').addClass('border-black');
 		});
@@ -197,6 +232,7 @@
 		document.getElementById('nicknameCancelBtn').addEventListener('click', () => {
 			$('#nickname').attr('readonly', true);
 			$('#nicknameHideCont').css('display', 'none');
+			$('#nicknameCheck').css('display', 'none');
 			$('#nicknameChangeBtn').css('display', 'block');
 			$('#nicknameCont').removeClass('border-2').removeClass('border-black');
 		});

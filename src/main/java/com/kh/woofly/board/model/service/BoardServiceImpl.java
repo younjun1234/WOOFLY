@@ -8,32 +8,47 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.PageInfo;
+
+import com.kh.woofly.board.model.vo.Board;
 
 @Service
 public class BoardServiceImpl implements BoardService{
 
-	   @Autowired
-	   private BoardDAO bDAO;
+   @Autowired
+   private BoardDAO bDAO;
+   
+ //	자유게시판 "/board/free"
+	@Override
+	public int getListCount(int i) {
+		return bDAO.getListCount(i);
+	}
+	
+	@Override
+	public ArrayList<Board> selectBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectBoardList(i, rowBounds);
+	}
 
-	   //	게시글 수 가져오기? //
-	   @Override 
-	   public int getListCount(int i) {
-		   return bDAO.getListCount(i);
-	   }
-	   
-	// 게시글 목록 보기 위해 게시글 목록 선택(아마) //
-	   @Override
-	   public ArrayList<LostBoard> selectBoardList(PageInfo pi, int i) {
-	      int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-	      RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-	      return bDAO.selectBoardList(i, rowBounds);  //pi는 위에서 사용하고  rowBounds가 넘어감
-	   }
-	   @Override
-		public ArrayList<Attachment> selectAttmBoardList(String mbNickName) {
-			return bDAO.selectAttmBoardList(mbNickName);
-		}
+	@Override
+	public ArrayList<Attachment> selectAttmBoardList(Integer bId) {
+		return bDAO.selectAttmBoardList(bId);
+	}
+
+//	/board/free/detail
+	@Override
+	public Board selectBoard(int bNo) {
+		return bDAO.selectBoard(bNo);
+	}
+
+//	/board/free/insertFreeBoard
+	@Override
+	public int insertBoard(Board b) {
+		return bDAO.insertBoard(b);
+	}
+	
+	
 
 
 }

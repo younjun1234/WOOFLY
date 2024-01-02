@@ -23,4 +23,5 @@ public class WmBoard {
 	private Date wmCreateDate;
 	private String wmStatus;
 	private String mbId;
+	private String mbNickName;
 }

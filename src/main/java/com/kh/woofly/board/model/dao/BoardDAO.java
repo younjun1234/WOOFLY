@@ -6,17 +6,25 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.LostBoard;
+
+import com.kh.woofly.board.model.vo.Board;
 
 @Mapper
 public interface BoardDAO {
-	
-	//	게시글 수 가져오기? //
-	int getListCount(int i);
-	
-	//  게시글 목록 보기 위해 게시글 목록 선택(아마) //
-	ArrayList<LostBoard> selectBoardList(int i, RowBounds rowBounds);
-	
-	ArrayList<Attachment> selectAttmBoardList(String mbNickName);
 
+//	자유게시판 "/board/free"
+	int getListCount(int i);
+
+	ArrayList<Board> selectBoardList(int i, RowBounds rowBounds);
+
+	ArrayList<Attachment> selectAttmBoardList(Integer bId);
+
+//	/board/free/detail
+	Board selectBoard(int bNo);
+
+//	/board/free/insertFreeBoard
+	int insertBoard(Board b);
+	
+	
+	
 }

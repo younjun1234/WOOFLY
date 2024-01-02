@@ -24,6 +24,5 @@ public class Pagination {
 
         return pi;
     }
-	
 }
-
+	
