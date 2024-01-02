@@ -221,7 +221,7 @@ public class BoardController {
 		}
 			
 		//	첨부파일 게시글 등록 //
-		@PostMapping("insertBoard.bo")
+		@PostMapping("/board/lost/write")
 		public String insertAttm(@ModelAttribute LostBoard b, 
 				@RequestParam("file") ArrayList<MultipartFile> files,
 				HttpServletRequest request) {
@@ -277,9 +277,9 @@ public class BoardController {
 			// 보드 개수 + list.size의 길이 더해서 판별하기
 			if(result1 + result2 == list.size()+1) {
 				if(result2 == 0) {
-					return "redirect:list.bo";
-				} else {
-					return "redirect:list.at";
+//					return "redirect:list.bo";
+//				} else {
+					return "redirect:/board/lost";
 				}
 			} else {
 				for(Attachment a : list) {
