@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -127,34 +127,36 @@
 					</div>
 					
 					<!-- 상품화면 시작 -->
-					<th:block th:each="p : ${pList}">
-						<div class="d-flex justify-content-between mb-3">
-							<div class="card" style="width: 20%;">
-								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-								<div class="card-body">
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+					
+							<th:block th:each="p : ${pList}">
+								<div class="card" style="width: 20%;">
+									<th:block th:each="a: ${aList}" th:if="${p.productId == a.attmRefNo}">
+										<img th:src="${ a.renameName }" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+										<div class="card-body">
+											<p class="card-text">[[${p.productName}]]</p>
+										</div>
+									</th:block>
 								</div>
-							</div>
-							<div class="card" style="width: 20%;">
-								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-								<div class="card-body">
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								<div class="card" style="width: 20%;">
+									<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+									<div class="card-body">
+										<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+									</div>
 								</div>
-							</div>
-							<div class="card" style="width: 20%;">
-								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-								<div class="card-body">
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								<div class="card" style="width: 20%;">
+									<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+									<div class="card-body">
+										<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+									</div>
 								</div>
-							</div>
-							<div class="card" style="width: 20%;">
-								<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-								<div class="card-body">
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								<div class="card" style="width: 20%;">
+									<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+									<div class="card-body">
+										<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+									</div>
 								</div>
-							</div>
-						</div>
-					</th:block>
+							</th:block>
+					
 					
 					<div class="d-flex justify-content-between mb-3">
 						<div class="card" style="width: 20%;">
