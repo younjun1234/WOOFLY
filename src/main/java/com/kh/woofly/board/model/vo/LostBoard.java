@@ -17,7 +17,7 @@ import lombok.ToString;
 public class LostBoard {
    private int mNo;
    private String mTitle;
-   private Clob mContent;
+   private String mContent;
    private int mCount;
    private Date mCreateDate;
    private String mStatus;

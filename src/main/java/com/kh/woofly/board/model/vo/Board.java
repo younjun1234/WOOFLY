@@ -18,7 +18,7 @@ import lombok.ToString;
 public class Board {
 	private int bNo;
 	private String bTitle;
-	private Clob bContent;
+	private String bContent;
 	private int bCount;
 	private Date bCreateDate;
 	private String bStatus;

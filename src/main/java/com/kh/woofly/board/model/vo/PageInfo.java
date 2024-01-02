@@ -28,6 +28,16 @@ public class PageInfo {
     public void setEndPage(int endPage) {
         this.endPage = endPage;
     }
+
+	public int getLostBoardLimit() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+    
+//    // 실종신고
+//	public int getLostBoardLimit() {
+//		return LostBoardLimit;
+//	}
 	
 
 }
