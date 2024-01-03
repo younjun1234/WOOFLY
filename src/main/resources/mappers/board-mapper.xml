@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
-
+	 
+	<!-- 자유게시판 -->	
 	<select id="getListCount" resultType="_int">
 		select count(*)
 		from board
@@ -30,7 +31,7 @@
 	<select id="selectFreeBoard" resultType="board">
 		select *
 		from board
-		join member using (mb_id)
+			join member using (mb_id)
 		where b_status = 'Y' and b_no = #{ bNo }
 	</select>
 	
@@ -82,6 +83,81 @@
 	
 	
 	
+	
+	
+	<!-- 실종게시판 -->
+	<select id="mListCount" resultType="_int">
+		select count(*)
+		from Missing_Board
+		where m_status = 'Y'
+	</select>
+
+	<select id="selectLostBoardList" resultType="LostBoard">
+		select *
+		from Missing_Board
+		join member using (mb_id)
+		where m_status = 'Y' 
+		order by m_no desc
+	</select>
+
+	<select id="selectAttmLostBoardList" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status='Y'
+		<if test="bId != null">
+			and attm_ref_type = 'B'
+		</if>
+		order by attm_id
+	</select>
+	
+	<select id="selectLostBoard" parameterType="Lostboard" resultMap="LostBoardResult">
+		select *
+		from Missing_Board
+			join member using (mb_id)
+		where m_status = 'Y' and m_no = #{ mNo }
+	</select>
+	
+	<resultMap type="LostBoard" id="LostBoardResult">
+	    <result column="m_content" property="mContent" jdbcType="CLOB" javaType="java.lang.String"/>
+	</resultMap>
+	
+	<insert id="insertLostBoard" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int"	keyProperty="mNo">
+			select seq_m_No.nextval from dual
+		</selectKey>
+
+		insert into Missing_Board
+		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+	</insert>
+	
+	<!-- 	 <select id="getListCount" resultType="_int">
+		select count(*)
+		from missing_board
+		where m_status = 'Y' 
+	</select> 
+
+	<select id="selectBoardList" resultType="LostBoard" >
+		select *
+		from board
+			 join member on(board_writer = id)
+		where m_status = 'Y' and ATTM_REF_TYPE = #{i}
+		order by board_id desc
+	</select>
+
+	selectAttmBoardList
+	<select id="selectAttmBoardList" resultType="Attachment">
+		select *
+		from missing_board
+		where m_status='Y'
+		<if test="bId == null">
+			and attm_level = 0
+		</if>
+		<if test="mNo != null">
+			and m_no = #{mNo}
+		</if>
+		order by m_no
+	</select>
+	 -->
 	
 	
 	

@@ -55,7 +55,6 @@ public class AccountController {
 		Member loginUser = aService.login(m);
 		if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
 			model.addAttribute("loginUser", loginUser);
-			System.out.println(loginUser);
 //			if (loginUser.getIsAdmin().equals("N")) {
 //				//로그 추가
 //				logger.info(loginUser.getMbId());

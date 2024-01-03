@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +26,14 @@ public class PetController {
 	@Autowired
 	private PetService pService;
 
+	//마이펫 리스트
 	@GetMapping("pet/petInfo")
-	public String petInfoView() {
+	public String petInfo(Model model, HttpSession session, @ModelAttribute Pet p) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		p.setOwnerId(id);
+		ArrayList<Pet> list = pService.petInfoList(id);
+		model.addAttribute("list", list);
+			
 		return "petInfo";
 	}
 
@@ -39,14 +47,22 @@ public class PetController {
 		return "petDiary";
 	}
 
+	
 	@GetMapping("pet/petContest")
 	public String petContestView() {
 		return "petContest";
 	}
 
-	@GetMapping("pet/petDetail")
-	public String petDetailtView() {
-		return "petDetail";
+	@GetMapping("pet/petDetail/{petId}")
+	public String petDetail(@PathVariable("petId") int petId, Model model) {
+		Pet pet = pService.petDetail(petId);
+		
+		if(pet != null) {
+			model.addAttribute("p", pet);
+			return "petDetail";
+		} else {
+			throw new PetException("마이펫 상세조회에 실패하였습니다.");
+		}
 	}
 
 	@GetMapping("pet/petAdd")
@@ -56,7 +72,6 @@ public class PetController {
 	
 	@PostMapping("/petAdd.dw")
 	public String petAdd(@ModelAttribute Pet p, HttpSession session) {
-		System.out.println(p);
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		p.setOwnerId(id);
 		

@@ -15,12 +15,17 @@ import lombok.ToString;
 @Setter
 @ToString
 public class LostBoard {
-	private int mNo;
-	private String mTitle;
-	private Clob mContent;
-	private int mCount;
-	private Date mCreateDate;
-	private String mStauts;
-	private String mbId;
-	private String mbNickName;
+   private int mNo;
+   private String mTitle;
+   private String mContent;
+   private int mCount;
+   private Date mCreateDate;
+   private String mStatus;
+   private String mbId;
+   private String mbNickName;
 }
+
+
+
+
+

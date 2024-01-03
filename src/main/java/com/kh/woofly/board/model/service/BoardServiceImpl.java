@@ -8,21 +8,24 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.board.model.vo.Reply;
 
+import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.LostBoard;
+
 @Service
 public class BoardServiceImpl implements BoardService{
-	
-	@Autowired
-	private BoardDAO bDAO;
 
+   @Autowired
+   private BoardDAO bDAO;
+   
+ //	자유게시판 "/board/free"
 	@Override
 	public int getListCount(int i) {
 		return bDAO.getListCount(i);
 	}
-
+	
 	@Override
 	public ArrayList<Board> selectFreeBoardList(PageInfo pi, int i) {
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
@@ -71,5 +74,43 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	
+// 실종신고 게시판
+	@Override
+	public int getMlistCount(int i) {
+		return bDAO.mListCount(i);
+	}
+	
+	@Override
+	public ArrayList<LostBoard> selectLostBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getLostBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getLostBoardLimit());
+		return bDAO.selectLostBoardList(i, rowBounds);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmLostBoardList(Integer bId) {
+		return bDAO.selectAttmLostBoardList(bId);
+	}
+
+	@Override
+	public LostBoard selectLostBoard(int mNo) {
+		return bDAO.selectLostBoard(mNo);
+	}
+
+	@Override
+	public int insertLostBoard(LostBoard m) {
+		return bDAO.insertLostBoard(m);
+	}
+
+
+	@Override
+	public LostBoard selectLostBoard(int bId, Object object) {
+		return bDAO.selectLostBoard(bId, object);
+	}
+	
+	
+	
+	
+
 
 }

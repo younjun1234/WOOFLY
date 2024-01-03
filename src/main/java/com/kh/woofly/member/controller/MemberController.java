@@ -14,11 +14,11 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+//import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,8 +47,8 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 @Controller
 public class MemberController {
 
-	@Autowired
-	private JavaMailSender mailSender;
+	//@Autowired
+	//private JavaMailSender mailSender;
 
 	
 	@Autowired
@@ -64,12 +64,6 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
     }
 	
-
-	@GetMapping("/my")
-	public String profileHomeView() {
-		return "myHome";
-	}
-
 	@GetMapping("my/login-edit")
 	public String loginView(Model model) {
 		return "myLogin";
@@ -381,32 +375,26 @@ public class MemberController {
 		return renameFileName;
 	}
 	
-	@GetMapping("mailCheck.yj")
-	@ResponseBody
-	public String sendMail(@RequestParam("to") String to) throws Exception {
-		Random r = new Random();
-		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
-		String subject = "인증코드";
-		String content = "인증코드" + checkNum + "입니다";
-		String from = "testyounjun@gmail.com";
-		try {
-
-			MimeMessage mail = mailSender.createMimeMessage();
-			MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
-
-			mailHelper.setFrom(from);
-
-			mailHelper.setTo(to);
-			mailHelper.setSubject(subject);
-			mailHelper.setText(content, true);
-
-			mailSender.send(mail);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return checkNum + "";
-	}
+	/*
+	 * @GetMapping("mailCheck.yj")
+	 * 
+	 * @ResponseBody public String sendMail(@RequestParam("to") String to) throws
+	 * Exception { Random r = new Random(); int checkNum = r.nextInt(888888) +
+	 * 111111; // 난수 생성 String subject = "인증코드"; String content = "인증코드" + checkNum
+	 * + "입니다"; String from = "testyounjun@gmail.com"; try {
+	 * 
+	 * MimeMessage mail = mailSender.createMimeMessage(); MimeMessageHelper
+	 * mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+	 * 
+	 * mailHelper.setFrom(from);
+	 * 
+	 * mailHelper.setTo(to); mailHelper.setSubject(subject);
+	 * mailHelper.setText(content, true);
+	 * 
+	 * mailSender.send(mail); } catch (Exception e) { e.printStackTrace(); }
+	 * 
+	 * return checkNum + ""; }
+	 */
 	
 	
 	@PostMapping("updateEmail.yj")
@@ -448,7 +436,6 @@ public class MemberController {
     @PostMapping("updatePhone.yj")
     public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
 		Member loginUser = ((Member)session.getAttribute("loginUser"));
-		loginUser.setMbTel(phone);
 		
 		int result = mService.updatePhone(loginUser);
 		if(result > 0) {
@@ -540,56 +527,4 @@ public class MemberController {
     		throw new MemberException("주소 삭제에 실패하였습니다");
     	}
     }
-   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
