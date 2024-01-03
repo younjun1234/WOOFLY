@@ -3,10 +3,10 @@ package com.kh.woofly.board.model.service;
 import java.util.ArrayList;
 
 import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.PageInfo;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.common.PageInfo;
 
 public interface BoardService {
 
