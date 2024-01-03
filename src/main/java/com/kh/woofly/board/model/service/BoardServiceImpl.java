@@ -81,8 +81,8 @@ public class BoardServiceImpl implements BoardService{
 	
 	@Override
 	public ArrayList<LostBoard> selectLostBoardList(PageInfo pi, int i) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getLostBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getLostBoardLimit());
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 		return bDAO.selectLostBoardList(i, rowBounds);
 	}
 
