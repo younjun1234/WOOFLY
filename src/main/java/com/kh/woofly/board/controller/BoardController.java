@@ -6,13 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,6 +26,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
 
@@ -47,8 +52,8 @@ public class BoardController {
 			int listCount = bService.getListCount(1);
 			
 			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-			ArrayList<Board> list = bService.selectBoardList(pi, 1);		
-			ArrayList<Attachment> aList = bService.selectAttmBoardList(null);
+			ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
 			
 			if(list != null) {
 				model.addAttribute("pi", pi);
@@ -70,8 +75,8 @@ public class BoardController {
 			if(loginUser != null) {
 				id = loginUser.getMbId();
 			}
-			Board b = bService.selectBoard(bNo);
-			ArrayList<Attachment> list = bService.selectAttmBoardList((Integer)bNo); 
+			Board b = bService.selectFreeBoard(bNo);
+			ArrayList<Attachment> list = bService.selectAttmFreeBoardList((Integer)bNo); 
 			if(b != null) {
 				model.addAttribute("b", b);
 				model.addAttribute("page", page);
@@ -94,55 +99,127 @@ public class BoardController {
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 			b.setMbId(boardWriter);
 			
-			int result = bService.insertBoard(b);
+			int result = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
 			
-			if(result > 0) {
-				return "redirect:list.bo";
-			} else {
-				throw new BoardException("게시글 작성을 실패하였습니다.");
+		    if (result > 0) {
+		        if (files != null && !files.isEmpty()) {
+		            ArrayList<Attachment> attachments = new ArrayList<>();
+
+		            for (MultipartFile file : files) {
+		                String savedFileName = saveBoardFile(file); 
+		                
+		                Attachment attachment = new Attachment();
+		                attachment.setAttmPath(savedFileName);
+		                attachment.setAttmRefType("B"); 
+		                attachment.setAttmRefNo(b.getBNo()); 
+		                
+		                attachments.add(attachment);
+		            }
+
+		            result = bService.insertFreeAttm(attachments);
+//		            if (result <= 0) {
+//		                // 첨부 파일 저장 실패 시 예외 처리 가능
+//		            }
+		        }
+		        return "redirect:/board/free"; 
+		    } else {
+		        throw new BoardException("게시글 작성을 실패하였습니다.");
+		    }
+		}
+			
+		
+		
+		// 파일 저장소 파일 저장(copy)
+		public String saveBoardFile(MultipartFile file) {
+			String os = System.getProperty("os.name").toLowerCase();
+			String savePath = null;
+			if (os.contains("win")) {
+				savePath = "C:\\uploadFiles\\woolfy";
+			} else if (os.contains("mac")) {
+				savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 			}
+			
+			File folder = new File(savePath);
+			if(!folder.exists()) {
+				folder.mkdirs();
+			}
+			// 2. 저장된 file rename 
+			Date time = new Date(System.currentTimeMillis());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			int ranNum = (int)(Math.random()*100000);
+			
+			String originFileName = file.getOriginalFilename();
+			String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+			
+			// 3. rename된 파일을 저장소에 저장
+			String renamePath = folder + "/" + renameFileName;
+			try {
+				file.transferTo(new File(renamePath));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			return renameFileName;
 		}
 		
-		/*
-		 * public String[] saveFile(MultipartFile upload) { String root = "C:\\"; String
-		 * savePath = root + "\\finaluploadFiles";
-		 * 
-		 * File folder = new File(savePath); if(!folder.exists()) { folder.mkdir(); }
-		 * //2. 저장될 파일 rename Date time = new Date(System.currentTimeMillis());
-		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); int ranNum
-		 * = (int)(Math.random()*100000);
-		 * 
-		 * String originFileName = upload.getOriginalFilename(); String renameFileName =
-		 * sdf.format(time) + ranNum +
-		 * originFileName.substring(originFileName.lastIndexOf(".")); //substring는 일부를
-		 * 추출해오는 것 //(학생랜덤.xslx)이면 .뒤의 xslx만 가져와 확장자를 추출해 낼 수 있음
-		 * 
-		 * //3. rename된 파일을 저장소에 저장
-		 * 
-		 * String renamePath = folder + "\\" + renameFileName; try {
-		 * upload.transferTo(new File(renamePath)); } catch (IllegalStateException e) {
-		 * e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-		 * 
-		 * String[] returnArr = new String[2]; returnArr[0] = savePath;//파일 저장소 경로
-		 * returnArr[1] = renameFileName;
-		 * 
-		 * return returnArr; }
-		 * 
-		 * 
-		 * private void deleteFile(String fileName) { String root = "C:\\"; String
-		 * savePath = root + "\\uploadFiles";
-		 * 
-		 * File f = new File(savePath + " \\" + fileName); if(f.exists()) { f.delete();
-		 * }
-		 * 
-		 * 
-		 * }
-		 */
+		
+		private void deleteBoardFile(String fileName) {
+			String os = System.getProperty("os.name").toLowerCase();
+			String savePath = null;
+			if (os.contains("win")) {
+				savePath = "C:\\uploadFiles\\woolfy";
+			} else if(os.contains("mac")) {
+				savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
+			}
+			File f = new File(savePath + fileName);
+			if(f.exists()) {
+				f.delete();
+			}
+			
+		}
 
 		@GetMapping("/board/free/edit")
 		public String freeBoardEdit() {
 			
 			return "freeBoardEdit";
+		}
+		
+		@PostMapping("/board/free/delete")
+		public String deleteBoard(@RequestParam("bNo") int bNo) throws BoardException {
+			int result1 = bService.deleteFreeBoard(bNo);
+			int result2 = bService.statusNAttm(bNo);
+			System.out.println(bNo);
+			if(result1 > 0 && result2> 0) {
+				return "redirect:/board/free";
+			} else {
+				throw new BoardException("게시글 삭제 실패");
+			}
+		}
+		
+		@GetMapping(value="/insertFreeReply.yk", produces="application/json; charset=UTF-8")
+		@ResponseBody
+		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+			int result = bService.insertFreeReply(r);
+			ArrayList<Reply> list = bService.selectFreeReply(bNo);
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : list) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("reRStatus", reply.getReRStatus());
+				json.put("mbId", reply.getMbId());
+				jArr.put(json);
+			}
+			
+			
+			return jArr.toString();
+			
 		}
 		
 		// 2. 도그워커 //

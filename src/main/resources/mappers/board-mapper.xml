@@ -10,7 +10,7 @@
 		where b_status = 'Y'
 	</select>
 
-	<select id="selectBoardList" resultType="Board">
+	<select id="selectFreeBoardList" resultType="Board">
 		select *
 		from board
 		join member using (mb_id)
@@ -18,7 +18,7 @@
 		order by b_no desc
 	</select>
 
-	<select id="selectAttmBoardList" resultType="Attachment">
+	<select id="selectAttmFreeBoardList" resultType="Attachment">
 		select *
 		from attachment
 		where attm_status='Y'
@@ -28,25 +28,61 @@
 		order by attm_id
 	</select>
 	
-	<select id="selectBoard" parameterType="board" resultMap="BoardResult">
+	<select id="selectFreeBoard" resultType="board">
 		select *
 		from board
 			join member using (mb_id)
 		where b_status = 'Y' and b_no = #{ bNo }
 	</select>
 	
-	<resultMap type="Board" id="BoardResult">
-	    <result column="b_content" property="bContent" jdbcType="CLOB" javaType="java.lang.String"/>
-	</resultMap>
-	
-	<insert id="insertBoard" useGeneratedKeys="true">
-		<selectKey order="BEFORE" resultType="_int"	keyProperty="bNo">
-			select seq_b_No.nextval from dual
-		</selectKey>
 
-		insert into board
-		values (#{bNo}, #{bTitle}, #{bContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+	<insert id="insertFreeBoard">
+	    <selectKey keyProperty="bNo" order="BEFORE" resultType="_int"> 
+	        select seq_b_no.nextval as bNo from dual
+	    </selectKey>
+	    insert into board 
+	    values (#{bNo}, #{bTitle}, default, SYSDATE, default, #{mbId}, #{bContent})
 	</insert>
+
+	<insert id="insertFreeAttm">
+		insert all
+		<foreach collection="list" item="item">
+			into attachment
+			values(attm_seq.nextval, #{item.originalName}, #{item.renameName},
+			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, default)
+		</foreach>
+		select * from dual
+	</insert>
+	
+	<update id="deleteFreeBoard">
+		update board
+		set b_status = 'N'
+		where b_no = #{ bNo }
+	</update>
+	
+	<update id="statusNAttm">
+		update attachment
+		set attm_status = 'N'
+		where attm_ref_no = #{attmRefNo}
+	</update>
+	
+	<insert id="insertFreeReply">
+      insert into reply
+      values(reply_seq.nextval, 'B', #{bNo}, 
+            #{reContent}, sysdate, default, default, default, #{mbId})
+   </insert>
+	
+	<select id="selectFreeReply" resultType="Reply">
+		select *
+		from reply
+			join member using (mb_id)
+		where b_no = #{bNo} and re_d_status = 'N'
+		order by r_no desc
+	</select>
+	
+	
+	
+	
 	
 	
 	<!-- 실종게시판 -->

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 
@@ -12,15 +13,25 @@ public interface BoardService {
 //	자유게시판 "/board/free"
 	int getListCount(int i);
 
-	ArrayList<Board> selectBoardList(PageInfo pi, int i);
+	ArrayList<Board> selectFreeBoardList(PageInfo pi, int i);
 
-	ArrayList<Attachment> selectAttmBoardList(Integer bId);
+	ArrayList<Attachment> selectAttmFreeBoardList(Integer bId);
 
-//	/board/free/detail
-	Board selectBoard(int bNo);
+	Board selectFreeBoard(int bNo);
 
-//	/board/free/insertFreeBoard
-	int insertBoard(Board b);
+	int insertFreeBoard(Board b);
+
+	int insertFreeAttm(ArrayList<Attachment> attachments);
+
+	int deleteFreeBoard(int bNo);
+
+	int statusNAttm(int bNo);
+
+	int insertFreeReply(Reply r);
+
+	ArrayList<Reply> selectFreeReply(int bNo);
+
+
 
 // 실종신고 게시판 "/board/lost"
 	int getMlistCount(int i);

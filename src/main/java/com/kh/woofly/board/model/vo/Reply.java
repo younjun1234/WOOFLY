@@ -15,13 +15,15 @@ import lombok.ToString;
 @ToString
 
 public class Reply {
-	private int replyId;
-	private String replyContent;
-	private int refBoardId;
-	private String replyWriter;
-	private String nickName;
-	private Date replyCreateDate;
-	private Date replyModifyDate;
-	private String replyStatus;
+
+	private int rNo;
+	private String bType;
+	private int bNo;
+	private String reContent;
+	private Date reDate;
+	private int reLike;
+	private String reDStatus;
+	private String reRStatus;
+	private String mbId;
 }
 

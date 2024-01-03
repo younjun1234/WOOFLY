@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
 
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
@@ -26,29 +27,53 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public ArrayList<Board> selectBoardList(PageInfo pi, int i) {
+	public ArrayList<Board> selectFreeBoardList(PageInfo pi, int i) {
 		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-		return bDAO.selectBoardList(i, rowBounds);
+		return bDAO.selectFreeBoardList(i, rowBounds);
 	}
 
 	@Override
-	public ArrayList<Attachment> selectAttmBoardList(Integer bId) {
-		return bDAO.selectAttmBoardList(bId);
+	public ArrayList<Attachment> selectAttmFreeBoardList(Integer bId) {
+		return bDAO.selectAttmFreeBoardList(bId);
 	}
 
-//	/board/free/detail
 	@Override
-	public Board selectBoard(int bNo) {
-		return bDAO.selectBoard(bNo);
+	public Board selectFreeBoard(int bNo) {
+		return bDAO.selectFreeBoard(bNo);
 	}
 
-//	/board/free/insertFreeBoard
 	@Override
-	public int insertBoard(Board b) {
-		return bDAO.insertBoard(b);
+	public int insertFreeBoard(Board b) {
+		return bDAO.insertFreeBoard(b);
 	}
 
+	@Override
+	public int insertFreeAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertFreeAttm(attachments);
+	}
+
+	@Override
+	public int deleteFreeBoard(int bNo) {
+		return bDAO.deleteFreeBoard(bNo);
+	}
+
+	@Override
+	public int statusNAttm(int bNo) {
+		return bDAO.statusNAttm(bNo);
+	}
+
+	@Override
+	public int insertFreeReply(Reply r) {
+		return bDAO.insertFreeReply(r);
+	}
+
+	@Override
+	public ArrayList<Reply> selectFreeReply(int bNo) {
+		return bDAO.selectFreeReply(bNo);
+	}
+
+	
 // 실종신고 게시판
 	@Override
 	public int getMlistCount(int i) {
