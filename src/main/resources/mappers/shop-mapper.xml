@@ -29,7 +29,7 @@
 		SELECT *
 		FROM PRODUCT_CATEGORY
 			<if test="i != null">
-		   		JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_CATEGORY_NO)
+			   	JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_CATEGORY_NO)
 		    </if>
 	</select>
 	
@@ -37,7 +37,10 @@
 	    SELECT *
 	    FROM PRODUCT
 		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
-	    ORDER BY PRODUCT_ID
+		<if test="cNo != null">
+			WHERE PRODUCT_DETAIL_NO = #{cNo}
+		</if>
+	    ORDER BY PRODUCT_ID DESC
 	</select>
 	
 	<!-- 상품사진 전용 -->
@@ -55,5 +58,37 @@
 		    )
 		</if>
 	</select>
+	
+	<!-- String(보드타입)으로 카운트 가져오기 -->
+	<select id="getProductCount" resultType="_int">
+		SELECT COUNT(*)
+		<if test="string == null">
+			FROM DUAL
+		</if> <!-- .equlse('P') -->
+		<if test="string != null">
+			FROM PRODUCT
+		</if>
+	</select>
+	
+	<select id="getDetailCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE PRODUCT_DETAIL_NO = #{cNo}
+	</select>
+	
+	<select id="selectedCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT
+		    JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_DETAIL_NO)
+		WHERE (PRODUCT_DETAIL_NO, PRODUCT_ID)IN (
+		        SELECT PRODUCT_DETAIL_NO, MIN(PRODUCT_ID)
+		        FROM PRODUCT
+				<if test="cNo != null">
+					WHERE PRODUCT_DETAIL_NO = #{cNo}
+				</if>
+		        GROUP BY PRODUCT_DETAIL_NO
+		    )
+	</select>
+	
 	
 </mapper>

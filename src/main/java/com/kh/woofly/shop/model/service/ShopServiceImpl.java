@@ -2,9 +2,11 @@ package com.kh.woofly.shop.model.service;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.shop.model.dao.ShopDAO;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -32,13 +34,33 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Product> selectProducts() {
-		return sDAO.selectProducts();
+	public ArrayList<Product> selectProducts(PageInfo pi, Integer cNo) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		return sDAO.selectProducts(rowBounds, cNo);
 	}
 
 	@Override
 	public ArrayList<ProductAttm> selectProductAttm(String string) {
 		return sDAO.selectProductAttm(string);
 	}
+
+	@Override
+	public int getProductCount(String string) {
+		return sDAO.getProductCount(string);
+	}
+
+	@Override
+	public int getDetailCount(int cNo) {
+		return sDAO.getDetailCount(cNo);
+	}
+
+	@Override
+	public ArrayList<ProductCategory> selectedCategory(Integer cNo) {
+		return sDAO.selectedCategory(cNo);
+	}
+
 
 }
