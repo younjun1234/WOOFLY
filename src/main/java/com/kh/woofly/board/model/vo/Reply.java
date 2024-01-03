@@ -14,12 +14,14 @@ import lombok.ToString;
 @Setter
 @ToString
 
-public class Board {
+public class Reply {
+	private int rNo;
+	private String bType;
 	private int bNo;
-	private String bTitle;	
-	private int bCount;
-	private Date bCreateDate;
-	private String bStatus;
+	private String reContent;
+	private Date reDate;
+	private int reLike;
+	private String reDStatus;
+	private String reRStatus;
 	private String mbId;
-	private String bContent;
 }

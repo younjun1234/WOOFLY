@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.Board;
 
 @Mapper
@@ -14,13 +15,25 @@ public interface BoardDAO {
 
 	int getListCount(int i);
 
-	ArrayList<Board> selectBoardList(int i, RowBounds rowBounds);
+	ArrayList<Board> selectFreeBoardList(int i, RowBounds rowBounds);
 
-	ArrayList<Attachment> selectAttmBoardList(Integer bId);
+	ArrayList<Attachment> selectAttmFreeBoardList(Integer bId);
 
-	Board selectBoard(int bNo);
+	Board selectFreeBoard(int bNo);
 
-	int insertBoard(Board b);
+	int insertFreeBoard(Board b);
+
+	int insertFreeAttm(ArrayList<Attachment> attachments);
+
+	int deleteFreeBoard(int bNo);
+
+	int statusNAttm(int bNo);
+
+	int insertFreeReply(Reply r);
+
+	ArrayList<Reply> selectFreeReply(int bNo);
+
+
 
 
 
