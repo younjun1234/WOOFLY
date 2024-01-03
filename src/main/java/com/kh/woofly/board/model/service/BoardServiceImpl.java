@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.common.PageInfo;
 
 @Service
 public class BoardServiceImpl implements BoardService{

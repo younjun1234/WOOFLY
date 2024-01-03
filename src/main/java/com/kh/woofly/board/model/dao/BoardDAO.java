@@ -7,7 +7,6 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
-import com.kh.woofly.board.model.vo.Board;
 
 @Mapper
 public interface BoardDAO {
