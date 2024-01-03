@@ -40,6 +40,10 @@ public interface BoardService {
 
 	LostBoard selectLostBoard(int bId, Object object);
 
+//	수정된 첨부파일 게시글 업로드 //
+//	int deleteLostAttm(ArrayList<String> delRename);
+	
+
 
 	
 	
