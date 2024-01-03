@@ -15,7 +15,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		String os = System.getProperty("os.name").toLowerCase();
 		if(os.contains("win")) {
+
 			registry.addResourceHandler("/image/**").addResourceLocations("file:///C:/woofly/");
+
 		} else if (os.contains("mac")){
 			registry.addResourceHandler("/image/**")
 					.addResourceLocations("file:/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/");
