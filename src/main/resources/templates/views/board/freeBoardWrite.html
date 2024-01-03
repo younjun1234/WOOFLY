@@ -18,7 +18,7 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6>작성자</h6>
+						<h6></h6>
 						<p>[[${SYSDATE}]]</p>
 					</div>
 				</div>
@@ -27,11 +27,12 @@
 			<form  action="/board/free/insertFreeBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="bTitle" placeholder="">
+				  	<input type="text" class="form-control" id="bTitle" name="bTitle" placeholder="">
 				</div>
+				
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="bContent" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="bContent" name="bContent" rows="20" style="resize: none;"></textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
@@ -64,6 +65,9 @@
 				
 				fileArea.append(newDiv);
 			});
+			
+			console.log(bTitle);
+			console.log(bContent);
 		}
 	</script>
 	

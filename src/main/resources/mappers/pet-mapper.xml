@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kh.woofly.pet.model.dao.PetDAO">
+	<insert id="petAdd" parameterType="Pet">
+		INSERT INTO pet
+		VALUES (pet_seq.nextval, default, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, null, #{petIntro})
+	</insert>
+	
+	<select id="petInfoList" resultType="Pet">
+		select *
+		from pet
+		where owner_id = #{ownerId}
+	</select>
+	
+	<select id="petDetail" resultType="Pet">
+		select *
+		from pet
+		where pet_id = #{petId}
+	</select>
+	
+	<update id="petEditName">
+		update pet
+		set pet_name = #{newPetName}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditIntro">
+		update pet
+		set pet_intro = #{newPetIntro}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditBirth">
+		update pet
+		set pet_birth = #{newPetBirth}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditBreed">
+		update pet
+		set pet_breed = #{newPetBreed}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditWeight">
+		update pet
+		set pet_weight = #{newPetWeight}
+		where pet_id = #{petId}
+	</update> 
+	
+</mapper>
