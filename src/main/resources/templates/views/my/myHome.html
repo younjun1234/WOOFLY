@@ -60,34 +60,30 @@
 						<button class="btn btn-dark btn-sm" onclick="location.href='/my/buying'">더보기</button>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
+				<div class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="buying, buyingStat: ${oList}">
+					<input type="hidden" th:value="${ buying.orderId }">
 					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
+						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}">
+							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
+						</th:block>
+						<th:block th:each="product, productStat : ${pList}" th:if="${productStat.index == buyingStat.index}">
+							<div class="ms-3" style="line-height: 100px;">[[${product.productName}]]</div>
+						</th:block>			
 					</div>
 					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
+						
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 0">배송전</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 1">배송중</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 2">배송완료</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[|${#numbers.formatInteger(buying.total, 3, 'COMMA')} 원|]]</div>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
+				<div class="d-flex justify-content-center align-items-center" style="min-height: 200px" th:if="${oList == null }">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						<p>구매 입찰 내역이 없습니다.</p>
+						<div>
+							<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -192,8 +188,16 @@
 		<!-- 여기까지가 수정 -->
 		<!-- 여기까지가 수정 -->
 		</div>
-		
 	</div>
-
+	
+	<script>
+		const solds = document.querySelectorAll('.sold');
+		for (const sold of solds) {
+			sold.addEventListener('click', () => {
+				window.location.href = '/my/buying/' + sold.querySelector('input').value;
+			})
+		}
+		
+	</script>
 </body>
 </html>

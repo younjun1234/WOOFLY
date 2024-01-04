@@ -18,13 +18,16 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6>작성자</h6>
-						<p>2023.10.16</p>
+						<!--<h6>작성자</h6>
+						<p>2023.10.16</p>-->
+						<h6>[[${m.mbNickName}]]</h6>
+						<p>[[${m.mCreateDate}]]</p>
 					</div>
 				</div>
 			</div>
 			
-			<form>
+			<!-- <form action="/board/lost"> 글 등록 눌렀을 때 boardLost로 가게 하고 싶은데 어케하는지 모르겠음..-->
+			<form action="/board/lost">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
 					    <select class="form-select mb-1">
@@ -33,14 +36,14 @@
 						</select>
 				</div>
 				<div class="mb-3">
-					<label for="title" class="form-label">제목</label>
+					<label for="title" class="form-label">[[${m.mTitle}]]</label><!--제목-->
 				  	<input type="text" class="form-control" id="title" placeholder="">
 				</div>
 				<div class="mb-3">
-				  	<label for="content" class="form-label">내용</label>
+				  	<label for="content" class="form-label">[[${m.mContent}]]</label><!--내용-->
 				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
 				</div>
-				<label for="file" class="form-label">첨부파일</label><br>
+				<label for="file" class="form-label">[[${a.attmId}]]</label><br><!--첨부파일-->
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
 					   <div class="mb-3">

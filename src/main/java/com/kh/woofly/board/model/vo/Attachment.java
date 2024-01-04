@@ -25,4 +25,5 @@ public class Attachment {
 	private String attmRefType;
 	private int attmRefNo;
 	private int attmLevel;
+
 }
