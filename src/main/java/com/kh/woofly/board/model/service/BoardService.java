@@ -17,13 +17,15 @@ public interface BoardService {
 
 	ArrayList<Attachment> selectAttmFreeBoardList(Integer bId);
 
-	Board selectFreeBoard(int bNo);
+	Board selectFreeBoard(int bNo, String id);
 
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
 
 	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeReply(int rNo);
 
 	int statusNAttm(int bNo);
 
@@ -50,6 +52,8 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
 
 
 	

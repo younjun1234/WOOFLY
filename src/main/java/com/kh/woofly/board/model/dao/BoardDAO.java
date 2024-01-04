@@ -23,11 +23,15 @@ public interface BoardDAO {
 
 	Board selectFreeBoard(int bNo);
 	
+	int updateFreeCount(int bNo);
+	
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
 
 	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeReply(int rNo);
 
 	int statusNAttm(int bNo);
 
@@ -48,6 +52,11 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+
+	
 
 	
 	

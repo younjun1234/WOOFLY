@@ -11,12 +11,13 @@
 	</select>
 
 	<select id="selectFreeBoardList" resultType="Board">
-		select *
-		from board
-		join member using (mb_id)
-		where b_status = 'Y' 
-		order by b_no desc
+	    select b.*, m.mb_nickname as "mbNickname" 
+	    from board b 
+	    join member m on b.mb_id = m.mb_id 
+	    where b.b_status = 'Y' 
+	    order by b.b_no desc
 	</select>
+
 
 	<select id="selectAttmFreeBoardList" resultType="Attachment">
 		select *
@@ -29,10 +30,10 @@
 	</select>
 	
 	<select id="selectFreeBoard" resultType="board">
-		select *
-		from board
-			join member using (mb_id)
-		where b_status = 'Y' and b_no = #{ bNo }
+		select  b.*, m.mb_nickname as "mbNickname" 
+		from board b
+			join member m on b.mb_id = m.mb_id 
+		where b.b_status = 'Y' and b.b_no = #{ bNo }
 	</select>
 	
 
@@ -43,6 +44,12 @@
 	    insert into board 
 	    values (#{bNo}, #{bTitle}, default, SYSDATE, default, #{mbId}, #{bContent})
 	</insert>
+	
+	<update id="updateFreeCount">
+		update board
+		set b_count = b_count +1
+		where b_no = #{bNo}
+	</update>
 
 	<insert id="insertFreeAttm">
 		insert all
@@ -60,6 +67,12 @@
 		where b_no = #{ bNo }
 	</update>
 	
+	<update id="deleteFreeReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo }
+	</update>
+	
 	<update id="statusNAttm">
 		update attachment
 		set attm_status = 'N'
@@ -69,15 +82,15 @@
 	<insert id="insertFreeReply">
       insert into reply
       values(reply_seq.nextval, 'B', #{bNo}, 
-            #{reContent}, sysdate, default, default, default, #{mbId})
+            #{reContent}, SYSDATE, default, default, #{mbId})
    </insert>
 	
 	<select id="selectFreeReply" resultType="Reply">
-		select *
-		from reply
-			join member using (mb_id)
-		where b_no = #{bNo} and re_d_status = 'N'
-		order by r_no desc
+		select  r.*, m.mb_nickname as "mbNickname" 
+		from reply r
+			join member m on r.mb_id = m.mb_id 
+		where r.b_no = #{bNo} and r.re_d_status = 'Y'
+		order by r.r_no desc
 	</select>
 	
 	
@@ -127,7 +140,7 @@
 		</selectKey>
 
 		insert into Missing_Board
-		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickname})
 	</insert>
 	
 	<!-- 	 <select id="getListCount" resultType="_int">
