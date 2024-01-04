@@ -14,23 +14,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.board.model.exception.BoardException;
-import com.kh.woofly.board.model.service.BoardServiceImpl;
+import com.kh.woofly.board.model.service.BoardService;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
-import com.kh.woofly.board.model.service.BoardService;
-import com.kh.woofly.board.model.vo.Board;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -473,53 +471,56 @@ public class BoardController {
 			return "lostBoardEdit";
 		}
 		
-//		수정한 첨부파일 게시글을 업로드 //
-//		@PostMapping("/board/lost/updateLostBoard")
+//		//...하는 중...//
+////		// 수정한 첨부파일 게시글을 업로드 //
+//		@PostMapping("/board/lost/updateLostBoard") // 어노테이션 사용해 연결 요청(바인딩).//(HTTP 요청에서 전달된 데이터가, 메서드의 매개변수에 자동으로 연결되어(바인딩되어), 메서드에서 활용될 수 있도록 함)
 //		   public String updateLostBoardAttm(@ModelAttribute LostBoard m,
 //		                     @RequestParam("page") int page,
 //		                     @RequestParam("deleteLostBoardAttm") String[] deleteLostBoardAttm,
 //		                     @RequestParam("file") ArrayList<MultipartFile> files,
 //		                     HttpServletRequest request, RedirectAttributes re) {
-//		      
-//		      m.setLostBoardType(2);
-//		      
-//		      ArrayList<Attachment> mList = new ArrayList<>();
-//		      for(int i = 0; i < files.size(); i++) {
-//		         MultipartFile upload = files.get(i);
-//		         
-//		         if(!upload.getOriginalFilename().equals("")) {
-//		            String[] returnArr = saveFile(upload);
-//		            if(returnArr[1] != null) {
-//		               Attachment a = new Attachment();
-//		               a.setOriginalName(upload.getOriginalFilename());
-//		               a.setRenameName(returnArr[1]);
-//		               a.setAttmPath(returnArr[0]);
+//		      // m 객체의 lostBoardType 필드에 2라는 값을 설정
+//		    // m.setLostBoardType(2); // set다음에 오는 LostBoardType은 해당필드의 이름.(소괄호 안에는 필드에 설정할 값 담는다)
+//		      // ㄴ우린 게시판이 다 첨부파일 게시판이니까 게시판 타입 설정해줄 필요 없지않나
+//		      // 밑은 ArrayList 클래스를 이용하여 Attachment 타입의 객체를 저장하는 리스트를 생성하는 코드
+//		      ArrayList<Attachment> mList = new ArrayList<>(); // mList는 Attachment타입의 객체들을 저장하고 관리하는 동적 배열.
+//		      for(int i = 0; i < files.size(); i++) { // i의 초기값은 0; i가 파일사이즈보다 작을때; i는 1씩증가
+//		         MultipartFile LostUpload = files.get(i); // 업로드된 파일들(files) 중에서 인덱스 i에 해당하는 파일을 가져와 MultipartFile 타입의 변수 LostUpload에 할당하는 코드. 
+//		         // files는 @RequestParam("file") ArrayList<MultipartFile> files에서 전달된 파일들의 리스트.// get(i)는 리스트에서 인덱스 i에 해당하는 요소를 가져오는 메서드.
+//		         if(!LostUpload.getOriginalFilename().equals("")) {
+//		            String[] returnLostArr = saveLostFile(LostUpload);
+//		            if(returnLostArr[1] != null) {
+//		               Attachment a = new Attachment(); // a는 Attachment vo를 뜻한다.
+//		               a.setOriginalName(LostUpload.getOriginalFilename());
+//		               a.setRenameName(returnLostArr[1]);
+//		               a.setAttmPath(returnLostArr[0]);
 //		               
 //		               mList.add(a);
-//		            }
+//		            }//ㄴ업로드된 파일에 대한 정보가 Attachment 객체에 담겨 mList에 추가, mList는 업로드된 파일들의 정보를 담고 있는 리스트가 됨.
 //		         }
 //		      }
 //		      
-//		      ArrayList<String> delRename = new ArrayList<>();
-//		      ArrayList<Integer> delLevel = new ArrayList<>();
+//		      ArrayList<String> delLostRename = new ArrayList<>();
+//		      ArrayList<Integer> delLostLevel = new ArrayList<>();
 //		      
 //		      for(int i = 0; i < deleteLostBoardAttm.length; i++) {
 //		         //System.out.println(deleteAttm[i]);
-//		         String rename = deleteLostBoardAttm[i];      // 취소바구니에 담긴 스트링 배열
-//		         if(!rename.equals("none")) {
-//		            String[] split = rename.split("/");
-//		            delRename.add(split[0]);
-//		            delLevel.add(Integer.parseInt(split[1]));
+//		         String Lostrename = deleteLostBoardAttm[i];      // 취소바구니에 담긴 스트링 배열
+//		         if(!Lostrename.equals("none")) {
+//		            String[] split = Lostrename.split("/");
+//		            delLostRename.add(split[0]);
+//		            delLostLevel.add(Integer.parseInt(split[1]));
 //		         }
-//		      }
+//		      }// delLostRename 리스트에는 삭제할 첨부 파일의 리네임된 이름이, 
+//		       // delLostLevel 리스트에는 해당 첨부 파일의 레벨이 저장.(파일에 레벨을 설정해 놓으면 파일의 중요도나 순서 표시를 할 때 용이.)
 //		      
 //		      int deleteLostAttmResult = 0;
 //		      int updateLostResult = 0;
 //		      boolean existBeforeLostAttm = true;
-//		      if(!delRename.isEmpty()) {
-//		    	  deleteLostAttmResult = bService.deleteLostAttm(delRename); // DB삭제
+//		      if(!delLostRename.isEmpty()) {
+//		    	  deleteLostAttmResult = bService.deleteLostAttm(delLostRename); // DB삭제
 //		         if(deleteLostAttmResult > 0) {
-//		            for(String rename : delRename) {
+//		            for(String rename : delLostRename) {
 //		               deleteFile(rename);   // 서버 저장소에서 삭제
 //		            }
 //		         }
@@ -528,7 +529,7 @@ public class BoardController {
 //		         // deleteAttm : 파일삭제를 명시 안해도 none값으로 들어오기 때문에
 //		         //            기존파일 총량을 알 수 있음
 //		         
-//		         if(delRename.size() == deleteLostAttm.length) {
+//		         if(delLostRename.size() == deleteLostAttm.length) {
 //		            //기존 파일 전부 삭제
 //		        	 existBeforeLostAttm = false;
 //		            if(mList.isEmpty()) {
@@ -537,9 +538,9 @@ public class BoardController {
 //		         } else {
 //		            // 기존 파일 일부 삭제
 //		            // 썸네일레벨을 가지고 있는 파일이 있는지 확인 후 조치
-//		            for(int level : delLevel) {
+//		            for(int level : delLostLevel) {
 //		               if(level == 0) {
-//		                  bService.updateAttmLevel(b.getBoardId());
+//		                  bService.updateAttmLevel(m.getLostBoardId());
 //		                  break;
 //		               }
 //		            }
@@ -564,13 +565,13 @@ public class BoardController {
 //		      }
 //		      
 //		      updateLostResult = bService.updateLostBoard(m);
-//		      int updateAttmResult = 0;
+//		      int updateLostAttmResult = 0;
 //		      if(!mList.isEmpty()) {
-//		         updateAttmResult = bService.insertLostAttm(mList);
+//		    	  updateLostAttmResult = bService.insertLostAttm(mList);
 //		      }
 //		      
-//		      if(updateLostResult + updateAttmResult == mList.size() + 1) {
-//		         if(delRename.size() == deleteLostAttm.length && updateAttmResult == 0) {
+//		      if(updateLostResult + updateLostAttmResult == mList.size() + 1) {
+//		         if(delRename.size() == deleteLostAttm.length && updateLostAttmResult == 0) {
 //		            return "redirect:list.bo";
 //		         } else {
 //		            re.addAttribute("bId", m.getLostBoardId());
@@ -581,54 +582,56 @@ public class BoardController {
 //		         throw new BoardException("첨부파일 게시글 수정을 실패하였습니다.");
 //		      }
 //		   }
-		
-		
-		
-		// 파일을 저장 경로 및 rename하여(이름 안겹치도록) 나중에 찾기 쉽게 함.
-		
-		public String[] saveFile(MultipartFile upload) {
-		      String root = "C:\\";
-		      String savePath = root + "\\uploadFiles";
-		      
-		      File folder = new File(savePath);
-		      if(!folder.exists()) {
-		         folder.mkdirs();
-		      }
-		      
-		      // 2. 저장될 파일 rename
-		      Date time = new Date(System.currentTimeMillis());
-		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		      int ranNum = (int)(Math.random()*100000);
-		      
-		      String originFileName = upload.getOriginalFilename();
-		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
-		      
-		      // 3. rename된 파일을 저장소에 저장
-		      String renamePath = folder + "\\" + renameFileName;
-		      try {
-		         upload.transferTo(new File(renamePath));
-		      } catch (IllegalStateException e) {
-		         e.printStackTrace();
-		      } catch (IOException e) {
-		         e.printStackTrace();
-		      }
-		      
-		      String[] returnArr = new String[2];
-		      returnArr[0] = savePath;   // 경로 있음
-		      returnArr[1] = renameFileName; // renameName이 있음
-		      
-		      return returnArr;
-		   }
-		
-		public void deleteFile(String fileName) {
-			String root = "C:\\";
-			String savePath = root + "\\uploadFiles";
-			
-			File f = new File(savePath + "\\" + fileName);
-			if(f.exists()) { // f가 있으면 
-				f.delete();// 삭제
-			}
-		}
+//		
+//		
+//		
+//}
+//
+//		// 파일을 저장 경로 및 rename하여(이름 안겹치도록) 나중에 찾기 쉽게 함.
+//		
+//		public String[] saveLostFile(MultipartFile lostUpload) {
+//		      String root = "C:\\";
+//		      String savePath = root + "\\uploadLostFiles";
+//		      
+//		      File folder = new LostFile(savePath);
+//		      if(!folder.exists()) {
+//		         folder.mkdirs();
+//		      }
+//		      
+//		      // 2. 저장될 파일 rename
+//		      Date time = new Date(System.currentTimeMillis());
+//		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//		      int ranNum = (int)(Math.random()*100000);
+//		      
+//		      String originFileName = upload.getOriginalFilename();
+//		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+//		      
+//		      // 3. rename된 파일을 저장소에 저장
+//		      String renamePath = folder + "\\" + renameFileName;
+//		      try {
+//		         upload.transferTo(new File(renamePath));
+//		      } catch (IllegalStateException e) {
+//		         e.printStackTrace();
+//		      } catch (IOException e) {
+//		         e.printStackTrace();
+//		      }
+//		      
+//		      String[] returnArr = new String[2];
+//		      returnArr[0] = savePath;   // 경로 있음
+//		      returnArr[1] = renameFileName; // renameName이 있음
+//		      
+//		      return returnArr;
+//		   }
+//		
+//		public void deleteFile(String fileName) {
+//			String root = "C:\\";
+//			String savePath = root + "\\uploadFiles";
+//			
+//			File f = new File(savePath + "\\" + fileName);
+//			if(f.exists()) { // f가 있으면 
+//				f.delete();// 삭제
+//			}
+//		}
 		
 		
 		

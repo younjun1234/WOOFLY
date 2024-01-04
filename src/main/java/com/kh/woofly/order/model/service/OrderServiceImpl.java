@@ -1,10 +1,13 @@
 package com.kh.woofly.order.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.order.model.dao.OrderDAO;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
@@ -18,8 +21,19 @@ public class OrderServiceImpl implements OrderService{
 	private OrderDAO oDAO;
 
 	@Override
-	public ArrayList<Order> selectMyBuying(String id) {
-		return oDAO.selectMyBuying(id);
+	public ArrayList<Order> selectMyBuying(PageInfo pi, HashMap<String, Object> map) {
+		int offset;
+		int limit;
+		if (pi != null) {
+			offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+			limit = pi.getBoardLimit();
+		} else {
+			offset = 0;
+			limit = 5;
+		}
+		RowBounds rowbounds = new RowBounds(offset, limit);		
+		
+		return oDAO.selectMyBuying(rowbounds, map);
 	}
 
 	@Override
@@ -45,6 +59,11 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public Product selectMostExpensive(Order order) {
 		return oDAO.selectMostExpensive(order);
+	}
+
+	@Override
+	public int getBuyingCount(String id) {
+		return oDAO.getBuyingCount(id);
 	}
 
 }

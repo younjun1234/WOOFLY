@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.PageInfo;
-import com.kh.woofly.board.model.vo.Reply;
-
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.common.PageInfo;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -96,8 +95,8 @@ public class BoardServiceImpl implements BoardService{
 	
 	@Override
 	public ArrayList<LostBoard> selectLostBoardList(PageInfo pi, int i) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getLostBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getLostBoardLimit());
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
 		return bDAO.selectLostBoardList(i, rowBounds);
 	}
 
