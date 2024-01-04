@@ -2,6 +2,7 @@ package com.kh.woofly.board.model.vo;
 
 import java.sql.Date;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,5 @@ public class Board {
 	private String bStatus;
 	private String mbId;
 	private String bContent;
+	private String mbNickname;
 }

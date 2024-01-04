@@ -53,6 +53,7 @@ public class BoardController {
 			ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
 			ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
 			
+			System.out.println(list);
 			if(list != null) {
 				model.addAttribute("pi", pi);
 				model.addAttribute("list", list);
@@ -65,6 +66,11 @@ public class BoardController {
 			}
 		}
 		
+		@PostMapping("/board/free/search")
+		public String searchFreeBoard() {
+			return null;
+		}
+		
 		@GetMapping("/board/free/detail")
 		public String freeBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("bNo") int bNo, HttpSession session, Model model) throws BoardException {
 		
@@ -73,13 +79,16 @@ public class BoardController {
 			if(loginUser != null) {
 				id = loginUser.getMbId();
 			}
-			Board b = bService.selectFreeBoard(bNo);
+			Board b = bService.selectFreeBoard(bNo, id);
 			ArrayList<Attachment> list = bService.selectAttmFreeBoardList((Integer)bNo); 
+			ArrayList<Reply> rList = bService.selectFreeReply(bNo);
+			
 			if(b != null) {
 				model.addAttribute("b", b);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
-				System.out.println(b);
+				model.addAttribute("rList", rList);
+				System.out.println(rList);
 				return "freeBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
@@ -96,9 +105,9 @@ public class BoardController {
 		public String insertFreeBoard(@ModelAttribute Board b, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 			b.setMbId(boardWriter);
-			
+			//System.out.println(boardWriter);
 			int result = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
-			
+			//System.out.println(b.getBNo());
 		    if (result > 0) {
 		        if (files != null && !files.isEmpty()) {
 		            ArrayList<Attachment> attachments = new ArrayList<>();
@@ -115,9 +124,7 @@ public class BoardController {
 		            }
 
 		            result = bService.insertFreeAttm(attachments);
-//		            if (result <= 0) {
-//		                // 첨부 파일 저장 실패 시 예외 처리 가능
-//		            }
+		            
 		        }
 		        return "redirect:/board/free"; 
 		    } else {
@@ -183,7 +190,7 @@ public class BoardController {
 		}
 		
 		@PostMapping("/board/free/delete")
-		public String deleteBoard(@RequestParam("bNo") int bNo) throws BoardException {
+		public String deleteFreeBoard(@RequestParam("bNo") int bNo) throws BoardException {
 			int result1 = bService.deleteFreeBoard(bNo);
 			int result2 = bService.statusNAttm(bNo);
 			System.out.println(bNo);
@@ -194,14 +201,25 @@ public class BoardController {
 			}
 		}
 		
+		@PostMapping("/board/free/deleteReply")
+		public String deleteFreeReply(@RequestParam("rNo") int rNo){
+			int result = bService.deleteFreeReply(rNo);
+			
+			if(result >0 ) {
+				return "location.reload()";
+			} else {
+				throw new BoardException("댓글 삭제 실패");
+			}
+		}
+		
 		@GetMapping(value="/insertFreeReply.yk", produces="application/json; charset=UTF-8")
 		@ResponseBody
 		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
 			int result = bService.insertFreeReply(r);
-			ArrayList<Reply> list = bService.selectFreeReply(bNo);
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
 			
 			JSONArray jArr = new JSONArray();  
-			for(Reply reply : list) {
+			for(Reply reply : rlist) {
 				JSONObject json = new JSONObject();  
 				json.put("rNo", reply.getRNo());
 				json.put("bType", reply.getBType());
@@ -210,8 +228,8 @@ public class BoardController {
 				json.put("reDate", reply.getReDate());
 				json.put("reLike", reply.getReLike());
 				json.put("reDStatus", reply.getReDStatus());
-				json.put("reRStatus", reply.getReRStatus());
 				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickname());
 				jArr.put(json);
 			}
 			
@@ -219,6 +237,8 @@ public class BoardController {
 			return jArr.toString();
 			
 		}
+		
+	
 		
 		// 2. 도그워커 //
 

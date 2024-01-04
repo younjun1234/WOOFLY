@@ -38,8 +38,17 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public Board selectFreeBoard(int bNo) {
-		return bDAO.selectFreeBoard(bNo);
+	public Board selectFreeBoard(int bNo, String id) {
+		Board b = bDAO.selectFreeBoard(bNo);
+		if(b != null) {
+			if(id !=null && !b.getMbId().equals(id)) {
+				int result = bDAO.updateFreeCount(bNo);
+				if(result >0) {
+					b.setBCount(b.getBCount() + 1);
+				}
+			}
+		}
+		return b;
 	}
 
 	@Override
@@ -55,6 +64,11 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int deleteFreeBoard(int bNo) {
 		return bDAO.deleteFreeBoard(bNo);
+	}
+	
+	@Override
+	public int deleteFreeReply(int rNo) {
+		return bDAO.deleteFreeReply(rNo);
 	}
 
 	@Override
@@ -106,6 +120,8 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+
 	
 	
 	

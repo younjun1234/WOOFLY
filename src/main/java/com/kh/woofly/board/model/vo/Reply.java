@@ -23,7 +23,7 @@ public class Reply {
 	private Date reDate;
 	private int reLike;
 	private String reDStatus;
-	private String reRStatus;
 	private String mbId;
+	private String mbNickname;
 }
 

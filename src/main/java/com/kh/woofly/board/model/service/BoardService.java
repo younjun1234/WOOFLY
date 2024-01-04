@@ -17,13 +17,15 @@ public interface BoardService {
 
 	ArrayList<Attachment> selectAttmFreeBoardList(Integer bId);
 
-	Board selectFreeBoard(int bNo);
+	Board selectFreeBoard(int bNo, String id);
 
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
 
 	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeReply(int rNo);
 
 	int statusNAttm(int bNo);
 
@@ -51,8 +53,7 @@ public interface BoardService {
 
 	LostBoard selectLostBoard(int bId, Object object);
 
-//	수정된 첨부파일 게시글 업로드 //
-//	int deleteLostAttm(ArrayList<String> delRename);
+
 	
 
 
