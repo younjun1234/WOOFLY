@@ -49,10 +49,8 @@ select{
 				<div class="d-flex justify-content-center">
 					<form action="/editPetPhoto.dw" method="POST"
 						enctype="multipart/form-data" id="petPhotoForm">
-						<button type="button" class="btn btn-sm btn-outline-dark"
-							onclick="profileChange()">프로필 변경</button>
-						&nbsp;&nbsp; <input type="file" id="profile" name="file"
-							style="display: none;" accept="image/*" value="123">
+						<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 변경</button>&nbsp;&nbsp; 
+						<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
 					</form>
 					<form action="/deletePetPhoto.dw" method="POST">
 						<button type="button" class="btn btn-dark btn-sm">삭제</button>
@@ -87,15 +85,15 @@ select{
 						</div>
 					</div>
 				</form>
-				<form action="/petEditBirth.dw" method="post">
+				<form action="/petEditBirth.dw" method="post" id="birthForm">
 					<input type="hidden" name="petId" th:value="${p.petId}">
 					<div class="d-flex align-items-center justify-content-center">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">생년월일</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="date" name="petBirth" th:value="${p.petBirth}">
+								<input type="date" id="petBirth" name="petBirth" th:value="${p.petBirth}">
 								<div>
-									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
+									<button type="button" id="birthBtn" class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
 							</div>
 						</div>
@@ -190,11 +188,16 @@ select{
 					</div>
 				</form>
 				<form action="/petEditGender.dw" method="post">
+					<input type="hidden" name="petId" th:value="${p.petId}">
 					<div class="d-flex align-items-center justify-content-center">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">성별</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<p>[[${p.petGender}]]</p>
+								<select name="petGender">
+								  <option selected disabled>--</option>
+								  <option value="M" th:selected="${p.petGender == 'M'}">남아</option>
+								  <option value="F" th:selected="${p.petGender == 'F'}">여아</option>
+								</select>
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -203,11 +206,12 @@ select{
 					</div>
 				</form>
 				<form action="/petEditMemo.dw" method="post">
-					<div class="d-flex align-items-center justify-content-center">
+					<input type="hidden" name="petId" th:value="${p.petId}">
+					<div class="d-flex align-items-center justify-content-center mb-5">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">특이사항</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<p>[[${p.petMemo}]]</p>
+								<input type="text" name="petMemo" th:value="${p.petMemo}">
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -215,12 +219,7 @@ select{
 						</div>
 					</div>
 				</form>
-					<p>
-						<a href="#" id="deletePet" class="link-underline-secondary text-secondary d-flex justify-content-end me-5">마이펫프로필 삭제</a>
-					</p>
-					<!-- <div class="d-flex justify-content-center my-5">
-						<button class="btn btn-dark col-3">수정</button>
-					</div> -->
+				<a th:href="'/pet/petDelete/' + ${p.petId}" class="link-underline-secondary text-secondary d-flex justify-content-end me-5 mb-5">마이펫프로필 삭제</a>
 			</div>
 		</div>
 	</main>
@@ -242,8 +241,24 @@ select{
          }
       })
       
-     const thirdForm = document.getElementsByTagName('form')[2];
-      const pTags = thirdForm.querySelectorAll('p:not(.text-secondary):not(#deletePet)');
+      document.getElementById('birthBtn').addEventListener('click', function(){
+    	 const today = new Date();
+    	 const petBirth = document.getElementById('petBirth').value;
+    	 const petBirth2 = new Date(petBirth);
+    	 const birthForm = document.getElementById('birthForm');
+    	 
+    	 if(petBirth2 > today) {
+    		 alert("날짜를 다시 선택해주세요.");
+    	 } else {
+    		birthForm.submit();
+    	 }
+    	 
+    	 
+    	 
+      });
+      
+   	  const thirdForm = document.getElementsByTagName('form')[2];
+      const pTags = thirdForm.querySelectorAll('p:not(.text-secondary)');
       
          pTags.forEach(pTag => {
           pTag.addEventListener('click', function editContent() {

@@ -55,6 +55,21 @@ public class PetServiceImpl implements PetService{
 	public int petEditWeight(HashMap<String, String> petInfo) {
 		return pDAO.petEditWeight(petInfo);
 	}
+
+	@Override
+	public int petEditGender(HashMap<String, String> petInfo) {
+		return pDAO.petEditGender(petInfo);
+	}
+
+	@Override
+	public int petEditMemo(HashMap<String, String> petInfo) {
+		return pDAO.petEditMemo(petInfo);
+	}
+
+	@Override
+	public int petDelete(int petId) {
+		return pDAO.petDelete(petId);
+	}
 	 
 
 }

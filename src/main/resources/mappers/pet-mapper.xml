@@ -10,7 +10,7 @@
 	<select id="petInfoList" resultType="Pet">
 		select *
 		from pet
-		where owner_id = #{ownerId}
+		where owner_id = #{ownerId} and pet_status = 'Y'
 	</select>
 	
 	<select id="petDetail" resultType="Pet">
@@ -46,6 +46,24 @@
 	<update id="petEditWeight">
 		update pet
 		set pet_weight = #{newPetWeight}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditGender">
+		update pet
+		set pet_gender = #{newPetGender}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditMemo">
+		update pet
+		set pet_memo = #{newPetMemo}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petDelete">
+		update pet
+		set pet_status = 'N'
 		where pet_id = #{petId}
 	</update> 
 	

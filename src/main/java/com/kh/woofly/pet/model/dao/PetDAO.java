@@ -26,4 +26,10 @@ public interface PetDAO {
 
 	int petEditWeight(HashMap<String, String> petInfo);
 
+	int petEditGender(HashMap<String, String> petInfo);
+
+	int petEditMemo(HashMap<String, String> petInfo);
+
+	int petDelete(int petId);
+
 }

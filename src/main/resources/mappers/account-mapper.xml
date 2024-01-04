@@ -30,4 +30,22 @@
 		VALUES (address_seq.nextval, #{addr}, #{mbId}, 'Y', #{mbTel}, #{mbName}, #{postcode}, #{addrDetail})
 	</insert>
 	
+	<select id="checkNameEmail" resultType="_int">
+		select count(*)
+		from member
+		where MB_NAME = #{mbName} and MB_EMAIL = #{mbEmail}
+	</select>
+	
+	<select id="sendId" parameterType="Member">
+		select mb_id
+		from member
+		where mb_name = #{mbName} and mb_email = #{mbEmail} and mb_status = 'Y'
+	</select>	
+	
+	<select id="checkIdEmail" resultType="_int">
+		select count(*)
+		from member
+		where mb_id = #{mbId} and mb_email = #{mbEmail} and mb_status = 'Y'
+	</select>
+	
 </mapper>

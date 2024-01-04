@@ -78,7 +78,7 @@ public class PetController {
 		
 		int result = pService.petAdd(p);
 		if(result > 0) {
-			return "petDetail";
+			return "petInfo";
 		} else {
 			throw new PetException("마이펫 등록에 실패하였습니다.");
 		}
@@ -154,7 +154,7 @@ public class PetController {
 	public String petEditWeight(Model model, @RequestParam("petWeight") String newPetWeight, @RequestParam("petId") String petId) {
 		HashMap<String,String> petInfo = new HashMap<String,String>(); 
 		
-		petInfo.put("newPetBreed", newPetWeight);
+		petInfo.put("newPetWeight", newPetWeight);
 		petInfo.put("petId", petId);
 		
 		int result = pService.petEditWeight(petInfo);
@@ -167,13 +167,35 @@ public class PetController {
 	}
 	
 	@PostMapping("/petEditGender.dw")
-	public String petEditGender() {
-		return null;
+	public String petEditGender(Model model, @RequestParam("petGender") String newPetGender, @RequestParam("petId") String petId) {
+		HashMap<String,String> petInfo = new HashMap<String,String>(); 
+		
+		petInfo.put("newPetGender", newPetGender);
+		petInfo.put("petId", petId);
+		
+		int result = pService.petEditGender(petInfo);
+		if(result>0) {
+			model.addAttribute("p", result);
+			return "redirect:pet/petDetail/"+petId;
+		} else {
+			throw new PetException("마이펫 수정에 실패하였습니다.");
+		}
 	}
 	
 	@PostMapping("/petEditMemo.dw")
-	public String petEditMemo() {
-		return null;
+	public String petEditMemo(Model model, @RequestParam("petMemo") String newPetMemo, @RequestParam("petId") String petId) {
+		HashMap<String,String> petInfo = new HashMap<String,String>(); 
+		
+		petInfo.put("newPetMemo", newPetMemo);
+		petInfo.put("petId", petId);
+		
+		int result = pService.petEditMemo(petInfo);
+		if(result>0) {
+			model.addAttribute("p", result);
+			return "redirect:pet/petDetail/"+petId;
+		} else {
+			throw new PetException("마이펫 수정에 실패하였습니다.");
+		}
 	}
 	
 	@PostMapping("/editPetPhoto.dw")
@@ -205,5 +227,16 @@ public class PetController {
 	public String petDiaryDetailView() {
 		return "petDiaryDetail";
 	}
-
+	
+	@GetMapping("pet/petDelete/{petId}")
+	public String petDelete(@PathVariable("petId") int petId) {
+		
+		int result = pService.petDelete(petId);
+		
+		if(result > 0) {
+			return "redirect:/pet/petInfo";	
+		} else {
+			throw new PetException("마이펫 삭제에 실패하였습니다.");
+		}
+	}
 }
