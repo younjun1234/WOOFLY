@@ -1,5 +1,13 @@
 package com.kh.woofly.info.controller;
 
-public class InfoController {
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
+@Controller
+public class InfoController {
+	
+	@GetMapping("map")
+	public String mapView() {
+		return "map";
+	}
 }

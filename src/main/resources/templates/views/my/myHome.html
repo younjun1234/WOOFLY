@@ -60,11 +60,11 @@
 						<button class="btn btn-dark btn-sm" onclick="location.href='/my/buying'">더보기</button>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="buying, buyingStat: ${oList}">
+				<div class="border-bottom d-flex justify-content-between mb-3 sold" role="button" style="height: 100px" th:each="buying, buyingStat: ${oList}">
 					<input type="hidden" th:value="${ buying.orderId }">
 					<div class="d-flex align-content-center ms-3">
 						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}">
-							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
+							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px;">
 						</th:block>
 						<th:block th:each="product, productStat : ${pList}" th:if="${productStat.index == buyingStat.index}">
 							<div class="ms-3" style="line-height: 100px;">[[${product.productName}]]</div>

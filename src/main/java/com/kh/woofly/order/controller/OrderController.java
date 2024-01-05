@@ -145,8 +145,4 @@ public class OrderController {
 		return "mySaved";
 	}
 
-	@GetMapping("my/cart")
-	public String cardView() {
-		return "myCart";
-	}
 }
