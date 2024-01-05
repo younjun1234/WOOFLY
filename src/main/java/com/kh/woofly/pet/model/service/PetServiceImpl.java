@@ -70,6 +70,16 @@ public class PetServiceImpl implements PetService{
 	public int petDelete(int petId) {
 		return pDAO.petDelete(petId);
 	}
+
+	@Override
+	public int editPetPhoto(Pet p) {
+		return pDAO.editPetPhoto(p);
+	}
+
+	@Override
+	public int deletePetPhoto(int petId) {
+		return pDAO.deletePetPhoto(petId);
+	}
 	 
 
 }

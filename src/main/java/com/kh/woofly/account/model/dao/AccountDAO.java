@@ -26,5 +26,7 @@ public interface AccountDAO {
 	public Member sendId(Member info);
 
 	public int checkIdEmail(Member m);
+
+	public int updatePwd(Member m);
 	
 }

@@ -48,4 +48,10 @@
 		where mb_id = #{mbId} and mb_email = #{mbEmail} and mb_status = 'Y'
 	</select>
 	
+	<update id="updatePwd">
+		update member
+		set mb_pwd = #{mbPwd}
+		where mb_id = #{mbId}
+	</update>
+	
 </mapper>

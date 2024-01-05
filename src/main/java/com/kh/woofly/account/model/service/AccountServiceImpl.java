@@ -53,4 +53,9 @@ public class AccountServiceImpl implements AccountService{
 		return aDAO.checkIdEmail(m);
 	}
 
+	@Override
+	public int updatePwd(Member m) {
+		return aDAO.updatePwd(m);
+	}
+
 }

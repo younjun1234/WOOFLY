@@ -67,4 +67,16 @@
 		where pet_id = #{petId}
 	</update> 
 	
+	<update id="editPetPhoto">
+		update pet
+		set pet_profile= #{petProfile}
+		where pet_id = #{petId}
+	</update>
+	
+	<update id="deletePetPhoto">
+		update pet
+		set pet_profile = default
+		where pet_id = #{petId}
+	</update>
+	
 </mapper>

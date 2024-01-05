@@ -21,4 +21,6 @@ public interface AccountService {
 
 	public int checkIdEmail(Member m);
 
+	public int updatePwd(Member m);
+
 }

@@ -32,4 +32,8 @@ public interface PetDAO {
 
 	int petDelete(int petId);
 
+	int editPetPhoto(Pet p);
+
+	int deletePetPhoto(int petId);
+
 }

@@ -62,7 +62,8 @@ public class AccountController {
 	@PostMapping("login.dw")
 	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
 		Member loginUser = aService.login(m);
-		if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+		
+		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
 			model.addAttribute("loginUser", loginUser);
 //			if (loginUser.getIsAdmin().equals("N")) {
 //				//로그 추가
@@ -117,8 +118,8 @@ public class AccountController {
 		ma.setAddr(address);
 		ma.setAddrDetail(detailAddress);
 		
-		String encPwd = bcrypt.encode(m.getMbPwd());
-		m.setMbPwd(encPwd);
+		String encPwd = bcrypt.encode(m.getMbPwd()); //사용자가 입력한 pwd를 bcrypt를 사용하여 암호화
+		m.setMbPwd(encPwd); //암호환 pwd를 다시 멤버 객체에 담음 
 		
 		int result1 = aService.signUpMember(m);
 		int result2 = aService.signUpMemberAddr(ma);
@@ -263,14 +264,14 @@ public class AccountController {
 	}
 	
 	@PostMapping("/sendPwd.dw")
-	public String sendPwd(@RequestParam("mbEmail")String mbEmail, @RequestParam("mbId")String mbId) {
+	public String sendPwd(@ModelAttribute Member m) {
 		
 		String randomPwd = UUID.randomUUID().toString().replaceAll("-", ""); // -를 제거하고 uuid가 object 타입이기 때문에 toString 메서드 사용
 		randomPwd = randomPwd.substring(0, 13); //uuid를 앞에서부터 13자리로 잘라주기
 		
         String title = "Woofly 임시비밀번호 입니다.";
         String from = "testyounjun@gmail.com";
-        String to = mbEmail;
+        String to = m.getMbEmail();
         String content =
                 System.getProperty("line.separator")+
                 System.getProperty("line.separator")+
@@ -280,23 +281,33 @@ public class AccountController {
                 "회원님의 임시 비밀번호는 " +randomPwd+ " 입니다. " 
                 +System.getProperty("line.separator");
         
-       //int result = aService.updatdPwd(mbId);
+        String newRandomPwd = bcrypt.encode(randomPwd);
+        m.setMbPwd(newRandomPwd);
         
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        int result = aService.updatePwd(m);
+        if(result > 0) {
+        	System.out.println("하하하");
+        	try {
+        		
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
 
-            messageHelper.setFrom(from);
-            messageHelper.setTo(to);
-            messageHelper.setSubject(title);
-            messageHelper.setText(content); 
+                messageHelper.setFrom(from);
+                messageHelper.setTo(to);
+                messageHelper.setSubject(title);
+                messageHelper.setText(content); 
+                
+                mailSender.send(message);
+        
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        	
+            return "redirect:/account/login"; 
             
-            mailSender.send(message);
-    
-        } catch (Exception e) {
-            System.out.println(e);
+        }else {
+        	throw new AccountException("임시 비밀번호 발급에 실패하였습니다.");
         }
-        return randomPwd + ""; 
 	}
 	
 	@GetMapping("/account/findId")

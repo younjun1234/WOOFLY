@@ -1,6 +1,10 @@
 package com.kh.woofly.pet.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -199,14 +204,134 @@ public class PetController {
 	}
 	
 	@PostMapping("/editPetPhoto.dw")
-	public String editMbPhoto(@RequestParam("file") ArrayList<MultipartFile> file, HttpServletRequest request) {
-		return null;
+	public String editPetPhoto(@RequestParam("file") ArrayList<MultipartFile> file, @RequestParam("petId") int petId) {
+		 
+		 MultipartFile upload = file.get(0); //file에서 첫 번째 파일 가져오기
+		 
+		 Pet p = pService.petDetail(petId); //petId 정보 가져오기
+		 
+		 if(!upload.getOriginalFilename().equals("")) { //업로드된 파일이 존재하면서
+			 if(!p.getPetProfile().equals("default_petprofile.jpg")) { //디폴트 사진과 파일명이 같다면 
+				 deleteFile(p.getPetProfile());  //기존 사진 삭제
+			 }
+			 
+			 String renameName = saveFile(upload); //사용자가 업로드된 파일 저장
+			 if(renameName != null) { 
+				 p.setPetProfile(renameName); //새 파일명을 petPhoto에 세팅
+			 }
+		 }
+		 
+		 int result = pService.editPetPhoto(p);
+		 
+		 if(result > 0) {
+			 return "redirect:pet/petDetail/"+petId;
+		 } else {
+			 throw new PetException("펫 프로필 수정에 실패하였습니다.");
+		 }
 	}
 
-	@PostMapping("/deletePetPhoto.dw")
-	public String deletePetPhoto() {
-		return null;
+	private String saveFile(MultipartFile file) {
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\" + "\\uploadFiles\\woofly";
+		} else if (os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		}
+		
+		File folder = new File(savePath);
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+		// 2. 저장된 file rename 
+		Date time = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		int ranNum = (int)(Math.random()*100000);
+		
+		String originFileName = file.getOriginalFilename();
+		String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+		
+		// 3. rename된 파일을 저장소에 저장
+		String renamePath = folder + "/" + renameFileName;
+		try {
+			file.transferTo(new File(renamePath));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		return renameFileName;
 	}
+
+	private void deleteFile(String fileName) {
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\" + "\\uploadFiles\\woofly";
+		} else if(os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
+		}
+		File f = new File(savePath + fileName);
+		if(f.exists()) {
+			f.delete();
+		}
+	}
+
+	@GetMapping("/deletePetPhoto.dw")
+	public String deletePetPhoto(@RequestParam("petId") int petId) {
+		
+		Pet p = pService.petDetail(petId);
+		System.out.println(p);
+		if(!p.getPetProfile().equals("default_petprofile.jpg")) {
+			deleteFile(p.getPetProfile());
+			
+			int result = pService.deletePetPhoto(petId);
+			
+			if(result == 0) {
+				throw new PetException("펫 프로필 사진 삭제에 실패하였습니다");
+			} else {
+				p.setPetProfile("default_petprofile.jpg");
+			}
+			
+		}
+		return "redirect:pet/petDetail/"+petId;
+	}
+	
+//	if(!upload.getOriginalFilename().equals("")) { //업로드된 파일이 존재하는지 않고
+//		 if(!p.getPetProfile().equals("default_petprofile.jpg")) { //디폴트 사진과 파일명이 같다면 
+//			 deleteFile(p.getPetProfile());  //기존 사진 삭제
+//		 }
+//		 
+//		 String renameName = saveFile(upload); //사용자가 업로드된 파일 저장
+//		 if(renameName != null) { 
+//			 p.setPetProfile(renameName); //새 파일명을 petPhoto에 세팅
+//		 }
+//	 }
+//	 
+//	 int result = pService.editPetPhoto(p);
+//	 
+//	 if(result > 0) {
+//		 return "redirect:pet/petDetail/"+petId;
+//	 } else {
+//		 throw new PetException("펫 프로필 수정에 실패하였습니다.");
+//	 }
+//}
+	
+//	public String deleteMbPhoto(HttpSession session) {
+//		Member loginUser = ((Member)session.getAttribute("loginUser"));
+//		if (!loginUser.getMbPhoto().equals("default_profile.png")) {
+//			deleteFile(loginUser.getMbPhoto());
+//			int result = mService.deleteMbPhoto(loginUser);
+//			
+//			if (result == 0) {
+//				throw new MemberException("프로필 사진 삭제에 실패하였습니다");
+//			} else {
+//				loginUser.setMbPhoto("default_profile.png");
+//			}
+//		}
+//		return "redirect:/my/profile-edit";
+//	}
+	
+	
 
 	@GetMapping("pet/petPhotoDetail")
 	public String petPhotoDetailView() {
