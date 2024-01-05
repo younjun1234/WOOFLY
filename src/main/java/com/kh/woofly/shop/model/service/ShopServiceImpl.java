@@ -1,13 +1,16 @@
 package com.kh.woofly.shop.model.service;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.shop.model.dao.ShopDAO;
+import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;
@@ -43,8 +46,8 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<ProductAttm> selectProductAttm(String string) {
-		return sDAO.selectProductAttm(string);
+	public ArrayList<ProductAttm> selectProductAttm(Integer productId) {
+		return sDAO.selectProductAttm(productId);
 	}
 
 	@Override
@@ -60,6 +63,41 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ArrayList<ProductCategory> selectedCategory(Integer cNo) {
 		return sDAO.selectedCategory(cNo);
+	}
+
+	@Override
+	public Product selectDetailProduct(int productId) {
+		return sDAO.selectDetailProduct(productId);
+	}
+
+	@Override
+	public ProductCategory selectDetailCategory(int productDetailNo) {
+		return sDAO.selectDetailCategory(productDetailNo);
+	}
+
+	@Override
+	public int insertReply(Reply r) {
+		return sDAO.insertReply(r);
+	}
+
+	@Override
+	public ArrayList<Reply> selectReply(Reply r) {
+		return sDAO.selectReply(r);
+	}
+
+	@Override
+	public int insertCart(Cart selectC) {
+		return sDAO.insertCart(selectC);
+	}
+
+	@Override
+	public ArrayList<Cart> selectUserCart(String mbId) {
+		return sDAO.selectUserCart(mbId);
+	}
+
+	@Override
+	public int updateCartQuantity(Cart c) {
+		return sDAO.updateCartQuantity(c);
 	}
 
 

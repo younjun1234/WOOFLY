@@ -5,9 +5,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Properties;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,18 +14,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.common.Reply;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.service.ShopService;
+import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ShopController {
@@ -53,7 +59,7 @@ public class ShopController {
 		// 대분류 카테고리 리스트
 		ArrayList<ProductCategory> bList = sService.selectCategory(null);
 		// 썸네일의 첫번째만 가져오기....
-		ArrayList<ProductAttm> aList = sService.selectProductAttm("thumb");
+		ArrayList<ProductAttm> aList = sService.selectProductAttm(null);
 		
 		model.addAttribute("pi", pi);
 		model.addAttribute("pList", pList);
@@ -84,8 +90,8 @@ public class ShopController {
 	public String insertProduct(@ModelAttribute Product p,
 								@RequestParam("thumbnailFile") ArrayList<MultipartFile> thumbFiles,
 								@RequestParam("contentFile") ArrayList<MultipartFile> contentFiles) {
-		if(p.getColorPicker() == null) {
-			p.setColorPicker("N");
+		if(p.getColor() == null) {
+			p.setColor("N");
 		}
 		
 		int result1 = sService.insertProduct(p);
@@ -133,7 +139,7 @@ public class ShopController {
 		int result2 = sService.insertAttm(list);
 		
 		if(result1 + result2 == list.size() + 2) {
-			return "shopMain";
+			return "redirect:/shopMain";
 		} else {
 			for(ProductAttm a : list) {
 				deleteFile(a.getRenameName());
@@ -206,7 +212,7 @@ public class ShopController {
 		// 대분류 카테고리 리스트 - 근데 이건 나중에 nav바 따로 빠지면 그쪽으로 보내놔도 될듯?
 		ArrayList<ProductCategory> bList = sService.selectCategory(null);
 		// 썸네일의 첫번째만 가져오기....
-		ArrayList<ProductAttm> aList = sService.selectProductAttm("thumb");
+		ArrayList<ProductAttm> aList = sService.selectProductAttm(null);
 		
 		if(pList != null) {
 			model.addAttribute("pi", pi);
@@ -222,5 +228,164 @@ public class ShopController {
 			throw new ShopException("카테고리 선택에 실패하였습니다.");
 		}
 	}
+	
+	@GetMapping("/shop/productDetail")
+	public String selectDetailProduct(@RequestParam("pId") int productId,
+										@RequestParam("page") int page,
+										Model model, Reply r) {
+		
+		Product p = sService.selectDetailProduct(productId);
+		ArrayList<ProductAttm> aList = sService.selectProductAttm(productId);
+		ProductCategory c = sService.selectDetailCategory(p.getProductDetailNo());
+		r.setBType("P");
+		r.setBNo(productId);
+		ArrayList<Reply> rList = sService.selectReply(r);
+		
+		String[] colors = null;
+		if(!p.getColor().equals("N")) {
+			colors = p.getColor().split(",");
+		}
+		
+		model.addAttribute("p", p);
+		model.addAttribute("aList", aList);
+		model.addAttribute("rList", rList);
+		model.addAttribute("c", c);
+		model.addAttribute("colors", colors);
+		
+		return "shopDetail";
+	}
+	
+	@GetMapping("/shop/payment")
+	public void myCartUpdate(@RequestParam(value="productId") int productId,
+								@RequestParam(value="pSize", required=false) String pSize,
+								@RequestParam(value="colors", required=false) String color,
+								@RequestParam(value="quantity") int quantity,
+								@RequestParam("isMove") String isMove,
+								HttpSession session,
+								HttpServletResponse response) {
+		String mbId = ((Member)session.getAttribute("loginUser")).getMbId();
+		//사용자의 카트를 가져와서 같은 상품의 같은 옵션이 완전무결하면 수량만 업데이트
+		// 하나라도 다르면 insert
+		
+		ArrayList<Cart> cartList = sService.selectUserCart(mbId);
+		// 상품번호 + 옵션 2가지 가 같으면 같은 상품의 같은 조건 => 원래 있던 카트의 수량만 업데이트
+		
+		boolean isEmpty = true;
+		int result1 = 0;
+		int result2 = 0;
+		
+		// 이거 발동 안됨
+		if(pSize == null) {
+			pSize = "N";
+		}
+		if(color == null) {
+			color = "N";
+		}
+		
+		Cart selectC = new Cart();
+		
+		for(Cart c : cartList) {
+			if(c.getProductId() == productId && c.getColor().equals(color) && c.getPSize().equals(pSize)) {
+				c.setQuantity(c.getQuantity() + quantity);
+				result1 = sService.updateCartQuantity(c);
+				isEmpty = false;
+				selectC.setCartId(c.getCartId());
+				break;
+			}
+		}
+		
+		
+		// true면 같은 항목이 비어있음을 나타냄
+		if(isEmpty) {
+			Properties prop = new Properties();
+			selectC.setMbId(mbId);
+			selectC.setPSize(pSize);
+			selectC.setColor(color);
+			selectC.setQuantity(quantity);
+			selectC.setProductId(productId);
+
+			result2 = sService.insertCart(selectC);
+		}
+		
+		
+		// 트라이캐치 확인
+		try {
+			if(isMove.equals("Y")) {
+				if(result1 > 0 || result2 >0) {
+					// 나중에 연준이가 만든 장바구니 + // cartId 셀렉트키 해와서 url 뒤에 붙이기
+					response.sendRedirect("/my/cart/checkout/" + selectC.getCartId());
+				} else {
+					throw new ShopException("구매하기를 실패하였습니다.");
+				}
+				
+			} else {
+				// ajax통신
+				String result = (result1 + result2) != 0 ? "success" : "fail";
+				Gson gson = new GsonBuilder().create();
+				response.setContentType("application/json; charset=UTF-8");
+				gson.toJson(result, response.getWriter());
+			
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@GetMapping("/shop/paymentPage")
+	public String moveToPayment(HttpSession session, Model model) {
+		String mbId = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Cart> cartList = sService.selectUserCart(mbId);
+		return "shopPayment";
+	}
+	
+	@GetMapping(value="/shop/insertReply")
+	public void insertReply(@ModelAttribute Reply r, HttpServletResponse response) {
+		
+		r.setBType("P");
+		int result = sService.insertReply(r);
+		
+		ArrayList<Reply> rList = sService.selectReply(r);
+		
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			gson.toJson(rList, response.getWriter());
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

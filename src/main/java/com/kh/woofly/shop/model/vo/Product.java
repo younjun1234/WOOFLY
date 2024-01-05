@@ -23,7 +23,7 @@ public class Product {
 	private int productDetailNo; // 상세분류 번호를 가져오면 대분류 + 상세분류 가능
 	
 	private String usedStandard;
-	private String colorPicker;
+	private String color;
 	private int quantity;
 	
 }

@@ -10,7 +10,7 @@
 			INTO PRODUCT					<!-- 1 = productCategoryNo -->
 			VALUES (#{productId}, #{productName}, #{price}, DEFAULT, DEFAULT, #{productDetailNo})
 			INTO PRODUCT_STOCK
-			VALUES (PRO_STOCK_SEQ.NEXTVAL, #{productId}, #{usedStandard}, #{quantity}, #{colorPicker})
+			VALUES (PRO_STOCK_SEQ.NEXTVAL, #{productId}, #{usedStandard}, #{quantity}, #{color})
 		SELECT *
 		FROM DUAL
 	</insert>
@@ -48,7 +48,7 @@
 		SELECT *
 		FROM ATTACHMENT
 		WHERE ATTM_REF_TYPE = 'P' 
-		<if test="string != null">
+		<if test="productId == null">
 			AND ATTM_LEVEL = '1'
 		    AND (ATTM_REF_NO, ATTM_ID) IN (
 		        SELECT ATTM_REF_NO, MIN(ATTM_ID)
@@ -56,6 +56,9 @@
 		        WHERE ATTM_REF_TYPE = 'P' AND ATTM_LEVEL = '1'
 		        GROUP BY ATTM_REF_NO
 		    )
+		</if>
+		<if test="productId != null">
+			AND	ATTM_REF_NO = #{productId}
 		</if>
 	</select>
 	
@@ -90,5 +93,56 @@
 		    )
 	</select>
 	
+	<select id="selectDetailProduct" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+			LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
+		WHERE PRODUCT_ID = #{productId}
+	</select>
+	
+	<select id="selectDetailCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT_DETAIL_CATEGORY
+			JOIN PRODUCT_CATEGORY USING(PRODUCT_CATEGORY_NO)
+		WHERE PRODUCT_DETAIL_NO = #{productDetailNo}
+	</select>
+	
+	
+	<!-- 상품 댓글 부분 -->
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES (REPLY_SEQ.NEXTVAL, #{bType}, #{bNo}, #{reContent}, DEFAULT, DEFAULT, DEFAULT, #{mbId})
+	</insert>
+	
+	<select id="selectReply" resultType="Reply">
+		SELECT R_NO, B_TYPE, B_NO, RE_CONTENT, RE_DATE, RE_LIKE, RE_D_STATUS, MB_ID, MB_NICKNAME
+		FROM REPLY
+			LEFT JOIN MEMBER USING(MB_ID)
+		WHERE RE_D_STATUS = 'Y' AND B_TYPE = #{bType} AND B_NO = #{bNo}
+		ORDER BY R_NO DESC
+	</select>
+	
+	
+	<!-- 장바구니 부분 -->
+	
+	<insert id="insertCart">
+		<selectKey order="BEFORE" resultType="_int" keyProperty="cartId">
+				SELECT CART_SEQ.NEXTVAL
+				FROM DUAL
+		</selectKey>
+		INSERT INTO CART
+		VALUES (#{cartId}, #{mbId}, #{quantity}, #{productId}, DEFAULT, #{pSize}, #{color})
+	</insert>
+	
+	<select id="selectUserCart" resultType="Cart">
+		SELECT *
+		FROM CART
+		WHERE MB_ID = #{mbId}
+	</select>
+	
+	<update id="updateCartQuantity">
+		UPDATE CART
+		SET CART_ID = #{cartId} AND QUANTITY = #{quantity}
+	</update>
 	
 </mapper>

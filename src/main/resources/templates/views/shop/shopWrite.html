@@ -69,16 +69,16 @@
                         <table>
                             <tr>
                                 <td>제목</td>
-                                <td><input type="text" class="form-control" name="productName" id="name"></td>
+                                <td><input type="text" class="form-control" name="productName" id="name" required="required"></td>
                             </tr>
                             <tr>
                                 <td>가격</td>
-                                <td><input type="text" class="form-control" name="price" id="price"></td>
+                                <td><input type="text" class="form-control" name="price" id="price"  required="required"></td>
                             </tr>
                             <tr>
                             	<td>대분류</td>
                             	<td>
-                            		<select class="form-select" required id="category" name="productCategory">
+                            		<select class="form-select" required="required" id="category" name="productCategory">
                             			<option disabled selected="selected">...</option>
                             			<th:block th:each="m : ${bList}">
 											<option th:value="${m.productCategoryNo}">[[${ m.productCategory}]]</option>                            		
@@ -89,11 +89,8 @@
                             <tr>
                             	<td>상세분류</td>
                             	<td>
-                            		<select class="form-select" required id="detailCategory" name="productDetailCategory">
-                            			<option></option>
-                            			<option></option>
-                            			<option></option>
-                            			<option></option>
+                            		<select class="form-select" required="required" id="detailCategory" name="productDetailCategory">
+                            			<option disabled selected="selected">...</option>
                             		</select>
                             		<input type="hidden" id="hiddenCate" name="productDetailNo">
                             	</td>
@@ -106,7 +103,7 @@
                         <button type="button" class="btn btn-outline-info" id="addFile">이미지 추가</button>
                         <div id="fileArea">
                             <div class="mb-3 p-1" id="thumbnailParent">
-                                <input type="file" class="form-control form-control-lg" name="thumbnailFile">
+                                <input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
                             </div>
                         </div>
                     </div>                   
@@ -175,7 +172,7 @@
                         <button type="button" class="btn btn-outline-info" id="addFileContent">내용 이미지 추가</button>
                     <div id="contentFileArea">
                         <div class="mb-3 p-1">
-                            <input type="file" class="form-control form-control-lg" name="contentFile">
+                            <input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">
                         </div>
                     </div>
                     </div>
@@ -224,7 +221,7 @@
                 if(fileAreaCount <= 5) {
                     const newDiv = document.createElement('div');
                     newDiv.classList.add('mb-3', 'p-1');
-                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="thumbnailFile">';
+                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">';
                     
                     fileArea.append(newDiv);
 
@@ -259,7 +256,7 @@
                 if(contentFileAreaCount <= 10) {
                     const newDiv = document.createElement('div');
                     newDiv.classList.add('mb-3', 'p-1');
-                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="contentFile">';             
+                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">';             
 
                     contentFileArea.append(newDiv);
 
@@ -293,8 +290,15 @@
 			document.getElementById('submitShop').addEventListener('click', () =>{
 				const files = document.getElementsByName('thumbnailFile');
                 const contentFiles = document.getElementsByName('contentFile');
-				console.log(files);
-                console.log(contentFiles);
+                
+                const selects =  document.querySelectorAll('select');
+                
+                for(select of selects){
+					if(select.value == '...'){
+						alert('카테고리를 반드시 선택해주세요.');
+						return;
+					}
+                }
 
                 <!-- 썸네일 이미지와 내용 이미지 둘 다 한장은 존재해야함.-->
 

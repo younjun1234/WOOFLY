@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,10 @@
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+	<script type="text/javascript" src="https://chir.ag/projects/ntc/ntc.js"></script>
+
     <style>
     .sticky-top {
         position: -webkit-sticky;
@@ -26,12 +30,19 @@
         width:auto;
     }
 
+	.sumDiv {
+		width: 20%;
+		height: 20%;
+	}
+
     .product-image {
-         height: 200px;
+    	 width: 100%;
+         height: 100%;
      }
 
     .img-thumbnail {
          height: 500px;
+         width: auto;
     }
 
     .btn-outline-success.btn-lg {
@@ -51,6 +62,20 @@
         width: 100%;
         max-width: 150px;
     }
+        
+    
+    .colors {
+    	pointer-events: none;
+    }
+    
+    .colorsName{
+    	width: 78px;
+    	height: 27px;
+    	font-size: 12px;
+    	border: none;
+  		background: transparent;
+    }
+    
         
     </style>
 </head>
@@ -78,60 +103,93 @@
     <main>
         <div class="container">
             <div class="d-flex justify-content-center">
-                <div class="col-8">
-                    <div class="mb-2">
-                        <img class="product-image img-thumbnail rounded mx-auto d-block" src="../common/image/report.jpg" alt="상품이름" width="80%">
-                    </div>
-                    <div class="d-flex ">
-                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog1.jpg" width="20%">
-                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog2.jpg" width="20%">
-                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog3.jpg" width="20%">
-                        <img class="product-image sub m-1 mx-auto d-block" src="../common/image/dog4.jpg" width="20%">
-                    </div>
+                <div class="row justify-content-center">
+                	<th:block th:each="a, i: ${aList}">
+	                    <div class="mb-2"  th:if="${i.index == 0}">
+	                        <img class="product-image img-thumbnail rounded mx-auto d-block" th:src="'/image/shopFiles/' + ${ a.renameName }" alt="상품이름" width="80%">
+	                    </div>
+	                    <div class="sumDiv" th:unless="${i.index == 0}">
+	                        <img class="product-image m-1 p-1" th:src="'/image/shopFiles/' + ${ a.renameName }" width="20%">
+	                    </div>
+                    </th:block>
                 </div>
                 
+                <!-- 버튼 따라서 action 변경 -->
                 <div class="product m-2 col-4">
-                    <div class="product_info border-1 border-secondary border-bottom">
-                        <div class="fw-bold">
-                            <p class="fs-2">소프트 겨울 외출 강아지아우터</p>
-                        </div>
-                        <div>
-                            <p class="fs-4">★★★★★ 리뷰 : 3건</p>
-                        </div>
-                        <div>
-                            <p class="fs-4">가격 : 9,000원</p>
-                        </div>
-                    </div>
-                    <ul class="list-unstyled pt-4">
-                        <li class="fs-3 d-flex p-2 justify-content-between">
-                            <div class="fw-bold">배송정보</div>
-                            <div>내일 12월 19일 도착</div>
-                        </li>
-                        <li class="fs-2 pt-4 d-flex justify-content-between">
-                            <div class="fw-bold">사이즈</div>
-                            <div class="">
-                                <input type="radio" class="btn-check" name="options-base" id="optionS" autocomplete="off">
-                                <label class="btn btn-outline-success btn-lg" for="optionS">S</label>
-                                <input type="radio" class="btn-check" name="options-base" id="optionM" autocomplete="off">
-                                <label class="btn btn-outline-success btn-lg" for="optionM">M</label>
-                                <input type="radio" class="btn-check" name="options-base" id="optionL" autocomplete="off">
-                                <label class="btn btn-outline-success btn-lg" for="optionL">L</label>
-                                <input type="radio" class="btn-check" name="options-base" id="optionXL" autocomplete="off">
-                                <label class="btn btn-outline-success btn-lg" for="optionXL">XL</label>
-                            </div>
-                        </li>
-                        <li></li>
-                    </ul>
-                    <div class="p-2 col product_btns" aria-label="Large button group">
-                        <button class="btn btn-outline-info rounded-pill m-1">구매하기</button>
-                        <button class="btn btn-outline-info rounded-pill m-1">찜하기</button>
-                        <button class="btn btn-outline-info rounded-pill m-1">장바구니에 담기</button>
-                        <button class="btn btn-outline-info rounded-pill m-1">리뷰 보기</button>
-                    </div>
+              		<form id="productForm">
+              			<input type="hidden" th:value="${p.productId}" name="productId">
+              			<input type="hidden" value="N" name="isMove" id="isMove">
+	                    <div class="product_info border-1 border-secondary border-bottom">
+	                        <div class="fw-bold">
+	                            <p class="fs-2" th:text="${p.productName}"></p>
+	                        </div>
+	                        <div>	<!-- 리뷰 테이블 만들고 추가하기 + shopMain에서도 리뷰 보이기 -->
+	                            <p class="fs-4">리뷰 : 3건 / 추천 : 4건</p>
+	                        </div>
+	                        <div>
+	                            <p class="fs-4">가격 : [[${#numbers.formatInteger(p.price, 3, 'COMMA')}]]원</p>
+	                        </div>
+	                    </div>
+	                    <ul class="list-unstyled pt-4">
+	                        <li class="fs-3 d-flex p-2 justify-content-between">
+	                            <div class="fw-bold">배송정보</div>
+	                            <div id="deli" class="fs-4"></div>
+	                        </li>
+	                         <li class="fs-3 d-flex p-2 justify-content-between">
+	                        	<div class="fw-bold">현재 남은 수량</div>
+	                        	<div class="fs-4">[[${#numbers.formatInteger(p.quantity, 3, 'COMMA')}]]개</div>
+	                        </li>
+	                        <li class="fs-2 pt-4 d-flex justify-content-between">
+	                            <div class="fw-bold">사이즈</div>
+	                            <div class="sizeSelect" th:if="${p.usedStandard == 'Y'}">
+	                                <input type="radio" class="btn-check" name="pSize" id="optionS" autocomplete="off" value="S" checked>
+	                                <label class="btn btn-outline-success btn-lg" for="optionS">S</label>
+	                                <input type="radio" class="btn-check" name="pSize" id="optionM" autocomplete="off" value="M">
+	                                <label class="btn btn-outline-success btn-lg" for="optionM">M</label>
+	                                <input type="radio" class="btn-check" name="pSize" id="optionL" autocomplete="off" value="L">
+	                                <label class="btn btn-outline-success btn-lg" for="optionL">L</label>
+	                                <input type="radio" class="btn-check" name="pSize" id="optionXL" autocomplete="off" value="XL">
+	                                <label class="btn btn-outline-success btn-lg" for="optionXL">XL</label>
+	                            </div>
+	                            <div th:unless="${p.usedStandard == 'Y'}">
+	                            	<span class="fs-5 fw-bold">사이즈 정보가 없습니다.</span>
+	                            </div>
+	                        </li>
+	                        
+	                        <li class="fs-3 d-flex p-2 justify-content-between">
+	                        	
+	                        	<div class="fw-bold">색상 정보</div>
+	                        	<div class="asdasdasd d-flex">
+		                        	<div th:if="${colors != null}" class="colorSelect">
+		                        		<th:block  th:each="color, i: ${colors}">
+			                        		<input class="colors p-1 m-2" type="color"  th:value="${color}">
+			                        		<input type="text" class="colorsName">
+			                        		<input type="radio" name="colors" th:value="${color}" th:checked="${i.index == 0}">
+		                        		</th:block>
+		                        	</div>
+	                        	</div>
+	                        	<div th:unless="${colors != null}">
+	                            	<span class="fs-5 fw-bold">색상 정보가 없습니다.</span>
+	                            </div>
+	                        </li>
+	                        <li class="fs-3 d-flex p-2 justify-content-between">
+	                        	<div class="fw-bold">수량 선택</div>
+	                        	<div class="quantity">
+	                        		<input type="number" class="form-control" value="1" min="1" max="100" name="quantity">
+	                        	</div>
+	                        </li>
+	                    </ul>
+	                    <div class="p-2 col product_btns" aria-label="Large button group">
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="buyBtn">구매하기</button>
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="">찜하기</button>
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="putBtn">장바구니에 담기</button>
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="goToReply">리뷰 보기</button>
+	                    </div>
+               		</form>
                 </div>
             </div>
             <div class="product-detail pt-4">
-                <table class="table border">
+                <table class="table border" th:if="${p.usedStandard == 'Y'}">
                     <tr>
                         <th>사이즈 정보</th>
                         <th>S</th>
@@ -242,71 +300,79 @@
                 </div>
                 <div class="product_images pt-4 text-center">
                     <h1 class="pb-4">상품 상세정보</h1>
-                    <img class="h-auto" src="../common/image/content1.jpg">
+                    <img class="h-auto m-2 p-2" style="width:98%" th:each="a: ${aList}" th:src="'/image/shopFiles/' + ${ a.renameName}">
                 </div>
                 <div class="reply mt-4 border-1 border-dark border-top">
                     <h1 class="pt-4 text-center">상품 리뷰</h1>
                     <div class="input-group">
                         <span class="input-group-text">댓글<br>내용</span>
-                        <textarea class="form-control" rows="4" placeholder="소중한 리뷰를 남겨주세요." style="resize: none;"></textarea>
-                        <button type="button" class="btn btn-outline-success btn-lg">등록</button>                        
+                        <textarea class="form-control" rows="4" placeholder="소중한 리뷰를 남겨주세요." style="resize: none;" id="replyContent"></textarea>
+                        <button type="button" class="btn btn-outline-success btn-lg" id="insertReply">등록</button>                        
                     </div>                                           
                     
                     <!-- 댓글 조회 영역 -->
-                    
-                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-                        <div class="col-1" style="line-height: 40px;">꼬미</div>
-                        <div class="col-8" style="line-height: 40px;">생각보다 음료 종류도 많네요</div>
-                        <div class="col-1" style="line-height: 40px;">작성일자</div>
-                        <div class="col-2 d-flex align-items-center justify-content-end">
-                        <div class="dropdown ms-2 me-5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            </svg>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-                            </ul>
-                        </div>
-                        </div>
-                    </div>
-                    
-                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-                        <div class="col-1" style="line-height: 40px;">뽀또</div>
-                        <div class="col-8" style="line-height: 40px;">주말 동안 가보기 좋은 곳이네요</div>
-                        <div class="col-1" style="line-height: 40px;">작성일자</div>
-                        <div class="col-2 d-flex align-items-center justify-content-end">
-                        <div class="dropdown ms-2 me-5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            </svg>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-                            </ul>
-                        </div>
-                        </div>
-                    </div>
-                    
-                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-                        <div class="col-1" style="line-height: 40px;">콩</div>
-                        <div class="col-8" style="line-height: 40px;">오 안 가본 곳이네요~  한번 가봐야겠어요</div>
-                        <div class="col-1" style="line-height: 40px;">작성일자</div>
-                        <div class="col-2 d-flex align-items-center justify-content-end">
-                        <div class="dropdown ms-2 me-5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            </svg>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-                            </ul>
-                        </div>
-                        </div>
+                    <!-- 좋아요 버튼 클릭 이벤트, 내 댓글이면 수정 삭제 -->
+                    <div id="replyContents">
+	                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black" th:each="r: ${rList}">
+	                        <div class="col-1" style="line-height: 40px;">[[${r.mbNickName}]]</div>
+	                        <div class="col-8" style="line-height: 40px;">[[${r.reContent}]]</div>
+	                        <div class="col-1" style="line-height: 40px;">[[${r.reDate}]]</div>
+	                        <div class="col-2 d-flex align-items-center justify-content-end m-1">
+	                        	<div class="mx-2">
+	                        		[[${r.reLike}]]
+	                        	</div>
+	                        	<div>
+					               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
+					                  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+					               </svg>
+					            </div>
+	
+		                        <div class="dropdown ms-2 me-5">
+		                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+		                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+		                            </svg>
+		                            <ul class="dropdown-menu">
+		                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+		                                <th:block th:if="${ session.loginUser != null && session.loginUser.mbId == r.mbId}">
+			                                <li><button class="dropdown-item replyUpdate" type="button">수정</button></li>
+			                                <li><button class="dropdown-item replyDelete" type="button">삭제</button></li>
+		                                </th:block>
+		                            </ul>
+		                        </div>
+	                        </div>
+	                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+    
+    <!-- 모달 -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="confirm">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-1 shadow">
+                <div class="modal-body p-4 text-center fs-4 fw-bold">
+                	
+                </div>
+                <div class="modal-body p-2 fw-bold fs-3">
+                
+                </div>
+                <div class="modal-footer flex-nowrap p-1">
+                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="submitForm">
+                        <strong>네</strong>
+                     </button>
+                     <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
-<script>
+<script th:inline="javascript">
+		/*<![CDATA[*/
+		const p = /*[[${p}]]*/1;
+		/*]]>*/
+		
         window.addEventListener('scroll', function () {
             var scrollY = window.scrollY || document.documentElement.scrollTop;
 
@@ -320,5 +386,176 @@
                 document.querySelector('.product_btns').classList.remove('fixed-top');
             }
         });
+        
+        // 내일 날짜 계산
+        const deli = document.getElementById('deli');
+        const today = new Date()
+        const day = today.getMonth()+1  + "월 " 
+					+ today.getDate()+1  + "일";
+        
+        deli.innerHTML = "내일 " + day + " 도착 예정";
+        
+        const isMove = document.getElementById('isMove');
+		const form = document.getElementById('productForm');
+		const quantity = document.getElementsByClassName('quantity')[0].querySelector('input');
+		document.getElementById('buyBtn').addEventListener('click', () =>{
+			if(quantity.value > 100) {
+				alert("수량은 100개를 넘을 수 없습니다.");
+				quantity.focus();
+				event.preventDefault();
+			} else {
+				isMove.value = 'Y';
+				form.action = '/shop/payment';
+				form.submit();
+			}
+			
+		});
+		
+		document.getElementById('putBtn').addEventListener('click', () =>{
+			// 장바구니에 insert만 해놓기 에이작스로 성공 시 알럿창 정도?
+			if(quantity.value > 100){
+				alert("수량은 100개를 넘을 수 없습니다.");
+				quantity.focus();
+				event.preventDefault();
+			} else {
+				isMove.value = 'N';
+				
+				let selectedSize;
+				let selectedColor;
+				if(p.usedStandard == 'Y'){
+					const sizeRadio = document.getElementsByClassName('sizeSelect')[0].querySelectorAll('input');
+					for(const selectRadio of sizeRadio) {
+						if(selectRadio.checked) {
+							selectedSize = selectRadio.value;
+							break;
+						}
+					}
+				}
+				if(p.color != null) {
+			        const colorRadio = document.getElementsByClassName('colorSelect')[0].querySelectorAll('input');
+			        for(const selectRadio of colorRadio){
+			        	if(selectRadio.checked){
+			        		selectedColor = selectRadio.value;
+			        		break;
+			        	}
+			        }
+				}
+				console.log(selectedColor); // 없으면 undefined
+				console.log(selectedSize);
+				console.log(/*[[${p.productId}]]*/);
+				
+				$.ajax({
+					url: '/shop/payment',
+					data: {productId:/*[[${p.productId}]]*/9999, pSize: selectedSize == undefined ? null : selectedSize, colors: selectedColor == undefined ? null : selectedColor, quantity:quantity.value, isMove:isMove.value},
+					success: data => {
+						console.log(data);
+						if(data == 'success') {
+							aleet(/*[[${p.productName}]]*/'name' + "  " + quantity.value + "개가 장바구니에 추가되었습니다.");
+						} else {
+							aleet("장바구니 추가에 실패하여 페이지가 새로고침됩니다.");
+							location.reload();
+						}
+					},
+					error: data => {
+						console.log(data);
+					}
+				});
+			}
+		});
+		
+		function colorNameMath(color) {
+        	var match = ntc.name(color);
+        	const colorName = match[1];
+        	return colorName;
+        }
+        
+		const colorsName = document.getElementsByClassName('colorsName');
+		/*<![CDATA[*/
+		
+		const colors = /*[[${colors}]]*/1;
+		if(colors != 'N') {
+			let i = 0;
+			for(const color of colors) {
+				const colorName = colorNameMath(color);
+				colorsName[i].value = colorName;
+				i++;
+			}
+		}
+		
+			
+		/*]]>*/
+		
+		// 리뷰 바로 보러가기
+		document.getElementById('goToReply').addEventListener('click', () =>{
+			document.getElementById('replyContent').focus();			
+		})
+		
+        
+       
+	        
+        
+        // 댓글 시작
+        const insertBtn = document.getElementById('insertReply');
+        const replyContent = document.getElementById('replyContent');
+        
+        
+        /*<![CDATA[*/
+		$(document).on('click', '#insertReply', function() {
+			
+			// 로그인 유저 다루는 로직 짜기
+			const replyContent = $('#replyContent').val();
+			const p = /*[[${p}]]*/2;
+			const boardNo = p.productId;
+			const loginUser = /*[[${ session.loginUser?.mbId}]]*/id;
+			
+			if(replyContent != '' && loginUser != null) {
+				$.ajax({
+					url: '/shop/insertReply',
+					data: {reContent:replyContent, bNo:boardNo, mbId:loginUser },
+					success: data => {
+						console.log(data);
+						const topReply = document.getElementById('replyContents');
+						
+						topReply.innerHTML = '';
+						for(const r of data){
+							const newReply = `
+								<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
+					            <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
+					            <div class="col-8" style="line-height: 40px;">${r.reContent}</div>
+					            <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
+					            <div class="col-2 d-flex align-items-center justify-content-end m-1">
+					                <div class="mx-2">${r.reLike}</div>
+					                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
+					                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+					                </svg>
+					                <div class="dropdown ms-2 me-5">
+					                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+					                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+					                    </svg>
+					                    <ul class="dropdown-menu">
+					                        <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+					                        <th:block th:if="${ session.loginUser != null && session.loginUser.mbId == r.mbId}">
+				                                <li><button class="dropdown-item replyUpdate" type="button">수정</button></li>
+				                                <li><button class="dropdown-item replyDelete" type="button">삭제</button></li>
+		                                	</th:block>
+					                    </ul>
+					                </div>
+					            </div>
+					        </div>
+							`;
+							
+							topReply.innerHTML += newReply;
+						}
+					},
+					error : data => {
+						console.log(data);
+					}
+					
+				})
+			}
+		});
+        /*]]>*/
+        
+        
 </script>
 </html>

@@ -73,7 +73,7 @@
 					<div class="d-flex mb-4 justify-content-between">
 						<div class="d-flex">
 							<div class="p-3" th:if="${sList.size != 0}">
-								<span class="fw-bold">선택된 카테고리 ▶ </span>
+								<span class="fw-bold" style="font-size: 15px;">선택된 카테고리 ▶ </span>
 							</div>
 							<div class="p-3" th:unless="${sList.size != 0}">
 								<span class="fw-bold">선택된 카테고리가 없습니다. ㅠ.ㅠ </span>
@@ -82,6 +82,9 @@
 								<button class="btn btn-outline-dark topCategory btn-sm p-2" th:text="${s.productDetailCategory}" th:value="${s.productDetailNo}"></button>
 							</div>
 						</div>
+						
+						<!-- 조회수같은거 없는데? / 판매순은 주문내역에서 / 추천순은 콘테스트등록할 때 상품정보로-->
+						
 						<div class="btn-group">
 							<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 							  정렬
@@ -108,7 +111,7 @@
 												[[${c.productDetailCategory}]]
 											</div>
 											<p class="card-text mb-1" style="font-size: 12px;">[[${p.productName}]]</p>
-											<p class="card-text fw-bold" >[[${p.price}]]원</p>
+											<p class="card-text fw-bold" >[[${#numbers.formatInteger(p.price, 3, 'COMMA')}]]원</p>
 										</div>
 									</div>
 								</div>
@@ -200,6 +203,11 @@
 					location.href = '/shop/selectDetail?productDetailNo=' + this.value;
 				});
 			}
+			
+			
+			
+			
+			
 			
 		}
 		
