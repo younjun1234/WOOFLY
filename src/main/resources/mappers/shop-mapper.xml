@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.woofly.shop.model.dao.ShopDAO">
+	<insert id="insertProduct" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int" keyProperty="productId">
+				SELECT PRODUCT_SEQ.NEXTVAL
+				FROM DUAL
+		</selectKey>
+		INSERT ALL
+			INTO PRODUCT					<!-- 1 = productCategoryNo -->
+			VALUES (#{productId}, #{productName}, #{price}, DEFAULT, DEFAULT, #{productDetailNo})
+			INTO PRODUCT_STOCK
+			VALUES (PRO_STOCK_SEQ.NEXTVAL, #{productId}, #{usedStandard}, #{quantity}, #{color})
+		SELECT *
+		FROM DUAL
+	</insert>
+	
+	<insert id="insertAttm">
+		INSERT ALL
+		<foreach collection="list" item="a">
+			INTO ATTACHMENT
+			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'P', #{a.attmRefNo}, #{a.attmLevel})
+		</foreach>
+		SELECT *
+		FROM DUAL
+	</insert>
+	
+	<select id="selectCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT_CATEGORY
+			<if test="i != null">
+			   	JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_CATEGORY_NO)
+		    </if>
+	</select>
+	
+	<select id="selectProducts" resultType="Product">
+	    SELECT *
+	    FROM PRODUCT
+		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
+		<if test="cNo != null">
+			WHERE PRODUCT_DETAIL_NO = #{cNo}
+		</if>
+	    ORDER BY PRODUCT_ID DESC
+	</select>
+	
+	<!-- 상품사진 전용 -->
+	<select id="selectProductAttm" resultType="ProductAttm">
+		SELECT *
+		FROM ATTACHMENT
+		WHERE ATTM_REF_TYPE = 'P' 
+		<if test="productId == null">
+			AND ATTM_LEVEL = '1'
+		    AND (ATTM_REF_NO, ATTM_ID) IN (
+		        SELECT ATTM_REF_NO, MIN(ATTM_ID)
+		        FROM ATTACHMENT
+		        WHERE ATTM_REF_TYPE = 'P' AND ATTM_LEVEL = '1'
+		        GROUP BY ATTM_REF_NO
+		    )
+		</if>
+		<if test="productId != null">
+			AND	ATTM_REF_NO = #{productId}
+		</if>
+	</select>
+	
+	<!-- String(보드타입)으로 카운트 가져오기 -->
+	<select id="getProductCount" resultType="_int">
+		SELECT COUNT(*)
+		<if test="string == null">
+			FROM DUAL
+		</if> <!-- .equlse('P') -->
+		<if test="string != null">
+			FROM PRODUCT
+		</if>
+	</select>
+	
+	<select id="getDetailCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE PRODUCT_DETAIL_NO = #{cNo}
+	</select>
+	
+	<select id="selectedCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT
+		    JOIN PRODUCT_DETAIL_CATEGORY USING(PRODUCT_DETAIL_NO)
+		WHERE (PRODUCT_DETAIL_NO, PRODUCT_ID)IN (
+		        SELECT PRODUCT_DETAIL_NO, MIN(PRODUCT_ID)
+		        FROM PRODUCT
+				<if test="cNo != null">
+					WHERE PRODUCT_DETAIL_NO = #{cNo}
+				</if>
+		        GROUP BY PRODUCT_DETAIL_NO
+		    )
+	</select>
+	
+	<select id="selectDetailProduct" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+			LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
+		WHERE PRODUCT_ID = #{productId}
+	</select>
+	
+	<select id="selectDetailCategory" resultType="ProductCategory">
+		SELECT *
+		FROM PRODUCT_DETAIL_CATEGORY
+			JOIN PRODUCT_CATEGORY USING(PRODUCT_CATEGORY_NO)
+		WHERE PRODUCT_DETAIL_NO = #{productDetailNo}
+	</select>
+	
+	
+	<!-- 상품 댓글 부분 -->
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES (REPLY_SEQ.NEXTVAL, #{bType}, #{bNo}, #{reContent}, DEFAULT, DEFAULT, DEFAULT, #{mbId})
+	</insert>
+	
+	<select id="selectReply" resultType="Reply">
+		SELECT R_NO, B_TYPE, B_NO, RE_CONTENT, RE_DATE, RE_LIKE, RE_D_STATUS, MB_ID, MB_NICKNAME
+		FROM REPLY
+			LEFT JOIN MEMBER USING(MB_ID)
+		WHERE RE_D_STATUS = 'Y' AND B_TYPE = #{bType} AND B_NO = #{bNo}
+		ORDER BY R_NO DESC
+	</select>
+	
+	
+	<!-- 장바구니 부분 -->
+	
+	<insert id="insertCart">
+		<selectKey order="BEFORE" resultType="_int" keyProperty="cartId">
+				SELECT CART_SEQ.NEXTVAL
+				FROM DUAL
+		</selectKey>
+		INSERT INTO CART
+		VALUES (#{cartId}, #{mbId}, #{quantity}, #{productId}, DEFAULT, #{pSize}, #{color})
+	</insert>
+	
+	<select id="selectUserCart" resultType="Cart">
+		SELECT *
+		FROM CART
+		WHERE MB_ID = #{mbId}
+	</select>
+	
+	<update id="updateCartQuantity">
+		UPDATE CART
+		SET CART_ID = #{cartId} AND QUANTITY = #{quantity}
+	</update>
+	
+</mapper>
