@@ -321,9 +321,7 @@ public class MemberController {
 			}
 		}
 		return "redirect:/my/profile-edit";
-		
 	}
-	
 	
 
 
