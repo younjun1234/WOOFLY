@@ -80,6 +80,11 @@ public class PetServiceImpl implements PetService{
 	public int deletePetPhoto(int petId) {
 		return pDAO.deletePetPhoto(petId);
 	}
+
+	@Override
+	public int petDiaryWrite(String id) {
+		return pDAO.petDiaryWrite(id);
+	}
 	 
 
 }

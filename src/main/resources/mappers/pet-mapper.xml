@@ -79,4 +79,9 @@
 		where pet_id = #{petId}
 	</update>
 	
+	<insert id="petDiaryWrite" parameterType="Diary">
+		insert into diary
+		values (DIARY_SEQ.nextval, 'abc', #{drDate}, default, 'test', '1', #{petHealth})
+	</insert>
+	
 </mapper>

@@ -33,4 +33,6 @@ public interface PetService {
 
 	int deletePetPhoto(int petId);
 
+	int petDiaryWrite(String id);
+
 }
