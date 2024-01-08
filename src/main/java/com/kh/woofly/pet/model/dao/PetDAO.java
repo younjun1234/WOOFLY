@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
 @Mapper
@@ -36,6 +37,14 @@ public interface PetDAO {
 
 	int deletePetPhoto(int petId);
 
-	int petDiaryWrite(String id);
+	int petDiaryWrite(Diary d);
+
+	ArrayList<Diary> petDiaryList(String id);
+
+	Diary petDiaryDetail(int drNo);
+
+	int petDiaryEdit(Diary d);
+
+	int petDiaryDelete(int drNo);
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.pet.model.dao.PetDAO;
+import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
 @Service
@@ -82,8 +83,28 @@ public class PetServiceImpl implements PetService{
 	}
 
 	@Override
-	public int petDiaryWrite(String id) {
-		return pDAO.petDiaryWrite(id);
+	public int petDiaryWrite(Diary d) {
+		return pDAO.petDiaryWrite(d);
+	}
+
+	@Override
+	public ArrayList<Diary> petDiaryList(String id) {
+		return pDAO.petDiaryList(id);
+	}
+
+	@Override
+	public Diary petDiaryDetail(int drNo) {
+		return pDAO.petDiaryDetail(drNo);
+	}
+
+	@Override
+	public int petDiaryEdit(Diary d) {
+		return pDAO.petDiaryEdit(d);
+	}
+
+	@Override
+	public int petDiaryDelete(int drNo) {
+		return pDAO.petDiaryDelete(drNo);
 	}
 	 
 

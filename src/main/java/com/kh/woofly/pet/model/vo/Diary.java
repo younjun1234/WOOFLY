@@ -25,4 +25,6 @@ public class Diary {
 	private String writerId;
 	private int petId;
 	private String petHealth;
+	private String petName;
+	private String petProfile;
 }

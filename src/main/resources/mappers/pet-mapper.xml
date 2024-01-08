@@ -11,6 +11,7 @@
 		select *
 		from pet
 		where owner_id = #{ownerId} and pet_status = 'Y'
+		order by pet_id desc
 	</select>
 	
 	<select id="petDetail" resultType="Pet">
@@ -80,8 +81,38 @@
 	</update>
 	
 	<insert id="petDiaryWrite" parameterType="Diary">
+		<selectKey order="BEFORE" keyProperty="drNo" resultType="_int">
+			select diary_seq.nextval from dual
+		</selectKey>
 		insert into diary
-		values (DIARY_SEQ.nextval, 'abc', #{drDate}, default, 'test', '1', #{petHealth})
+		values (#{drNo}, #{drContent}, #{drDate}, default, #{writerId}, #{petId}, #{petHealth})
 	</insert>
+	
+	<select id="petDiaryList" parameterType="Diary">
+		select *
+		from diary
+			 join pet using(pet_id)
+		where dr_status = 'Y' and writer_Id=#{writerId}
+		order by dr_date desc
+	</select>
+	
+	<select id="petDiaryDetail" parameterType="Diary">
+		select *
+		from diary
+			join pet using(pet_id)
+		where dr_no = #{drNo} and dr_status = 'Y'
+	</select>
+	
+	<update id="petDiaryEdit">
+		update diary
+		set dr_content = #{drContent} , dr_date = #{drDate}, pet_id = #{petId}, pet_health = #{petHealth}
+		where dr_no = #{drNo}
+	</update>
+	
+	<update id="petDiaryDelete">
+		update diary
+		set dr_status = 'N'
+		where dr_no = #{drNo}
+	</update>
 	
 </mapper>
