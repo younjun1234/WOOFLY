@@ -106,4 +106,18 @@ public class TemplateResolverConfig {
 		
 		return shop;
 	}
+	
+	@Bean
+	public ClassLoaderTemplateResolver infoResolver() {
+		ClassLoaderTemplateResolver info = new ClassLoaderTemplateResolver();
+		info.setPrefix("templates/views/info/");
+		info.setSuffix(".html");
+		info.setTemplateMode(TemplateMode.HTML);
+		info.setCharacterEncoding("UTF-8");
+		info.setOrder(2);
+		info.setCacheable(false);
+		info.setCheckExistence(true);
+		
+		return info;
+	}
 }

@@ -214,7 +214,6 @@
 			const addr = document.getElementById("addr").value;
 			const addrDetail = document.getElementById("addrDetail").value;
 			const postcode = document.getElementById("postcode").value;
-			
 			// 기본 배송지 선택했을때
 			if (document.getElementById('checkBox').checked == true && currentAddr.parentElement.children[4].value != 'Y') {
 				// 기본배송지가 있는지 확인
@@ -225,9 +224,11 @@
 						console.log(data);
 						if (data == 'bad') {
 							alert("기본 배송지가 이미 있습니다.");
+							
+						// 
 						} else if (addr != currentAddr.parentElement.children[1].value && 
-								   addrDetail != currentAddr.parentElement.children[1].value && 
-								   postcode != currentAddr.parentElement.children[1].value) {
+								   addrDetail != currentAddr.parentElement.children[2].value && 
+								   postcode != currentAddr.parentElement.children[3].value) {
 							// 이미 있는 주소지 인지 확인
 							$.ajax({
 								url: '/checkAddr.yj',
@@ -235,7 +236,7 @@
 									   'address' : addr,
 									   'addressDetail' : addrDetail},
 								success: data => {
-									console.log(data);
+									console.log(123);
 									if (data == 'bad') {
 										alert("이미 있는 배송지 입니다, 등록하신 주소 수정으로 이동하세요.");
 									} else {
@@ -245,13 +246,15 @@
 								error: data => console.log(data)
 								
 							})
+						} else {
+							document.getElementById("updateAddrForm").submit();
 						}
 					},
 					error: data => console.log(data)
 				})
 			} else if (addr != currentAddr.parentElement.children[1].value && 
-					   addrDetail != currentAddr.parentElement.children[1].value && 
-					   postcode != currentAddr.parentElement.children[1].value) {
+					   addrDetail != currentAddr.parentElement.children[2].value && 
+					   postcode != currentAddr.parentElement.children[3].value) {
 				$.ajax({
 					url: '/checkAddr.yj',
 					data: {'postcode' : postcode, 
@@ -268,8 +271,6 @@
 					error: data => console.log(data)
 					
 				})
-			} else {
-				document.getElementById("updateAddrForm").submit();
 			}
 
 		});
@@ -353,7 +354,7 @@
 	    			const addressDetail = document.getElementById("addNewDetailAddr").value;
 	    			const name = document.getElementById("addNewName").value;
 	    			const phone = document.getElementById("addNewPhone").value;
-	    			if (addr != "" && addrDetail != "" && postcode != "" && name != "" && phone != "") {
+	    			if (address != "" && postcode != "" && name != "" && phone != "") {
 	    				$("#addAddressSubmitBtn").removeClass('disabled');
 	    			} else {
 	    				document.getElementById("addAddressSubmitBtn").className = "btn btn-dark disabled";
@@ -370,6 +371,7 @@
 			const postcode = document.getElementById("addNewPostcode").value;
 			const address = document.getElementById("addNewAddr").value;
 			const addressDetail = document.getElementById("addNewDetailAddr").value;
+			
 			// 기본 배송지 선택했을때
 			if (document.getElementById('newCheckBox').checked == true) {
 				// 기본배송지가 있는지 확인
@@ -403,6 +405,7 @@
 					error: data => console.log(data)
 				})
 			} else {
+				console.log('else');
 				$.ajax({
 					url: '/checkAddr.yj',
 					data: {'postcode' : postcode, 
@@ -430,7 +433,7 @@
 			const postcode = document.getElementById("postcode").value;
 			const name = document.getElementById("name").value;
 			const phone = document.getElementById("phone").value;
-			if (addr != "" && addrDetail != "" && postcode != "" && name != "" && phone != "") {
+			if (addr != "" && postcode != "" && name != "" && phone != "") {
 				$("#updateAddrBtn").removeClass('disabled');
 			} else {
 				document.getElementById("updateAddrBtn").className = "btn btn-dark disabled";
@@ -444,7 +447,7 @@
 			const address = document.getElementById("addNewAddr").value;
 			const name = document.getElementById("addNewName").value;
 			const phone = document.getElementById("addNewPhone").value;
-			if (addr != "" && addrDetail != "" && postcode != "" && name != "" && phone != "") {
+			if (address != "" && postcode != "" && name != "" && phone != "") {
 				$("#addAddressSubmitBtn").removeClass('disabled');
 			} else {
 				document.getElementById("addAddressSubmitBtn").className = "btn btn-dark disabled";

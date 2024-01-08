@@ -14,10 +14,11 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 //import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -47,8 +48,8 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 @Controller
 public class MemberController {
 
-	//@Autowired
-	//private JavaMailSender mailSender;
+	@Autowired
+	private JavaMailSender mailSender;
 
 	
 	@Autowired
@@ -132,6 +133,34 @@ public class MemberController {
 		}
 	}
 	
+	@GetMapping("addPayment.yj")
+	@ResponseBody
+	public String addCard(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
+		String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue"))
+				.header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json")
+				.method("POST",
+						BodyPublishers
+								.ofString("{\"authKey\":\"" + authKey + "\",\"customerKey\":\"" + customerKey + "\"}"))
+				.build();
+		int result = 0;
+		try {
+			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			System.out.println(response.body());
+			HashMap<String, Object> map = new ObjectMapper().readValue(response.body(), HashMap.class);
+			System.out.println(map);
+			result = mService.addPayment(map);
+			
+		} catch (InterruptedException | IOException var7) {
+			var7.printStackTrace();
+		}
+		if(result > 0) {
+			return "good";
+		} else {
+			throw new MemberException("결제 정보 저장에 실패하였습니다.");
+		}
+	}
 	@GetMapping("updatePayment.yj")
 	public String updatePayment(@RequestParam("paymentNo") int paymentNo, HttpSession session) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -373,26 +402,30 @@ public class MemberController {
 		return renameFileName;
 	}
 	
-	/*
-	 * @GetMapping("mailCheck.yj")
-	 * 
-	 * @ResponseBody public String sendMail(@RequestParam("to") String to) throws
-	 * Exception { Random r = new Random(); int checkNum = r.nextInt(888888) +
-	 * 111111; // 난수 생성 String subject = "인증코드"; String content = "인증코드" + checkNum
-	 * + "입니다"; String from = "testyounjun@gmail.com"; try {
-	 * 
-	 * MimeMessage mail = mailSender.createMimeMessage(); MimeMessageHelper
-	 * mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
-	 * 
-	 * mailHelper.setFrom(from);
-	 * 
-	 * mailHelper.setTo(to); mailHelper.setSubject(subject);
-	 * mailHelper.setText(content, true);
-	 * 
-	 * mailSender.send(mail); } catch (Exception e) { e.printStackTrace(); }
-	 * 
-	 * return checkNum + ""; }
-	 */
+	
+	@GetMapping("mailCheck.yj")
+	@ResponseBody public String sendMail(@RequestParam("to") String to) throws Exception { 
+		Random r = new Random(); int checkNum = r.nextInt(888888) + 111111; // 난수 생성 
+		String subject = "인증코드"; 
+		String content = "인증코드" + checkNum + "입니다"; 
+		String from = "testyounjun@gmail.com"; 
+		try {
+			MimeMessage mail = mailSender.createMimeMessage(); MimeMessageHelper
+			mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+		 
+			mailHelper.setFrom(from);
+		  
+			mailHelper.setTo(to); mailHelper.setSubject(subject);
+			mailHelper.setText(content, true);
+		 
+			mailSender.send(mail); 
+		} 
+		catch (Exception e) { 
+			e.printStackTrace(); 
+		}
+	 
+		return checkNum + ""; }
+	 
 	
 	
 	@PostMapping("updateEmail.yj")
@@ -460,7 +493,7 @@ public class MemberController {
     public String addAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
     						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
     						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
-    	String addr = String.format("(%s)%s %s", postcode, address, addressDetail);
+    	
     	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
     	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
     	int result = mService.addAddress(mAddress);
@@ -469,6 +502,22 @@ public class MemberController {
     	} else {
     		throw new MemberException("주소 추가에 실패하였습니다");
     	}
+    }
+    
+    @GetMapping("addCheckoutAddr.yj")
+    @ResponseBody
+    public String addCheckoutAddr(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+								 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+								 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.addAddress(mAddress);
+    	if(result > 0) {
+    		return "" + mAddress.getAddrId();
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    	
     }
     
     @GetMapping("checkAddrType.yj")

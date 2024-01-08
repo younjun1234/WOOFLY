@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService{
 			offset = 0;
 			limit = 5;
 		}
-		RowBounds rowbounds = new RowBounds(offset, limit);		
+		RowBounds rowbounds = new RowBounds(0, 10);		
 		
 		return oDAO.selectMyBuying(rowbounds, map);
 	}
