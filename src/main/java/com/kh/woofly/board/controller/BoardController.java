@@ -295,6 +295,7 @@ public class BoardController {
 		// 2. 실종신고 //
 		// 글 목록
 		//	첨부파일 게시글 조회 //
+		// 게시글 목록 페이지로 이동할 때 필요한 데이터를 모델에 담아 뷰로 전달하는 역할
 		@GetMapping("/board/lost")
 		public String lostBoardView(@RequestParam(value="page", defaultValue="1") int page, 
 									Model model,
@@ -305,62 +306,312 @@ public class BoardController {
 			PageInfo pi = Pagination.getPageInfo(page, mListCount, 10);
 			ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);		
 			ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
+//			ArrayList<Member> mbList = bService.selectMemberList(pi, 1);	
 			
 			if(mList != null) {
+				// 모델에 데이터 추가
 				model.addAttribute("pi", pi);
 				model.addAttribute("mList", mList);
 				model.addAttribute("aList", aList);
-				model.addAttribute("loc", request.getRequestURI());
+				model.addAttribute("loc", request.getRequestURI());// 특정 페이지에서 다른 페이지로 이동할 때 사용
+				// 원래 있던 것들(위)에 더 추가(아래ㄱ)
+				model.addAttribute("mTitle", "글 제목");
+				model.addAttribute("mbNickName", "작성자 닉네임");
 				
+				
+				// 뷰 이름 반환
 				return "lostBoard";
 			} else {
 				throw new BoardException("게시글 조회 실패");
 			}
 		}
+//		: 특정 페이지에 해당하는 게시글 목록을 가져와 모델에 추가하고, 
+//		뷰로 전달하여 해당 페이지에 출력. 페이지당 게시글 수, 현재 페이지 등의 정보는 
+//		Pagination 유틸리티 클래스를 통해 계산되고, 이를 기반으로 게시글 목록을 가져옴.
 		
 		//	첨부파일 게시글 작성 //
 		// 글쓰기
+		// 글작성 버튼 눌렀을 때 게시글 작성 페이지로 이동하는 역할.
 		@GetMapping("/board/lost/write")
-		public String lostBoardWrite() {
-			return "lostBoardWrite";
+		public String lostBoardWrite(@RequestParam(value="page", defaultValue="1") int page, 
+									 Model model,
+									 HttpServletRequest request,
+									 HttpSession session) throws BoardException {
+			Member loginUser = (Member) session.getAttribute("loginUser");//사용자의 로그인 정보
+			int mListCount = bService.getMlistCount(1); // 글 목록 총 개수
+
+			PageInfo pi = Pagination.getPageInfo(page, mListCount, 10);
+			ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1); // 현재 페이지에 해당하는 게시글 목록을 가져옴		
+			ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);//bService 객체의 selectAttmLostBoardList 메서드를 호출하여 첨부 파일 목록을 가져옴
+			
+			// LostBoard 객체 생성
+			LostBoard lostBoard = new LostBoard();
+			lostBoard.setMTitle("글 제목");
+			lostBoard.setMbNickName("작성자 닉네임");
+			
+			if(mList != null) {
+				// 모델에 데이터 추가
+				model.addAttribute("pi", pi); // 페이징 정보
+				model.addAttribute("mList", mList);// 게시글 목록
+				model.addAttribute("aList", aList);//첨부파일 목록
+				model.addAttribute("loc", request.getRequestURI());// 특정 페이지에서 다른 페이지로 이동할 때 사용
+				model.addAttribute("loginUser", loginUser); //로그인한 사용자 정보
+				model.addAttribute("lostBoard", lostBoard);
+				model.addAttribute("mTitle", "글 제목"); // 임시로 사용되는 글제목
+				model.addAttribute("mbNickName", "작성자 닉네임"); // 작성자 닉네임
+				
+				// 뷰 이름 반환(게시글 작성 페이지로 이동할 때 필요한 데이터를 모델에 담아 뷰로 전달하는 역할)
+				return "lostBoardWrite";
+				
+			} else {
+				throw new BoardException("글 작성 페이지로 이동 실패");
+			}
 		}
+		
+//		//	첨부파일 게시글 작성(등록) //
+//		@PostMapping("/board/lost/insertLostBoard")
+//		public String insertLostBoard(@ModelAttribute LostBoard m, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
+//			String LostboardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+//			m.setMbId(LostboardWriter);
+//			int result = bService.insertLostBoard(m);
+//			
+//			if(result > 0) {
+//				return "redirect:list.at";
+//			} else {
+//				throw new BoardException("게시글 작성을 실패하였습니다.");
+//			}
+//		}
+//		
+
+		@PostMapping("/board/lost/insertLostBoard")
+		public String insertLostBoard(@ModelAttribute LostBoard m, 
+									  @RequestParam("file") ArrayList<MultipartFile> files, 
+									  HttpSession session, 
+									  HttpServletRequest request) throws BoardException {
+//			String LostboardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+			Member loginUser = (Member) session.getAttribute("loginUser");
+			System.out.println(m);
+			if(loginUser != null) {
+				m.setMbId(loginUser.getMbId());
+				m.setMbNickName(loginUser.getMbNickName());
+				
+				
+				
+				int result = bService.insertLostBoard(m);
+				
+				if(result > 0) {
+					return "redirect:/board/lost";
+				} else {
+					throw new BoardException("게시글 작성을 실패하였습니다.");
+				}
+			} else {
+				throw new BoardException("로그인이 필요합니다.");
+			}
+			
+		}	
+		
+//		@PostMapping("/board/lost/insertLostBoard")
+//		   public String insertLostBoard(@ModelAttribute LostBoard m, 
+//				   						 @RequestParam("file") ArrayList<MultipartFile> files,
+//				   						 HttpSession session, HttpServletRequest request) throws BoardException {
+//		    System.out.println(m);  
+//			String lostBoardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+//			System.out.println("mbId : " + m.getMbId());
+//			Member loginUser = (Member) session.getAttribute("loginUser");
+//			if(loginUser != null) {
+//				lostBoardWriter = loginUser.getMbId(); 
+//			} else {
+//				
+//			}
+//			
+//			if(loginUserObj != null && loginUserObj instanceof Memeber) {
+//				String lostBoardWriter = ((Memeber) loginUserObj).getMbId();
+//				m.setMbId(lostBoardWriter);
+//			} else {
+//				return "redirect:/loginPage";
+//			}
+//			
+//			m.setMbId(lostBoardWriter);
+//			
+//			int result1 = bService.insertLostBoard(m); 
+//			System.out.println(result1);
+//		      ArrayList<Attachment> aList = new ArrayList<>(); 
+//		      for(int i = 0; i < files.size(); i++) {
+//		         MultipartFile upload = files.get(i);
+//		         if(!upload.getOriginalFilename().equals("")) {
+//		            String[] returnArr = saveFile(upload);
+//		            if(returnArr[1] != null) {
+//		               Attachment a = new Attachment();
+//		               a.setOriginalName(upload.getOriginalFilename());
+//		               a.setRenameName(returnArr[1]);
+//		               a.setAttmPath(returnArr[0]);
+//		               a.setAttmLevel(2);
+//		               a.setAttmRefType("M");
+//		               a.setAttmRefNo(m.getMNo());
+//		               
+//		               aList.add(a);
+//		            }
+//		         }
+//		      }
+//		      
+//		    
+//		      
+//		      int result2 = bService.insertAttm(aList);
+//		 
+//		      if(mlist.isEmpty()) { 
+//		         m.setLostBoardType(1);
+//		         result1 = bService.insertLostBoard(m);
+//		      } else {
+//		         m.setLostBoardType(2);
+//		         result1 = bService.insertLostBoard(m);
+//		         
+//		      
+//		      if(result1 + result2 == aList.size()+1) {
+//		         if(result2 == 0) {
+//		            return "redirect:list.bo";
+//		         } else {
+//		            return "redirect:list.at";
+//		         }
+//		      } else {
+//		         for(Attachment a : aList) {
+//		            deleteFile(a.getRenameName());
+//		         }
+//		         throw new BoardException("게시판 작성을 실패하였습니다.");
+//		      }
+//		}
+//		      String id = ((Member)request.getSession().getAttribute("loginUser")).getId();
+//		      b.setBoardWriter(id);
+//		      
+//		     
+//		
+//		public String[] saveFile(MultipartFile upload) {
+//		      String root = "C:\\";
+//		      String savePath = root + "\\uploadFiles";
+//		      
+//		      File folder = new File(savePath);
+//		      if(!folder.exists()) {
+//		         folder.mkdirs();
+//		      }
+//		      
+//		    
+//		      Date time = new Date(System.currentTimeMillis());
+//		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//		      int ranNum = (int)(Math.random()*100000);
+//		      
+//		      String originFileName = upload.getOriginalFilename();
+//		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+//		      
+//		   
+//		      String renamePath = folder + "\\" + renameFileName;
+//		      try {
+//		         upload.transferTo(new File(renamePath));
+//		      } catch (IllegalStateException e) {
+//		         e.printStackTrace();
+//		      } catch (IOException e) {
+//		         e.printStackTrace();
+//		      }
+//		      
+//		      String[] returnArr = new String[2];
+//		      returnArr[0] = savePath;   
+//		      returnArr[1] = renameFileName;
+//		      
+//		      return returnArr;
+//		   }
+//
+//		private String[] saveFile(MultipartFile upload, HttpServletRequest request) {
+//			String root = "C:\\";
+//			String savePath = root + "\\uploadFiles";
+//			
+//			File folder = new File(savePath);
+//			
+//			if(!folder.exists()) {
+//				folder.mkdirs();
+//			}
+//			
+//			
+//			Date time = new Date(System.currentTimeMillis());
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//			int ranNum = (int)(Math.random()*100000);
+//			
+//			String originFileName = upload.getOriginalFilename();
+//			String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+//																			
+//			
+//		
+//			String renamePath = folder + "\\" + renameFileName;
+//			try {
+//				upload.transferTo(new File(renamePath));
+//			} catch (IllegalStateException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			String[] returnArr = new String[2];
+//			returnArr[0] = savePath; 
+//			returnArr[1] = renameFileName; 
+//			
+//			return returnArr;
+//		}
+//			
+//		
+//		public void deleteFile(String fileName) {
+//			String root = "C:\\";
+//			String savePath = root + "\\uploadFiles";
+//			File f = new File(savePath + "\\" + fileName);
+//			if(f.exists()) {
+//				f.delete();
+//			}
+//		}
+//		----------------------------------------------------------
+		
+//		// 첨부파일 게시글 상세보기 //
+//		@GetMapping("/board/lost/detail")
+//		public String lostBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("mNo") int mNo, HttpSession session, Model model) throws BoardException {
+//		
+//			Member loginUser = (Member)session.getAttribute("loginUser");
+//			String id = null;
+//			if(loginUser != null) {
+//				id = loginUser.getMbId();
+//			}
+//			LostBoard m = bService.selectLostBoard(mNo);
+//			ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
+//			
+//			if(m != null) {
+//				model.addAttribute("m", m);
+//				model.addAttribute("page", page);
+//				model.addAttribute("mList", mList);
+//				System.out.println(m);
+//				return "lostBoardDetail";
+//			} else {
+//				throw new BoardException("게시글 상세보기를 실패하였습니다.");
+//			}
+//		}
 		
 		// 첨부파일 게시글 상세보기 //
-		@GetMapping("/board/lost/detail")
-		public String lostBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("mNo") int mNo, HttpSession session, Model model) throws BoardException {
-		
-			Member loginUser = (Member)session.getAttribute("loginUser");
-			String id = null;
-			if(loginUser != null) {
-				id = loginUser.getMbId();
-			}
-			LostBoard m = bService.selectLostBoard(mNo);
-			ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
-			if(m != null) {
-				model.addAttribute("m", m);
-				model.addAttribute("page", page);
-				model.addAttribute("mList", mList);
-				System.out.println(m);
-				return "lostBoardDetail";
-			} else {
-				throw new BoardException("게시글 상세보기를 실패하였습니다.");
-			}
-		}
+				@GetMapping("/board/lost/detail")
+				public String lostBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(name="mNo", required=false) Integer mNo, HttpSession session, Model model) throws BoardException {
+				
+					Member loginUser = (Member)session.getAttribute("loginUser");
+					String id = null;
+					if(loginUser != null) {
+						id = loginUser.getMbId();
+					}
+					LostBoard m = bService.selectLostBoard(mNo);
+					ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
+					
+					if(m != null) {
+						model.addAttribute("m", m);
+						model.addAttribute("page", page);
+						model.addAttribute("mList", mList);
+						System.out.println(m);
+						return "lostBoardDetail";
+					} else {
+						throw new BoardException("게시글 상세보기를 실패하였습니다.");
+					}
+				}
 		
 			
-		//	첨부파일 게시글 작성(등록) //
-		@PostMapping("/board/lost/insertLostBoard")
-		public String insertLostBoard(@ModelAttribute LostBoard m, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
-			String LostboardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-			m.setMbId(LostboardWriter);
-			int result = bService.insertLostBoard(m);
-			
-			if(result > 0) {
-				return "redirect:list.at";
-			} else {
-				throw new BoardException("게시글 작성을 실패하였습니다.");
-			}
-		}
 
 		// 글 수정
 		@GetMapping("/board/lost/edit")

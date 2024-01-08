@@ -9,6 +9,8 @@ import com.kh.woofly.board.model.vo.Attachment;
 
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.member.model.vo.Member;
 
 @Mapper
 public interface BoardDAO {
@@ -38,6 +40,10 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	int insertAttm(ArrayList<Attachment> aList);
+
+//	ArrayList<Member> selectMemberList(PageInfo pi, int i);
 
 	
 	

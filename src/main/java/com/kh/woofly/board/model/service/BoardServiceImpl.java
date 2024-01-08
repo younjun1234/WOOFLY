@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
-
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 
@@ -82,6 +82,17 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	@Override
+	public int insertAttm(ArrayList<Attachment> aList) {
+		return bDAO.insertAttm(aList);
+	}
+
+//	@Override
+//	public ArrayList<Member> selectMemberList(PageInfo pi, int i) {
+//		// TODO Auto-generated method stub
+//		return  bDAO.selectMemberList(pi, i);
+//	}
 	
 	
 	

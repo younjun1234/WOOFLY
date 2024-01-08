@@ -17,15 +17,13 @@ public class Attachment {
 	private int attmId; 
 	private String originalName; 
 	private String renameName;
-	private String attmPath;
-	private String attmStatus;
-	private int attmLevel;
-//	private int refBoardId; <-DB에 없던데
-	
-	// DB ATTACHMENT엔 있는데 vo엔 없던 것들.
 	private Date attmCreateDate;
 	private Date attmModifyDate;
+	private String attmPath;
+	private String attmStatus;
 	private String attmRefType;
 	private int attmRefNo;
+	private int attmLevel;
+	
 
 }

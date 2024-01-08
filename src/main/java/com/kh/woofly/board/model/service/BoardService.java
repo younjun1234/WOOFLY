@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 
@@ -40,8 +41,12 @@ public interface BoardService {
 
 	LostBoard selectLostBoard(int bId, Object object);
 
+	int insertAttm(ArrayList<Attachment> aList);
+
+
 //	수정된 첨부파일 게시글 업로드 //
 //	int deleteLostAttm(ArrayList<String> delRename);
+//	ArrayList<Member> selectMemberList(PageInfo pi, int i);
 	
 
 

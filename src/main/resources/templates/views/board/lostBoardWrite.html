@@ -18,32 +18,38 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<!--<h6>작성자</h6>
-						<p>2023.10.16</p>-->
-						<h6>[[${m.mbNickName}]]</h6>
-						<p>[[${m.mCreateDate}]]</p>
+						<h6>작성자 <!-- 사용자 정보가 있을 때만 출력 -->
+							 <!--loginUser가 null이 아닐 떄(로그인된 상태)는 작성자 부분에 회원의 닉네임을 띄우고,
+							 	 loginUser가 null일 때(로그인 되지 않은 상태)는 작성자 부분에 Guest를 띄운다-->
+							 <span th:if="${session.loginUser == null}">Guest</span>
+							 <span th:unless="${session.loginUser == null}" name="mbNickName">[[${session.loginUser.mbNickName}]]</span>
+   							 <!--<span th:unless="${session.loginUser != null}">Guest</span>-->
+			            </h6>
+			            <p>날짜 <!-- 현재 날짜 출력 -->
+			                <span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" name="mCreateDate"></span>
+			            </p>
 					</div>
 				</div>
 			</div>
 			
 			<!-- <form action="/board/lost"> 글 등록 눌렀을 때 boardLost로 가게 하고 싶은데 어케하는지 모르겠음..-->
-			<form action="/board/lost">
+			<form action="/board/lost/insertLostBoard" method="post" enctype="multipart/form-data">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
-					    <select class="form-select mb-1">
-					    	<option value="1">구조중</option>
-							<option value="2">구조완료</option>
-						</select>
+				    <select class="form-select mb-1" id="lostStatus" name="lostStatus">
+				    	<option value="1">구조중</option>
+						<option value="2">구조완료</option>
+					</select>
 				</div>
 				<div class="mb-3">
-					<label for="title" class="form-label">[[${m.mTitle}]]</label><!--제목-->
-				  	<input type="text" class="form-control" id="title" placeholder="">
+					<label for="title" class="form-label"></label><!--제목-->
+				  	<input type="text" class="form-control" id="title" placeholder="제목넣으셈 ㅋ" name="mTitle">
 				</div>
 				<div class="mb-3">
-				  	<label for="content" class="form-label">[[${m.mContent}]]</label><!--내용-->
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<label for="content" class="form-label"></label><!--내용-->
+				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent"></textarea>
 				</div>
-				<label for="file" class="form-label">[[${a.attmId}]]</label><br><!--첨부파일-->
+				<label for="file" class="form-label"></label><br><!--첨부파일-->
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
 					   <div class="mb-3">
@@ -65,6 +71,8 @@
 		const boardNav = document.getElementById("topAdd7");
 		$(boardNav).addClass('active');
 		
+		
+		// 수업시간
 		window.onload = () =>{
 			const fileArea = document.querySelector('#fileArea');
 			document.getElementById('addFile').addEventListener('click', () =>{

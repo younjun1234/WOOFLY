@@ -18,6 +18,9 @@
 		order by b_no desc
 	</select>
 
+
+	<!-- 수정될거임 1. null을 보내면 전체사진, 2. 보드아이디와 보드타입을 보내면? 전체 사진 중에서 해당 게시판의 해당게시글의 사진들 
+			and attm_ref_no = #{bId}-->
 	<select id="selectAttmBoardList" resultType="Attachment">
 		select *
 		from attachment
@@ -41,7 +44,7 @@
 	
 	<insert id="insertBoard" useGeneratedKeys="true">
 		<selectKey order="BEFORE" resultType="_int"	keyProperty="bNo">
-			select seq_b_No.nextval from dual
+			select seq_b_No.nextval from dual 
 		</selectKey>
 
 		insert into board
@@ -50,6 +53,9 @@
 	
 	
 	<!-- 실종게시판 -->
+	<!--삭제되지 않은 게시글 목록의 개수(resultType="_int") 조회하는 역할-->
+	<!--쿼리 실행 결과로 반환되는 값이 int. 게시글의 개수와 같은 숫자 형태의 결과-->
+	<!--한 페이지에 표시할 게시글의 총 개수 조회(특정 조건에 해당하는 게시글의 총 개수)-->
 	<select id="mListCount" resultType="_int">
 		select count(*)
 		from Missing_Board
@@ -64,12 +70,13 @@
 		order by m_no desc
 	</select>
 
+
 	<select id="selectAttmLostBoardList" resultType="Attachment">
 		select *
 		from attachment
 		where attm_status='Y'
 		<if test="bId != null">
-			and attm_ref_type = 'B'
+			and attm_ref_type = 'M'
 		</if>
 		order by attm_id
 	</select>
@@ -85,14 +92,56 @@
 	    <result column="m_content" property="mContent" jdbcType="CLOB" javaType="java.lang.String"/>
 	</resultMap>
 	
-	<insert id="insertLostBoard" useGeneratedKeys="true">
+	<!--<insert id="insertLostBoard" useGeneratedKeys="true">
 		<selectKey order="BEFORE" resultType="_int"	keyProperty="mNo">
 			select seq_m_No.nextval from dual
 		</selectKey>
 
 		insert into Missing_Board
 		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+	</insert>-->
+	
+	<insert id="insertLostBoard" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int"	keyProperty="mNo">
+			select ATTM_SEQ.nextval from dual
+		</selectKey>
+
+		insert into Missing_Board
+		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
 	</insert>
+	
+	<!--<insert id="insertLostBoard" useGeneratedKeys="true">
+		<selectKey keyProperty="mNo" resultType="int" order="BEFORE">
+			select MS_NO_SEQ.nextval from dual
+		</selectKey>
+		insert into Missing_Board
+		values(#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
+	</insert>-->
+	
+	
+	<!-- 이건 지금 리스트를 넣는 insert구문입니까? 예?
+		그렇다면 제가 몸소 보여드리겠습니다.
+		aList에 a가 2개가 왔다고 가정해볼게요
+		1개 들어갔네요? 물론 들어가지도 않겠지만
+		그래서 사용하는 거 뭘까요?
+		insert를 한번에 했으면 좋겠어 ㅠㅠ
+		타겟은 하나, 값은 여러개인 상황이야 맞지? 1,2,3
+		지금 너가 반복문을 돌리려고 하는 컬렉션 객체의 형태가 뭐야?
+		1. tree다 2. list다 3. map이다
+	  -->
+	  
+	<insert id="insertAttm">
+		INSERT ALL
+		<foreach collection="list" item="a">
+			INTO ATTACHMENT
+			VALUES (ATTM_SEQ.NEXTVAL, #{a.originalName}, #{a.renameName}, DEFAULT, DEFAULT, #{a.attmPath}, DEFAULT, #{a.attmRefType}, #{a.attmRefNo}, #{a.attmLevel})
+		</foreach>
+		select *
+		from dual
+	</insert>  
+		 <!--자자.. 시퀀스는 하나의 동작에만 발동 그럼으로 호출하면 시퀀스를 발동시키는 함수하나를 만들어서 그 함수가 저 자리에 들어가야함.-->
+	
+	
 	
 	<!-- 	 <select id="getListCount" resultType="_int">
 		select count(*)
