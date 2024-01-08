@@ -48,6 +48,7 @@ public class OrderController {
 		map.put("endDate", currentDate);
 		
 		map.put("orderDate", "desc");
+		
 		ArrayList<Order> oList = oService.selectMyBuying(null, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
@@ -74,8 +75,10 @@ public class OrderController {
 		map.put("id", id);
 		
 		try {
-			Calendar calendar = Calendar.getInstance();
-			Date currentDate = calendar.getTime();
+	        Date currentDate = new Date();
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(currentDate);
+	        calendar.add(Calendar.DAY_OF_MONTH, 1);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			if (startDate == null) {
@@ -85,22 +88,24 @@ public class OrderController {
 			}
 			
 			if (endDate == null) {
-				map.put("endDate", sdf.format(currentDate));
+				map.put("endDate", sdf.format(calendar.getTime()));
 			} else {
 				map.put("endDate", sdf.parse(endDate));
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println(map.get("endDate"));
 		int listCount = oService.getBuyingCount(id);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-		
+		System.out.println(pi);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
 		ArrayList<Order> oList = oService.selectMyBuying(pi, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
+		
+		System.out.println(oList.size());
 		
 		for(Order o : oList) {
 			paList.add(oService.selectOrderAttm(o));

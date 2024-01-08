@@ -8,7 +8,7 @@
 	    from orders
 	    where customer_id = #{id}
 		    <if test="startDate != null">
-		    	and order_date > #{startDate}
+		    	and order_date >= #{startDate}
 		    </if>
 		    <if test="endDate != null">
 		    	and order_date <![CDATA[<]]> #{endDate}

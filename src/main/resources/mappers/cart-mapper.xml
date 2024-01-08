@@ -35,6 +35,60 @@
 	<select id="selectCart" resultType="Cart">
 		select *
 		from cart
+			 join product using (product_id)
 		where cart_id = #{cartId}
 	</select>
+	
+	<select id="selectDefaultAddr" resultType="MemberAddress">
+		select *
+		from member_address
+		where mb_id = #{id}
+		order by addr_type desc
+	</select>
+	
+	<select id="selectPayment" resultType="Payment">
+		select *
+		from payment
+		where member_id = #{id}
+		order by payment_type desc, payment_no asc
+	</select>
+	
+	
+	<insert id="insertOrder" useGeneratedKeys="true">
+		<selectKey order="BEFORE" resultType="_int" keyProperty="orderId">
+			select order_seq.nextval from dual
+		</selectKey>
+	
+		insert into orders
+		values (#{orderId}, sysdate, #{total}, #{customerId}, #{transFee}, #{usedPoints}, #{orderOwner}, 
+				#{mbTel}, #{addr}, #{paymentMethod}, #{orderRequest}, #{delStatus}, #{productCount})
+	</insert>
+	
+	<select id="selectAllCart" resultType="Cart">
+		select *
+		from cart
+			 join product using(product_id)
+		where mb_id = #{id}
+		and selected = 'Y'
+	</select>
+	
+	<insert id="addPoints">
+		insert into point_history
+		values (point_history_seq.nextval, 'A', #{points}, sysdate, #{id})
+	</insert>
+	
+	<select id="selectAddr" resultType="MemberAddress">
+		select * from member_address
+		where addr_id = #{addrId}
+	</select>
+	
+	<insert id="insertOrderDetail">
+		insert into order_detail
+		values (order_detail_seq.nextval, #{quantity}, #{productId}, #{orderId})
+	</insert>
+	
+	<delete id="deleteCart">
+		delete from cart
+		where cart_id = #{cartId}
+	</delete>
 </mapper>

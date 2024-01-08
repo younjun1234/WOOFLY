@@ -1,5 +1,10 @@
 package com.kh.woofly.cart.controller;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,12 +13,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.woofly.cart.model.service.CartService;
 import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.order.model.vo.Order;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpSession;
@@ -37,14 +47,11 @@ public class CartController {
 			if(c.getSelected().equals("N")) {
 				selectedAll = false;
 			} else {
-				total += c.getPrice();
+				total += c.getPrice() * c.getQuantity();
 				selectedCount++;
 			}
 		}
 	
-		System.out.println(cList);
-		System.out.println(paList);
-		System.out.println(total);
 		model.addAttribute("selectedAll", selectedAll);
 		model.addAttribute("selectedCount", selectedCount);
 		model.addAttribute("total", total);
@@ -82,11 +89,104 @@ public class CartController {
 	}
 	
 	@GetMapping("my/cart/checkout/{cartId}")
-	public String checkOut(@PathVariable(value="cartId") int cartId) {
+	public String checkOut(@PathVariable(value="cartId") int cartId, Model model, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		
+		ArrayList<Cart> cList = new ArrayList<Cart>();
 		Cart cart = cService.selectCart(cartId);
-		System.out.println(cart);
+		cList.add(cart);
+		
+		ArrayList<ProductAttm> paList = new ArrayList<>();
+		paList.add(cService.selectCartAttm(cart));
+		
+		ArrayList<MemberAddress> maList = cService.selectDefaultAddr(id);
+		// 내 결제 정보
+		ArrayList<Payment> pList = cService.selectPayment(id);
+		model.addAttribute("pList", pList);
+		model.addAttribute("total", cart.getPrice() * cart.getQuantity());
+		model.addAttribute("cList", cList);
+		model.addAttribute("paList", paList);
+		model.addAttribute("maList", maList);
+		model.addAttribute("points", Math.round(cart.getPrice() * cart.getQuantity() * 0.1));
+
 		return "checkOut";
 	}
+	
+	@GetMapping("my/cart/checkout")
+	public String checkOutAll(Model model, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		int total = 0;
+		
+		ArrayList<Cart> cList = cService.selectAllCart(id);;
+		
+		ArrayList<ProductAttm> paList = new ArrayList<>();
+		for(Cart c : cList) {
+			total += c.getPrice() * c.getQuantity();
+			paList.add(cService.selectCartAttm(c));
+		}
+			
+		
+		ArrayList<MemberAddress> maList = cService.selectDefaultAddr(id);
+		// 내 결제 정보
+		ArrayList<Payment> pList = cService.selectPayment(id);
+		model.addAttribute("points", Math.round(total * 0.1));
+		model.addAttribute("pList", pList);
+		model.addAttribute("total", total);
+		model.addAttribute("cList", cList);
+		model.addAttribute("paList", paList);
+		model.addAttribute("maList", maList);
+		
+		return "checkOut";
+	}
+	
+	@PostMapping("checkout.yj")
+	public String sendPayment(@RequestParam("amount") int amount, @RequestParam("cartId") int[] cartIds, @RequestParam("billingKey") String billingKey, HttpSession session,
+							  @RequestParam("addrId") int addrId, @RequestParam("orderRequest") String orderRequest, @RequestParam("points") int points) {
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("points", points);
+		map.put("id", loginUser.getMbId());
+		int pResult = cService.addPoints(map);
+		MemberAddress ma = cService.selectAddr(addrId);
+		Order o = new Order(0, null, amount, loginUser.getMbId(), 3000, 0, ma.getMbName(), ma.getMbTel(), "("+ma.getPostcode()+")"+ma.getAddr()+ma.getAddrDetail(), "카드", orderRequest, "0", cartIds.length);
+		int oResult = cService.insertOrder(o);
+		
+		int odResult = 0;
+		int cResult = 0;
+		for(int i : cartIds) {
+			Cart c = cService.selectCart(i);
+			OrderDetail od = new OrderDetail(0, c.getQuantity(), 0, c.getProductId(), o.getOrderId(), null);
+			odResult += cService.insertOrderDetail(od);
+			cResult += cService.deleteCart(c);
+			
+		}
+		
+		
+		System.out.println(billingKey);
+		HttpRequest request = HttpRequest.newBuilder()
+			    .uri(URI.create("https://api.tosspayments.com/v1/billing/" + billingKey))
+			    .header("Authorization", "Basic dGVzdF9za19rWUc1N0ViYTNHNkFlRG40NXFhOThwV0RPeG1BOg==")
+			    .header("Content-Type", "application/json")
+			    .method("POST", HttpRequest.BodyPublishers.ofString("{\"customerKey\":\"" + loginUser.getMbId() + 
+			    													"\",\"amount\":" + amount + 
+			    													",\"orderId\":\"" + o.getOrderId() + 
+			    													"\",\"orderName\":\"" + "WOOFLY" + 
+			    													"\",\"customerEmail\":\"" + loginUser.getMbEmail() +
+			    													"\",\"customerName\":\"" + loginUser.getMbName() + 
+			    													"\",\"taxFreeAmount\":0}"))
+			    .build();
+		HttpResponse<String> response = null;
+		try {
+			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println(response.body());
+		return "redirect:/my/buying";
+	}
+		
 }
 
 
