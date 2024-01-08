@@ -25,11 +25,11 @@ public interface BoardService {
 
 	int deleteFreeBoard(int bNo);
 	
-	int deleteFreeReply(int rNo);
-
 	int statusNAttm(int bNo);
 
 	int insertFreeReply(Reply r);
+	
+	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 
@@ -52,6 +52,8 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
 
 
 	

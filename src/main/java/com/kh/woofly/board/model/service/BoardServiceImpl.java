@@ -67,11 +67,6 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public int deleteFreeReply(int rNo) {
-		return bDAO.deleteFreeReply(rNo);
-	}
-
-	@Override
 	public int statusNAttm(int bNo) {
 		return bDAO.statusNAttm(bNo);
 	}
@@ -80,6 +75,12 @@ public class BoardServiceImpl implements BoardService{
 	public int insertFreeReply(Reply r) {
 		return bDAO.insertFreeReply(r);
 	}
+	
+	@Override
+	public int deleteFreeReply(Reply r) {
+		return bDAO.deleteFreeReply(r);
+	}
+
 
 	@Override
 	public ArrayList<Reply> selectFreeReply(int bNo) {
@@ -121,6 +122,7 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.selectLostBoard(bId, object);
 	}
 
+	
 
 	
 	

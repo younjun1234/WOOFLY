@@ -27,6 +27,8 @@ import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.shop.model.exception.ShopException;
+import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -53,7 +55,7 @@ public class BoardController {
 			ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
 			ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
 			
-			System.out.println(list);
+			//System.out.println(list);
 			if(list != null) {
 				model.addAttribute("pi", pi);
 				model.addAttribute("list", list);
@@ -88,7 +90,7 @@ public class BoardController {
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
-				System.out.println(rList);
+				//System.out.println(rList);
 				return "freeBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
@@ -106,81 +108,97 @@ public class BoardController {
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 			b.setMbId(boardWriter);
 			//System.out.println(boardWriter);
-			int result = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
+			int result1 = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
 			//System.out.println(b.getBNo());
-		    if (result > 0) {
-		        if (files != null && !files.isEmpty()) {
-		            ArrayList<Attachment> attachments = new ArrayList<>();
-
-		            for (MultipartFile file : files) {
-		                String savedFileName = saveBoardFile(file); 
-		                
-		                Attachment attachment = new Attachment();
-		                attachment.setAttmPath(savedFileName);
-		                attachment.setAttmRefType("B"); 
-		                attachment.setAttmRefNo(b.getBNo()); 
-		                
-		                attachments.add(attachment);
-		            }
-
-		            result = bService.insertFreeAttm(attachments);
-		            
-		        }
-		        return "redirect:/board/free"; 
-		    } else {
-		        throw new BoardException("게시글 작성을 실패하였습니다.");
+			
+			
+			ArrayList<Attachment> attachments = new ArrayList<>();
+			for(int i = 0; i<files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment attachment = new Attachment();
+						attachment.setOriginalName(upload.getOriginalFilename());
+						attachment.setRenameName(returnArr[1]);
+						attachment.setAttmPath(returnArr[0]);
+						attachment.setAttmRefType("B");
+						attachment.setAttmRefNo(b.getBNo());
+						
+						attachments.add(attachment);
+					}
+				}
+			}
+			
+			for(int i=0; i < attachments.size(); i++) {
+				Attachment a = attachments.get(i);
+				if(i == 0) {
+					a.setAttmLevel(1);
+				} else {
+					a.setAttmLevel(2);
+				}
+			}
+			
+			int result2 = bService.insertFreeAttm(attachments);
+			System.out.println(result2);
+			result2 = bService.insertFreeAttm(attachments);
+			System.out.println(result2);
+			if(result1 + result2 > 1) {
+				return "redirect:/board/free";
+			} else {
+				for(Attachment a : attachments) {
+					deleteFile(a.getRenameName());
+				}
+				throw new BoardException("게시글 작성을 실패하였습니다.");
 		    }
 		}
 			
 		
 		
 		// 파일 저장소 파일 저장(copy)
-		public String saveBoardFile(MultipartFile file) {
-			String os = System.getProperty("os.name").toLowerCase();
-			String savePath = null;
-			if (os.contains("win")) {
-				savePath = "C:\\uploadFiles\\woolfy";
-			} else if (os.contains("mac")) {
-				savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
-			}
+		private String[] saveFile(MultipartFile upload) {
+			
+			String root = "C:\\woofly\\";
+			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
 			if(!folder.exists()) {
 				folder.mkdirs();
 			}
-			// 2. 저장된 file rename 
+			
 			Date time = new Date(System.currentTimeMillis());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 			int ranNum = (int)(Math.random()*100000);
 			
-			String originFileName = file.getOriginalFilename();
+			String originFileName = upload.getOriginalFilename();
 			String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
 			
-			// 3. rename된 파일을 저장소에 저장
-			String renamePath = folder + "/" + renameFileName;
+			String renamePath = folder + "\\" + renameFileName;
+			
 			try {
-				file.transferTo(new File(renamePath));
-			} catch (IllegalStateException | IOException e) {
+				upload.transferTo(new File(renamePath));
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			return renameFileName;
+			String[] returnArr = new String[2];
+			returnArr[0] = savePath;
+			returnArr[1] = renameFileName;
+			
+			return returnArr;
 		}
 		
 		
-		private void deleteBoardFile(String fileName) {
-			String os = System.getProperty("os.name").toLowerCase();
-			String savePath = null;
-			if (os.contains("win")) {
-				savePath = "C:\\uploadFiles\\woolfy";
-			} else if(os.contains("mac")) {
-				savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
-			}
-			File f = new File(savePath + fileName);
+		private void deleteFile(String renameName) {
+			String root = "C:\\woofly\\";
+			String savePath = root + "\\board";
+			
+			File f = new File(savePath + "\\" + renameName);
 			if(f.exists()) {
 				f.delete();
 			}
-			
 		}
 
 		@GetMapping("/board/free/edit")
@@ -200,18 +218,7 @@ public class BoardController {
 				throw new BoardException("게시글 삭제 실패");
 			}
 		}
-		
-		@PostMapping("/board/free/deleteReply")
-		public String deleteFreeReply(@RequestParam("rNo") int rNo){
-			int result = bService.deleteFreeReply(rNo);
-			
-			if(result >0 ) {
-				return "location.reload()";
-			} else {
-				throw new BoardException("댓글 삭제 실패");
-			}
-		}
-		
+				
 		@GetMapping(value="/insertFreeReply.yk", produces="application/json; charset=UTF-8")
 		@ResponseBody
 		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
@@ -237,6 +244,35 @@ public class BoardController {
 			return jArr.toString();
 			
 		}
+		
+		@GetMapping(value="/deleteReply.yk", produces="application/json; charset=UTF-8")
+		@ResponseBody
+		public String deleteFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+			int result = bService.deleteFreeReply(r);
+			System.out.println(r);
+			
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : rlist) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickname());
+				jArr.put(json);
+			}			
+			
+			return jArr.toString();
+			
+		}
+
+
 		
 	
 		
@@ -435,7 +471,7 @@ public class BoardController {
 				model.addAttribute("m", m);
 				model.addAttribute("page", page);
 				model.addAttribute("mList", mList);
-				System.out.println(m);
+				//System.out.println(m);
 				return "lostBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");

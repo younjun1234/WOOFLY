@@ -25,6 +25,7 @@
 		where attm_status='Y'
 		<if test="bId != null">
 			and attm_ref_type = 'B'
+			and attm_ref_no = #{ bNo }
 		</if>
 		order by attm_id
 	</select>
@@ -52,27 +53,31 @@
 	</update>
 
 	<insert id="insertFreeAttm">
-		insert all
+		insert into attachment
+		<foreach collection="list" item="item" separator=",">
+			values(attm_seq.nextval, #{item.originalName}, #{item.renameName},
+			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, #{item.attmLevel})
+		</foreach>
+	</insert>
+	
+	<!--
+	<insert id="insertFreeAttm">
+		insert all 
 		<foreach collection="list" item="item">
 			into attachment
 			values(attm_seq.nextval, #{item.originalName}, #{item.renameName},
-			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, default)
+			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, #{item.attmLevel})
 		</foreach>
 		select * from dual
 	</insert>
+	-->
 	
 	<update id="deleteFreeBoard">
 		update board
 		set b_status = 'N'
 		where b_no = #{ bNo }
 	</update>
-	
-	<update id="deleteFreeReply">
-		update Reply
-		set re_d_status = 'N'
-		where r_no = #{ rNo }
-	</update>
-	
+		
 	<update id="statusNAttm">
 		update attachment
 		set attm_status = 'N'
@@ -84,6 +89,12 @@
       values(reply_seq.nextval, 'B', #{bNo}, 
             #{reContent}, SYSDATE, default, default, #{mbId})
    </insert>
+   
+   <update id="deleteFreeReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo }
+	</update>
 	
 	<select id="selectFreeReply" resultType="Reply">
 		select  r.*, m.mb_nickname as "mbNickname" 

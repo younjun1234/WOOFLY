@@ -51,6 +51,7 @@
 					</ul>
 				</div>
 			</div>
+			
 			<!-- 제목 -->
 			<div class="row">
 				<h1 class="ps-0">[[${b.bTitle}]]</h1>
@@ -59,35 +60,44 @@
 			<div class="row mt-3" style="min-height: 500px;" th:text="${b.bContent}">
 			</div>
 			
+			<!-- 이미지 파일 삽입 -->
 			<main class="container py-5">
-					<div class="row">
-					<th:block th:each="a : ${list}">
-						<!-- 이미지 파일일 때 -->
-						<div class="mb-4"  th:if="${ #strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png') }">
-							<div class="card">
-								<img th:src="@{image/}+${ a.renameName }" width="100%" height="200">
-								<div class="card-body">
-									<h5 class="card-title">
-										<a th:href="@{image/}+${ a.renameName }" th:download="${ a.originalName }">[[${ a.originalName }]]</a>
-									</h5>
-								</div>
-							</div>
-						</div>
-						<!-- 이미지 파일이 아닐 때 -->
-						<div class="mb-4" th:each="a :${ list}" th:unless="${ #strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png') }">
-							<div class="card">
-								<div class="card-body">
-									<h5 class="card-title">
-										<a th:href="@{image/}+${ a.renameName }" th:download="${ a.originalName }">${ a.originalName }</a>
-									</h5>
-								</div>
-							</div>
-						</div>
-					</div>
-				</main>
+			    <div class="row">
+			        <th:block th:each="a : ${list}">
+			            <!-- 이미지 파일일 때 -->
+			            <div class="mb-4" th:if="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
+			                <div class="card">
+			                    <img th:src="@{'/woofly/board/' + ${a.renameName}}" width="100%" height="200">
+			                    <div class="card-body">
+			                        <h5 class="card-title">
+			                            <a th:href="@{'/woofly/board/' + ${a.renameName}}" th:download="${a.originalName}">[[${a.originalName}]]</a>
+			                        </h5>
+			                    </div>
+			                </div>
+			            </div>
+			            <!-- 이미지 파일이 아닐 때 -->
+			            <div class="mb-4" th:unless="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
+			                <div class="card">
+			                    <div class="card-body">
+			                        <h5 class="card-title">
+			                            <a th:href="@{'/woofly/board/' + ${a.renameName}}" th:download="${a.originalName}">[[${a.originalName}]]</a>
+			                        </h5>
+			                    </div>
+			                </div>
+			            </div>
+			        </th:block>
+			    </div>
+			</main>
+
+			
 			</form>
 		</div>
 		
+		<form id="ReplyForm">
+		
+						<input type="hidden" th:value='${ b.bNo }'  id="bNo" name="bNo">
+						<input type="hidden" id="mbId" th:value="${session.loginUser.mbId}">
+						<input type="hidden" id="mbNickname" th:value="${session.loginUser.mbNickName}">
 		<!-- 댓글 작성 영역 --> 
 		
 		<div class="mt-3" th:if="${ session.loginUser != null}" >
@@ -114,10 +124,13 @@
 			</thead>
 			<tbody>
 				<tr th:each="r : ${rList}">
-	            	<td width="150px" style="text-align:center;"> &nbsp;&nbsp;[[${ r.mbNickname }]]</td>
+	            	<td width="150px" style="text-align:center;"> 
+	            		&nbsp;&nbsp;[[${ r.mbNickname }]]
+	            		<input type="hidden" th:value='${ r.bNo }'  id="rNo" name="rNo">
+	            	</td>
 	            	<td>[[${ r.reContent }]]</td>
 	            	<td width="130px">[[${ r.reDate }]]</td>	
-	            	<td width="100px" class="col-2 d-flex align-items-center justify-content-end">     
+	            	<td width="100px">     
 		            	<div class="col-2 d-flex align-items-center justify-content-end">
 							<div class="mx-2">53</div>
 							<div>
@@ -130,7 +143,7 @@
 								  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
 								</svg>
 								<ul class="dropdown-menu">
-								    <li><a class="dropdown-item" id ="deleteModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">삭제</a></li>
+								    <li><a class="dropdown-item" id ="deleteReplyModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">삭제</a></li>
 								    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">신고</button></li>
 								</ul>
 							</div>
@@ -140,49 +153,7 @@
             </tbody>
 		</table> 
 		
-		<!--  <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black" th:each="r : ${rList}">
-			<div class="col-1" style="line-height: 40px;">[[${ r.mbNickname }]]</div>
-			<div class="col-8" style="line-height: 40px;">[[${ r.reContent }]]</div>
-			<div class="col-1" style="line-height: 40px;">[[${ r.reDate }]]</div>
-			<div class="col-2 d-flex align-items-center justify-content-end">
-				<div class="mx-2">53</div>
-				<div>
-					<svg xmlns ="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-						<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					</svg>
-				</div>
-				<div class="dropdown ms-2 me-5">
-					<svg xmlns ="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					</svg>
-					<ul class="dropdown-menu">
-    				    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
-				</div>
-			</div>
-		</div> -->
-		
-		<!--<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-			<div class="col-1" style="line-height: 40px;">뽀또</div>
-			<div class="col-8" style="line-height: 40px;">주말 동안 가보기 좋은 곳이네요</div>
-			<div class="col-1" style="line-height: 40px;">작성일자</div>
-			<div class="col-2 d-flex align-items-center justify-content-end">
-				<div class="mx-2">53</div>
-				<div>
-					<svg xmlns ="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-						<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					</svg>
-				</div>
-				<div class="dropdown ms-2 me-5">
-					<svg xmlns ="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					</svg>
-					<ul class="dropdown-menu">
-				    	<li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
-				</div>
-			</div>
-		</div> -->
+		</form>
 		
 		
 		
@@ -251,6 +222,23 @@
   		</div>
 	</div>
 	
+	<!-- 댓글 삭제 -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="modalChoice2">
+		<div class="modal-dialog" role="document">
+    		<div class="modal-content rounded-3 shadow">
+      			<div class="modal-body p-4 text-center">
+        			<h3 class="mb-0">정말로 삭제하시겠습니까?</h3>
+        			<p class="mb-0">삭제 후 댓글은 복구할 수 없습니다.</p>
+      			</div>
+      			<div class="modal-footer flex-nowrap p-0">
+        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="deleteReply">
+        				<strong>네</strong>
+        			</button>
+        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
 	
 	
 	<script>
@@ -264,7 +252,8 @@
 		
 		window.onload = () =>{
 			const form = document.getElementById('detailForm');
-			const del = document.getElementById('deleteModal')
+			
+			const del = document.getElementById('deleteModal');			
 			if(del != null) {
 				del.addEventListener('click', () =>{
 					$('#modalChoice').modal('show');
@@ -275,6 +264,48 @@
 				form.action = '/board/free/delete';
 				form.submit();
 			})
+			
+			const Replyform = document.getElementById('ReplyForm');
+			const delRep = document.getElementById('deleteReplyModal');
+			if(delRep != null) {
+				delRep.addEventListener('click', () =>{
+					$('#modalChoice2').modal('show');
+				})
+			}
+			
+			document.getElementById('deleteReply').addEventListener('click', () =>{			
+				
+				 	const rNo = document.getElementById('rNo').value;
+				    const boardNo = document.getElementById("bNo").value;
+				    
+				    $.ajax({
+				        url: '/deleteReply.yk',
+				        data: { rNo: rNo, bNo: boardNo },
+				        success: (data) => {
+				            console.log(data);
+				            const tbody = document.querySelector('tbody');
+				            tbody.innerHTML = '';
+				            for (const r of data) {
+				                const tr = document.createElement('tr');
+				                const writerTd = document.createElement('td');
+				                writerTd.innerText = r.mbNickname;
+				                const contentTd = document.createElement('td');
+				                contentTd.innerText = r.reContent;
+				                const dateTd = document.createElement('td');
+				                dateTd.innerText = r.reDate;
+				                
+				                tr.append(writerTd);
+				                tr.append(contentTd);
+				                tr.append(dateTd);
+				                
+				                tbody.append(tr);
+				            }
+				            document.getElementById('replyContent').value = '';
+				        },
+				        error: (data) => console.log(data),
+				});
+			
+			})	
 			
 			document.getElementById('replySubmit').addEventListener('click', () =>{
 				const bNo = Number(document.getElementById('bNo').value);
@@ -308,6 +339,7 @@
 							tbody.append(tr);
 						}
 						document.getElementById('replyContent').value = '';
+						Replyform.submit();
 					},
 					error: data => console.log(data)
 				});
