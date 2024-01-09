@@ -17,7 +17,7 @@
 			<h1>자유게시판</h1>
 		</div>
 		<div class="container">
-		<form method="POST" id="detailForm">
+		<form id="detailForm">  <!--  method="POST" -->
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 			
@@ -29,6 +29,7 @@
 						<input type="hidden" th:value='${ b.bNo }'  id="bNo" name="bNo">
 						<input type="hidden" id="mbId" th:value="${session.loginUser.mbId}">
 						<input type="hidden" id="mbNickname" th:value="${session.loginUser.mbNickName}">
+						<input type = "hidden" th:value ="${ page }" name ="page">
 					</div>
 				</div>
 				
@@ -44,8 +45,8 @@
 					<svg xmlns ="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
 					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
 					</svg>
-					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="/board/free/edit" th:if="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">수정</a></li>
+					<ul class="dropdown-menu"> <!--  href="/board/free/editForm" -->
+						<li><a class="dropdown-item" id="updateForm" th:if="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">수정</a></li>
 					    <li><a class="dropdown-item" id ="deleteModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">삭제</a></li>
 					    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq b.mbId }">신고</button></li>
 					</ul>
@@ -67,10 +68,10 @@
 			            <!-- 이미지 파일일 때 -->
 			            <div class="mb-4" th:if="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
 			                <div class="card">
-			                    <img th:src="@{'/woofly/board/' + ${a.renameName}}" width="100%" height="200">
+			                    <img th:src="@{'/image/' + ${a.renameName}}" width="100%" height="200">
 			                    <div class="card-body">
 			                        <h5 class="card-title">
-			                            <a th:href="@{'/woofly/board/' + ${a.renameName}}" th:download="${a.originalName}">[[${a.originalName}]]</a>
+			                            <a th:href="@{'/image/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
 			                        </h5>
 			                    </div>
 			                </div>
@@ -80,7 +81,7 @@
 			                <div class="card">
 			                    <div class="card-body">
 			                        <h5 class="card-title">
-			                            <a th:href="@{'/woofly/board/' + ${a.renameName}}" th:download="${a.originalName}">[[${a.originalName}]]</a>
+			                            <a th:href="@{'/image/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
 			                        </h5>
 			                    </div>
 			                </div>
@@ -88,6 +89,7 @@
 			        </th:block>
 			    </div>
 			</main>
+
 
 			
 			</form>
@@ -126,7 +128,7 @@
 				<tr th:each="r : ${rList}">
 	            	<td width="150px" style="text-align:center;"> 
 	            		&nbsp;&nbsp;[[${ r.mbNickname }]]
-	            		<input type="hidden" th:value='${ r.bNo }'  id="rNo" name="rNo">
+	            		<input type="hidden" th:value='${ r.rNo }'  id="rNo" name="rNo">
 	            	</td>
 	            	<td>[[${ r.reContent }]]</td>
 	            	<td width="130px">[[${ r.reDate }]]</td>	
@@ -251,7 +253,14 @@
 		$(boardNav).addClass('active');
 		
 		window.onload = () =>{
-			const form = document.getElementById('detailForm');
+			const upd = document.getElementById("updateForm");
+			const form = document.getElementById('detailForm');			
+			if(upd != null){
+				upd.addEventListener('click', ()=>{
+					form.action = '/board/free/editForm';
+					form.submit();
+				});
+			}
 			
 			const del = document.getElementById('deleteModal');			
 			if(del != null) {
@@ -304,6 +313,8 @@
 				        },
 				        error: (data) => console.log(data),
 				});
+				    
+				    $('#modalChoice2').modal('hide');
 			
 			})	
 			

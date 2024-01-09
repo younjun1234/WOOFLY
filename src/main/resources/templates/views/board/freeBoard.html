@@ -14,29 +14,29 @@
 	<div th:replace="~{common/topAdd :: topAdd}"></div>
 	 <div class="container mt-5 mb-3">
       	<div class="container d-flex px-0 mb-3 border-bottom border-black border-3 justify-content-between align-items-center">
-			<h1>자유게시판</h1>
+			<h1>자유게시판</h1>			
 			<a role="button" href="/board/free/write" class="btn btn-dark btn-sm h-50" th:if="${ session.loginUser != null}" >글 작성</a>
 		</div>
+		<form id="detailForm">
 		
-		<form method="POST" id="searchForm">
 			<div class="mt-3" id="searchArea" >			
 				<div class="row g-1 justify-content-">
 					<label for="search-category" class="form-label">게시글 검색</label>
-					<select class="col-1" id="search-box" style="border: 1px solid #D2D6D9; border-radius: 6px;">
+					<select class="col-1" id="search-box" name="searchType" style="border: 1px solid #D2D6D9; border-radius: 6px;">
 						<option value="" disabled selected>검색조건</option>
-						<option value="writer">작성자</option>
-						<option value="title">제목</option>
-						<option value="all">제목+작성자</option>
+						<option value="writer" name="writer">작성자</option>
+						<option value="title" name="title">제목</option>
+						<option value="all" name="all">제목+작성자</option>
 					</select>
 					<div class="col-10">						
-				    <input type="text" class="form-control" id="search-box" placeholder="검색어를 입력해주세요">
+				    <input type="text" class="form-control" id="search-box"  name="searchWord" placeholder="검색어를 입력해주세요">
 					</div>
 					<div class="col-1">
-						<button class="btn btn-dark">검색 하기</button>
+						<button class="btn btn-dark" id="searchForm">검색 하기</button>
 					</div>
 				</div>
 			</div>
-		</form>
+		
 		
 				
 		<div class="container board-list">
@@ -67,6 +67,7 @@
 	            </li>
 		  	</ul>
 		</nav>
+		</form>
 	</div>
 	
 	<script>
@@ -81,19 +82,28 @@
 		const boardList = document.querySelectorAll('.board-list .board');
 	    boardList.forEach(board => {
 	        board.addEventListener('click', () => {
-	            const boardId = board.parentElement.querySelector('.board:nth-child(1)').innerText;
+	            const bNo = board.parentElement.querySelector('.board:nth-child(1)').innerText;
 	            const currentPage = /*[[${pi.currentPage}]]*/1;
-	            window.location.href = `/board/free/detail?bNo=${boardId}&page=${currentPage}`;
+	            window.location.href = `/board/free/detail?bNo=${bNo}&page=${currentPage}`;
 	        });
 	    });
 	    
 	    window.onload = () =>{
-	    	document.getElementById('searchArea').addEventListener('click', ()=>{
+	    	
+	    	const search = document.getElementById("searchForm");
+			const form = document.getElementById('detailForm');			
+			if(search != null){
+				search.addEventListener('click', ()=>{
+					form.action = '/board/free/search';
+					form.submit();
+				});
+			}
+	    	/* document.getElementById('searchArea').addEventListener('click', ()=>{
 	    		const category = document.getElementById('search-category').value;
 	    		const value = document.getElementById('search-box').value;
 	    		
 	    		 window.location.href =  `/board/free/search?category=${category}&value=${value}`;
-	    	});
+	    	}); */
 	    }
 	    
 	</script>

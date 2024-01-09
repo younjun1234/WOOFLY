@@ -4,6 +4,24 @@
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
 	 
 	<!-- 자유게시판 -->	
+	
+	<select id="searchFreeBoard" resultType="Board">
+		select b.*, m.mb_nickname as "mbNickname" 
+	    from board b 
+	    join member m on b.mb_id = m.mb_id 
+	    where b.b_status = 'Y' 
+	    <if test="searchType != null and searchType.equals('writer')">
+    		and b.mb_nickname like '%#{ searchKeyword }%'
+    	</if>
+    	<if test="searchType != null and searchType.equals('title')">
+    		and b.b_title '%#{ searchKeyword }%'
+    	</if>
+    	<if test="searchType != null and searchType.equals('all')">
+    		and (b.mb_nickname like '%#{ searchKeyword }%' || b.b_title '%#{ searchKeyword }%')
+    	</if>
+	    order by b.b_no desc
+	</select>
+	
 	<select id="getListCount" resultType="_int">
 		select count(*)
 		from board
@@ -53,29 +71,42 @@
 	</update>
 
 	<insert id="insertFreeAttm">
-		insert into attachment
-		<foreach collection="list" item="item" separator=",">
-			values(attm_seq.nextval, #{item.originalName}, #{item.renameName},
-			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, #{item.attmLevel})
-		</foreach>
-	</insert>
-	
-	<!--
-	<insert id="insertFreeAttm">
-		insert all 
+		insert all
 		<foreach collection="list" item="item">
 			into attachment
-			values(attm_seq.nextval, #{item.originalName}, #{item.renameName},
-			SYSDATE, SYSDATE, #{item.attmPath}, default, #{item.attmRefType}, #{item.attmRefNo}, #{item.attmLevel})
+			values(new_aid, #{item.originalName}, #{item.renameName},
+			SYSDATE, SYSDATE, #{item.attmPath}, default, 'B', #{item.attmRefNo}, #{item.attmLevel})
 		</foreach>
 		select * from dual
 	</insert>
-	-->
+	
+	<update id="updateFreeBoard">
+		update board
+		set b_title = #{bTitle}, b_content = #{bContent}
+		where b_no = #{ bNo }
+	</update>
 	
 	<update id="deleteFreeBoard">
 		update board
 		set b_status = 'N'
 		where b_no = #{ bNo }
+	</update>
+	
+	<delete id="deleteFreeAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+
+	<update id="updateAttmLevel">
+		update attachment
+		set attm_level = 1
+		where attm_id = (select min(attm_id)
+						 from attachment
+						 where attm_ref_no = #{bNo})
 	</update>
 		
 	<update id="statusNAttm">

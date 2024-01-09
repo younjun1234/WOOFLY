@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.woofly.board.model.exception.BoardException;
 import com.kh.woofly.board.model.service.BoardService;
@@ -45,6 +46,16 @@ public class BoardController {
 		//<< 글형식 >>
 		// 
 		// 1. 자유게시판 //
+		
+		@GetMapping("/board/free/search")
+		public String searchFreeBoard(@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model) {
+			   
+			ArrayList<Board> searchResults = bService.searchFreeBoard(searchType, searchKeyword);
+		    System.out.println(searchType);
+		    model.addAttribute("searchResults", searchResults);
+		    return "freeBoard";
+
+		}
 		
 		@GetMapping("/board/free")
 		public String freeBoardView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) throws BoardException {
@@ -139,11 +150,11 @@ public class BoardController {
 				}
 			}
 			
+			
 			int result2 = bService.insertFreeAttm(attachments);
-			System.out.println(result2);
-			result2 = bService.insertFreeAttm(attachments);
-			System.out.println(result2);
-			if(result1 + result2 > 1) {
+			//System.out.println(result1);
+			//System.out.println(result2);
+			if(result1 + result2 > 0) {
 				return "redirect:/board/free";
 			} else {
 				for(Attachment a : attachments) {
@@ -200,11 +211,130 @@ public class BoardController {
 				f.delete();
 			}
 		}
-
-		@GetMapping("/board/free/edit")
-		public String freeBoardEdit() {
+		
+		@GetMapping("/board/free/editForm")
+		public String freeBoardEditForm(@RequestParam("bNo") int bNo, @RequestParam("page") int page, Model model) {
+			
+			Board b = bService.selectFreeBoard(bNo,null);
+			ArrayList<Attachment> list = bService.selectAttmFreeBoardList(bNo);
+			model.addAttribute("b", b);
+			model.addAttribute("page", page);
+			model.addAttribute("list", list);
 			
 			return "freeBoardEdit";
+		}
+
+
+		@PostMapping("/board/free/edit")
+		public String freeBoardEdit(@ModelAttribute Board b, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm
+,
+				 @RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+			/* int result = bService.updateFreeBoard(b); */
+			
+			ArrayList<Attachment> list = new ArrayList<>();
+			for(int i=0; i< files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment a = new Attachment();
+						a.setOriginalName(upload.getOriginalFilename());
+						a.setRenameName(returnArr[1]);
+						a.setAttmPath(returnArr[0]);
+						
+						list.add(a);
+					}
+				}
+			}
+			
+			ArrayList<String> delRename = new ArrayList<>();
+			ArrayList<Integer> delLevel = new ArrayList<>();
+			for(String a : deleteAttm) {
+				if(!a.equals("none")) {
+					String[] split = a.split("/");
+					delRename.add(split[0]);
+					delLevel.add(Integer.parseInt(split[1]));
+				}
+			}
+			
+			int deleteAttmResult = 0;
+			int updateBoardResult = 0;
+			boolean existBeforeAttm = true;
+			if(!delRename.isEmpty()) {
+				deleteAttmResult = bService.deleteFreeAttm(delRename);
+				if(deleteAttmResult > 0) {
+					for(String rename : delRename) {
+						deleteFile(rename);
+					}
+				}
+			
+				if(delRename.size() == deleteAttm.length) {
+					existBeforeAttm = false;
+					
+				} else {
+					for(int level : delLevel) {
+						if(level == 0) {
+							bService.updateAttmLevel(b.getBNo());
+							break;
+						}
+					}
+				}
+			}
+			
+
+			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            int level = Integer.parseInt(split[1]);
+		            if (level == 1) {
+		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                break;
+		            }
+		        }
+		    }
+
+		    for (int i = 0; i < list.size(); i++) {
+		        Attachment a = list.get(i);
+		        a.setAttmRefNo(b.getBNo());
+
+		        if (hasExistingFile) {
+		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		        } else {
+		            if (!hasLevelOne) {
+		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		            } else {
+		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		            }
+		        }
+		    }
+
+
+			System.out.println(b.getBNo());
+			updateBoardResult = bService.updateFreeBoard(b);
+			int updateAttmResult = 0;
+			if(!list.isEmpty())  {
+				updateAttmResult = bService.insertFreeAttm(list);
+			}
+			System.out.println(updateBoardResult);
+			System.out.println(updateAttmResult);
+			if(updateBoardResult + updateAttmResult > 0) {				
+				redirectAttributes.addAttribute("bNo", b.getBNo());
+				redirectAttributes.addAttribute("page", page);
+				
+				return "redirect:/board/free/detail";
+				
+			} else {
+				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+			}
+			
+			
+			
 		}
 		
 		@PostMapping("/board/free/delete")
@@ -212,7 +342,7 @@ public class BoardController {
 			int result1 = bService.deleteFreeBoard(bNo);
 			int result2 = bService.statusNAttm(bNo);
 			System.out.println(bNo);
-			if(result1 > 0 && result2> 0) {
+			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/free";
 			} else {
 				throw new BoardException("게시글 삭제 실패");

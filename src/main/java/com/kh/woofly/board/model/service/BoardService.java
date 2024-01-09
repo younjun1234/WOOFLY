@@ -10,7 +10,10 @@ import com.kh.woofly.common.PageInfo;
 
 public interface BoardService {
 
-//	자유게시판 "/board/free"
+//	자유게시판 "/board/free"	
+	
+	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
+	
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(PageInfo pi, int i);
@@ -22,8 +25,14 @@ public interface BoardService {
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
+	
+	int updateFreeBoard(Board b);
 
 	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeAttm(ArrayList<String> delRename);
+	
+	void updateAttmLevel(int bNo);
 	
 	int statusNAttm(int bNo);
 
@@ -52,6 +61,16 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+
+
+	
+
+	
 
 	
 

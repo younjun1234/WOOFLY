@@ -20,6 +20,12 @@ public class BoardServiceImpl implements BoardService{
    private BoardDAO bDAO;
    
  //	자유게시판 "/board/free"
+   
+    @Override
+	public ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword) {
+    	return bDAO.searchFreeBoard(searchType, searchKeyword);
+	}
+   
 	@Override
 	public int getListCount(int i) {
 		return bDAO.getListCount(i);
@@ -60,10 +66,26 @@ public class BoardServiceImpl implements BoardService{
 	public int insertFreeAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertFreeAttm(attachments);
 	}
+	
+	@Override
+	public int updateFreeBoard(Board b) {
+		return bDAO.updateFreeBoard(b);
+	}
 
 	@Override
 	public int deleteFreeBoard(int bNo) {
 		return bDAO.deleteFreeBoard(bNo);
+	}
+	
+	@Override
+	public int deleteFreeAttm(ArrayList<String> delRename) {
+		return bDAO.deleteFreeAttm(delRename);
+	}
+
+	@Override
+	public void updateAttmLevel(int bNo) {
+		bDAO.updateAttmLevel(bNo);
+		
 	}
 	
 	@Override
@@ -121,6 +143,16 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 

@@ -15,6 +15,9 @@ import com.kh.woofly.board.model.vo.LostBoard;
 public interface BoardDAO {
 
 //	자유게시판 "/board/free"
+	
+	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
+	
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(int i, RowBounds rowBounds);
@@ -28,8 +31,14 @@ public interface BoardDAO {
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
+	
+	int updateFreeBoard(Board b);
 
 	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeAttm(ArrayList<String> delRename);
+
+	void updateAttmLevel(int bNo);
 	
 	int statusNAttm(int bNo);
 
@@ -52,6 +61,14 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
 
 	
 
