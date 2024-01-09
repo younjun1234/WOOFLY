@@ -30,6 +30,7 @@
 					<option value="" disabled selected>검색조건</option>
 					<option value="writer">작성자</option>
 					<option value="title">제목</option>
+					<option value="all">제목+작성자</option>
 				</select>
 				
 				
@@ -44,74 +45,30 @@
 		
 				
 		<div class="container board-list">
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
+			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;" th:each="b : ${list}" th:attr="data-bNo=${b.bNo}">
+				<div class="col-1" style="line-height: 80px;">[[${ b.bNo }]]</div>
 				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 85px; width: 85px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">황유경</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 85px; width: 85px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 85px; width: 85px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 80px; width: 80px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 80px; width: 80px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 80px; width: 80px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;">
-				<div class="col-1" style="line-height: 80px;">글번호</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 80px; width: 80px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">닉네임</div>
-				<div class="col-6" style="line-height: 80px;">게시글 제목</div>
-				<div class="col-2" style="line-height: 80px;">작성일자</div>
-			</div>
+				<div class="col-2" style="line-height: 80px;">[[${ b.mbNickname }]]</div>
+				<div class="col-6" style="line-height: 80px;">[[${ b.bTitle }]]</div>
+				<div class="col-2" style="line-height: 80px;">[[${ b.bCreateDate }]]</div>
+			</div>			
 		</div>
 		
-		<nav class="border-top border-black pt-5">
+		<nav class="border-top border-black pt-5"  th:with="loc=${loc}">
 		  	<ul class="pagination justify-content-center">
 		    	<li class="page-item">
-			      	<a class="page-link" href="#">
-			        	<span aria-hidden="true">&laquo;</span>
-			      	</a>
-		    	</li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item"><a class="page-link" href="#">2</a></li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item"><a class="page-link" href="#">4</a></li>
-			    <li class="page-item"><a class="page-link" href="#">5</a></li>
-		    	<li class="page-item">	
-			      	<a class="page-link" href="#" aria-label="Next">
-				    	<span aria-hidden="true">&raquo;</span>
-			      	</a>
-		    	</li>
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous">
+	            		<span aria-hidden="true">&laquo;</span>
+	              	</a> 
+	            </li>
+            	<li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+            		<a class="page-link" th:href="@{${loc}(page=${p})}">[[${ p }]]</a>
+            	</li> <!-- 게시글 페이지 번호 점점 커지게 하는 것 -->
+	            <li class="page-item">
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next">
+	            		<span aria-hidden="true">&raquo;</span>
+	            	</a>
+	            </li>
 		  	</ul>
 		</nav>
 	</div>
@@ -124,17 +81,14 @@
 		$(boardNav).addClass('active');
 		
 		// 각 게시물 별로 클릭 이벤트 넣는 부분
-		const boardList = document.getElementsByClassName("board-list");
-		for (const board of boardList) {
-			board.addEventListener('click', () => {
-				// 이 부분에서 boardId 가져와야함
-				// 추후에 넣어주세요
-				// 틀 단계에서는 무작위로 boardDetail로 넘어갑니다
-				window.location.href = '/board/dw/detail';
-				
-			})
-			
-		}
+		const boardList = document.querySelectorAll('.board-list .board');
+	    boardList.forEach(board => {
+	        board.addEventListener('click', () => {
+	            const boardId = board.parentElement.querySelector('.board:nth-child(1)').innerText;
+	            const currentPage = /*[[${pi.currentPage}]]*/1;
+	            window.location.href = `/board/free/detail?bNo=${boardId}&page=${currentPage}`;
+	        });
+	    });
 		
 		
 	</script>
