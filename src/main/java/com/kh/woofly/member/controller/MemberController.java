@@ -30,11 +30,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.member.model.vo.Point;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,8 +104,51 @@ public class MemberController {
 	}
 
 	@GetMapping("my/point")
-	public String pointView() {
-		return "myPoint";
+	public String pointView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+		
+        int result = mService.deletePoints(id);
+        
+        int listCount = mService.getPointsCount(id);
+        PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
+        ArrayList<Point> pList = mService.selectMyPoints(pi, id);
+        int pointsUsable = 0;
+        int pointsExpiring = 0;
+        for (Point p : pList) {
+        	if(p.getTransactionType().equals("A")) {
+        		pointsUsable += p.getPointChange();
+        	} else {
+        		pointsUsable -= p.getPointChange();
+        	}
+        	
+            Date currentDate = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+
+            calendar.add(Calendar.MONTH, -11);
+            Date elevenMonthsBefore = calendar.getTime();
+            calendar.add(Calendar.MONTH, -1);
+            Date oneYearBefore = calendar.getTime();
+
+
+        	if(p.getTransactionDatetime().before(elevenMonthsBefore) && p.getTransactionDatetime().after(oneYearBefore)) {
+        		pointsExpiring += p.getPointChange();
+        	}
+        }
+        
+        
+        if(pList != null) {
+        	model.addAttribute("pointsUsable", pointsUsable);
+        	model.addAttribute("pointsExpiring", pointsExpiring);
+        	model.addAttribute("list", pList);
+        	model.addAttribute("pi", pi);
+        	return "myPoint";
+        } else {
+        	throw new MemberException("포인트 조회 실패");
+        }
+        
 	}
 
 	@GetMapping("my/addPayment")

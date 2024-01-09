@@ -149,4 +149,22 @@
  		delete from payment
  		where payment_no = #{paymentNo}
  	</delete>
+ 	
+ 	<delete id="deleteExpiredPoints">
+ 		delete from point_history 
+ 		<![CDATA[
+ 		where transaction_datetime < (select to_date(to_char(sysdate, 'yy') - 1 || to_char(sysdate, 'MMdd'), 'yy/MM/dd') from dual)
+ 		and mb_id = #{id}
+ 		]]>
+ 	</delete>
+ 	
+ 	<select id="getPointsCount" resultType="_int">
+ 		select count(*) from point_history
+ 		where mb_id = #{id}
+ 	</select>
+ 	
+ 	<select id="selectMyPoints" resultType="Point">
+ 		select * from point_history
+ 		where mb_id = #{id}
+ 	</select>
 </mapper>
