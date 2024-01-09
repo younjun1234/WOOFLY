@@ -1,6 +1,7 @@
 package com.kh.woofly.shop.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.ibatis.session.RowBounds;
@@ -100,5 +101,60 @@ public class ShopServiceImpl implements ShopService {
 		return sDAO.updateCartQuantity(c);
 	}
 
+	@Override
+	public int deleteAttm(ArrayList<String> delRename) {
+		return sDAO.deleteAttm(delRename);
+	}
+
+	@Override
+	public int updateProduct(Product p) {
+		return sDAO.updateProduct(p);
+	}
+
+	@Override
+	public int updateStock(Product p) {
+		return sDAO.updateStock(p);
+	}
+
+	@Override
+	public int deleteProduct(int pId) {
+		return sDAO.deleteProduct(pId);
+	}
+
+	@Override
+	public int attmStatusYN(int pId) {
+		return sDAO.attmStatusYN(pId);
+	}
+
+	@Override
+	public int insertReplyCount(HashMap<String, Object> map) {
+		
+		int result = sDAO.insertReplyCount(map);
+		
+		if(result > 0) {
+			int result2 = sDAO.updateReplyCount(map);
+			if(result2 > 0) {
+				return result2;
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int downReplyCount(HashMap<String, Object> map) {
+		
+		int result = sDAO.downReplyCount(map);
+		
+		if(result > 0) {
+			int result2 = sDAO.downCountReplyCount(map);
+			if(result2 > 0) {
+				return result2;
+			}
+		}
+		
+		return result;
+		
+	}
 
 }

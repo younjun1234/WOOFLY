@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,6 +62,7 @@ public class ShopController {
 		ArrayList<ProductCategory> bList = sService.selectCategory(null);
 		// 썸네일의 첫번째만 가져오기....
 		ArrayList<ProductAttm> aList = sService.selectProductAttm(null);
+		
 		
 		model.addAttribute("pi", pi);
 		model.addAttribute("pList", pList);
@@ -246,7 +249,21 @@ public class ShopController {
 			colors = p.getColor().split(",");
 		}
 		
+		ArrayList<ProductAttm> tList = new ArrayList<>();
+		ArrayList<ProductAttm> conList = new ArrayList<>();
+		
+		for(ProductAttm a : aList) {
+			if(a.getAttmLevel() == 1) {
+				tList.add(a);
+			} else {
+				conList.add(a);
+			}
+		}
+		
+		model.addAttribute("page", page);
 		model.addAttribute("p", p);
+		model.addAttribute("tList", tList);
+		model.addAttribute("conList", conList);
 		model.addAttribute("aList", aList);
 		model.addAttribute("rList", rList);
 		model.addAttribute("c", c);
@@ -358,10 +375,207 @@ public class ShopController {
 		}
 	}
 	
+	@GetMapping("/shop/moveToUpdate")
+	public String moveToUpdateProduct(@RequestParam("productId") int pId, Model model,
+									@RequestParam("page") int page) {
+		
+		// p + stock
+		Product p = sService.selectDetailProduct(pId);
+		ArrayList<ProductAttm> aList = sService.selectProductAttm(pId);
+		// 선택되어 있어야 하는 상품 카테고리
+		ProductCategory c = sService.selectDetailCategory(p.getProductDetailNo());
+		ArrayList<ProductCategory> cList = sService.selectCategory(9999);
+		// 대분류 1개씩 뿌리기 위한 bList
+		ArrayList<ProductCategory> bList = sService.selectCategory(null);
+		String[] colors = null;
+		if(!p.getColor().equals("N")) {
+			colors = p.getColor().split(",");
+		}
+		
+		model.addAttribute("page", page);
+		model.addAttribute("p", p);
+		model.addAttribute("aList", aList);
+		model.addAttribute("cList", cList);
+		model.addAttribute("c", c);
+		model.addAttribute("bList", bList);
+		model.addAttribute("colors", colors);
+		
+		return "shopEdit";
+	}
 	
+	@PostMapping("/shop/updateProduct")
+	public String updateProduct(@ModelAttribute Product p,
+								@RequestParam(value="thumbnailFile", required=false) ArrayList<MultipartFile> thumbFiles,
+								@RequestParam(value="contentFile", required=false) ArrayList<MultipartFile> contentFiles,
+								@RequestParam("deleteAttm") String[] deleteAttm,
+								RedirectAttributes re,
+								@RequestParam("page") int page) {
+		
+		System.out.println(p);	// p.productDetailNo 확인
+		System.out.println(thumbFiles);	// null		추가된
+		System.out.println(contentFiles); // null	추가된
+		System.out.println(deleteAttm);	// 주소값
+		
+		if(p.getColor() == null) {
+			p.setColor("N");
+		}
+		
+		int result1 = sService.updateProduct(p);
+		int result2 = sService.updateStock(p);
+		
+		// 썸네일 리네임 과정
+		ArrayList<ProductAttm> list = new ArrayList<ProductAttm>();
+		if(thumbFiles != null) {
+			for(int i = 0; i < thumbFiles.size(); i++) {
+				MultipartFile upload = thumbFiles.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						ProductAttm t = new ProductAttm();
+						t.setOriginalName(upload.getOriginalFilename());
+						t.setRenameName(returnArr[1]);
+						t.setAttmPath(returnArr[0]);
+						t.setAttmRefNo(p.getProductId());
+						t.setAttmLevel(1);
+						
+						list.add(t);
+					}
+				}
+			}
+		}
+		
+		// 내용 이미지 리네임 과정
+		if(contentFiles != null) {
+			for(int i = 0; i < contentFiles.size(); i++) {
+				MultipartFile upload = contentFiles.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						ProductAttm c = new ProductAttm();
+						c.setOriginalName(upload.getOriginalFilename());
+						c.setRenameName(returnArr[1]);
+						c.setAttmPath(returnArr[0]);
+						c.setAttmRefNo(p.getProductId());
+						
+						c.setAttmLevel(2);
+						
+						list.add(c);
+					}
+				}
+			}
+		}
+		
+		
+		// 삭제하기로 선택된 원본 리네임 String[], 유지하기로 한 비교값은 "none"
+		ArrayList<String> delRename = new ArrayList<>();
+		for(int i = 0; i < deleteAttm.length; i++) {
+			String rename = deleteAttm[i];
+			if(!rename.equals("none")) {
+				String[] split = rename.split("/");
+				delRename.add(split[0]);
+			}
+		}
+		
+		int deleteAttmResult = 0;
+		int insertAttmResult = 0;
+		// 삭제하기로 한게 있으면~
+		if(!delRename.isEmpty()) {
+			deleteAttmResult = sService.deleteAttm(delRename);
+			if(deleteAttmResult > 0) {
+				for(String rename : delRename) {
+					deleteFile(rename);
+				}
+			}
+		}
+		
+		if(!list.isEmpty()) {
+			insertAttmResult = sService.insertAttm(list);
+		}
+		
+		if(result1 + result2 + insertAttmResult == list.size() + 2) {
+			re.addAttribute("pId", p.getProductId());
+			re.addAttribute("page", page);
+			return "redirect:/shop/productDetail";
+		} else {
+			throw new ShopException("상품 수정에 실패하였습니다.");
+		}
+	}
 	
+	@GetMapping("/shop/deleteProduct")
+	public String deleteProduct(@RequestParam("page") int page,
+								@RequestParam("pId") int pId,
+								HttpSession session,
+								RedirectAttributes re) {
+		
+		Member m = ((Member)session.getAttribute("loginUser"));
+		if(m.getIsAdmin().equals("Y")) {
+			int result = sService.deleteProduct(pId);
+			int result2 = sService.attmStatusYN(pId);
+			if(result > 0 && result2 > 0) {
+				re.addAttribute("page", page);
+				return "redirect:/shopMain";
+			} else if(result == 0){
+				throw new ShopException("상품 삭제에 실패하였습니다.");
+			} else if(result2 == 0) {
+				throw new ShopException("이미지 삭제에 실패하였습니다.");
+			} else {
+				throw new ShopException("알수없는 이유에 의해 상품 삭제에 실패하였습니다.");
+			}
+		} else {
+			throw new ShopException("권한이 없습니다.");
+		}
+	}
 	
+	@GetMapping(value="/shop/insertReplyCount")
+	public void insertReplyCount(@RequestParam("mId") String mId,
+									@RequestParam("rNo") int rNo,
+									HttpServletResponse response) {
+		
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("mId", mId);
+		map.put("rNo", rNo);
+		
+		int result = sService.insertReplyCount(map);
+		
+		String out = result != 0 ? "success" : "fail";
+		
+		Gson gson = new GsonBuilder().create();
+		
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			gson.toJson(out, response.getWriter());
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
+	@GetMapping(value="/shop/downReplyCount")
+	public void downReplyCount(@RequestParam("mId") String mId,
+								@RequestParam("rNo") int rNo,
+								HttpServletResponse response) {
+		
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("mId", mId);
+		map.put("rNo", rNo);
+		
+		int result = sService.downReplyCount(map);
+		
+		String out = result != 0 ? "success" : "fail";
+		
+		Gson gson = new GsonBuilder().create();
+		
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			gson.toJson(out, response.getWriter());
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	

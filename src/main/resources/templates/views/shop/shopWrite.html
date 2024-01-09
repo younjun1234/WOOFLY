@@ -17,9 +17,6 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
     
-    
-    
-    
     <style>
     	.standardSize{
     		display:none;
@@ -28,25 +25,7 @@
 </head>
 <body>
     <!-- tap -->
-    <nav class="navbar sticky-top bg-white">
-		<div class="container-fluid justify-content-end mx-5">
-			<ul class="nav bg-white">
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
-			</ul>
-		</div>
-		<div class="container-fluid mx-5">
-    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
-    		<ul class="nav">
-    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
-    		</ul>
-		</div>
-	</nav>
+    <div th:replace="~{common/top :: top}"></div>
     <main>
         <div class="container">
             <h1 class="fw-bold mb-4 border-2 border-bottom border-black pb-2">쇼핑몰 상품 등록</h1>
@@ -102,8 +81,14 @@
                         </table>
                         <button type="button" class="btn btn-outline-info" id="addFile">이미지 추가</button>
                         <div id="fileArea">
-                            <div class="mb-3 p-1" id="thumbnailParent">
+                            <div class="mb-3 p-1 d-flex" id="thumbnailParent">
                                 <input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
+                                <button type="button" class="btn btn-large" name="deleteThumbButton">
+	                        		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+									  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+									  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+									</svg>
+	                        	</button>
                             </div>
                         </div>
                     </div>                   
@@ -152,7 +137,7 @@
                     </table>
                 </div>
                 <!-- 색깔 추가(addColor) -->
-                <div class="mt-3" id="colorDiv">
+                <div class="mt-3 d-flex col-12" id="colorDiv">
                 
 				</div>
                 
@@ -160,7 +145,7 @@
                 <div class="product-description d-flex justify-content-center border-2 border-black border-bottom">
                     <!-- 미리보기 -->
                     <!-- addFileContent 버튼 추가 시 썸네일도 추가되도록 -->
-                    <div class="album bg-light m-4" id="contentImage">
+                    <div class="album bg-light m-4 col-6" id="contentImage">
                         <div class="card shadow-sm p-3">
                             <svg class="bd-placeholder-img card-img-top" width="100%" height="225">
                                 <rect width="100%" height="100%" fill="#55595c"></rect>
@@ -168,13 +153,19 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="m-4">
+                    <div class="m-4 col-4">
                         <button type="button" class="btn btn-outline-info" id="addFileContent">내용 이미지 추가</button>
-                    <div id="contentFileArea">
-                        <div class="mb-3 p-1">
-                            <input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">
-                        </div>
-                    </div>
+	                    <div id="contentFileArea">
+	                        <div class="mb-3 p-1 d-flex">
+	                            <input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">
+	                            <button type="button" class="btn btn-large" name="deleteContentButton">
+	                        		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+									  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+									  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+									</svg>
+	                        	</button>
+	                        </div>
+	                    </div>
                     </div>
                 </div>
                 <div class="d-flex gap-3 float-end mt-3">
@@ -206,8 +197,8 @@
     <!-- 구조 잘 파악해서 해야함 구조 잘못건들면 자스 안먹힘 -->
     <!-- 미리보기 사진들 넓이랑 높이 고정될 수 있도록 CSS같은거 만져야 함. -->
     <script th:inline="javascript">
-        let divChildren;// = thumbDiv.querySelectorAll('div');
-        let divContent;
+        let divChildren = document.getElementById('thumbnail').querySelectorAll('div');
+        let divContent = document.getElementById('contentImage').querySelectorAll('div');
         window.onload = () =>{
 
             var fileAreaCount = 2;
@@ -220,9 +211,15 @@
 
                 if(fileAreaCount <= 5) {
                     const newDiv = document.createElement('div');
-                    newDiv.classList.add('mb-3', 'p-1');
-                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">';
-                    
+                    newDiv.classList.add('mb-3', 'p-1', 'd-flex');
+                    newDiv.innerHTML = `<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
+                    					<button type="button" class="btn btn-large" name="deleteThumbButton">
+			                        		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+											  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+											  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+											</svg>
+			                        	</button>
+			                        	`;
                     fileArea.append(newDiv);
 
                      // 역따옴표 쓰는거임(코드 블록 표현 시)
@@ -255,8 +252,15 @@
 
                 if(contentFileAreaCount <= 10) {
                     const newDiv = document.createElement('div');
-                    newDiv.classList.add('mb-3', 'p-1');
-                    newDiv.innerHTML = '<input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">';             
+                    newDiv.classList.add('mb-3', 'p-1', 'd-flex');
+                    newDiv.innerHTML = `<input type="file" class="form-control form-control-lg" name="contentFile" accept="image/*">
+				                    	<button type="button" class="btn btn-large" name="deleteContentButton">
+					                		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+											  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+											  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+											</svg>
+				                		</button>
+                    				`;             
 
                     contentFileArea.append(newDiv);
 
@@ -341,9 +345,25 @@
             const preImage = document.createElement('img');
             //let divChildren = thumbDiv.querySelectorAll('div'); // 아래에는 <svg>가 있음..
 
-            fileArea.addEventListener('change', function(event) {
-                console.log("File changed!");
+            fileArea.addEventListener('click', function(event){
+            	const target = event.target;
+            	if(target.name === 'deleteThumbButton' || target.tagName ==='svg') {
+					const parentDivs = fileArea.querySelectorAll('.mb-3.p-1.d-flex');
+					const parentDiv = target.closest('.mb-3.p-1.d-flex');
 
+					if(parentDiv) {
+						const index = Array.from(parentDivs).indexOf(parentDiv);
+						parentDiv.remove();
+						
+						let tDiv = thumbDiv.querySelectorAll('div');
+						tDiv[index].remove();
+						fileAreaCount -= 1;
+					}
+            	}
+            });
+            
+            
+            fileArea.addEventListener('change', function(event) {
                 // 이벤트 발생된 자식 요소
                 const target = event.target;
 
@@ -374,6 +394,25 @@
                 } 
             });
 
+            contentFileArea.addEventListener('click', function(event){
+            	const target = event.target;
+            	if(target.name === 'deleteContentButton' || target.tagName ==='svg') {
+					const parentDivs = contentFileArea.querySelectorAll('.mb-3.p-1.d-flex');
+					const parentDiv = target.closest('.mb-3.p-1.d-flex');
+
+					if(parentDiv) {
+						const index = Array.from(parentDivs).indexOf(parentDiv);
+						parentDiv.remove();
+						
+						let cDiv = contentDiv.querySelectorAll('div');
+						cDiv[index].remove();
+						contentFileAreaCount -= 1;
+					}
+            	}
+            });
+            
+            
+            
             contentFileArea.addEventListener('change', function(event){
                 const target = event.target;
 
@@ -432,17 +471,28 @@
     		
     		addColor.addEventListener('click', () =>{
     			if(colorCount < 5) {
-    				const newSpan = document.createElement('span');
-    				newSpan.classList.add('colorFeedback')
-    				newSpan.classList.add('fs-5');
-    				newSpan.textContent = '#000000';
+    				const newDiv = document.createElement('div');
+    				newDiv.classList.add('colorOne');
     				
-    				// , 로 쌓여있음 -> 스플릿
+    				const newSpan = document.createElement('span');
+    				newSpan.classList.add('colorFeedback', 'fs-5')
+    				newSpan.textContent = '#000000';
     				
     				const newPicker = document.createElement('input');
     				newPicker.classList.add('colorPicker');
-    				newPicker.setAttribute('name', 'colorPicker');
+    				newPicker.setAttribute('name', 'color');
     				newPicker.setAttribute('type', 'color');
+    				
+    				const deleteColorBtn = document.createElement('button');
+    				deleteColorBtn.classList.add('btn', 'btn-sm');
+    				deleteColorBtn.setAttribute('name', 'deleteColorButton');
+    				deleteColorBtn.setAttribute('type', 'button');
+    				deleteColorBtn.innerHTML = `
+							                	<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+												  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+												  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+												</svg>
+							          		`;
     				
     				newPicker.addEventListener('change', function() {
                 		const color = this.value;
@@ -450,16 +500,36 @@
                 		newSpan.textContent = color;
     				});
     				
-    				colorDiv.append(newPicker);
-    				colorDiv.append(newSpan);
+    				newDiv.append(newPicker);
+    				newDiv.append(newSpan);
+    				newDiv.append(deleteColorBtn);
     				
-    				colorCount = colorCount + 1;
+    				colorDiv.append(newDiv);
+    				
+    				colorCount += 1;
     				colorNum = colorCount;
     			} else {
     				alert('색상은 5개까지 지정가능합니다.');
     			}
     			
     		});
+    		
+    		colorDiv.addEventListener('click', function(event){
+            	const target = event.target;
+            	if(target.name === 'deleteColorButton' || target.tagName ==='svg') {
+					const parentDiv = target.closest('.colorOne');
+					console.log(parentDiv);
+
+					if(parentDiv) {
+						parentDiv.remove();
+						
+						colorCount -= 1;
+						colorNum = colorCount;
+					}
+            	}
+            });
+    		
+    		
 
     		
     		// 카테고리 자바스크립트

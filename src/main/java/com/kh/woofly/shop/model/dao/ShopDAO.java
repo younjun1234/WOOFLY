@@ -1,6 +1,7 @@
 package com.kh.woofly.shop.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -44,5 +45,23 @@ public interface ShopDAO {
 	ArrayList<Cart> selectUserCart(String mbId);
 
 	int updateCartQuantity(Cart c);
+
+	int deleteAttm(ArrayList<String> delRename);
+
+	int updateProduct(Product p);
+
+	int updateStock(Product p);
+
+	int deleteProduct(int pId);
+
+	int attmStatusYN(int pId);
+
+	int insertReplyCount(HashMap<String, Object> map);
+
+	int updateReplyCount(HashMap<String, Object> map);
+
+	int downReplyCount(HashMap<String, Object> map);
+
+	int downCountReplyCount(HashMap<String, Object> map);
 
 }

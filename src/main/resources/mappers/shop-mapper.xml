@@ -8,7 +8,7 @@
 		</selectKey>
 		INSERT ALL
 			INTO PRODUCT					<!-- 1 = productCategoryNo -->
-			VALUES (#{productId}, #{productName}, #{price}, DEFAULT, DEFAULT, #{productDetailNo})
+			VALUES (#{productId}, #{productName}, #{price}, DEFAULT, DEFAULT, #{productDetailNo}, DEFAULT)
 			INTO PRODUCT_STOCK
 			VALUES (PRO_STOCK_SEQ.NEXTVAL, #{productId}, #{usedStandard}, #{quantity}, #{color})
 		SELECT *
@@ -37,8 +37,9 @@
 	    SELECT *
 	    FROM PRODUCT
 		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
+		WHERE PRODUCT_STATUS = 'Y'
 		<if test="cNo != null">
-			WHERE PRODUCT_DETAIL_NO = #{cNo}
+			AND PRODUCT_DETAIL_NO = #{cNo}
 		</if>
 	    ORDER BY PRODUCT_ID DESC
 	</select>
@@ -70,13 +71,14 @@
 		</if> <!-- .equlse('P') -->
 		<if test="string != null">
 			FROM PRODUCT
+			WHERE PRODUCT_STATUS = 'Y'
 		</if>
 	</select>
 	
 	<select id="getDetailCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM PRODUCT
-		WHERE PRODUCT_DETAIL_NO = #{cNo}
+		WHERE PRODUCT_DETAIL_NO = #{cNo} AND PRODUCT_STATUS = 'Y'
 	</select>
 	
 	<select id="selectedCategory" resultType="ProductCategory">
@@ -144,5 +146,70 @@
 		UPDATE CART
 		SET CART_ID = #{cartId} AND QUANTITY = #{quantity}
 	</update>
+	
+	<update id="deleteAttm">
+		DELETE
+		FROM ATTACHMENT
+		WHERE RENAME_NAME IN
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</update>
+	
+	<update id="updateProduct">
+		UPDATE PRODUCT
+		SET PRODUCT_NAME = #{productName}, PRICE = #{price}, PRODUCT_MODIFY_DATE = SYSDATE, PRODUCT_DETAIL_NO = #{productDetailNo}
+		WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<update id="updateStock">
+		UPDATE PRODUCT_STOCK
+		SET USED_STANDARD = #{usedStandard}, COLOR = #{color}, QUANTITY = #{quantity}
+		WHERE STOCK_ID = #{stockId}
+	</update>
+		
+	<update id="deleteProduct">
+		UPDATE PRODUCT
+		SET PRODUCT_STATUS = 'N'
+		WHERE PRODUCT_ID = #{pId}
+	</update>
+	
+	<update id="attmStatusYN">
+		UPDATE ATTACHMENT
+		SET ATTM_STATUS
+		WHERE ATTM_REF_TYPE = 'P' AND ATTM_REF_NO = #{pId}
+	</update>
+	
+	
+	<insert id="insertReplyCount">
+		INSERT INTO REPLY_LIKE
+		VALUES (RL_SEQ.NEXTVAL, #{rNo}, #{mId})
+	</insert>
+	
+	<update id="updateReplyCount">
+		UPDATE REPLY
+		SET RE_LIKE = (SELECT RE_LIKE
+                FROM REPLY
+                WHERE R_NO = #{rNo}) + 1
+		WHERE R_NO = #{rNo}
+	</update>
+	
+	<delete id="downReplyCount">
+		DELETE FROM REPLY_LIKE
+		WHERE LIKE_REF_BOARD = #{rNo} AND LIKE_USER = #{mId} 
+	</delete>
+		
+	<update id="downCountReplyCount">
+		UPDATE REPLY
+		SET RE_LIKE = (SELECT RE_LIKE
+                FROM REPLY
+                WHERE R_NO = #{rNo}) - 1
+		WHERE R_NO = #{rNo}
+	</update>	
+		
+		
+		
+	
+	
 	
 </mapper>
