@@ -170,6 +170,13 @@
 			})
 		}
 		
+		//생일 넘어가기
+		const now_date = Date.now();
+		const timeOff = new Date().getTimezoneOffset()*60000;
+		const today = new Date(now_date-timeOff).toISOString().split("T")[0];
+		startDate.setAttribute("max", today);
+		endDate.setAttribute("max", today);
+		
 		const getMonths = (months) => {
 			let startDate = new Date();
 			startDate.setMonth(startDate.getMonth() - months);
@@ -189,6 +196,20 @@
 			window.location.href = '/my/buying?startDate=' + startDate + '&endDate=' + endDate;		
 		}
 		
+		endDate.addEventListener('change', () => {
+			let sixMonthsBefore = new Date(endDate.value);
+			sixMonthsBefore.setMonth(sixMonthsBefore.getMonth() - 6);
+			var newDate = new Date(startDate.value);
+			
+			
+			if(startDate.value == '' || sixMonthsBefore > newDate) {
+				let year = (sixMonthsBefore.getFullYear() + "");
+				let month = ('0' + (sixMonthsBefore.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+				let day = ('0' + sixMonthsBefore.getDate()).slice(-2);
+				startDate.value = year + '-' + month + '-' + day;
+			}
+				
+		})
 		
 		startDate.addEventListener('change', () => {
 			let sixMonthsAfter = new Date(startDate.value);
@@ -196,12 +217,17 @@
 			var newDate = new Date(endDate.value);
 
 			if(sixMonthsAfter < newDate) {
+				if (sixMonthsAfter > new Date()) {
+					sixMonthsAfter = new Date();
+				}
+				
 				let year = (sixMonthsAfter.getFullYear() + "");
 				let month = ('0' + (sixMonthsAfter.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
 				let day = ('0' + sixMonthsAfter.getDate()).slice(-2);
 				endDate.value = year + '-' + month + '-' + day;
 			}
 		})
+		
 		
 		const price = document.getElementById('price');
 		const orderDate = document.getElementById('orderDate');
@@ -226,6 +252,7 @@
 			}
 			window.location.href= url;
 		});
+		
 		orderDate.addEventListener('click', () => {
 			let url = "/my/buying?";
 			const startDate = /*[[${startDate}]]*/null;

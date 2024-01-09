@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.member.model.vo.Point;
 
 public interface MemberService {
 
@@ -57,5 +59,11 @@ public interface MemberService {
 	int updatePaymentToN(Payment payment);
 
 	int deletePayment(int paymentNo);
+
+	int deletePoints(String id);
+
+	int getPointsCount(String id);
+
+	ArrayList<Point> selectMyPoints(PageInfo pi, String id);
 
 }

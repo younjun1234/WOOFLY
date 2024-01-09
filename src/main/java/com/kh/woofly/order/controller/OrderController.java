@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.service.OrderService;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
@@ -57,7 +58,18 @@ public class OrderController {
 			paList.add(oService.selectOrderAttm(o));
 			pList.add(oService.selectMostExpensive(o));
 		}
-		
+        int result = oService.deletePoints(id);
+        ArrayList<Point> pointList = oService.selectMyPoints(id);
+        int pointsUsable = 0;
+        for (Point p : pointList) {
+        	if(p.getTransactionType().equals("A")) {
+        		pointsUsable += p.getPointChange();
+        	} else {
+        		pointsUsable -= p.getPointChange();
+        	}
+        }
+        
+        model.addAttribute("pointsUsable", pointsUsable);
 		model.addAttribute("pList", pList);
 		model.addAttribute("paList", paList);
 		model.addAttribute("oList", oList);

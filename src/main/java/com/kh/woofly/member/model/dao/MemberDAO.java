@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.member.model.vo.Point;
 
 @Mapper
 public interface MemberDAO {
@@ -60,5 +62,11 @@ public interface MemberDAO {
 	int updatePaymentToN(Payment payment);
 
 	int deletePayment(int paymentNo);
+
+	int deleteExpiredPoints(String id);
+
+	int getPointsCount(String id);
+
+	ArrayList<Point> selectMyPoints(RowBounds rowbounds, String id);
 
 }
