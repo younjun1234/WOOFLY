@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class BoardServiceImpl implements BoardService{
 
    @Autowired
    private BoardDAO bDAO;
+private BoardServiceImpl boardDAO;
+   
    
  //	자유게시판 "/board/free"
 	@Override
@@ -88,11 +91,20 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.insertAttm(aList);
 	}
 
-//	@Override
-//	public ArrayList<Member> selectMemberList(PageInfo pi, int i) {
-//		// TODO Auto-generated method stub
-//		return  bDAO.selectMemberList(pi, i);
-//	}
+	@Override
+	public int insertAttachment(Attachment attachment) {
+		// TODO Auto-generated method stub
+		return bDAO.insertAttachment(attachment);
+	}
+
+	// 실종 검색 //
+	@Override
+	public List<LostBoard> searchLostBoards(String searchType, String searchKeyword) {
+		// TODO Auto-generated method stub
+		return boardDAO.searchLostBoards(searchType, searchKeyword);
+	}
+
+
 	
 	
 	

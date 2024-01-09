@@ -23,13 +23,7 @@ public class LostBoard {
    private String mStatus;
    private String mbId;
    private String mbNickName;
-   
-//   // 수정된 첨부파일 게시글 업로드
-//	public void setLostBoardType(int i) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-   
+//   private String mPhotoPath;
 }
 
 

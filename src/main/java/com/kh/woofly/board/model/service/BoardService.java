@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
@@ -9,6 +10,7 @@ import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 
 public interface BoardService {
+	
 
 //	자유게시판 "/board/free"
 	int getListCount(int i);
@@ -42,6 +44,11 @@ public interface BoardService {
 	LostBoard selectLostBoard(int bId, Object object);
 
 	int insertAttm(ArrayList<Attachment> aList);
+
+	int insertAttachment(Attachment attachment);
+	
+	// 실종 검색 //
+	List<LostBoard> searchLostBoards(String searchType, String searchKeyword);
 
 
 //	수정된 첨부파일 게시글 업로드 //
