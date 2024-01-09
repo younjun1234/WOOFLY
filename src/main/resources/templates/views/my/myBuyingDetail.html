@@ -42,7 +42,7 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<button class="btn btn-outline-dark" onclick="location.href='#'">상품 상세</button>
+						<button class="btn btn-outline-dark" th:onclick="|location.href='/shop/productDetail?pId=${detail.productId}'|">상품 상세</button>
 					</div>
 				</div>
 				<div class="border border-start-0 border-end-0 border-2 bg-danger-subtle mb-5">
@@ -66,7 +66,7 @@
 					<div class="mx-3 border-bottom">
 						<div class="d-flex align-items-center pt-3">
 							<p class="col-2">구매가</p>
-							<p>109,000원</p>
+							<p>[[${#numbers.formatInteger(order.total - order.transFee, 3, 'COMMA')}]]원</p>
 						</div>
 						<div class="d-flex align-items-center">
 							<p class="col-2 text-secondary">배달비</p>

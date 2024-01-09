@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.service.OrderService;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
@@ -48,6 +49,7 @@ public class OrderController {
 		map.put("endDate", currentDate);
 		
 		map.put("orderDate", "desc");
+		
 		ArrayList<Order> oList = oService.selectMyBuying(null, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
@@ -56,7 +58,18 @@ public class OrderController {
 			paList.add(oService.selectOrderAttm(o));
 			pList.add(oService.selectMostExpensive(o));
 		}
-		
+        int result = oService.deletePoints(id);
+        ArrayList<Point> pointList = oService.selectMyPoints(id);
+        int pointsUsable = 0;
+        for (Point p : pointList) {
+        	if(p.getTransactionType().equals("A")) {
+        		pointsUsable += p.getPointChange();
+        	} else {
+        		pointsUsable -= p.getPointChange();
+        	}
+        }
+        
+        model.addAttribute("pointsUsable", pointsUsable);
 		model.addAttribute("pList", pList);
 		model.addAttribute("paList", paList);
 		model.addAttribute("oList", oList);
@@ -74,8 +87,10 @@ public class OrderController {
 		map.put("id", id);
 		
 		try {
-			Calendar calendar = Calendar.getInstance();
-			Date currentDate = calendar.getTime();
+	        Date currentDate = new Date();
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(currentDate);
+	        calendar.add(Calendar.DAY_OF_MONTH, 1);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			
 			if (startDate == null) {
@@ -85,22 +100,24 @@ public class OrderController {
 			}
 			
 			if (endDate == null) {
-				map.put("endDate", sdf.format(currentDate));
+				map.put("endDate", sdf.format(calendar.getTime()));
 			} else {
 				map.put("endDate", sdf.parse(endDate));
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println(map.get("endDate"));
 		int listCount = oService.getBuyingCount(id);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-		
+		System.out.println(pi);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
 		ArrayList<Order> oList = oService.selectMyBuying(pi, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
+		
+		System.out.println(oList.size());
 		
 		for(Order o : oList) {
 			paList.add(oService.selectOrderAttm(o));
@@ -145,8 +162,4 @@ public class OrderController {
 		return "mySaved";
 	}
 
-	@GetMapping("my/cart")
-	public String cardView() {
-		return "myCart";
-	}
 }

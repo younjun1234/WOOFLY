@@ -13,6 +13,7 @@
 input {
   border: none;
   background: transparent;
+  width: 90%;
 }
 
 select{
@@ -39,23 +40,18 @@ select{
 				<div class="border-bottom border-3 border-black">
 					<h3>마이펫 프로필 관리</h3>
 				</div>
-				<div
-					class="d-flex align-items-center mt-5 mb-2 justify-content-center"
-					style="height: 150px;">
-					<img th:src="@{ ${'/image/' + session.loginUser.mbPhoto } }"
-						class="mx-3" alt="편집"
-						style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
+				<div class="d-flex align-items-center mt-5 mb-2 justify-content-center" style="height: 150px;">
+					<img th:src="@{ ${'/image/' + p.petProfile } }" class="mx-3" alt="편집" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
 				</div>
 				<div class="d-flex justify-content-center">
-					<form action="/editPetPhoto.dw" method="POST"
-						enctype="multipart/form-data" id="petPhotoForm">
-						<button type="button" class="btn btn-sm btn-outline-dark"
-							onclick="profileChange()">프로필 변경</button>
-						&nbsp;&nbsp; <input type="file" id="profile" name="file"
-							style="display: none;" accept="image/*" value="123">
+					<form action="/editPetPhoto.dw" method="POST" enctype="multipart/form-data" id="petPhotoForm">
+						<input type="hidden" name="petId" th:value="${p.petId}">
+						<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 변경</button>&nbsp;&nbsp; 
+						<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
 					</form>
-					<form action="/deletePetPhoto.dw" method="POST">
-						<button type="button" class="btn btn-dark btn-sm">삭제</button>
+					<form action="/deletePetPhoto.dw" method="get" id="deletePhotoForm">
+						<input type="hidden" name="petId" th:value="${p.petId}">
+						<button type="button" class="btn btn-dark btn-sm" id="deletePetPhoto">삭제</button>
 					</form>
 				</div>
 				<form action="/petEditName.dw" method="post">
@@ -64,8 +60,7 @@ select{
 						<div class="col-5">
 							<p class="text-secondary">마이펫 이름</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<!-- <p>[[${p.petName}]]</p> -->
-								<input type="text" name="petName" th:value="${p.petName}">
+								<input type="text" name="petName" th:value="${p.petName}" required>
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -79,7 +74,7 @@ select{
 						<div class="col-5 mt-4">
 							<p class="text-secondary">마이펫 소개</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="petIntro" th:value="${p.petIntro}">
+								<input type="text" min="29" name="petIntro" th:value="${p.petIntro}">
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -87,15 +82,15 @@ select{
 						</div>
 					</div>
 				</form>
-				<form action="/petEditBirth.dw" method="post">
+				<form action="/petEditBirth.dw" method="post" id="birthForm">
 					<input type="hidden" name="petId" th:value="${p.petId}">
 					<div class="d-flex align-items-center justify-content-center">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">생년월일</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="date" name="petBirth" th:value="${p.petBirth}">
+								<input type="date" id="petBirth" name="petBirth" th:value="${p.petBirth}" style="width:20%">
 								<div>
-									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
+									<button type="button" id="birthBtn" class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
 							</div>
 						</div>
@@ -190,11 +185,16 @@ select{
 					</div>
 				</form>
 				<form action="/petEditGender.dw" method="post">
+					<input type="hidden" name="petId" th:value="${p.petId}">
 					<div class="d-flex align-items-center justify-content-center">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">성별</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<p>[[${p.petGender}]]</p>
+								<select name="petGender">
+								  <option selected disabled>--</option>
+								  <option value="M" th:selected="${p.petGender == 'M'}">남아</option>
+								  <option value="F" th:selected="${p.petGender == 'F'}">여아</option>
+								</select>
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -203,11 +203,12 @@ select{
 					</div>
 				</form>
 				<form action="/petEditMemo.dw" method="post">
-					<div class="d-flex align-items-center justify-content-center">
+					<input type="hidden" name="petId" th:value="${p.petId}">
+					<div class="d-flex align-items-center justify-content-center mb-5">
 						<div class="col-5 mt-4">
 							<p class="text-secondary">특이사항</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<p>[[${p.petMemo}]]</p>
+								<input type="text" min="80" name="petMemo" th:value="${p.petMemo}">
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -215,12 +216,25 @@ select{
 						</div>
 					</div>
 				</form>
-					<p>
-						<a href="#" id="deletePet" class="link-underline-secondary text-secondary d-flex justify-content-end me-5">마이펫프로필 삭제</a>
-					</p>
-					<!-- <div class="d-flex justify-content-center my-5">
-						<button class="btn btn-dark col-3">수정</button>
-					</div> -->
+				<!-- <a th:href="'/pet/petDelete/' + ${p.petId}" class="link-underline-secondary text-secondary d-flex justify-content-end me-5 mb-5">마이펫프로필 삭제</a> -->
+				<a role="button" class="link-underline-secondary text-secondary d-flex justify-content-end me-5 mb-5" id="deletePetBtn">마이펫 프로필 삭제</a>
+				<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">마이펫 프로필 삭제</h5>
+							</div>
+							<div class="modal-body">
+								<strong>마이펫 프로필을 정말로 삭제하시겠습니까?</strong>
+				        		<p>(마이펫 프로필을 삭제하셔도 다이어리와 사진첩은 삭제되지 않습니다.)</p>
+							</div>
+							<div class="modal-footer justify-content-between">
+						        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
+						        <a th:href="'/pet/petDelete/' + ${p.petId}" class="btn btn-dark">네</a>
+					      	</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</main>
@@ -230,20 +244,50 @@ select{
       $(myNav).removeClass('text-secondary');
       $(myNav).addClass('active');
       
-      const profileChange = () => {
-         const profile = document.getElementById("profile");
-         profile.click();
-      }
+	 //마이펫 삭제 모달	
+	  $('#deletePetBtn').click(function(e){
+	      e.preventDefault();
+		  $('#deleteModal').modal("show");
+	  });
+	  
+	  //마이펫 프로필 변경
+	  const profileChange = () => {
+	         const profile = document.getElementById("profile");
+	         profile.click();
+	      }
+	      
+	      const profile = document.getElementById('profile');
+	      profile.addEventListener('change', () => {
+	         if (profile.files.length > 0) {
+	             document.getElementById("petPhotoForm").submit();
+	         }
+	      })
+	 
+	 //마이펫 프로필 삭제
+	  const deletePetPhoto = document.getElementById("deletePetPhoto");
+	  deletePetPhoto.addEventListener('click', ()=>{
+		  document.getElementById("deletePhotoForm").submit();
+	  })
+	 
       
-      const profile = document.getElementById('profile');
-      profile.addEventListener('change', () => {
-         if (profile.files.length > 0) {
-             document.getElementById("petPhotoForm").submit();
-         }
-      })
       
-     const thirdForm = document.getElementsByTagName('form')[2];
-      const pTags = thirdForm.querySelectorAll('p:not(.text-secondary):not(#deletePet)');
+      //태어난 날짜 미래 시간 선택 막기
+      document.getElementById('birthBtn').addEventListener('click', function(){
+    	 const today = new Date();
+    	 const petBirth = document.getElementById('petBirth').value;
+    	 const petBirth2 = new Date(petBirth);
+    	 const birthForm = document.getElementById('birthForm');
+    	 
+    	 if(petBirth2 > today) {
+    		 alert("날짜를 다시 선택해주세요.");
+    	 } else {
+    		birthForm.submit();
+    	 }
+      });
+      
+      //실시간 변경
+   	  const thirdForm = document.getElementsByTagName('form')[2];
+      const pTags = thirdForm.querySelectorAll('p:not(.text-secondary)');
       
          pTags.forEach(pTag => {
           pTag.addEventListener('click', function editContent() {

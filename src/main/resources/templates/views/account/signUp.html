@@ -140,7 +140,7 @@ p {
                   <div class="mb-2">
                      <p>생년월일</p>
                      <div class="d-flex me-5">
-                        <input type="date" name="mbBirth" class="form-control d-block" style="width: 100%;">
+                        <input type="date" name="mbBirth" id="mbBirth" value="" class="form-control d-block" style="width: 100%;">
                      </div>
                   </div>
                   <br>
@@ -217,6 +217,12 @@ p {
          e.preventDefault();
          $('#privacyModal').modal("show");
       });
+      
+      //생일 넘어가기
+      const now_date = Date.now();
+      const timeOff = new Date().getTimezoneOffset()*60000;
+      const today = new Date(now_date-timeOff).toISOString().split("T")[0];
+      document.getElementById("mbBirth").setAttribute("max", today);
       
       //필수항목 유효성 검사
       let check_id = false;

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.dao.OrderDAO;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
@@ -64,6 +65,16 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public int getBuyingCount(String id) {
 		return oDAO.getBuyingCount(id);
+	}
+
+	@Override
+	public int deletePoints(String id) {
+		return oDAO.deletePoints(id);
+	}
+
+	@Override
+	public ArrayList<Point> selectMyPoints(String id) {
+		return oDAO.selectMyPoints(id);
 	}
 
 }
