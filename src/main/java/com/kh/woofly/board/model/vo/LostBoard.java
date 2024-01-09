@@ -1,7 +1,7 @@
 package com.kh.woofly.board.model.vo;
 
-import java.sql.Clob;
 import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +24,8 @@ public class LostBoard {
    private String mbId;
    private String mbNickName;
 //   private String mPhotoPath;
+   
+   private List<Attachment> attachments;
 }
 
 

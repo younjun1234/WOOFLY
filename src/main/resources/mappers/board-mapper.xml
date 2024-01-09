@@ -68,7 +68,6 @@
 	            AND m.mb_nickName LIKE CONCAT('%', #{searchKeyword}, '%')
 	        </when>
 	        <otherwise>
-	            <!-- 검색어가 없을 때 기본적으로 모든 게시물을 보여주기 위해 비워놓음 -->
 	        </otherwise>
 	    </choose>
 	    ORDER BY mb.m_no DESC
@@ -82,12 +81,12 @@
 	</select>
 	
 	<!-- 게시글 목록 조회 -->
-	<select id="selectLostBoardList" resultMap="LostBoardWithAttachmentsMap">
-	    select mb.*, m.mb_nickName
-	    from Missing_Board mb
-	    join Member m on mb.mb_id = m.mb_id
-	    where mb.m_status = 'Y' 
-	    order by mb.m_no desc
+	<select id="selectLostBoardList" resultType="LostBoard">
+	    select *
+	    from Missing_Board 
+	    join Member using( mb_id )
+	    where m_status = 'Y' 
+	    order by m_no desc
 	</select>
 	
 	<!-- 게시글에 첨부된 파일 목록 조회 -->
@@ -101,6 +100,24 @@
 	    </if>
 	    order by attm_id
 	</select>
+	
+	<insert id="insertLostBoard">
+       <selectKey keyProperty="mNo" order="BEFORE" resultType="_int"> 
+           select ms_no_seq.nextval as mNo from dual
+       </selectKey>
+       insert into missing_board 
+       values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId})
+   </insert>
+
+	<insert id="insertLostAttm">
+      insert all
+      <foreach collection="list" item="item">
+         into attachment
+         values(new_aid, #{item.originalName}, #{item.renameName},
+         SYSDATE, SYSDATE, #{item.attmPath}, default, 'B', #{item.attmRefNo}, #{item.attmLevel})
+      </foreach>
+      select * from dual
+   </insert>
 	
 	<!-- 특정 게시글 조회 -->
 	<select id="selectLostBoard" parameterType="int" resultMap="LostBoardWithAttachmentsMap">
@@ -124,21 +141,6 @@
 	                select="selectAttmLostBoardList" column="m_no" javaType="list"/>
 	</resultMap>
 	
-	<!-- 첨부파일 삽입 -->
-	<insert id="insertAttachment" parameterType="com.kh.woofly.board.model.vo.Attachment">
-	    INSERT INTO ATTACHMENT (ATTM_ID, ORIGINAL_NAME, RENAME_NAME, ATTM_PATH, ATTM_REF_TYPE, ATTM_REF_NO)
-	    VALUES (SEQ_ATTM_ID.NEXTVAL, #{originalName}, #{renameName}, #{attmPath}, #{attmRefType}, #{attmRefNo})
-	</insert>
-	
-	<!-- 여러 첨부파일 동시 삽입 -->
-	<insert id="insertAttm">
-	    INSERT ALL
-	    <foreach collection="list" item="a">
-	        INTO ATTACHMENT (ATTM_ID, ORIGINAL_NAME, RENAME_NAME, ATTM_PATH, ATTM_REF_TYPE, ATTM_REF_NO, ATTM_LEVEL)
-	        VALUES (ATTM_SEQ.NEXTVAL, #{a.originalName}, #{a.renameName}, #{a.attmPath}, 'M', #{a.attmRefNo}, #{a.attmLevel})
-	    </foreach>
-	    SELECT * FROM dual
-	</insert>
 	
 	
 	

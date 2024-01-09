@@ -30,7 +30,7 @@ public interface BoardDAO {
 	int insertBoard(Board b);
 	
 	// 실종신고
-	ArrayList<LostBoard> selectLostBoardList(int i, RowBounds rowBounds);
+	ArrayList<LostBoard> selectLostBoardList(RowBounds rowBounds, int i);
 
 	ArrayList<Attachment> selectAttmLostBoardList(Integer bId);
 
@@ -38,16 +38,20 @@ public interface BoardDAO {
 
 	int mListCount(int i);
 
-	int insertLostBoard(LostBoard m);
+	
 
 	LostBoard selectLostBoard(int bId, Object object);
 
-	int insertAttm(ArrayList<Attachment> aList);
-
-	int insertAttachment(Attachment attachment);
+	
 	
 	// 실종 검색 //
-	List<LostBoard> searchLostBoards(String searchType, String searchKeyword);
+	ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword);
+
+	int insertLostBoard(LostBoard m);
+
+	int insertLostAttm(ArrayList<Attachment> attachments);
+
+	
 
 
 //	ArrayList<Member> selectMemberList(PageInfo pi, int i);

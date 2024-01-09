@@ -46,71 +46,13 @@
 		</div>
 		
 		<!-- 게시글 -->
-		<!--<div class="row gap-5 justify-content-center mt-3">
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>황유경</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/0863/8360e74209bb76ccb87369df804895c456907e9b27ad2970e0c8cfa49814.png" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/4e1a/b08b56f9e4a8995cd3f9298a1cacbd28bf09b57198aaec82f91a1f703126.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-		</div>-->
-		
-		 <!-- 게시글 -->
         <div th:each="m : ${mList}" class="col">
             <div class="card shadow-sm">
-                <!-- Display the first image if exists -->
-                <th:block th:if="${#lists.isNotEmpty(m.attachments)}">
-                    <img th:src="@{${m.attachments[0].attmPath}}" class="card-img-top" alt="No image available" th:alt="${m.attachments[0].originalName}">
-                </th:block>
+				<div th:each="a : ${aList}">
+					<th:block th:if="${attmPath}">
+						<img th:src="@{${a.attmPath}}" class="card-img-top" alt="No image available" th:alt="${a.originalName}">
+					</th:block>
+				</div>
                 <div class="card-body">
                     <div class="card-text">
                         <h6 th:text="${m.mTitle}">글제목</h6>
@@ -124,6 +66,26 @@
             </div>
         </div>
         <!-- 게시글 끝 -->
+		
+		<!-- 게시글 -->
+		<!--<div th:each="m : ${mList}" class="col">
+		    <div class="card shadow-sm">
+		        <th:block th:if="${#lists.isNotEmpty(m.attachments)}">
+		            <img th:src="${m.attachments[0].attmPath}" class="card-img-top" alt="No image available" th:alt="${m.attachments[0].originalName}">
+		        </th:block>
+		        <div class="card-body">
+		            <div class="card-text">
+		                <h6 th:text="${m.mTitle}">글제목</h6>
+		                <p th:text="${m.mbNickName}">작성자</p>
+		            </div>
+		            <div class="d-flex justify-content-between align-items-center">
+		                <div th:text="${m.mContent}">게시글 내용</div>
+		                <small class="text-muted" th:text="${m.mCount + ' Views'}">조회수</small>
+		            </div>
+		        </div>
+		    </div>
+		</div>-->
+		<!-- 게시글 끝 -->
 
 		
 		

@@ -39,17 +39,19 @@ public interface BoardService {
 
 //	첨부파일 게시글 작성(등록) //
 //	/board/lost/insertLostBoard
-	int insertLostBoard(LostBoard m);
+	
 
 	LostBoard selectLostBoard(int bId, Object object);
 
-	int insertAttm(ArrayList<Attachment> aList);
-
-	int insertAttachment(Attachment attachment);
 	
 	// 실종 검색 //
-	List<LostBoard> searchLostBoards(String searchType, String searchKeyword);
+	ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword);
 
+	int insertLostBoard(LostBoard m);
+
+	int insertLostAttm(ArrayList<Attachment> attachments);
+
+	
 
 //	수정된 첨부파일 게시글 업로드 //
 //	int deleteLostAttm(ArrayList<String> delRename);

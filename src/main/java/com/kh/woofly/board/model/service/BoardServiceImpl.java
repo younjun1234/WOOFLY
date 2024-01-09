@@ -60,9 +60,9 @@ private BoardServiceImpl boardDAO;
 	
 	@Override
 	public ArrayList<LostBoard> selectLostBoardList(PageInfo pi, int i) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getLostBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getLostBoardLimit());
-		return bDAO.selectLostBoardList(i, rowBounds);
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectLostBoardList(rowBounds, i);
 	}
 
 	@Override
@@ -75,33 +75,29 @@ private BoardServiceImpl boardDAO;
 		return bDAO.selectLostBoard(mNo);
 	}
 
-	@Override
-	public int insertLostBoard(LostBoard m) {
-		return bDAO.insertLostBoard(m);
-	}
-
-
+	
 	@Override
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
 
-	@Override
-	public int insertAttm(ArrayList<Attachment> aList) {
-		return bDAO.insertAttm(aList);
-	}
-
-	@Override
-	public int insertAttachment(Attachment attachment) {
-		// TODO Auto-generated method stub
-		return bDAO.insertAttachment(attachment);
-	}
+	
 
 	// 실종 검색 //
 	@Override
-	public List<LostBoard> searchLostBoards(String searchType, String searchKeyword) {
+	public ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword) {
 		// TODO Auto-generated method stub
-		return boardDAO.searchLostBoards(searchType, searchKeyword);
+		return bDAO.searchLostBoards(searchType, searchKeyword);
+	}
+
+	@Override
+	public int insertLostBoard(LostBoard m) {
+		return bDAO.insertLostBoard(m);
+	}
+
+	@Override
+	public int insertLostAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertLostAttm(attachments);
 	}
 
 

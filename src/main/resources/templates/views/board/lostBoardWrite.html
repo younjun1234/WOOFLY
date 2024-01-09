@@ -32,8 +32,9 @@
 				</div>
 			</div>
 			
+			<form  action="/board/lost/insertLostBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 			<!-- <form action="/board/lost"> 글 등록 눌렀을 때 boardLost로 가게 하고 싶은데 어케하는지 모르겠음..-->
-			<form action="/board/lost/insertLostBoard" method="post" enctype="multipart/form-data">
+			
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
 				    <select class="form-select mb-1" id="lostStatus" name="lostStatus">
@@ -43,7 +44,7 @@
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label"></label><!--제목-->
-				  	<input type="text" class="form-control" id="title" placeholder="제목넣으셈 ㅋ" name="mTitle">
+				  	<input type="text" class="form-control" id="title" name="mTitle">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label"></label><!--내용-->
