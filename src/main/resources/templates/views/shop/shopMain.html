@@ -1,229 +1,273 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WOOFLY</title>
 <link rel="icon" href="${ contextPath }/resources/image/woofly.png">
 <link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-	crossorigin="anonymous">
+   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+   rel="stylesheet"
+   integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+   crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 <style>
-	.active {
-		color: black !important;
-		font-weight: 700 !important;
-	}
-	.btn-sm {
-		border-radius: 23px !important; 
-	}
+   .active {
+      color: black !important;
+      font-weight: 700 !important;
+   }
+   .btn-sm {
+      border-radius: 23px !important; 
+   }
+   .album .col{cursor: pointer;}
+   .card *:hover{cursor: pointer;}
 </style>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 </head>
 <body>
     <!-- tap -->
     <nav class="navbar sticky-top bg-white">
-		<div class="container-fluid justify-content-end mx-5">
-			<ul class="nav bg-white">
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
-			</ul>
-		</div>
-		<div class="container-fluid mx-5">
-    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
-    		<ul class="nav">
-    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
-    		</ul>
-		</div>
-	</nav>
-	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
-	<main>
-		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
-			<!-- 추후에 common 파일로 이동 할 예정 -->
-			<!-- 안에 들어가있는 inline style은 추후에 수정 예정  -->
-			<div class="navbar w-20 ">
-				<div class="container-fluid flex-column align-items-start">
-					<a class="navbar-brand" href="#"><h2>쇼핑몰 카테고리</h2></a>
-					<h4 class="mt-3">식품</h4>
-					<ul class="nav flex-column">
-					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">사료</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">간식</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">영양제</a>
-					  	</li>
-					</ul>
-					<h4 class="mt-5">애견용품</h4>
-					<ul class="nav flex-column">
-					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">위생미용</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">산책용품</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">하우스</a>
-					  	</li>
-						  <li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">장난감</a>
-					  	</li>
-					</ul>
-					<h4 class="mt-5">패션</h4>
-					<ul class="nav flex-column">
-					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">의류</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">악세사리</a>
-					  	</li> 	
-					</ul>					
-				</div>
-			</div>
-			<!-- 마이페이지 아래만 수정해주세요 -->
-				<div class="col-10 pt-3 mb-5">
-				<!-- 아래만 수정해주세요 -->
-				<!-- 아래만 수정해주세요 -->
-				<!-- 아래만 수정해주세요 -->
-				<!-- 아래만 수정해주세요 -->
-				<!-- 아래만 수정해주세요 -->
-				<!-- 아래만 수정해주세요 -->
-				<div class="col-10 mb-5 pt-3 me-4">
-					<div class="d-flex justify-content-between border-bottom border-black border-2 pb-3 mb-3">
-						<h3 class="col-10">쇼핑몰</h3>
-						<button class="btn btn-outline-dark" id="productWrite">등록</button>
-					</div>
-					
-					<div class="d-flex mb-4 justify-content-between">
-						<div class="d-flex">
-							<div class="p-2">
-								<button class="btn btn-outline-dark btn-sm p-2">식품</button>
-							</div>
-							<div class="p-2">
-								<button class="btn btn-outline-dark btn-sm p-2">애견용품</button>
-							</div>
-							<div class="p-2">
-								<button class="btn btn-outline-dark btn-sm p-2">패션</button>
-							</div>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-							  정렬
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end">
-							  <li><button class="dropdown-item" type="button">인기순</button></li>
-							  <li><button class="dropdown-item" type="button">판매순</button></li>
-							  <li><button class="dropdown-item" type="button">추천순</button></li>
-							</ul>
-						  </div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-					</div>
-					<div class="d-flex justify-content-between mb-3">
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-						<div class="card" style="width: 20%;">
-							<img src="${ contextPath }/resources/image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-							<div class="card-body">
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- 무한스크롤 처리 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-				<!-- 여기까지가 수정 -->
-			</div>
-		</div>
-	</main>
-	<script>
-		
-		const write = document.getElementById('productWrite');
-		write.addEventListener('click', () =>{
-			location.href='/shop/shopWrite';
-		});
-	
-	
-	</script>
+      <div class="container-fluid justify-content-end mx-5">
+         <ul class="nav bg-white">
+            <li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
+            <li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
+            <li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
+            <li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
+            <li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
+         </ul>
+      </div>
+      <div class="container-fluid mx-5">
+          <a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
+          <ul class="nav">
+             <li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
+             <li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
+             <li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
+          </ul>
+      </div>
+   </nav>
+   <!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
+   <main>
+      <div class="container-fluid d-flex mx-5">
+         <!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
+         <div class="navbar w-20 ">
+            <div class="container-fluid flex-column align-items-start">
+               <a class="navbar-brand" href="/shopMain"><h2>쇼핑몰 카테고리</h2></a>
+               <th:block th:each="b : ${bList}">
+                  <h4 class="mt-5" th:text="${b.productCategory}"></h4>
+                  <ul class="nav flex-column">
+                     <li th:each="c : ${cList}" th:if="${b.productCategoryNo == c.productCategoryNo}">
+                        <button type="button" class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" th:id="${c.productDetailNo}">[[${c.productDetailCategory}]]</button>
+                     </li>
+                  </ul>
+               </th:block>
+            </div>
+         </div>
+         
+         <div class="col-10 pt-3 mb-5">
+            <div class="col-10 mb-5 pt-3 me-4">
+               <div class="d-flex justify-content-between border-bottom border-black border-2 pb-3 mb-3">
+                  <h3 class="col-10">쇼핑몰</h3>
+                  <button class="btn btn-outline-dark" id="productWrite">등록</button>
+               </div>
+               
+               <div class="d-flex mb-4 justify-content-between">
+                  <div class="d-flex">
+                     <div class="p-3" th:if="${sList.size != 0}">
+                        <span class="fw-bold" style="font-size: 15px;">선택된 카테고리 ▶ </span>
+                     </div>
+                     <div class="p-3" th:unless="${sList.size != 0}">
+                        <span class="fw-bold">선택된 카테고리가 없습니다. ㅠ.ㅠ </span>
+                     </div>
+                     <div class="p-2" th:each="s: ${sList}">
+                        <button class="btn btn-outline-dark topCategory btn-sm p-2" th:text="${s.productDetailCategory}" th:value="${s.productDetailNo}"></button>
+                     </div>
+                  </div>
+                  
+                  <!-- 조회수같은거 없는데? / 판매순은 주문내역에서 / 추천순은 콘테스트등록할 때 상품정보로-->
+                  
+                  <div class="btn-group">
+                     <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                       정렬
+                     </button>
+                     <ul class="dropdown-menu dropdown-menu-end">
+                       <li><button class="dropdown-item" type="button">인기순</button></li>
+                       <li><button class="dropdown-item" type="button">판매순</button></li>
+                       <li><button class="dropdown-item" type="button">추천순</button></li>
+                     </ul>
+                   </div>
+               </div>
+               
+               <!-- 상품화면 시작 -->
+               
+               <div class="album py-5" th:if="${pList.size != 0}">
+                  <div class="container">
+                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3" id="productContainer">
+                        <div class="col" th:each="p: ${pList}">
+                           <div class="card shadow-sm products" th:each="a: ${aList}" th:if="${p.productId == a.attmRefNo}">
+                              <input type="hidden" name="productId" th:value="${p.productId}">
+                              <img alt="..." th:src="'/image/shopFiles/' + ${ a.renameName}">
+                              <div class="card-body">
+                                 <div class="category fw-bold mb-2" th:each="c: ${cList}" th:if="${p.productDetailNo == c.productDetailNo}">
+                                    [[${c.productDetailCategory}]]
+                                 </div>
+                                 <p class="card-text mb-1" style="font-size: 12px;">[[${p.productName}]]</p>
+                                 <p class="card-text fw-bold" >[[${#numbers.formatInteger(p.price, 3, 'COMMA')}]]원</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="container text-center mt-5" th:unless="${pList.size != 0}">
+                  <br><br><br><br>
+                  <h1>죄송합니다. 준비된 상품이 없습니다.</h1>
+               </div>
+               
+               <nav class="center" aria-label="Standard pagination example" style="float: right;" th:if="${pList.size != 0}" th:with="loc=${loc}">
+                    <ul class="pagination">
+                       <th:block th:if="${ pi.currentPage <= 1}">
+                          <li class="page-item">
+                             <a class="page-link disable" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                             </a>
+                          </li>
+                       </th:block>
+                       <th:block th:unless="${ pi.currentPage <= 1}">
+                          <li class="page-item">
+                              <a class="page-link" th:href="@{${loc}(page=${pi.currentPage - 1})}" aria-label="Previous">
+                                 <span aria-hidden="true">&laquo;</span>
+                              </a>
+                          </li>
+                      </th:block>
+                       
+                           <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+                               <a class="page-link" th:href="@{${loc}(page=${p})}" th:text="${p}"></a>
+                           </li>
+                             
+                          <li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
+                           <a class="page-link" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                           </a>
+                         </li>
+                          <th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
+                             <li class="page-item">
+                              <a class="page-link" th:href="@{${loc}(page=${pi.currentPage + 1})}" aria-label="Next">
+                                 <span aria-hidden="true">&raquo;</span>
+                              </a>
+                           </li>
+                        </th:block>
+                   </ul>
+                 </nav>
+                 <div class="text-center mt-5"  th:unless="${pList.size != 0}">
+                    <a class="btn btn-dark mt-5" type="button" href="javascript:history.back()">이전 상품으로 돌아가기</a>
+                 </div>
+            </div>
+         </div>
+      </div>
+   </main>
+   <script th:inline="javascript">
+   
+      const categoryAll = /*[[${cList}]]*/0;   
+   
+      window.onload = () => {
+         const write = document.getElementById('productWrite');
+         write.addEventListener('click', () =>{
+            location.href='/shop/shopWrite';
+         });
+         
+         const products = document.querySelectorAll('.products');
+         for(product of products) {
+            product.addEventListener('click', function(){
+               const productId = this.querySelector('img').previousElementSibling.value;
+               
+               /*<![CDATA[*/
+               location.href = '/shop/productDetail?pId=' + productId + "&page=" + /*[[${pi.currentPage}]]*/1;
+               /*]]>*/
+            })
+         }
+         
+         // 카테고리
+         
+         for(const categoryOne of categoryAll) {
+            document.getElementById(categoryOne.productDetailNo).addEventListener('click', function() {
+               location.href = '/shop/selectDetail?productDetailNo=' + this.id;
+            })
+         }
+         
+         const topCategory = document.getElementsByClassName('topCategory');
+         
+         console.log(topCategory);
+         
+         for(const cate of topCategory){
+            cate.addEventListener('click', function() {
+               location.href = '/shop/selectDetail?productDetailNo=' + this.value;
+            });
+         }
+         
+         
+         
+         
+         
+         
+      }
+      
+      
+      
+      
+      
+      
+      
+
+      // 페이지 번호 초기화
+      /* let pageNumber = 2;  // 첫 번째 페이지는 이미 로드됨
+
+      function fetchData() {
+          $.ajax({
+              url: "/shopMain",
+              data: {page:pageNumber},
+              dataType: 'json',  // 응답 데이터 타입 (JSON으로 기대)
+              success: function(data) {
+                  const productList = $('#productList');
+                  data.forEach(product => {
+                      const productDiv = $('<div>').addClass('product').text(product.name);
+                      productList.append(productDiv);
+                  });
+                  pageNumber++;
+              },
+              error: function(error) {
+                  console.error('Error fetching data:', error);
+              }
+          });
+      }
+
+      // 초기 데이터 로드
+      $(document).ready(function() {
+          fetchData();
+      });
+
+      // IntersectionObserver를 사용하여 무한 스크롤링 로직 추가 (선택 사항)
+      const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  fetchData();
+              }
+          });
+      }, {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+      });
+
+      observer.observe($('#productList .product:last-child')[0]); */
+
+
+      
+      //list: 이후 새로운 요소를 추가할 때 사용될 부모 요소입니다.
+      //items: 현재 화면에 출력되고 있는 카드 아이템들을 담은 배열입니다. (최초 8개의 아이템)
+      //skeletonItems: 8개의 스켈레톤 요소를 담고 있는 배열입니다.
+      //spinner: 신규 콘텐츠 로드 중 스켈레톤 UI와 함께 출력할 스피너 요소입니다.
+      
+            
+   </script>
 </body>
 </html>

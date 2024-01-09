@@ -39,8 +39,9 @@
 				<div class="border-bottom border-3 border-black mb-3">
 					<h3>마이펫 다이어리</h3>
 				</div>
-				<form action="/petDiaryWrite.dw" method="POST">
-					<h4>마이펫 다이어리 쓰기</h4>
+				<form action="/petDiaryEdit.dw" method="POST">
+				<input type="hidden" name="drNo" th:value="${d.drNo}">
+					<h4>마이펫 다이어리 수정</h4>
 					<br>
 					<div class="col-7">
 						<div class="d-flex justify-content-between">
@@ -48,9 +49,9 @@
 								<input type="date" name="date" id="drDate" class="form-control d-block" style="width: 150px;" required>
 							</div>
 							<div class = "d-flex">
-							  <select class="form-select" name="petName" style="width: 160px;" required>
+							  <select class="form-select" name="petId" style="width: 160px;" required>
 								  <option selected disabled>강아지 선택</option>
-							  	  <option th:each="p : ${list}" th:value="${p.petId}" th:text="${p.petName}"></option>
+							  	  <option th:each="p : ${pet}" th:value="${p.petId}" th:text="${p.petName}"></option>
 							  </select>
 						 	 </div>
 							  <div>
@@ -66,12 +67,12 @@
 					</div>
 					<br>
 					<div class="col-7">
-						<p class="text-secondary">내용<p>
+						<p class="text-secondary">강아지의 하루<p>
 						  <label for="exampleFormControlTextarea1" class="form-label"></label>
-						  <textarea style="resize:none;" class="form-control" name="drContent" id="exampleFormControlTextarea1" rows="10" placeholder="내용을 입력해주세요..."></textarea>
+						  <textarea style="resize:none;" th:text="${d.drContent}" class="form-control" name="drContent" id="exampleFormControlTextarea1" rows="10" placeholder="내용을 입력해주세요..."></textarea>
 					</div>
 					<div class="d-flex justify-content-start mt-5">
-					    <button type="submit" class="btn btn-dark btn-sm">확인</button>
+					    <button type="submit" class="btn btn-dark btn-sm">수정</button>
 					</div>
 				</form>
 			</div>
