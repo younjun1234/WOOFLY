@@ -6,7 +6,9 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.pet.model.dao.PetDAO;
+import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
@@ -105,6 +107,27 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int petDiaryDelete(int drNo) {
 		return pDAO.petDiaryDelete(drNo);
+	}
+
+	@Override
+	public int insertPetPhoto(Album a) {
+		return pDAO.insertPetPhoto(a);
+	}
+
+	@Override
+	public int insertPetAlbum(Attachment att) {
+		return pDAO.insertPetAlbum(att);
+	}
+
+	@Override
+	public ArrayList<Album> selectMyAlbum(String id) {
+		return pDAO.selectMyAlbum(id);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		return pDAO.selectMyAlbumAttm(map);
 	}
 	 
 

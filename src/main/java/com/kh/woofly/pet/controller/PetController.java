@@ -3,7 +3,6 @@ package com.kh.woofly.pet.controller;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +17,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
+import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -318,15 +320,79 @@ public class PetController {
 	}
 
 	@GetMapping("pet/petPhotoDetail")
-	public String petPhotoDetailView() {
+	public String petPhotoDetailView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Album> aList = pService.selectMyAlbum(id);
+		ArrayList<Attachment> attmList = new ArrayList<>();
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		for(Album a : aList) {
+			map.put("abNo", a.getAbNo());
+			pService.selectMyAlbumAttm(map);
+		}
 		return "petPhotoDetail";
 	}
 
-	@GetMapping("pet/petPhotoWrite")
-	public String petpetPhotoWriteView() {
+	@GetMapping("/pet/petPhotoWrite")
+	public String petpetPhotoWriteView(HttpSession session, @ModelAttribute Diary d, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		ArrayList<Pet> list = pService.petInfoList(id);
+		model.addAttribute("list", list);
+		
 		return "petPhotoWrite";
 	}
+	
+	@PostMapping("petPhotoWrite.dw")
+	public String insertPetPhoto(@RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
+		//게시판 내용 보내기
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		a.setWriterId(id);
+		a.setPetId(p.getPetId());
+		
+		//게시물 보내기
+		int result = pService.insertPetPhoto(a);
+		
+		//사진들 보내기
+		int result2 = 0;
 
+		if(result > 0) {
+			if(files != null && !files.isEmpty()) {
+				ArrayList<Attachment> attachments = new ArrayList<>();
+				for(MultipartFile file : files) {
+					
+					System.out.println(file);
+					
+					String savedFileName = saveFile(file);
+					Attachment att = new Attachment();
+					att.setOriginalName(file.getOriginalFilename());
+					att.setRenameName(savedFileName);
+					att.setAttmRefType("AB");
+					att.setAttmRefNo(a.getAbNo());
+					attachments.add(att);
+					
+					for(int i=0; i < attachments.size(); i++) {
+			          Attachment at = attachments.get(i);
+			          if(i == 0) {
+			             at.setAttmLevel(1);
+			          } else {
+			             at.setAttmLevel(2);
+			          }
+			       }
+					result2 = pService.insertPetAlbum(att);
+					System.out.println(att);
+				}
+			}
+		} else {
+			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+		}
+		
+		if(result > 0) {
+			return "redirect:/pet/petPhotoDetail";
+		} else {
+			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+		}
+	}
+	
 	@GetMapping("pet/petDiaryWrite")
 	public String petDiaryWriteView(Model model, HttpSession session) { 
 		//보유 강아지 리스트 뿌리기

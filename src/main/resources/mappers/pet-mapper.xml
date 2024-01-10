@@ -115,4 +115,29 @@
 		where dr_no = #{drNo}
 	</update>
 	
+	<insert id="insertPetPhoto" parameterType="Album">
+		<selectKey order="BEFORE" keyProperty="abNo" resultType="_int">
+			select ab_seq.nextval from dual
+		</selectKey>
+		insert into album
+		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId})
+	</insert>
+	
+	<insert id="insertPetAlbum" parameterType="Attachment">
+		insert into attachment
+		values (attm_seq.nextval, #{originalName}, #{renameName}, default , default, 'test', default, #{attmRefType}, #{attmRefNo}, #{attmLevel})
+	</insert>
+	
+	<select id="selectMyAlbum" resultType="Album">
+		select *
+		from album
+		where ab_status = 'Y' and writer_id = #{id}
+	</select>
+	
+	<select id="selectMyAlbumAttm" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_level = 1
+	</select>
+	
 </mapper>
