@@ -2,6 +2,7 @@ package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
@@ -50,6 +51,7 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	int insertLostAttm(ArrayList<Attachment> attachments);
+
 
 	
 

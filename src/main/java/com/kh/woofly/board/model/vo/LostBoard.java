@@ -25,7 +25,7 @@ public class LostBoard {
    private String mbNickName;
 //   private String mPhotoPath;
    
-   private List<Attachment> attachments;
+//   private List<Attachment> attachments;
 }
 
 

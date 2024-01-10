@@ -2,6 +2,7 @@ package com.kh.woofly.board.model.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -47,9 +48,11 @@ public interface BoardDAO {
 	// 실종 검색 //
 	ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword);
 
+
 	int insertLostBoard(LostBoard m);
 
 	int insertLostAttm(ArrayList<Attachment> attachments);
+
 
 	
 

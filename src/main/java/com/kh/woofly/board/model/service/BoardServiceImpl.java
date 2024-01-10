@@ -2,6 +2,7 @@ package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,8 @@ private BoardServiceImpl boardDAO;
 		// TODO Auto-generated method stub
 		return bDAO.searchLostBoards(searchType, searchKeyword);
 	}
+	
+	
 
 	@Override
 	public int insertLostBoard(LostBoard m) {
@@ -99,6 +102,7 @@ private BoardServiceImpl boardDAO;
 	public int insertLostAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertLostAttm(attachments);
 	}
+
 
 
 	

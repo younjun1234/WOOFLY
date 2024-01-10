@@ -56,36 +56,10 @@
                         <h6 th:text="${m.mTitle}">글제목</h6>
                         <p th:text="${m.mbNickName}">작성자</p>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <!--<div th:text="${m.mContent}">게시글 내용</div>-->
-                        <small class="text-muted" th:text="${m.mCount + ' Views'}">조회수</small>
-                    </div>
                 </div>
             </div>
         </div>
         <!-- 게시글 끝 -->
-		
-		<!-- 게시글 -->
-		<!--<div th:each="m : ${mList}" class="col">
-		    <div class="card shadow-sm">
-		        <th:block th:if="${#lists.isNotEmpty(m.attachments)}">
-		            <img th:src="${m.attachments[0].attmPath}" class="card-img-top" alt="No image available" th:alt="${m.attachments[0].originalName}">
-		        </th:block>
-		        <div class="card-body">
-		            <div class="card-text">
-		                <h6 th:text="${m.mTitle}">글제목</h6>
-		                <p th:text="${m.mbNickName}">작성자</p>
-		            </div>
-		            <div class="d-flex justify-content-between align-items-center">
-		                <div th:text="${m.mContent}">게시글 내용</div>
-		                <small class="text-muted" th:text="${m.mCount + ' Views'}">조회수</small>
-		            </div>
-		        </div>
-		    </div>
-		</div>-->
-		<!-- 게시글 끝 -->
-
-		
 		
 		<!--페이징처리 하는 부분-->	
 		<nav class="border-top border-black pt-5">

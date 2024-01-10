@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -305,10 +307,10 @@ public class BoardController {
 									  @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 									  Model model){
 			ArrayList<LostBoard> searchResults = bService.searchLostBoards(searchType, searchKeyword);
-			System.out.println(searchType);
 			model.addAttribute("list", searchResults);
 			return "lostBoardSearch";
 		}
+		
 		
 		
 		// 글 목록
