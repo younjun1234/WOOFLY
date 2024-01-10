@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
@@ -108,6 +109,86 @@ public class BoardServiceImpl implements BoardService{
 	public ArrayList<Reply> selectFreeReply(int bNo) {
 		return bDAO.selectFreeReply(bNo);
 	}
+	
+	
+
+	
+//======// 도그워커  //===============================
+	
+	@Override
+	public int getDwListCount(int i) {
+		return bDAO.getDwListCount(i);
+	}
+	
+	@Override
+	public ArrayList<DwBoard> selectDwBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwBoardList(i, rowBounds);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmDwBoardList(Object object) {
+		return bDAO.selectAttmDwBoardList(object);
+	}
+	
+	//후기
+	
+	@Override
+	public int getDwRvListCount(int i) {
+		return bDAO.getDwRvListCount(i);
+	}
+
+	@Override
+	public ArrayList<DwBoard> selectDwRvBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwRvBoardList(i, rowBounds);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmDwRvBoardList(Object object) {
+		return bDAO.selectAttmDwRvBoardList(object);
+	}
+	
+	@Override
+	public DwBoard selectDwBoard(int dwNo, String id) {
+		DwBoard dw = bDAO.selectDwBoard(dwNo);
+		if(dw != null) {
+			if(id !=null && !dw.getMbId().equals(id)) {
+				int result = bDAO.updateDwCount(dwNo);
+				if(result >0) {
+					dw.setDwCount(dw.getDwCount() + 1);
+				}
+			}
+		}
+		return dw;
+	}
+
+	@Override
+	public ArrayList<Reply> selectDwReply(int dwNo) {
+		return bDAO.selectDwReply(dwNo);
+	}
+	
+	@Override
+	public int insertDwBoard(DwBoard dw) {
+		return bDAO.insertDwBoard(dw);
+	}
+
+	@Override
+	public int insertDwAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertDwAttm(attachments);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 // 실종신고 게시판
@@ -143,6 +224,16 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	
+	
+	
+
+	
+
+	
+
+	
 
 	
 

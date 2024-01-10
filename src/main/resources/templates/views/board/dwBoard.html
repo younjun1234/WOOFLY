@@ -45,12 +45,12 @@
 		
 				
 		<div class="container board-list">
-			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;" th:each="b : ${list}" th:attr="data-bNo=${b.bNo}">
-				<div class="col-1" style="line-height: 80px;">[[${ b.bNo }]]</div>
-				<div class="col-1" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 85px; width: 85px; margin-top: 5px; " ></div>
-				<div class="col-2" style="line-height: 80px;">[[${ b.mbNickname }]]</div>
-				<div class="col-6" style="line-height: 80px;">[[${ b.bTitle }]]</div>
-				<div class="col-2" style="line-height: 80px;">[[${ b.bCreateDate }]]</div>
+			<div class="row mt-3 border-top border-secondary text-center board-list" style="height: 80px;" th:each="dw : ${list}" th:attr="data-dwNo=${dw.dwNo}">
+				<div class="col-1 board" style="line-height: 80px;">[[${ dw.dwNo }]]</div>
+				<div class="col-1 board" style="line-height: 80px;"><img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg"  alt="" style="height: 85px; width: 85px; margin-top: 5px; " ></div>
+				<div class="col-2 board" style="line-height: 80px;">[[${ dw.mbNickName }]]</div>
+				<div class="col-6 board" style="line-height: 80px;">[[${ dw.dwTitle }]]</div>
+				<div class="col-2 board" style="line-height: 80px;">[[${ dw.dwCreateDate }]]</div>
 			</div>			
 		</div>
 		
@@ -84,9 +84,11 @@
 		const boardList = document.querySelectorAll('.board-list .board');
 	    boardList.forEach(board => {
 	        board.addEventListener('click', () => {
-	            const boardId = board.parentElement.querySelector('.board:nth-child(1)').innerText;
+	            const dwNo = board.parentElement.querySelector('.board:nth-child(1)').innerText;
 	            const currentPage = /*[[${pi.currentPage}]]*/1;
-	            window.location.href = `/board/free/detail?bNo=${boardId}&page=${currentPage}`;
+	            console.log(dwNo);
+	            console.log(currentPage);
+	            window.location.href = `/board/dw/detail?dwNo=${dwNo}&page=${currentPage}`;
 	        });
 	    });
 		

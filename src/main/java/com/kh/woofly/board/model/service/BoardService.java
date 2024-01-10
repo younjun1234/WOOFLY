@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
@@ -41,6 +42,30 @@ public interface BoardService {
 	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
+	
+//======// 도그워커  //===============================
+	
+	int getDwListCount(int i);
+	
+	ArrayList<DwBoard> selectDwBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmDwBoardList(Object object);
+	
+	//후기
+	int getDwRvListCount(int i);
+
+	ArrayList<DwBoard> selectDwRvBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmDwRvBoardList(Object object);
+	
+	
+	DwBoard selectDwBoard(int dwNo, String id);
+
+	ArrayList<Reply> selectDwReply(int dwNo);
+	
+	int insertDwBoard(DwBoard dw);
+	
+	int insertDwAttm(ArrayList<Attachment> attachments);
 
 
 
@@ -61,6 +86,18 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
 
 	
 

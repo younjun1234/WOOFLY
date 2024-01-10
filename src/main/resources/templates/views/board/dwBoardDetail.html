@@ -17,8 +17,8 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6 style="display: inline;">작성자</h6>&nbsp;•&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">주소</h6>
-						<p>2023.10.16</p>
+						<h6 style="display: inline;">[[${dw.mbNickName}]]</h6>&nbsp;•&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">주소</h6>
+						<p>[[${dw.dwCreateDate}]]</p>
 					</div>
 				</div>
 				
@@ -43,16 +43,16 @@
 			</div>
 			<!-- 제목 -->
 			<div class="row">
-				<h1 class="ps-0">반려견 출입 가능 카페 알려드려요~</h1>
+				<h1 class="ps-0">[[${dw.dwTitle}]]</h1>
 			</div>
 			<!-- 내용 -->
-			<div class="row mt-3" style="min-height: 500px;">
-				종로역 1번 출구에 생겼더라구요~!
+			<div class="row mt-3" style="min-height: 500px;" th:text="${dw.dwContent}">
+				
 				<div class="row">
 	              <table style="width:330px; height: 30px; border: 1px; font-size : 25px;" >
 		              <tr style="border: 1px ;">
 			              <th style="border: 1px ; height: 40px; border: 1px;">가격</th>
-			              <td style="border: 1px ; height: 40px; border: 1px;">\40000</td>
+			              <td style="border: 1px ; height: 40px; border: 1px;" th:text="|\${dw.dwPrice}|"></td>
 		              </tr>
 	              </table>
               </div>

@@ -108,14 +108,14 @@
 					<input class="form-control" id="replyContent" type="text" placeholder="댓글 작성하기">
 				</div>
 				<div class="col-auto">
-					<button class="btn btn-dark" id="replySubmit">댓글 작성하기</button>
+					<button type="button" class="btn btn-dark" id="replySubmit">댓글 작성하기</button>
 				</div>
 			</div>
 		</div>
 		<br>
 		
 		<!-- 댓글 조회 영역 -->
-		<table class="table">		
+		<table class="table" id="replybody">		
 			<thead>
 				<tr>
 					<th style="text-align:center;"> &nbsp;&nbsp;작성자 </th>
@@ -124,7 +124,7 @@
 					<th width="100px">   </th>				
 				</tr>
 			</thead>
-			<tbody>
+			<tbody >
 				<tr th:each="r : ${rList}">
 	            	<td width="150px" style="text-align:center;"> 
 	            		&nbsp;&nbsp;[[${ r.mbNickname }]]
@@ -133,7 +133,7 @@
 	            	<td>[[${ r.reContent }]]</td>
 	            	<td width="130px">[[${ r.reDate }]]</td>	
 	            	<td width="100px">     
-		            	<div class="col-2 d-flex align-items-center justify-content-end">
+		            	<div class="d-flex">
 							<div class="mx-2">53</div>
 							<div>
 								<svg xmlns ="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
@@ -291,25 +291,10 @@
 				        url: '/deleteReply.yk',
 				        data: { rNo: rNo, bNo: boardNo },
 				        success: (data) => {
-				            console.log(data);
-				            const tbody = document.querySelector('tbody');
-				            tbody.innerHTML = '';
-				            for (const r of data) {
-				                const tr = document.createElement('tr');
-				                const writerTd = document.createElement('td');
-				                writerTd.innerText = r.mbNickname;
-				                const contentTd = document.createElement('td');
-				                contentTd.innerText = r.reContent;
-				                const dateTd = document.createElement('td');
-				                dateTd.innerText = r.reDate;
-				                
-				                tr.append(writerTd);
-				                tr.append(contentTd);
-				                tr.append(dateTd);
-				                
-				                tbody.append(tr);
-				            }
-				            document.getElementById('replyContent').value = '';
+				            console.log(data);				            
+				            if(data == 'good'){
+								$("#replybody").load(location.href + " #replybody" );
+							}
 				        },
 				        error: (data) => console.log(data),
 				});
@@ -317,6 +302,16 @@
 				    $('#modalChoice2').modal('hide');
 			
 			})	
+			document.getElementById('replyContent').addEventListener('keyup', (event) => {
+				if( event.key === 'Enter') {
+					document.getElementById('replySubmit').click();
+				}
+			})
+			document.addEventListener("keydown", function(event) {
+				  if (event.key === "Enter") {
+				    event.preventDefault();
+				  }
+				});
 			
 			document.getElementById('replySubmit').addEventListener('click', () =>{
 				const bNo = Number(document.getElementById('bNo').value);
@@ -328,29 +323,11 @@
 					data: {reContent:document.getElementById('replyContent').value, bNo:bNo, mbId: mbId, mbNickname:mbNickname},
 					success: (data) =>{
 						console.log(data);
-						
-						const tbody = document.querySelector('tbody');
-						tbody.innerHTML = '';
-						for(const r of data) {
-							console.log(r);
-							const tr = document.createElement('tr');
-							
-							const writerTd = document.createElement('td');
-							writerTd.innerText = r.mbNickname;
-							const contentTd = document.createElement('td');
-							contentTd.innerText = r.reContent;
-							const dateTd = document.createElement('td');
-							dateTd.innerText = r.reDate;
-							
-							tr.append(writerTd);
-							tr.append(contentTd);
-							tr.append(dateTd);
-							
-							
-							tbody.append(tr);
+						if(data == 'good'){
+							$("#replybody").load(location.href + " #replybody" );
+							document.getElementById('replyContent').value = '';
 						}
-						document.getElementById('replyContent').value = '';
-						Replyform.submit();
+						
 					},
 					error: data => console.log(data)
 				});

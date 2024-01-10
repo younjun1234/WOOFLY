@@ -8,7 +8,9 @@ import org.apache.ibatis.session.RowBounds;
 import com.kh.woofly.board.model.vo.Attachment;
 
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.board.model.vo.LostBoard;
 
 @Mapper
@@ -47,6 +49,36 @@ public interface BoardDAO {
 	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
+	
+	//======// 도그워커  //===============================	
+	
+	int getDwListCount(int i);
+
+	ArrayList<DwBoard> selectDwBoardList(int i, RowBounds rowBounds);
+
+	ArrayList<Attachment> selectAttmDwBoardList(Object object);
+	
+	//후기
+	
+	int getDwRvListCount(int i);
+
+	ArrayList<DwBoard> selectDwRvBoardList(int i, RowBounds rowBounds);
+
+	ArrayList<Attachment> selectAttmDwRvBoardList(Object object);
+	
+	
+	DwBoard selectDwBoard(int dwNo);
+
+	ArrayList<Reply> selectDwReply(int dwNo);
+	
+	int updateDwCount(int dwNo);
+
+	int insertDwBoard(DwBoard dw);
+	
+	int insertDwAttm(ArrayList<Attachment> attachments);
+	
+	
+	
 
 
 	// 실종신고
@@ -61,6 +93,26 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+
+
 
 	
 

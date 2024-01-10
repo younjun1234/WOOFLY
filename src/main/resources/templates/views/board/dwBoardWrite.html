@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			
-			<form>
+			<form  action="/board/free/insertDwBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
 					    <select class="form-select mb-1">
@@ -35,11 +35,11 @@
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="제목을 입력하세요">
+				  	<input type="text" class="form-control" id="title" name="dwTitle" placeholder="제목을 입력하세요">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="bContent" rows="20" style="resize: none;"></textarea>
 				</div>
 				<div class="mb-3">
 	               <label for="title" class="form-label">지급할 금액</label>
