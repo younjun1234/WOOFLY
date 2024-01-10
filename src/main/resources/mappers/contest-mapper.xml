@@ -2,8 +2,69 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.contest.model.dao.ContestDAO">
-
-
+	
+	<insert id="contestOpen">
+		insert into contest
+		values ( 10004 , #{conGen}, #{conName}, #{conStartDate}, #{conEndDate}, default)
+	</insert>
+	
+	<select id="contestNewList" resultType="Contest">
+		select *
+		from(
+			select *
+			from contest
+			ORDER BY CON_NO DESC
+		)
+		where ROWNUM= 1
+	</select>
+	
+	<select id="contestList" resultType="Contest">
+		select *
+		from contest
+		ORDER BY CON_NO DESC
+	</select>
+	
+	<update id="contestUpdate">
+		UPDATE contest
+		SET CON_GEN = #{conGen},  CON_NAME = #{conName}, CON_START_DATE = #{conStartDate}, CON_END_DATE = #{conEndDate}
+		WHERE CON_NO = #{conNo}
+	</update>
+	
+	<update id="updateContestStatus">
+		UPDATE contest
+		SET CON_STATUS = 'N'
+		<![CDATA[
+		where CON_END_DATE < #{today}
+		]]>
+	</update>
+	
+	<select id="updateBestContest" resultType="Contest">
+		select *
+		from contest
+		<![CDATA[
+		where CON_START_DATE < #{today} AND CON_END_DATE > #{today}
+		]]>
+	</select>
+	
+	<insert id="contestEnroll">
+		insert into Participants
+		values ( 9999 , #{pTitle}, #{pPet}, #{pContent}, default, default, 1, #{cNo}, #{pContent} )
+	</insert>
+	
+	<select id="contestId" resultType="Contest">
+		select *
+		from contest
+		<![CDATA[
+		where CON_START_DATE < #{today} AND CON_END_DATE > #{today}
+		]]>
+	</select>
+	
+	<select id="itemList" resultType="ContestItem">
+	    SELECT p.product_name, d.order_detail_id,  o.customer_id, d.order_id, d.product_id,p.price, p.product_status
+	    FROM ORDERS o, ORDER_DETAIL d, PRODUCT p
+	    WHERE o.CUSTOMER_ID = #{id} AND o.ORDER_ID = d.order_id AND d.product_id = p.product_id
+	    ORDER BY d.order_detail_id DESC
+	</select>
 	
 	
 </mapper>

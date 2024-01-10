@@ -17,7 +17,6 @@
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
 			<div th:replace="~{common/adminNav :: adminNav}"></div>
@@ -229,7 +228,12 @@
 		</div>
 	</main>
 
-
+	<script th:inline="javascript">
+		window.onload = () => {
+			const anav = document.getElementById('myNav5')
+			anav.style.fontWeight = 'bold';
+		}
+	</script>
 	
 </body>
 </html>

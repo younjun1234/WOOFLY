@@ -10,16 +10,13 @@
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
-
+	
 <link rel="stylesheet" type="text/css" th:href="@{/css/yh/contestList.css}" /> 
 </head>
 <body>
-	
 	<div th:replace="~{common/top :: top}"></div>
-	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
 			<div th:replace="~{common/adminNav :: adminNav}"></div>
@@ -29,13 +26,10 @@
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>콘테스트</h1>
-						<!-- 관리자만 보이도록 -->
-						<a role="button" href="#" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
+						<!-- 로그인 유저만 보이도록 -->
+						<a role="button" href="/contest/contestParticipation" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
 					</div>
-                  
-					<!-- 카테고리 버튼들 -->
-					<!-- padding 적용 시키면 좋을 듯 -->					
-					          
+					
 					<form>					                     
 						<div class="row g-0 text-center" style="margin-top: 10px;">
 							<div class="col-6 col-md-2" style="margin-top: 5px; ">
@@ -53,7 +47,7 @@
 							</div>
 						</div>
 					</form>			
-
+					
 					<ul class="dimage">						
 						<li class="dogimage">
 							<div class="album-item">
@@ -241,7 +235,12 @@
 		</div>
 	</main>
 	
-	
+	<script th:inline="javascript">
+		window.onload = () => {
+			const anav = document.getElementById('myNav5')
+			anav.style.fontWeight = 'bold';
+		}
+	</script>
 	
 </body>
 </html>

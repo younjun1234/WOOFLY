@@ -10,123 +10,86 @@
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
 <style>
-	.board-list {
-		cursor: pointer;
-	}
+	.board-list { cursor: pointer;}
 </style>
 </head>
 <body>
     <div th:replace="~{common/top :: top}"></div>
-	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
-			<!-- 추후에 common 파일로 이동 할 예정 -->
-			<!-- 안에 들어가있는 inline style은 추후에 수정 예정  -->
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
 			<div th:replace="~{common/adminNav :: adminNav}"></div>
-			
-			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>협력업체</h1>
 						<!-- 관리자만 보이도록 -->
-						<a role="button" href="#" class="btn btn-dark btn-sm h-50">업체 등록</a>
+						<th:block>
+							<a role="button" href="/info/companyEnroll" class="btn btn-dark btn-sm h-50">업체 등록</a>
+						</th:block>
 					</div>
-					<form>
+					<form action="/info/searchCompany">
+						<input type="hidden" th:value="${ value }" name="value" id="aaaa" >
 						<div class="row col-auto mt-3">
 							<label for="search-box" class="form-label">업체 검색</label>
 						</div>
 						<div class="row g-0 text-center">
-							<div class="col-sm-6 col-md-10 input-group-lg">
-								<input type="text" id="search-box" class="form-control" placeholder="검색">
+							<div class="col-2 col-md-2">
+								<select  class="form-select-lg" name="Category" style="display: inline-block;">
+									<option value="com_Name" th:selected="${ Category == 'com_Name'}">업체명 </option>
+									<option value="com_Addr" th:selected="${ Category == 'com_Addr'}">업체 주소 </option>
+								</select>
 							</div>
-							<div class="col-6 col-md-2">
-								<button type="button" class="btn btn-outline-dark btn-lg">검색</button>
+							<div class="col-sm-6 col-md-9 input-group-lg">
+								<input type="text" id="search-box" class="form-control" placeholder="검색" name="search" th:value="${ search }">
+							</div>
+							<div class="col-6 col-md-1">
+								<button class="btn btn-outline-dark btn-lg">검색</button>
 							</div>
 						</div>
 					</form>
                   
-				<!-- 정지/탈퇴 상태는 배경색같은거 바뀌는걸로 알아챌 수 있도록 -->
-				<!-- 구분쪽으로 포인터 되도록 바꾸기 -->
-				<!-- 회원 선택 시 모달, 아니면 드랍다운으로 회원상세정보를 전부 띄어주기
-                        거기서 정지, 탈퇴여부 결정 가능하도록 하는게 좋겠다.-->
-					<div class="container board-list" id="board-list">
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
-						</div>
-						<div class="row mt-3 border-top border-secondary text-center board-liste" style="height: 80px;">
-							<div class="col-2" style="line-height: 80px;">업체명</div>
-							<div class="col-2" style="line-height: 80px;">업체종류</div>                         
-							<div class="col-5" style="line-height: 80px;">주소</div>
-							<div class="col-3" style="line-height: 80px;">전화번호</div>
+					<div class="container board-list" id="board-list" style="margin-top: 10px">
+						<div name="list" class="row border-top border-secondary text-center board-liste" style="height: 80px;" th:each="l : ${list}">							
+							<label class="comNo" style="display: none;">[[${ l.comNo }]]</label>
+							<div class="col-2" style="line-height: 80px;">[[${ l.comName }]]</div>
+							<div class="col-2" style="line-height: 80px;">[[${ l.comCategory }]]</div>                         
+							<div class="col-5" style="line-height: 80px;">[[${ #strings.arraySplit(l.comAddr, '@')[1] }]]</div>							
+							<div class="col-3" style="line-height: 80px;">[[${ l.comPhone }]]</div>
 						</div>
 					</div>
-	                  
-					<nav class="border-top border-black pt-5">
-						<ul class="pagination justify-content-center">
-							<li class="page-item">
-								<a class="page-link" href="#">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-							<li class="page-item"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item"><a class="page-link" href="#">4</a></li>
-							<li class="page-item"><a class="page-link" href="#">5</a></li>
-							<li class="page-item">	
-								<a class="page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
+					<div th:replace="~{info/pageNav :: pageNav}"></div>
 				</div>	
 			</div>
 		</div>
     </main>
 	
+	<script th:inline="javascript">
+		window.onload = () => {
+			const divs = document.getElementsByName('list');
+			for(const div of divs) {
+				div.addEventListener('click', function() {
+					const comNo = this.querySelector('.comNo').innerText;
+					/*<![CDATA[*/
+			        location.href = '/info/selectCompany?comNo=' + comNo + "&page=" + /*[[${pi.currentPage}]]*/123;
+			        /*]]>*/
+				})
+			}
+			
+			const pbts = document.getElementsByName('pagebtn');
+			
+			for(const pbt of pbts) {
+				const cp1 = "[[${pi.currentPage}]]"
+				const cp2 = pbt.innerText
+				if(cp1 == cp2) {
+					pbt.style.background = 'lightgrey';
+				}
+			}
+			
+		    const anav = document.getElementById('myNav3')
+			anav.style.fontWeight = 'bold';
+		}
+	</script>
 </body>
 </html>

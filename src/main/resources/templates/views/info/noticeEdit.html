@@ -17,51 +17,63 @@
 </head>
 <body>
     <div th:replace="~{common/top :: top}"></div>
-	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
 			<div th:replace="~{common/adminNav :: adminNav}"></div>
 			
-			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 				<div class="container mt-4">
 					<div class="row">
-						<!-- 첫 번째 div: 신고에 관한 정보 -->
 						<div class="col-md-12 mb-4">
 							<div class="card">
 								<div class="card-header">
 									<h4>공지 수정</h4>
 								</div>
 								<div class="card-body">
-									<table class="table">
-										<tbody>
-											<tr>
-												<th>공지 제목</th>
-												<td>
-													<textarea class="form-control" rows="2" placeholder="제목" style="resize: none;"></textarea>
-												</td>
-											</tr>
-											<tr>
-												<th>공지 내용</th>
-												<td>
-													<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;"></textarea>
-												</td>
-											</tr>
-											<tr>
-												<th>파일 등록</th>
-												<td>
-													<input type="file">
-												</td>
-											</tr>
-										</tbody>
-									</table>
-									<div class="container text-center">
-										<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">수정</button>
-										<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark">이전</button>
-									</div>
+									<form action="/info/updateNotice" method="POST">
+										<table class="table">
+											<tbody>
+												<tr>
+													<th>카테고리</th>
+													<td>
+														<select class="form-select" aria-label="Default select example" name="nCategory">
+															<option value="공지" th:selected="${ n.nCategory == '공 지'}">공 지</option>
+															<option value="콘테스트" th:selected="${ n.nCategory == '콘테스트'}">콘테스트</option>
+															<option value="쇼핑몰" th:selected="${ n.nCategory == '쇼핑몰'}">쇼핑몰</option>
+															<option value="커뮤니티" th:selected="${ n.nCategory == '커뮤니티'}">커뮤니티</option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<th>공지 제목</th>
+													<td>
+														<textarea class="form-control" rows="2" placeholder="제목" style="resize: none;" name="nTitle">[[${ n.nTitle }]]</textarea>
+													</td>
+												</tr>
+												<tr>
+													<th>공지 내용</th>
+													<td>
+														<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="nContent">[[${ n.nContent }]]</textarea>
+													</td>
+												</tr>
+												<tr>
+													<th>파일 등록</th>
+													<td>
+														<input type="file">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<input type="hidden" th:value="${ page }" name="page">
+										<input type="hidden" th:value="${ n.nNo }" name="nNo">
+										<input type="hidden" th:value="${ n.nWriter }" name="nWriter">
+										<div class="container text-center">
+											<button class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">수정</button>
+											<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascript:history.back();">이전</button>
+										</div>
+									</form>
 								</div>
 							</div>
 						</div>
@@ -69,7 +81,15 @@
 				</div>
 			</div>
 		</div>
+
+		
     </main>
 	
+	<script>
+		window.onload = () => {
+			const anav = document.getElementById('myNav1')
+			anav.style.fontWeight = 'bold';
+		}
+	</script>
 </body>
 </html>

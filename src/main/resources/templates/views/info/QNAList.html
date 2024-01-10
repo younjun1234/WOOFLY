@@ -5,171 +5,117 @@
 <title>WOOFLY</title>
 <link rel="icon" th:href="@{/image/woofly.png}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"	
-	crossorigin="anonymous" />
+ <!--  
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" /> 
+-->
 <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
       integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer" />
-       
-<link rel="stylesheet" type="text/css" th:href="@{/css/yh/FAQList.css}" /> 
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/QNAList.css}" /> 
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/modal.css}" />
 
 </head>
 <body>
     <div th:replace="~{common/top :: top}"></div>
-	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
 			<div th:replace="~{common/adminNav :: adminNav}"></div>
 			
-			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>FAQ</h1>
 						<h3>자주 묻는 질문과 답변을 미리 확인해 보세요!</h3>
-						<!-- 관리자만 보이도록 -->
-						<a role="button" href="#" class="btn btn-dark btn-sm h-50">글 작성</a>
+						<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50">글 작성</a>
 					</div>
-					
 					<!-- 카테고리 버튼들 -->
-					<!-- padding 적용 시키면 좋을 듯 -->
 					<div class="container text-center mt-3 row-cols-6 catagoryBar">
-						<button type="button" class="btn btn-outline-dark">쇼핑몰</button>
-						<button type="button" class="btn btn-outline-dark">콘테스트</button>
-						<button type="button" class="btn btn-outline-dark">중고거래</button>
-						<button type="button" class="btn btn-outline-dark">도그워커</button>
-						<button type="button" class="btn btn-outline-dark">산책메이트</button>
+						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="쇼핑몰">쇼핑몰</button>
+						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="콘테스트">콘테스트</button>
+						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="중고거래">중고거래</button>
+						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="도그워커">도그워커</button>
+						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="산책메이트">산책메이트</button>
 					</div>
-	      			
-					<form>
-						<div class="row col-auto mt-3">
-					
-						</div>
-						<div class="row g-0 text-center">
-							<div class="col-sm-6 col-md-1 input-group-lg" style="margin-left: 40px;"></div>
-							<div class="col-sm-6 col-md-7 input-group-lg" style="margin-left: 50px;">
-								<input type="text" id="search-box" class="form-control" placeholder="검색">
+	      			<input type="hidden" th:value="${ value }" th:name="${ value }" id="aaaa">
+					<form action="/info/searchQNA">
+						<input type="hidden" th:value="${ value }" name="value" id="aaaa" >
+						<div class="row g-0 text-center mt-3">
+							<div class="col-6 col-md-1">
 							</div>
-							<div class="col-6 col-md-2  justify-content-end">
-								<button type="button" class="btn btn-outline-dark btn-lg">검색</button>
+							<div class="col-sm-6 col-md-1 input-group-lg" style="margin-left: 40px;">
+								<select  class="form-select-lg" name="Category" style="display: inline-block;">
+									<option value="q_Title" th:selected="${ Category == 'q_Title'}">제목</option>
+									<option value="q_Content" th:selected="${ Category == 'q_Content'}">내용</option>
+									<option value="all" th:selected="${ Category == 'all'}">제목+내용</option>
+								</select>
+							</div>
+							<div class="col-sm-6 col-md-7 input-group-lg" style="margin-left: 50px;">
+								<input type="text" id="search-box" class="form-control" placeholder="검색" name="search" th:value="${ search }" >
+							</div>
+							<div class="col-6 col-md-1  ">
+								<button class="btn btn-outline-dark btn-lg">검색</button>
 							</div>
 						</div>
 					</form>
 					<div class="wrapper">
-						<div class="faq">
-						    <button class="accordion">
-						    	<div class="category">콘테스트</div>자주 묻는 질문 1?
+						<div class="faq" th:each="l : ${list}" >
+						    <button class="accordion" >
+						    	<div class="category">[[${ l.qCategory }]]</div>[[${ l.qTitle }]]
 						    	<i class="fa-solid fa-chevron-down"></i>
 						    </button>
-						    <div class="pannel">								
-								<p style="display: inline-block; margin-left: 150px;" >
-									답 1 답 1 답 1 답 1 답 1 답 1 답 1 답 1 답 1 답 1 답 1 답 1 
+						    <div class="pannel">	
+						  		<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+						    	<form th:if="${ l.qWriter == 'admin' }" action="/info/QNAEdit" method="POST" style="display: inline-block;">
+									<input type="hidden" th:value="${ l.qId }" name="qId">
+									<label class="qId" style="display: none;">[[${ l.qId }]]</label>
+									<input type="hidden" th:value="${ pi.currentPage }" name="page">
+									<button class="btn btn-lg rounded-2 btn-outline-dark" >수정</button>
+									<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" >삭제</button>
+									<p style="display: inline-block; margin-left: 50px;" >
+										[[${ l.qContent }]]
+									</p>
+									<input type="hidden" th:value="page" name="page">
+								</form>
+								<p style="display: inline-block; margin-left: 150px;" th:if="${ l.qWriter != 'admin' }">
+									[[${ l.qContent }]]
 								</p>
 						    </div>
-						</div>
-						<div class="faq">
-						    <button class="accordion">
-								<div class="category">쇼핑몰</div>자주 묻는 질문 2?
-								<i class="fa-solid fa-chevron-down"></i>
-							</button>
-							<div class="pannel">
-								<p style="display: inline-block; margin-left: 150px;" >    
-							    	답 2
-								</p>
-							</div>
-						</div>
-						<div class="faq">
-							<button class="accordion">
-								<div class="category">쇼핑몰</div>자주 묻는 질문 3?
-								<i class="fa-solid fa-chevron-down"></i>
-							</button>
-							<div class="pannel">
-								<p style="display: inline-block; margin-left: 150px;" >
-									답 3 
-								</p>
-							</div>
-						</div>
-						<div class="faq">
-							<button class="accordion">
-								<div class="category">도그워커</div>자주 묻는 질문 4?
-								<i class="fa-solid fa-chevron-down"></i>
-							</button>
-							<div class="pannel">
-								<p style="display: inline-block; margin-left: 150px;" >
-									답 4
-								</p>
-							</div>
-						</div>
-						<div class="faq">
-						    <button class="accordion">
-								<div class="category">산책메이트</div>자주 묻는 질문 5?
-								<i class="fa-solid fa-chevron-down"></i>
-							</button>
-							<div class="pannel">
-								<p style="display: inline-block; margin-left: 150px;" >
-									답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5
-									답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5 답5
-								</p>
-						    </div>
-						</div>
-						<div class="faq">
-							<button class="accordion">
-								<div class="category">중고나라 </div>자주 묻는 질문 6?
-								<i class="fa-solid fa-chevron-down"></i>
-							</button>
-							<div class="pannel">
-								<p style="display: inline-block; margin-left: 150px;" >
-									답 6 답 6
-								</p>
-							</div>
 						</div>
 					</div>
-	                  
-					<nav class=" pt-3" style="margin-left: 60px;">
-						<ul class="pagination justify-content-center">
-							<li class="page-item">
-								<a class="page-link" href="#">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-							<li class="page-item"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item"><a class="page-link" href="#">4</a></li>
-							<li class="page-item"><a class="page-link" href="#">5</a></li>
-							<li class="page-item">	
-								<a class="page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
-					
+					<div th:replace="~{info/pageNav :: pageNav}"></div>
 				</div>	
+			</div>
+		</div>
+		
+		<div id="modalContainer" class="hidden">
+			<div id="modalContent" class="modalContentCss">
+		    	<br>
+		    	<h1 style="text-align: center;">정말 삭제하시겠습니까?</h1>
+		    	<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+			    <button id="delete" type="button" class="btn btn-lg rounded-2 btn-outline-danger">삭제</button>
+				&emsp;&emsp;&emsp;&emsp;
+			    <button id="modalClose" type="button" class="btn btn-lg rounded-2 btn-outline-dark">닫기</button>	
 			</div>
 		</div>
     </main>
     
-	<script>
+	<script th:inline="javascript">
 		var acc = document.getElementsByClassName("accordion");
 		var i;
-
+		
 		for (i = 0; i < acc.length; i++) {
 			acc[i].addEventListener("click", function () {
 				this.classList.toggle("active");
 				this.parentElement.classList.toggle("active");
-
+				
 				var pannel = this.nextElementSibling;
-
+				
 				if (pannel.style.display === "block") {
 					pannel.style.display = "none";
 				} else {
@@ -178,8 +124,62 @@
 			});
 		}
 		
+		window.onload = () => {
+			const mbts = document.getElementsByName('modalOpen');
+			const modalCloseButton = document.getElementById('modalClose');
+			const modal = document.getElementById('modalContainer');
+			const del = document.getElementById('delete');
+			const category = document.getElementById('aaaa').value;
+			
+			for(const mbt of mbts) {
+				mbt.addEventListener('click', (event) => {
+				    modal.classList.remove('hidden');
+				    const qId = event.target.closest('.faq').querySelector('.qId').innerText;
+				   
+				    del.addEventListener('click', () => {
+				    	 /*<![CDATA[*/
+				        location.href = '/info/deleteQNA?qId=' + qId + "&page=" + /*[[${pi.currentPage}]]*/123;
+				        /*]]>*/
+				    });
+				});
+			}					
+			modalCloseButton.addEventListener('click', () => {
+				modal.classList.add('hidden');
+			});
+			
+			const cbts = document.getElementsByName('categoryBtn');
+			
+			for(const cbt of cbts) {
+				const value = cbt.value;
+				
+				if(category == value){
+					cbt.className = "btn btn-dark"
+					
+					cbt.addEventListener('click', (event) => {
+					     location.href = '/info/QNA' ;
+					});
+					
+				} else{
+					cbt.addEventListener('click', (event) => {
+					     location.href = '/info/selectCategoryQNA?value=' + value ;
+					});
+				}
+			}
+			
+			const pbts = document.getElementsByName('pagebtn');
+			
+			for(const pbt of pbts) {
+				const cp1 = "[[${pi.currentPage}]]"
+				const cp2 = pbt.innerText
+				if(cp1 == cp2) {
+					pbt.style.background = 'lightgrey';
+				}
+			}
+			
+			const anav = document.getElementById('myNav2')
+			anav.style.fontWeight = 'bold';
 		
-		
+		}
 	</script>
 </body>
 </html>

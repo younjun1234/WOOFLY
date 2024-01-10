@@ -11,9 +11,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Participant {
+public class Participants {
 	
 	private int pNo;
+	private String pTitle;
+	private String pPet;
+	private String pContent;
+	private int pCount;
+	private String pStatus;
+	private int petId;
+	private int contestId;
+	private String pProduct;
 	
-	
+	private String mbId;
+	private String mbName;
 }

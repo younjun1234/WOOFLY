@@ -13,78 +13,105 @@
     <!-- 사용자와 관리자에 따라 nav 변경
          CSS 세세한 조정
          추가된 기능에 따른 nav 추가 및 변경 -->
-<link rel="stylesheet" type="text/css" th:href="@{/css/noticeDetail.css}" /> 
-<title>Bootstrap demo</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/modal.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/noticeDetail.css}" /> 
 
+<title>Bootstrap demo</title>
 </head>
 <body>
-<!-- tap -->
 <div th:replace="~{common/top :: top}"></div>
-<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
-<main>
-	
-	<div class="container-fluid d-flex mx-5">
-		<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
-		
-		<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-		<div th:replace="~{common/adminNav :: adminNav}"></div>
-		
-		<!-- 마이페이지 아래만 수정해주세요 -->
-		<div class="col-10 mb-5">
-			<div class="container mt-4">
-				<!-- 첫 번째 div: 신고에 관한 정보 -->
-				<div class="col-md-12 mb-4">
-					<div class="card">
-						<div class="card-header d-flex justify-content-between" >
-							<h5>공지사항</h5>
-							<h4>쇼핑몰</h4>
-							<div class="d-flex gap-3">
-								<button class="btn btn-outline-warning bg-warning-subtle">수정</button>
-								<button class="btn btn-outline-danger bg-danger-subtle">삭제</button>                                                
-							</div>
-						</div>
-						<div class="card-body">
-							<form class="formClass" method="POST" id="detailNotice">
-								<input type="hidden" value="" name="page">
-								<input type="hidden" value="" name="noticeNo">
-								<div class="board_view_wrap"> <!-- 1.보드 리스트 2. 페이지영역 3. 버튼 영역 wrap으로 감쌈 -->
+	<main>
+		<div class="container-fluid d-flex mx-5">
+			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<div class="col-10 mb-5">
+				<div class="container mt-4">
+					<div class="col-md-12 mb-4">
+						<div class="card">
+							<form action="/info/NoticeEdit" method="POST">
+								<div class="card-header d-flex justify-content-between" >
+									<h5>공지사항</h5>
+									<h4>[[${n.nCategory}]]</h4>
+									<input type="hidden" th:value="${ page }" name="page">
+									<input type="hidden" th:value="${ n.nNo }" name="nNo">
+									<div class="d-flex gap-3">
+										<button class="btn btn-outline-warning bg-warning-subtle">수정</button>
+										<button type="button" id="modalOpen" class="btn btn-outline-danger bg-danger-subtle">삭제</button>                                                
+									</div>
+								</div>
+							</form>
+							<div class="card-body">
+								<div class="board_view_wrap">
 									<div class="board_view">
 										<div class="title"> <!--글 제목-->
-											이 글은 공지사항(제목) 
+											제목[[${ n.nTitle }]]
 										</div>
-										<div class="info"> <!--글 정보-->									                        
-											<dl>
+										<div class="info">
+											<dl style="margin-left: 55%">
 												<dt>글쓴이</dt>
-					                            <dd>관리자</dd>
+					                            <dd>[[${ n.nWriter }]]</dd>
 											</dl>
 											<dl>
 												<dt>작성일</dt>
-												<dd>2023-12-20</dd>
+												<dd>[[${ n.nCreateDate }]]</dd>
 											</dl>
 											<dl>
 												<dt>조회</dt>
-												<dd>197</dd>
+												<dd>[[${ n.nCount }]]</dd>
 											</dl>
 										</div>
 										<div class="text"> <!--글 내용-->
-											<pre>가나다라마바사</pre>
+											<pre style="margin-left: 40px">[[${ n.nContent }]]</pre>
 										</div>
 										<div class="text1"> <!--글 사진-->
 											<img alt="공지사진 사진있을때만">
 										</div>
 									</div>
 									<div style="text-align: center; margin-top: 10px;">
-										<input class="btn btn-outline-dark" type="button" value="목 록" >
+										<input class="btn btn-outline-dark" type="button" value="목 록" onclick="javascript:history.back();">
 									</div>
 								</div>
-							</form>						            
-						</div>     
+							</div>     
+						</div>
+					</div>
+					<div id="modalContainer" class="hidden">
+						<div id="modalContent" class="modalContentCss">
+					    	<br>
+					    	<h1 style="text-align: center;">정말 삭제하시겠습니까?</h1>
+					    	<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+						    <button id="delete" type="button" class="btn btn-lg rounded-2 btn-outline-danger">삭제</button>
+							&emsp;&emsp;&emsp;&emsp;
+						    <button id="modalClose" type="button" class="btn btn-lg rounded-2 btn-outline-dark">닫기</button>	
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>	
-</main>
-
+	</main>
+	<script th:inline="javascript">
+		window.onload = () => {
+			const mbt = document.getElementById('modalOpen');
+			const modalCloseButton = document.getElementById('modalClose');
+			const modal = document.getElementById('modalContainer');
+			const del = document.getElementById('delete');
+			
+			mbt.addEventListener('click', (event) => {
+			    modal.classList.remove('hidden');
+			    
+			    del.addEventListener('click', () => {
+			        location.href = '/info/deleteNotice?nNo=' /*<![CDATA[*/ + /*[[${n.nNo}]]*/123/*]]>*/ + "&page=" /*<![CDATA[*/ + /*[[${ page}]]*/123;/*]]>*/
+			   
+			    });
+			});
+			
+			modalCloseButton.addEventListener('click', () => {
+			  modal.classList.add('hidden');
+			});
+			
+		    const anav = document.getElementById('myNav1')
+			anav.style.fontWeight = 'bold';
+			
+		}
+	</script>
 </body>
 </html>

@@ -1,7 +1,5 @@
 package com.kh.woofly.contest.model.vo;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +11,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Contest {
-	private int conNo;
-	private int conGen;
-	private String conName;
-	private Date conStartDate;
-	private Date conEndDate;
-	private String conStatus;
+public class ContestItem {
+	private int orderId;
+	private String customerId;
+	
+	private int orderDetailId;
+	private int productId;
+//	orderId
+	
+	private String productName;
+	private int price;
+	private String productStatus;
+//	orderDetailId
 }
