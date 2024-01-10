@@ -315,7 +315,7 @@ public class BoardController {
 					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 	                                Model model,
 	                                HttpServletRequest request) throws BoardException {
-	        if (searchType == null || searchKeyword == null) {
+	        if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
 	        	int listCount = bService.getMlistCount(1);
 	        	
 	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
@@ -329,12 +329,15 @@ public class BoardController {
 	        		model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
 	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
 	        	}
-	        } else {
+	        } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
 	        	HashMap<String, String> map = new HashMap<>();
 				map.put("searchKeyword", searchKeyword);
 				map.put("searchType", searchType);
+				int listCount = bService.getMlistCount(1); // 추가
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 10); // 추가
 				ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
 				model.addAttribute("mList", searchResults);
+				model.addAttribute("pi", pi);
 	        }
 	        
 	        model.addAttribute("loc", request.getRequestURI());
