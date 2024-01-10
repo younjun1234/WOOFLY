@@ -134,10 +134,20 @@
 		where ab_status = 'Y' and writer_id = #{id}
 	</select>
 	
+	<select id="selectMyAlbums" resultType="Album">
+		select *
+		from album
+			 join attachment on (ab_no = attm_ref_no)
+		where ab_status = 'Y' and writer_id = #{id} and attm_ref_type = 'AB' and attm_level = 1
+	</select>
+	
 	<select id="selectMyAlbumAttm" resultType="Attachment">
+	<!-- 리스트를 뿌려줄 거기 때문에 썸네일 레벨 1인것들을 조건으로 -->
+	<!-- 마이펫 사진첩의 abNo를 가진 유일한 썸네일 사진을 반환 -->
 		select *
 		from attachment
 		where attm_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_level = 1
 	</select>
+	
 	
 </mapper>

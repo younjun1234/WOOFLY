@@ -126,8 +126,12 @@ public class PetServiceImpl implements PetService{
 
 	@Override
 	public ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map) {
-		// TODO Auto-generated method stub
 		return pDAO.selectMyAlbumAttm(map);
+	}
+
+	@Override
+	public ArrayList<Album> selectMyAlbums(HashMap<String, String> map) {
+		return pDAO.selectMyAlbums(map);
 	}
 	 
 

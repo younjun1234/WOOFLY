@@ -54,4 +54,6 @@ public interface PetService {
 
 	ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map);
 
+	ArrayList<Album> selectMyAlbums(HashMap<String, String> map);
+
 }

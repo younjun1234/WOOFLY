@@ -57,4 +57,6 @@ public interface PetDAO {
 
 	ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map);
 
+	ArrayList<Album> selectMyAlbums(HashMap<String, String> map);
+
 }

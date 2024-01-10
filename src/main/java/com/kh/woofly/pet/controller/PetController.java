@@ -46,8 +46,29 @@ public class PetController {
 	}
 
 	@GetMapping("pet/petPhoto")
-	public String petPhotoView() {
-		return "petPhoto";
+	public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
+			@RequestParam(value="petName", required=false) String petName, @RequestParam(value="petHealth", required=false) String petHealth) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		HashMap<String, String> map = new HashMap<>();
+		map.put("id", id);
+		if (petName !=  null) {
+			map.put("petHealth", petHealth);
+		}
+		if (petHealth != null) {
+			map.put("petName", petName);
+		}
+		ArrayList<Album> aList = pService.selectMyAlbums(map);
+		ArrayList<Pet> pList = pService.petInfoList(id);
+		 
+		if(aList != null) {
+			System.out.println(aList);
+			model.addAttribute("pList", pList);
+			model.addAttribute("aList", aList);
+			return "petPhoto";
+			
+		} else {
+			throw new PetException("엘범 망했쥬");
+		}
 	}
 
 	@GetMapping("pet/petDiary")
@@ -319,18 +340,13 @@ public class PetController {
 		}
 	}
 
-	@GetMapping("pet/petPhotoDetail")
+	@GetMapping("pet/petPhoto/{abNo}")
 	public String petPhotoDetailView(HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		ArrayList<Album> aList = pService.selectMyAlbum(id);
-		ArrayList<Attachment> attmList = new ArrayList<>();
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("id", id);
-		for(Album a : aList) {
-			map.put("abNo", a.getAbNo());
-			pService.selectMyAlbumAttm(map);
-		}
-		return "petPhotoDetail";
+		//ArrayList<Album> list = pSerivce. 
+			
+		
+		return null;
 	}
 
 	@GetMapping("/pet/petPhotoWrite")
@@ -424,9 +440,6 @@ public class PetController {
 
 	@GetMapping("pet/petDiaryDetail")
 	public String petDiaryDetailView(@ModelAttribute Diary d, @RequestParam("petId") int petId, HttpSession session) {
-//		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-//		d.setPetId(petId);
-//		System.out.println(petId);
 		return "petDiaryDetail";
 	}
 	
@@ -458,18 +471,6 @@ public class PetController {
 			throw new PetException("마이펫 다이어리 조회에 실패하였습니다.");
 		}
 	}
-	
-//	@GetMapping("pet/petDetail/{petId}")
-//	public String petDetail(@PathVariable("petId") int petId, Model model) {
-//		Pet pet = pService.petDetail(petId);
-//		
-//		if(pet != null) {
-//			model.addAttribute("p", pet);
-//			return "petDetail";
-//		} else {
-//			throw new PetException("마이펫 상세조회에 실패하였습니다.");
-//		}
-//	}
 	
 	@PostMapping("/petDiaryEdit.dw")
 	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") Date date) {

@@ -21,4 +21,5 @@ public class Album {
 	private String abStatus;
 	private String writerId;
 	private int petId;
+	private String renameName;
 }
