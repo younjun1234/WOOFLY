@@ -301,15 +301,6 @@ public class BoardController {
 		}
 		
 		// 2. 실종신고 //
-		// 검색기능 //
-		@GetMapping("/board/lost/search")
-		public String searchLostBoard(@RequestParam(value = "searchType", required = false) String searchType,
-									  @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
-									  Model model){
-			ArrayList<LostBoard> searchResults = bService.searchLostBoards(searchType, searchKeyword);
-			model.addAttribute("list", searchResults);
-			return "lostBoardSearch";
-		}
 		
 		
 		
@@ -319,24 +310,33 @@ public class BoardController {
 		
 		// 게시글 목록 조회
 	    @GetMapping("/board/lost")
-	    public String lostBoardView(@RequestParam(value="page", defaultValue="1") int page, 
+	    public String lostBoardView(@RequestParam(value="page", defaultValue="1") int page,
+					    			@RequestParam(value = "searchType", required = false) String searchType,
+					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 	                                Model model,
 	                                HttpServletRequest request) throws BoardException {
-	        
-	        int listCount = bService.getMlistCount(1);
-	        
-	        PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-	        ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
-	        ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
-	        //System.out.println(mList);
-	        if(mList.isEmpty()) {
-	            model.addAttribute("message", "게시글이 없습니다.");
+	        if (searchType == null || searchKeyword == null) {
+	        	int listCount = bService.getMlistCount(1);
+	        	
+	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+	        	ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
+	        	ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
+	        	//System.out.println(mList);
+	        	if(mList.isEmpty()) {
+	        		model.addAttribute("message", "게시글이 없습니다.");
+	        	} else {
+	        		model.addAttribute("pi", pi);
+	        		model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
+	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
+	        	}
 	        } else {
-	            model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
-	            model.addAttribute("aList", aList); // 첨부파일 목록 추가
+	        	HashMap<String, String> map = new HashMap<>();
+				map.put("searchKeyword", searchKeyword);
+				map.put("searchType", searchType);
+				ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
+				model.addAttribute("mList", searchResults);
 	        }
 	        
-	        model.addAttribute("pi", pi);
 	        model.addAttribute("loc", request.getRequestURI());
 	        
 	        return "lostBoard";

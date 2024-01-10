@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +47,12 @@ public interface BoardDAO {
 	
 	
 	// 실종 검색 //
-	ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword);
-
 
 	int insertLostBoard(LostBoard m);
 
 	int insertLostAttm(ArrayList<Attachment> attachments);
+
+	ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map);
 
 
 	

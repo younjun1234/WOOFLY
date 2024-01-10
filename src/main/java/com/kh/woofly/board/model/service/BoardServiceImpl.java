@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,12 +86,6 @@ private BoardServiceImpl boardDAO;
 	
 
 	// 실종 검색 //
-	@Override
-	public ArrayList<LostBoard> searchLostBoards(String searchType, String searchKeyword) {
-		// TODO Auto-generated method stub
-		return bDAO.searchLostBoards(searchType, searchKeyword);
-	}
-	
 	
 
 	@Override
@@ -101,6 +96,11 @@ private BoardServiceImpl boardDAO;
 	@Override
 	public int insertLostAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertLostAttm(attachments);
+	}
+
+	@Override
+	public ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map) {
+		return bDAO.searchLostBoards(map);
 	}
 
 

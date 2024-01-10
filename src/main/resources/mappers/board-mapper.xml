@@ -55,7 +55,7 @@
 	<!-- 실종게시판 -->
 	
 	<!-- 검색 기능 -->
-	<select id="searchLostBoards" parameterType="map" resultType="com.kh.woofly.board.model.vo.LostBoard">
+	<!--<select id="searchLostBoards" parameterType="map" resultType="com.kh.woofly.board.model.vo.LostBoard">
 	    SELECT mb.*, m.mb_nickName
 	    FROM Missing_Board mb
 	    LEFT JOIN Member m ON mb.mb_id = m.mb_id
@@ -71,6 +71,21 @@
 	        </otherwise>
 	    </choose>
 	    ORDER BY mb.m_no DESC
+	</select>-->
+	<select id="searchLostBoards" parameterType="map" resultType="LostBoard">
+	    SELECT *
+	    FROM Missing_Board
+	      JOIN Member using(mb_id)
+	    WHERE m_status = 'Y'
+	    <choose>
+	        <when test="searchType == mn">
+	            AND m_title LIKE '%' || #{searchKeyword} || '%' or mb_nickName LIKE '%' || #{searchKeyword} || '%'
+	        </when>
+	        <when test="searchType != null">
+	            AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+	        </when>
+	    </choose>
+	    ORDER BY m_no DESC
 	</select>
 	
 	<!--삭제되지 않은 게시글 목록의 개수 조회-->
