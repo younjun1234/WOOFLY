@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.shop.model.dao.ShopDAO;
 import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
@@ -155,6 +156,11 @@ public class ShopServiceImpl implements ShopService {
 		
 		return result;
 		
+	}
+
+	@Override
+	public ArrayList<ReplyLike> selectReplyLike(ArrayList<Integer> rNos) {
+		return sDAO.selectReplyLike(rNos);
 	}
 
 }

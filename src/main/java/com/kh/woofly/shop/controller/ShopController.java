@@ -24,6 +24,7 @@ import com.google.gson.JsonIOException;
 import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.service.ShopService;
@@ -235,7 +236,10 @@ public class ShopController {
 	@GetMapping("/shop/productDetail")
 	public String selectDetailProduct(@RequestParam("pId") int productId,
 										@RequestParam("page") int page,
-										Model model, Reply r) {
+										Model model, Reply r,
+										HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
 		Product p = sService.selectDetailProduct(productId);
 		ArrayList<ProductAttm> aList = sService.selectProductAttm(productId);
@@ -243,6 +247,29 @@ public class ShopController {
 		r.setBType("P");
 		r.setBNo(productId);
 		ArrayList<Reply> rList = sService.selectReply(r);
+		
+		ArrayList<Integer> rNos = new ArrayList<>();
+		ArrayList<ReplyLike> likes = null;
+		if(!rList.isEmpty()) {
+			for(int i = 0; i < rList.size(); i++) {
+				rNos.add(rList.get(i).getRNo());
+			}
+			likes = sService.selectReplyLike(rNos);
+			
+			if(loginUser != null) {
+				for(int i = 0; i < rList.size(); i++) {
+					for(int j = 0; j < likes.size(); j ++) {
+						
+						if((rList.get(i).getRNo() == likes.get(j).getLikeRefBoard()) && likes.get(j).getLikeUser().equals(loginUser.getMbId())) {
+							rList.get(i).setUserLiked(true);
+						}
+					}
+	 			}
+			}
+		}
+		
+		
+		System.out.println(rList);
 		
 		String[] colors = null;
 		if(!p.getColor().equals("N")) {
@@ -260,6 +287,7 @@ public class ShopController {
 			}
 		}
 		
+		System.out.println(likes);
 		model.addAttribute("page", page);
 		model.addAttribute("p", p);
 		model.addAttribute("tList", tList);
@@ -268,6 +296,7 @@ public class ShopController {
 		model.addAttribute("rList", rList);
 		model.addAttribute("c", c);
 		model.addAttribute("colors", colors);
+		model.addAttribute("likes", likes);
 		
 		return "shopDetail";
 	}
@@ -292,12 +321,6 @@ public class ShopController {
 		int result2 = 0;
 		
 		// 이거 발동 안됨
-		if(pSize == null) {
-			pSize = "N";
-		}
-		if(color == null) {
-			color = "N";
-		}
 		
 		Cart selectC = new Cart();
 		
@@ -311,7 +334,6 @@ public class ShopController {
 			}
 		}
 		
-		
 		// true면 같은 항목이 비어있음을 나타냄
 		if(isEmpty) {
 			Properties prop = new Properties();
@@ -321,11 +343,10 @@ public class ShopController {
 			selectC.setQuantity(quantity);
 			selectC.setProductId(productId);
 
+			System.out.println(selectC);
 			result2 = sService.insertCart(selectC);
 		}
 		
-		
-		// 트라이캐치 확인
 		try {
 			if(isMove.equals("Y")) {
 				if(result1 > 0 || result2 >0) {
@@ -356,18 +377,44 @@ public class ShopController {
 	}
 	
 	@GetMapping(value="/shop/insertReply")
-	public void insertReply(@ModelAttribute Reply r, HttpServletResponse response) {
+	public void insertReply(@ModelAttribute Reply r, HttpServletResponse response,
+							HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
 		r.setBType("P");
 		int result = sService.insertReply(r);
 		
 		ArrayList<Reply> rList = sService.selectReply(r);
+		ArrayList<Integer> rNos = new ArrayList<>();
+		ArrayList<ReplyLike> likes = null;
+		if(!rList.isEmpty()) {
+			for(int i = 0; i < rList.size(); i++) {
+				rNos.add(rList.get(i).getRNo());
+			}
+			likes = sService.selectReplyLike(rNos);
+			
+			if(loginUser != null) {
+				for(int i = 0; i < rList.size(); i++) {
+					for(int j = 0; j < likes.size(); j ++) {
+						
+						if((rList.get(i).getRNo() == likes.get(j).getLikeRefBoard()) && likes.get(j).getLikeUser().equals(loginUser.getMbId())) {
+							rList.get(i).setUserLiked(true);
+						}
+					}
+	 			}
+			}
+		}
+		
+		HashMap<String, Object> responseData = new HashMap<>();
+		responseData.put("rList", rList);
+		responseData.put("likes", likes);
 		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		
 		try {
 			response.setContentType("application/json; charset=UTF-8");
-			gson.toJson(rList, response.getWriter());
+			gson.toJson(responseData, response.getWriter());
 		} catch (JsonIOException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -472,6 +519,7 @@ public class ShopController {
 			String rename = deleteAttm[i];
 			if(!rename.equals("none")) {
 				String[] split = rename.split("/");
+				System.out.println(split);
 				delRename.add(split[0]);
 			}
 		}

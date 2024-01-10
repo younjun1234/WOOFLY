@@ -258,7 +258,10 @@
         	
         	var fileAreaCount = 1;
         	var contentFileAreaCount = 1;
-        	var colorCount = colorSize.length;
+        	var colorCount = 0;
+        	if(colorSize != null){
+	        	colorCount = colorSize.length;
+        	} 
         	
         	let oldConCount = 0;
         	let oldThumbCount = 0;

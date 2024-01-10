@@ -144,17 +144,18 @@
 	
 	<update id="updateCartQuantity">
 		UPDATE CART
-		SET CART_ID = #{cartId} AND QUANTITY = #{quantity}
+		SET QUANTITY = #{quantity}
+		WHERE CART_ID = #{cartId} 
 	</update>
 	
-	<update id="deleteAttm">
+	<delete id="deleteAttm">
 		DELETE
 		FROM ATTACHMENT
 		WHERE RENAME_NAME IN
 		<foreach collection="list" item="item" open="(" close=")" separator=",">
 			#{item}
 		</foreach>
-	</update>
+	</delete>
 	
 	<update id="updateProduct">
 		UPDATE PRODUCT
@@ -176,7 +177,7 @@
 	
 	<update id="attmStatusYN">
 		UPDATE ATTACHMENT
-		SET ATTM_STATUS
+		SET ATTM_STATUS = 'N'
 		WHERE ATTM_REF_TYPE = 'P' AND ATTM_REF_NO = #{pId}
 	</update>
 	
@@ -207,6 +208,14 @@
 		WHERE R_NO = #{rNo}
 	</update>	
 		
+	<select id="selectReplyLike" resultType="ReplyLike">
+		SELECT *
+	    FROM REPLY_LIKE
+	    WHERE LIKE_REF_BOARD IN
+	    <foreach item="item" collection="list" open="(" separator="," close=")">
+	        #{item}
+	    </foreach>
+	</select>
 		
 		
 	

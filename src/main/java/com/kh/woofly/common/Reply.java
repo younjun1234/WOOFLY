@@ -25,4 +25,5 @@ public class Reply {
 	private String mbId;		// 댓글 단 사람 아이디
 	
 	private String mbNickName;
+	private boolean userLiked;
 }

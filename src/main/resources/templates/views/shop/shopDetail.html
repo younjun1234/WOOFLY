@@ -127,7 +127,7 @@
 	                                <input type="radio" class="btn-check" name="pSize" id="optionXL" autocomplete="off" value="XL">
 	                                <label class="btn btn-outline-success btn-lg" for="optionXL">XL</label>
 	                            </div>
-	                            <div th:unless="${p.usedStandard == 'Y'}">
+	                            <div class="sizeSelect" th:unless="${p.usedStandard == 'Y'}">
 	                            	<span class="fs-5 fw-bold">사이즈 정보가 없습니다.</span>
 	                            </div>
 	                        </li>
@@ -295,14 +295,23 @@
 	                        <div class="col-8" style="line-height: 40px;">[[${r.reContent}]]</div>
 	                        <div class="col-1" style="line-height: 40px;">[[${r.reDate}]]</div>
 	                        <div class="col-2 d-flex align-items-center justify-content-end m-1" name="devDiv">
-	                        	<div class="mx-2" th:value="${r.reLike}">
+	                        	<div class="mx-2">
 	                        		[[${r.reLike}]]
 	                        	</div>
-	                        	<div>
-					               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16" role="button">
-					                  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					               </svg>
-					            </div>
+	                        	<div class="changeImage">
+								    <th:block th:if="${r.userLiked}">
+								        <!-- 사용자가 좋아요를 누른 경우 -->
+								        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="black" viewBox="0 0 16 16">
+								            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+								        </svg>
+								    </th:block>
+								    <th:block th:unless="${r.userLiked}">
+								        <!-- 사용자가 좋아요를 누르지 않은 경우 -->
+								        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16">
+								            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+								        </svg>
+								    </th:block>
+								</div>
 	
 		                        <div class="dropdown ms-2 me-5">
 		                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
@@ -372,9 +381,9 @@
         
         // 내일 날짜 계산
         const deli = document.getElementById('deli');
-        const today = new Date()
+        const today = new Date();
         const day = today.getMonth()+1  + "월 " 
-					+ today.getDate()+1  + "일";
+					+ (today.getDate()+1)  + "일";
         
         deli.innerHTML = "내일 " + day + " 도착 예정";
         
@@ -420,6 +429,7 @@
 					let selectedSize;
 					let selectedColor;
 					if(p.usedStandard == 'Y'){
+						console.log(p.usedStandard);
 						const sizeRadio = document.getElementsByClassName('sizeSelect')[0].querySelectorAll('input');
 						for(const selectRadio of sizeRadio) {
 							if(selectRadio.checked) {
@@ -428,7 +438,7 @@
 							}
 						}
 					}
-					if(p.color != null) {
+					if(p.color != 'N') {
 				        const colorRadio = document.getElementsByClassName('colorSelect')[0].querySelectorAll('input');
 				        for(const selectRadio of colorRadio){
 				        	if(selectRadio.checked){
@@ -437,17 +447,16 @@
 				        	}
 				        }
 					}
-					console.log(selectedColor); // 없으면 undefined
-					console.log(selectedSize);
-					console.log(/*[[${p.productId}]]*/);
 					
 					$.ajax({
 						url: '/shop/payment',
-						data: {productId:/*[[${p.productId}]]*/9999, pSize: selectedSize == undefined ? null : selectedSize, colors: selectedColor == undefined ? null : selectedColor, quantity:quantity.value, isMove:isMove.value},
+						data: {productId:/*[[${p.productId}]]*/9999, pSize: selectedSize == undefined ? "N" : selectedSize, colors: selectedColor == undefined ? "N" : selectedColor, quantity:quantity.value, isMove:isMove.value},
 						success: data => {
 							console.log(data);
 							if(data == 'success') {
+								/*<![CDATA[*/
 								alert(/*[[${p.productName}]]*/'name' + "  " + quantity.value + "개가 장바구니에 추가되었습니다.");
+								/*]]>*/
 							} else {
 								aleet("장바구니 추가에 실패하여 페이지가 새로고침됩니다.");
 								location.reload();
@@ -493,21 +502,25 @@
 		document.getElementById('goToReply').addEventListener('click', () =>{
 			document.getElementById('replyContent').focus();			
 		})
-		
-	        
         
         // 댓글 시작
         const insertBtn = document.getElementById('insertReply');
-        const replyContent = document.getElementById('replyContent');
         
-        
+		const topReply = document.getElementById('replyContents');
+		
         /*<![CDATA[*/
 		$(document).on('click', '#insertReply', function() {
 			// 로그인 유저 다루는 로직 짜기
-			const replyContent = $('#replyContent').val();
+			const textarea = document.getElementById('replyContent');
+			const replyContent = textarea.value;
 			const p = /*[[${p}]]*/2;
 			const boardNo = p.productId;
 			const loginUserId = /*[[${ session.loginUser?.mbId}]]*/id;
+			
+			
+			console.log(textarea);
+			
+			textarea.value = '';
 			
 			if(replyContent != '' && loginUserId != null) {
 				$.ajax({
@@ -515,35 +528,52 @@
 					data: {reContent:replyContent, bNo:boardNo, mbId:loginUserId },
 					success: data => {
 						console.log(data);
-						const topReply = document.getElementById('replyContents');
+						
 						
 						topReply.innerHTML = '';
-						for(const r of data){
+						for(const r of data.rList){
+							const isLiked = loginUser !== null && data.likes.some(like => 
+						        like.likeRefBoard === r.rNo && 
+						        like.likeUser === loginUser &&
+						        like.likeUser === r.mbId
+					   		 );
+							
 							const newReply = `
 								<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-									<input type="hidden" th:value="${r.rNo}">
-						            <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
-						            <div class="col-8" style="line-height: 40px;">${r.reContent}</div>
-						            <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
-						            <div class="col-2 d-flex align-items-center justify-content-end m-1" name="devDiv">
-						                <div class="mx-2" th:value="${r.reLike}">${r.reLike}</div>
-						                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16" role="button">
-						                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						                </svg>
-						                <div class="dropdown ms-2 me-5">
-						                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-						                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-						                    </svg>
-						                    <ul class="dropdown-menu">
-						                        <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-						                        <th:block th:if="${ session.loginUser != null && session.loginUser.mbId == r.mbId}">
-					                                <li><button class="dropdown-item replyUpdate" type="button">수정</button></li>
-					                                <li><button class="dropdown-item replyDelete" type="button">삭제</button></li>
-			                                	</th:block>
-						                    </ul>
-						                </div>
-						            </div>
-						        </div>
+		                    	<input type="hidden" th:value="${r.rNo}">
+		                        <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
+		                        <div class="col-8" style="line-height: 40px;">${r.reContent}</div>
+		                        <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
+		                        <div class="col-2 d-flex align-items-center justify-content-end m-1" name="devDiv">
+		                        	<div class="mx-2">
+		                        		${r.reLike}
+		                        	</div>
+		                        	<div class="changeImage">
+			                            ${isLiked ? 
+			                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="black" viewBox="0 0 16 16">
+			                                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+			                                </svg>` 
+			                                : 
+			                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16">
+			                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+			                                </svg>`
+			                            }
+			                        </div>
+		
+			                        <div class="dropdown ms-2 me-5">
+			                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+			                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+			                            </svg>
+			                            <ul class="dropdown-menu">
+			                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+			                                <th:block th:if="${ loginUser != null && loginUser.mbId == r.mbId}">
+				                                <li><button class="dropdown-item replyUpdate" type="button">수정</button></li>
+				                                <li><button class="dropdown-item replyDelete" type="button">삭제</button></li>
+			                                </th:block>
+			                            </ul>
+			                        </div>
+		                        </div>
+		                    </div>
 								`;
 							
 							topReply.innerHTML += newReply;
@@ -559,69 +589,48 @@
 			}
 		});
         /*]]>*/
-        
-		const devDiv = document.getElementsByName('devDiv');
-        
-        for(let dev of devDiv) {
-        	dev.addEventListener('click', function(event) {
-        		const target = event.target;
-        		console.log(target);
+        // 받아오는 데이터 userLiked로 비교
+        const changeDivs = document.getElementsByClassName('changeImage');
+        for(const changeDiv of changeDivs) {
+        	changeDiv.addEventListener('click', function() {
+        		if(loginUser != null) {
+        			const svg = this.children[0];
+            		const isWhite = svg.classList.contains('white');
+     		        const isBlack = svg.classList.contains('black');
+     		        let likeDiv = this.parentElement.children[0];
+     		        let like = parseInt(this.parentElement.children[0].innerText);
+     		        const rNo = this.parentElement.parentElement.children[0].value;
+            		if(isWhite || isBlack){
+            			const ajaxURL = isWhite ? "/shop/insertReplyCount" :  "/shop/downReplyCount";
+            			
+            			$.ajax({
+            				url: ajaxURL,
+            				data: {mId:loginUser.mbId, rNo:rNo},
+            				success: data => {
+            					svg.classList.toggle('white');
+            					svg.classList.toggle('black');
+            					
+            					if(isWhite) {
+            						  svg.innerHTML = `<path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>`;
+            					} else {
+            						svg.innerHTML = `<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>`;
+            					}
+            					
+            					like = isWhite ? like + 1 : like - 1;
+            					likeDiv.innerText = like;
+            				},
+            				error: data => {
+            					console.log(data);
+            				}
+            			});
+            		}
+        		} else {
+        			alert("로그인 후 이용해주세요.");
+        		}
         		
-            	if(target.classList.contains('white')){
-            		const rNo = target.parentElement.parentElement.parentElement.children[0].value;
-            		const countDiv = target.parentElement.parentElement.children[0];
-            		let hCount = parseInt(countDiv.innerText);
-            		if(loginUser != null) {
-            			$.ajax({
-                			url: "/shop/insertReplyCount",
-                			data: {mId:loginUser.mbId, rNo:rNo},
-                			success: data => {
-                				if(data == 'success'){
-                					target.innerHTML = `
-                						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="black" viewBox="0 0 16 16">
-                						  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                						</svg>
-                					`;
-                					hCount = hCount + 1;
-            						countDiv.innerText = hCount;
-                				} else {
-                					alert("알 수 없는 이유로 오류가 발생하여 페이지가 새로고침됩니다.")
-                				}
-                			},
-                			error: data => {
-                				console.log(data);
-                			}
-                		});
-            		}
-            	} else if(target.classList.contains('black')){
-            		const rNo = target.parentElement.parentElement.parentElement.children[0].value;
-            		const countDiv = target.parentElement.parentElement.children[0];
-            		let hCount = parseInt(countDiv.innerText);
-            		if(loginUser != null) {
-            			$.ajax({
-                			url: "/shop/downReplyCount",
-                			data: {mId:loginUser.mbId, rNo:rNo},
-                			success: data => {
-                				if(data == 'success'){
-                					target.innerHTML = `
-                						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="white" viewBox="0 0 16 16">
-                						  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                						</svg>
-                					`;
-                					hCount = hCount + 1;
-            						countDiv.innerText = hCount;
-                				} else {
-                					alert("알 수 없는 이유로 오류가 발생하여 페이지가 새로고침됩니다.")
-                				}
-                			},
-                			error: data => {
-                				console.log(data);
-                			}
-                		});
-            		}
-            	}
-            });
+        	});
         }
+		
         
 	}
         

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -63,5 +64,7 @@ public interface ShopDAO {
 	int downReplyCount(HashMap<String, Object> map);
 
 	int downCountReplyCount(HashMap<String, Object> map);
+
+	ArrayList<ReplyLike> selectReplyLike(ArrayList<Integer> rNos);
 
 }

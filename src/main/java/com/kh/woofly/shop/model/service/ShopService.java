@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import com.kh.woofly.board.model.vo.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -56,6 +57,8 @@ public interface ShopService {
 	int insertReplyCount(HashMap<String, Object> map);
 
 	int downReplyCount(HashMap<String, Object> map);
+
+	ArrayList<ReplyLike> selectReplyLike(ArrayList<Integer> rNos);
 
 
 }
