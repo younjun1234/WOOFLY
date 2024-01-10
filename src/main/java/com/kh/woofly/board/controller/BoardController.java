@@ -340,15 +340,18 @@ public class BoardController {
 	        return "lostBoard";
 	    }
 		
-	    
+//	    글작성 //
 	    @GetMapping("/board/lost/write")
 	      public String LostBoardWrite() {
 	         
 	         return "lostBoardWrite";
 	      }
-	      
+	    
+//	      글 등록//
 	      @PostMapping("/board/lost/insertLostBoard")
-	      public String insertLostBoard(@ModelAttribute LostBoard m, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
+	      public String insertLostBoard(@ModelAttribute LostBoard m, 
+	    		  						@RequestParam("file") ArrayList<MultipartFile> files, 
+	    		  						HttpSession session, HttpServletRequest request) throws BoardException {
 	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 	         m.setMbId(boardWriter);
 	         //System.out.println(boardWriter);
@@ -370,6 +373,7 @@ public class BoardController {
 	                  attachment.setAttmRefNo(m.getMNo());
 	                  
 	                  attachments.add(attachment);
+//	                  System.out.println(attachment.getAttmRefType());
 	               }
 	            }
 	         }

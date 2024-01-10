@@ -94,8 +94,8 @@
 	    select *
 	    from attachment
 	    where attm_status='Y'
+	      and attm_ref_type = 'M'
 	    <if test="bId != null">
-	        and attm_ref_type = 'M'
 	        and attm_ref_no = #{bId}
 	    </if>
 	    order by attm_id
@@ -109,12 +109,13 @@
        values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId})
    </insert>
 
+	<!--첨부파일 등록-->
 	<insert id="insertLostAttm">
       insert all
       <foreach collection="list" item="item">
          into attachment
          values(new_aid, #{item.originalName}, #{item.renameName},
-         SYSDATE, SYSDATE, #{item.attmPath}, default, 'B', #{item.attmRefNo}, #{item.attmLevel})
+         SYSDATE, SYSDATE, #{item.attmPath}, default, 'M', #{item.attmRefNo}, #{item.attmLevel})
       </foreach>
       select * from dual
    </insert>

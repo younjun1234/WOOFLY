@@ -48,10 +48,8 @@
 		<!-- 게시글 -->
         <div th:each="m : ${mList}" class="col">
             <div class="card shadow-sm">
-				<div th:each="a : ${aList}">
-					<th:block th:if="${attmPath}">
-						<img th:src="@{${a.attmPath}}" class="card-img-top" alt="No image available" th:alt="${a.originalName}">
-					</th:block>
+				<div th:each="a : ${aList}" th:if="${a.attmRefNo == m.mNo}">
+					<img th:src="@{${a.attmPath}}" class="card-img-top" alt="사진을 찾을 수 없습니다" th:alt="${a.originalName}">
 				</div>
                 <div class="card-body">
                     <div class="card-text">
@@ -59,7 +57,7 @@
                         <p th:text="${m.mbNickName}">작성자</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div th:text="${m.mContent}">게시글 내용</div>
+                        <!--<div th:text="${m.mContent}">게시글 내용</div>-->
                         <small class="text-muted" th:text="${m.mCount + ' Views'}">조회수</small>
                     </div>
                 </div>
