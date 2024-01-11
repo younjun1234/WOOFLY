@@ -318,7 +318,7 @@ public class BoardController {
 	        if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
 	        	int listCount = bService.getMlistCount(1);
 	        	
-	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
 	        	ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
 	        	ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
 	        	//System.out.println(mList);
@@ -334,7 +334,7 @@ public class BoardController {
 				map.put("searchKeyword", searchKeyword);
 				map.put("searchType", searchType);
 				int listCount = bService.getMlistCount(1); // 추가
-				PageInfo pi = Pagination.getPageInfo(page, listCount, 10); // 추가
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
 				ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
 				model.addAttribute("mList", searchResults);
 				model.addAttribute("pi", pi);

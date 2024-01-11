@@ -34,10 +34,6 @@ public class PageInfo {
 		return 0;
 	}
     
-//    // 실종신고
-//	public int getLostBoardLimit() {
-//		return LostBoardLimit;
-//	}
 	
 
 }

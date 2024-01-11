@@ -46,7 +46,7 @@
 		</div>
 		
 		<!-- 게시글 -->
-        <div th:each="m : ${mList}" class="col">
+        <!--<div th:each="m : ${mList}" class="col">
             <div class="card shadow-sm">
 				<div th:each="a : ${aList}" th:if="${a.attmRefNo == m.mNo}">
 					<img th:src="@{${a.attmPath}}" class="card-img-top" alt="사진을 찾을 수 없습니다" th:alt="${a.originalName}">
@@ -58,35 +58,98 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <!-- 게시글 끝 -->
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+           <div class="col" th:each="m : ${mList}">
+              <div class="card shadow-sm">
+                 <th:block th:each="a: ${aList}" th:if="${a.attmRefNo == m.mNo}">
+                    <img th:src="@{${a.attmPath}}" width="100%" height="225" th:if="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" th:unless="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
+                       <rect width="100%" height="100%" fill="#55595c"/>
+                       <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                    </svg>
+                 </th:block>
+                 <div class="card-body">
+                    <p class="card-text">
+						<p th:text="${m.mbNickName}">작성자</p>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+						<h6 th:text="${m.mTitle}">글제목</h6>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+            
+            <br><br><br>
 		
 		
 		<!--페이징처리 하는 부분-->	
-		<nav class="border-top border-black pt-5">
+		<!--<nav class="border-top border-black pt-5">
 		  	<ul class="pagination justify-content-center">
 		    	<li class="page-item">
 			      	<a class="page-link" href="#">
 			        	<span aria-hidden="true">&laquo;</span>
 			      	</a>
 		    	</li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item"><a class="page-link" href="#">2</a></li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item"><a class="page-link" href="#">4</a></li>
-			    <li class="page-item"><a class="page-link" href="#">5</a></li>
+			    <li class="page-item"><a class="page-link" href="#1">1</a></li>
+			    <li class="page-item"><a class="page-link" href="#2">2</a></li>
+			    <li class="page-item"><a class="page-link" href="#3">3</a></li>
+			    <li class="page-item"><a class="page-link" href="#4">4</a></li>
+			    <li class="page-item"><a class="page-link" href="#5">5</a></li>
 		    	<li class="page-item">	
 			      	<a class="page-link" href="#" aria-label="Next">
 				    	<span aria-hidden="true">&raquo;</span>
 			      	</a>
 		    	</li>
 		  	</ul>
-		</nav>
-		</div>
+		</nav>-->
 		
+		  <!--페이지네이션-->
+		  <nav class="center" aria-label="Standard pagination example" style="float: right;" th:with="loc=${loc}">
+             <ul class="pagination">
+				 <!-- << -->
+                <th:block th:if="${ pi.currentPage <= 1}">
+                   <li class="page-item">
+                      <a class="page-link disable" aria-label="Previous">
+                         <span aria-hidden="true">&laquo;</span>
+                      </a>
+                   </li>
+                </th:block>
+                <th:block th:unless="${ pi.currentPage <= 1}">
+                   <li class="page-item">
+                       <a class="page-link" th:href="@{${loc}(page=${pi.currentPage - 1})}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                       </a>
+                   </li>
+               </th:block>
+                	<!--[1] [2] [3]...-->
+                    <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+                        <a class="page-link" th:href="@{${loc}(page=${p})}" th:text="${p}"></a>
+                    </li>
+                   <!-- >> -->
+                   <li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
+                    <a class="page-link" aria-label="Next">
+                       <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+               <th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
+                  <li class="page-item">
+                   <a class="page-link" th:href="@{${loc}(page=${pi.currentPage + 1})}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                   </a>
+                </li>
+             </th:block>
+            </ul>
+          </nav>
+          <!--페이지네이션 끝-->
+			
 	</div>
-	
-	
+
+
+
 	<script>
 		// 해당 페이지 nav bar 강조 넣기
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
