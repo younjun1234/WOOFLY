@@ -17,6 +17,7 @@
 	<nav class="navbar sticky-top bg-white pb-0 border-bottom">
 		<div class="container-fluid justify-content-end mx-5">
 			<ul class="nav bg-white">
+				<li class="nav-item"><a class="nav-link text-black" href="/adminMain.ad" th:if="${session.loginUser?.isAdmin == 'Y'}"><small>어드민페이지</small></a></li>
 				<li class="nav-item"><a class="nav-link text-black" href="/adminMain"><small>고객센터</small></a></li>
 				<li class="nav-item"><a class="nav-link text-black" href="/my"><small>마이페이지</small></a></li>
 				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>

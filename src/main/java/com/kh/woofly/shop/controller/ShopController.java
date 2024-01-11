@@ -625,6 +625,45 @@ public class ShopController {
 		}
 	}
 	
+	@GetMapping(value="/shop/updateReply")
+	public void updateReply(@ModelAttribute Reply r,
+							HttpServletResponse response) {
+		
+		int result = sService.updateReply(r);
+		
+		String out = result != 0 ? "success" : "fail";
+		
+		Gson gson = new GsonBuilder().create();
+		
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			gson.toJson(out, response.getWriter());
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@GetMapping(value="/shop/deleteReply")
+	public void deleteReply(@RequestParam("rNo") int rNo,
+							HttpServletResponse response) {
+		
+		int result = sService.deleteReply(rNo);
+		
+		String out = result != 0 ? "success" : "fail";
+		
+		Gson gson = new GsonBuilder().create();
+		
+		try {
+			response.setContentType("application/json; charset=UTF-8");
+			gson.toJson(out, response.getWriter());
+		} catch (JsonIOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	

@@ -163,4 +163,14 @@ public class ShopServiceImpl implements ShopService {
 		return sDAO.selectReplyLike(rNos);
 	}
 
+	@Override
+	public int updateReply(Reply r) {
+		return sDAO.updateReply(r);
+	}
+
+	@Override
+	public int deleteReply(int rNo) {
+		return sDAO.deleteReply(rNo);
+	}
+
 }

@@ -67,4 +67,8 @@ public interface ShopDAO {
 
 	ArrayList<ReplyLike> selectReplyLike(ArrayList<Integer> rNos);
 
+	int updateReply(Reply r);
+
+	int deleteReply(int rNo);
+
 }

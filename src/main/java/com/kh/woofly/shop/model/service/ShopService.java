@@ -60,5 +60,9 @@ public interface ShopService {
 
 	ArrayList<ReplyLike> selectReplyLike(ArrayList<Integer> rNos);
 
+	int updateReply(Reply r);
+
+	int deleteReply(int rNo);
+
 
 }

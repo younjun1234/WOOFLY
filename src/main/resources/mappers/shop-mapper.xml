@@ -216,8 +216,18 @@
 	        #{item}
 	    </foreach>
 	</select>
-		
-		
+	
+	<update id="updateReply">
+		UPDATE REPLY
+		SET RE_CONTENT = #{reContent}, RE_DATE = SYSDATE
+		WHERE R_NO = #{rNo}
+	</update>	
+	
+	<update id="deleteReply">
+		UPDATE REPLY
+		SET RE_D_STATUS = 'N'
+		WHERE R_NO = #{rNo}
+	</update>
 	
 	
 	
