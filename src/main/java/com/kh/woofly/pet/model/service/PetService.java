@@ -56,4 +56,8 @@ public interface PetService {
 
 	ArrayList<Album> selectMyAlbums(HashMap<String, String> map);
 
+	ArrayList<Album> petPhotoDetail(int abNo);
+
+	ArrayList<Pet> petInfo(int abNo);
+
 }

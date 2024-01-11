@@ -133,6 +133,16 @@ public class PetServiceImpl implements PetService{
 	public ArrayList<Album> selectMyAlbums(HashMap<String, String> map) {
 		return pDAO.selectMyAlbums(map);
 	}
+
+	@Override
+	public ArrayList<Album> petPhotoDetail(int abNo) {
+		return pDAO.petPhotoDetail(abNo);
+	}
+
+	@Override
+	public ArrayList<Pet> petInfo(int abNo) {
+		return pDAO.petInfo(abNo);
+	}
 	 
 
 }

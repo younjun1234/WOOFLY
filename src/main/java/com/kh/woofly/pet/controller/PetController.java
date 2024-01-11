@@ -27,6 +27,7 @@ import com.kh.woofly.pet.model.vo.Pet;
 
 import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import jakarta.servlet.http.HttpSession;
+import kotlin.reflect.jvm.internal.impl.types.model.TypeSystemOptimizationContext;
 
 @Controller
 public class PetController {
@@ -61,13 +62,12 @@ public class PetController {
 		ArrayList<Pet> pList = pService.petInfoList(id);
 		 
 		if(aList != null) {
-			System.out.println(aList);
 			model.addAttribute("pList", pList);
 			model.addAttribute("aList", aList);
 			return "petPhoto";
 			
 		} else {
-			throw new PetException("엘범 망했쥬");
+			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
 		}
 	}
 
@@ -312,7 +312,6 @@ public class PetController {
 	public String deletePetPhoto(@RequestParam("petId") int petId) {
 		
 		Pet p = pService.petDetail(petId);
-		System.out.println(p);
 		if(!p.getPetProfile().equals("default_petprofile.jpg")) {
 			deleteFile(p.getPetProfile());
 			
@@ -339,16 +338,22 @@ public class PetController {
 			throw new PetException("마이펫 삭제에 실패하였습니다.");
 		}
 	}
-
-	@GetMapping("pet/petPhoto/{abNo}")
-	public String petPhotoDetailView(HttpSession session, Model model) {
+	
+	@GetMapping("pet/petPhotoDetail/{abNo}")
+	public String petPhotoDetail(@PathVariable("abNo") int abNo, HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		//ArrayList<Album> list = pSerivce. 
-			
+		ArrayList<Album> aList = pService.petPhotoDetail(abNo);
+		ArrayList<Pet> pList = pService.petInfo(abNo); 
 		
-		return null;
+		if(aList != null) {
+			model.addAttribute("aList", aList);
+			model.addAttribute("pList", pList);
+			return "petPhotoDetail";
+		} else {
+			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
+		}
 	}
-
+	
 	@GetMapping("/pet/petPhotoWrite")
 	public String petpetPhotoWriteView(HttpSession session, @ModelAttribute Diary d, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -426,7 +431,6 @@ public class PetController {
 	    d.setWriterId(id);
 	    d.setPetId(petId);
 	    
-	    System.out.println(d);
 	    int result = pService.petDiaryWrite(d);
 	    int drNo = d.getDrNo();
 	    

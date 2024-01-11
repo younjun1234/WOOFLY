@@ -149,5 +149,18 @@
 		where attm_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_level = 1
 	</select>
 	
+	<select id="petPhotoDetail" resultType="album">
+		select *
+		from album 
+		    join attachment on (ab_no = attm_ref_no)
+		where ab_no= #{abNo} and ab_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo}
+	</select>
+	
+	<select id="petInfo" resultType="pet">
+		select *
+		from pet
+			join album using(pet_id)
+		where ab_no = #{abNo}
+	</select>
 	
 </mapper>

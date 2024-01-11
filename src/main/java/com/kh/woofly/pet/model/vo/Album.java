@@ -22,4 +22,6 @@ public class Album {
 	private String writerId;
 	private int petId;
 	private String renameName;
+	private String petName;
+	private String petProfile;
 }
