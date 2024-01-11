@@ -154,6 +154,7 @@
 		from album 
 		    join attachment on (ab_no = attm_ref_no)
 		where ab_no= #{abNo} and ab_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo}
+		order by attm_level
 	</select>
 	
 	<select id="petInfo" resultType="pet">
