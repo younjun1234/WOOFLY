@@ -1,11 +1,13 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
 
 public interface BoardService {
@@ -52,6 +54,16 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+	
+	//연준이꺼
+
+	ArrayList<UsedBoard> selectMyUsedBuying(PageInfo pi, HashMap<String, Object> map);
+
+	int selectMyUsedBuyingCount(String id);
+
+	int selectMySellingCount(String id);
+
+	ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map);
 
 
 	

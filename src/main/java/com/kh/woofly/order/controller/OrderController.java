@@ -107,17 +107,15 @@ public class OrderController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(map.get("endDate"));
+		
 		int listCount = oService.getBuyingCount(id);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-		System.out.println(pi);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
 		ArrayList<Order> oList = oService.selectMyBuying(pi, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
 		
-		System.out.println(oList.size());
 		
 		for(Order o : oList) {
 			paList.add(oService.selectOrderAttm(o));
@@ -152,11 +150,6 @@ public class OrderController {
 		return "myBuyingDetail";
 	}
 	
-	@GetMapping("my/selling")
-	public String sellingView() {
-		return "mySelling";
-	}
-
 	@GetMapping("my/saved")
 	public String savedView() {
 		return "mySaved";

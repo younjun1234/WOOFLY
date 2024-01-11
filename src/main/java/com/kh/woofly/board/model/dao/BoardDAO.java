@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -9,6 +10,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 
 @Mapper
@@ -52,6 +54,16 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+	
+	// 연준이꺼
+	
+	ArrayList<UsedBoard> selectMyUsedBuying(RowBounds rowbounds, HashMap<String, Object> map);
+
+	int selectMyUsedBuyingCount(String id);
+
+	int selectMySellingCount(String id);
+
+	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
 
 	
 

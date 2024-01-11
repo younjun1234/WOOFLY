@@ -13,7 +13,8 @@
 	<select id="selectCartAttm" resultType="productAttm">
 		select *
 		from attachment
-		where attm_ref_type = 'P' and attm_ref_no = #{productId}
+		where attm_ref_type = 'P' and attm_ref_no = #{productId} and rownum = 1
+		order by attm_level
 	</select>
 	
 	<update id="updateMyCart">

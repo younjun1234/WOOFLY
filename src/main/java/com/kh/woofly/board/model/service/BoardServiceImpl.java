@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
 
 @Service
@@ -119,6 +121,30 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> selectMyUsedBuying(PageInfo pi, HashMap<String, Object> map) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectMyUsedBuying(rowbounds, map);
+	}
+
+	@Override
+	public int selectMyUsedBuyingCount(String id) {
+		return bDAO.selectMyUsedBuyingCount(id);
+	}
+
+	@Override
+	public int selectMySellingCount(String id) {
+		return bDAO.selectMySellingCount(id);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectMySelling(rowbounds, map);
 	}
 
 
