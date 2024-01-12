@@ -14,7 +14,6 @@ import lombok.ToString;
 @Setter
 @ToString
 
-
 public class Product {
 	private int productId;
 	private String productName;
@@ -22,9 +21,11 @@ public class Product {
 	private Date productCreateDate;
 	private Date productModifyDate;
 	private int productDetailNo; // 상세분류 번호를 가져오면 대분류 + 상세분류 가능
+	private String productStatus;
 	
 	private String usedStandard;
-	private String colorPicker;
+	private String color;
 	private int quantity;
+	private int stockId;
 	
 }
