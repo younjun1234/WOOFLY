@@ -36,14 +36,11 @@
 				<div class="border rounded d-flex align-items-center" style="height: 120px;">
 					<div class="h-70 col-3 border-end ms-5">
 						<p class='mb-0'>사용 가능한 포인트</p>
-						<h3>0P</h3>
+						<h3>[[${#numbers.formatInteger(pointsUsable, 3, 'COMMA')}]]P</h3>
 					</div>
 					<div class="h-70 col-3 ms-5">
 						<p class='mb-0'>소멸 예정 포인트</p>
-						<h3>0P</h3>
-					</div>
-					<div class="col-2 ms-auto">
-						<button class="btn btn-dark">+포인트 적립하기</button>
+						<h3>[[${pointsExpiring}]]P</h3>
 					</div>
 				</div>
 				<br>
@@ -56,8 +53,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						<tr th:if="${#arrays.isEmpty(list)}">
 							<td colspan="2" class="text-center" style="width: 500px; line-height: 500px;">적립 또는 사용한 내역이 없습니다.</td>
+						</tr>
+						<tr th:each="point : ${list}" style="height: 50px; line-height: 50px;" class="border-bottom">
+							<td th:if="${point.transactionType == 'A'}">&nbsp;&nbsp;상품 구매 <b>[[${#numbers.formatInteger(point.pointChange, 3, 'COMMA')}]]</b>P</td>
+							<td class="text-end" th:if="${point.transactionType=='A'}"><b>적립</b></td>
+							<td th:if="${point.transactionType == 'S'}">&nbsp;&nbsp;포인트 사용 <b>[[${#numbers.formatInteger(point.pointChange, 3, 'COMMA')}]]</b>P</td>
+							<td class="text-end" th:if="${point.transactionType=='S'}"><b>사용</b></td>
 						</tr>
 					</tbody>
 				</table>

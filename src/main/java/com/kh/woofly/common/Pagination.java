@@ -1,7 +1,5 @@
 package com.kh.woofly.common;
 
-import com.kh.woofly.board.model.vo.PageInfo;
-
 public class Pagination {
 	public static PageInfo getPageInfo(int currentPage, int listCount, int boardLimit) {
         int pageLimit = 10;   // 페이지 목록에 보여질 페이지 수

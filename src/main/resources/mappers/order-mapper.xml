@@ -3,13 +3,29 @@
 <mapper namespace="com.kh.woofly.order.model.dao.OrderDAO">
 
 	<select id="selectMyBuying" resultType="Order">
-		select * from
-		    (select *
-		    from orders
-		    where customer_id = #{id}
-		    order by order_date desc)
-		where rownum <![CDATA[<]]>= 5
-        
+		
+	    select *
+	    from orders
+	    where customer_id = #{id}
+		    <if test="startDate != null">
+		    	and order_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and order_date <![CDATA[<]]> #{endDate}
+		    </if>
+		<if test="orderDate != null">
+		    order by order_date ${orderDate}
+		</if>
+		<if test="price != null">
+		    order by total ${price}
+		</if>
+    	
+	</select>
+	
+	<select id="getBuyingCount" resultType="_int">
+		select count(*)
+		from orders
+		where customer_id = #{id}
 	</select>
 	
 	<select id="selectOrder" resultType="Order">
@@ -59,4 +75,17 @@
 		where rownum = 1
 		
 	</select>
+	
+	<delete id="deletePoints">
+ 		delete from point_history 
+ 		<![CDATA[
+ 		where transaction_datetime < (select to_date(to_char(sysdate, 'yy') - 1 || to_char(sysdate, 'MMdd'), 'yy/MM/dd') from dual)
+ 		and mb_id = #{id}
+ 		]]>
+ 	</delete>
+ 	
+ 	<select id="selectMyPoints" resultType="Point">
+ 		select * from point_history
+ 		where mb_id = #{id}
+ 	</select>
 </mapper>

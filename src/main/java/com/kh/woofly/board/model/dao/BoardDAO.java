@@ -8,24 +8,47 @@ import org.apache.ibatis.session.RowBounds;
 import com.kh.woofly.board.model.vo.Attachment;
 
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.LostBoard;
 
 @Mapper
 public interface BoardDAO {
 
 //	자유게시판 "/board/free"
+	
+	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
+	
 	int getListCount(int i);
 
-	ArrayList<Board> selectBoardList(int i, RowBounds rowBounds);
+	ArrayList<Board> selectFreeBoardList(int i, RowBounds rowBounds);
 
-	ArrayList<Attachment> selectAttmBoardList(Integer bId);
+	ArrayList<Attachment> selectAttmFreeBoardList(Integer bId);
 
-//	/board/free/detail
-	Board selectBoard(int bNo);
-
-//	/board/free/insertFreeBoard
-	int insertBoard(Board b);
+	Board selectFreeBoard(int bNo);
 	
+	int updateFreeCount(int bNo);
+	
+	int insertFreeBoard(Board b);
+
+	int insertFreeAttm(ArrayList<Attachment> attachments);
+	
+	int updateFreeBoard(Board b);
+
+	int deleteFreeBoard(int bNo);
+	
+	int deleteFreeAttm(ArrayList<String> delRename);
+
+	void updateAttmLevel(int bNo);
+	
+	int statusNAttm(int bNo);
+
+	int insertFreeReply(Reply r);
+	
+	int deleteFreeReply(Reply r);
+
+	ArrayList<Reply> selectFreeReply(int bNo);
+
+
 	// 실종신고
 	ArrayList<LostBoard> selectLostBoardList(int i, RowBounds rowBounds);
 
@@ -38,6 +61,21 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+	
 
 	
 	

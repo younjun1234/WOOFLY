@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.woofly.admin.model.service.AdminService;
 import com.kh.woofly.admin.model.vo.Report;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 
 import jakarta.servlet.http.HttpServletRequest;

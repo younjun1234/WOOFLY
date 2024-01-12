@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.woofly.admin.model.dao.AdminDAO;
 import com.kh.woofly.admin.model.vo.Report;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.common.PageInfo;
 
 @Service
 public class AdminServiceImpl implements AdminService {

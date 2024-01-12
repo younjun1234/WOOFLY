@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,19 +15,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.woofly.board.model.exception.BoardException;
-import com.kh.woofly.board.model.service.BoardServiceImpl;
+import com.kh.woofly.board.model.service.BoardService;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.shop.model.exception.ShopException;
+import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpServletRequest;
-import com.kh.woofly.board.model.service.BoardService;
-import com.kh.woofly.board.model.vo.Board;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -41,15 +47,26 @@ public class BoardController {
 		// 
 		// 1. 자유게시판 //
 		
+		@GetMapping("/board/free/search")
+		public String searchFreeBoard(@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model) {
+			   
+			ArrayList<Board> searchResults = bService.searchFreeBoard(searchType, searchKeyword);
+		    System.out.println(searchType);
+		    model.addAttribute("searchResults", searchResults);
+		    return "freeBoard";
+
+		}
+		
 		@GetMapping("/board/free")
 		public String freeBoardView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) throws BoardException {
 			
 			int listCount = bService.getListCount(1);
 			
 			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-			ArrayList<Board> list = bService.selectBoardList(pi, 1);		
-			ArrayList<Attachment> aList = bService.selectAttmBoardList(null);
+			ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
 			
+			//System.out.println(list);
 			if(list != null) {
 				model.addAttribute("pi", pi);
 				model.addAttribute("list", list);
@@ -62,6 +79,11 @@ public class BoardController {
 			}
 		}
 		
+		@PostMapping("/board/free/search")
+		public String searchFreeBoard() {
+			return null;
+		}
+		
 		@GetMapping("/board/free/detail")
 		public String freeBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("bNo") int bNo, HttpSession session, Model model) throws BoardException {
 		
@@ -70,13 +92,16 @@ public class BoardController {
 			if(loginUser != null) {
 				id = loginUser.getMbId();
 			}
-			Board b = bService.selectBoard(bNo);
-			ArrayList<Attachment> list = bService.selectAttmBoardList((Integer)bNo); 
+			Board b = bService.selectFreeBoard(bNo, id);
+			ArrayList<Attachment> list = bService.selectAttmFreeBoardList((Integer)bNo); 
+			ArrayList<Reply> rList = bService.selectFreeReply(bNo);
+			
 			if(b != null) {
 				model.addAttribute("b", b);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
-				System.out.println(b);
+				model.addAttribute("rList", rList);
+				//System.out.println(rList);
 				return "freeBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
@@ -93,57 +118,293 @@ public class BoardController {
 		public String insertFreeBoard(@ModelAttribute Board b, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 			b.setMbId(boardWriter);
+			//System.out.println(boardWriter);
+			int result1 = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
+			//System.out.println(b.getBNo());
 			
-			int result = bService.insertBoard(b);
 			
-			if(result > 0) {
-				return "redirect:list.bo";
+			ArrayList<Attachment> attachments = new ArrayList<>();
+			for(int i = 0; i<files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment attachment = new Attachment();
+						attachment.setOriginalName(upload.getOriginalFilename());
+						attachment.setRenameName(returnArr[1]);
+						attachment.setAttmPath(returnArr[0]);
+						attachment.setAttmRefType("B");
+						attachment.setAttmRefNo(b.getBNo());
+						
+						attachments.add(attachment);
+					}
+				}
+			}
+			
+			for(int i=0; i < attachments.size(); i++) {
+				Attachment a = attachments.get(i);
+				if(i == 0) {
+					a.setAttmLevel(1);
+				} else {
+					a.setAttmLevel(2);
+				}
+			}
+			
+			
+			int result2 = bService.insertFreeAttm(attachments);
+			//System.out.println(result1);
+			//System.out.println(result2);
+			if(result1 + result2 > 0) {
+				return "redirect:/board/free";
 			} else {
+				for(Attachment a : attachments) {
+					deleteFile(a.getRenameName());
+				}
 				throw new BoardException("게시글 작성을 실패하였습니다.");
+		    }
+		}
+			
+		
+		
+		// 파일 저장소 파일 저장(copy)
+		private String[] saveFile(MultipartFile upload) {
+			
+			String root = "C:\\woofly\\";
+			String savePath = root + "\\board";
+			
+			File folder = new File(savePath);
+			if(!folder.exists()) {
+				folder.mkdirs();
+			}
+			
+			Date time = new Date(System.currentTimeMillis());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			int ranNum = (int)(Math.random()*100000);
+			
+			String originFileName = upload.getOriginalFilename();
+			String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+			
+			String renamePath = folder + "\\" + renameFileName;
+			
+			try {
+				upload.transferTo(new File(renamePath));
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			String[] returnArr = new String[2];
+			returnArr[0] = savePath;
+			returnArr[1] = renameFileName;
+			
+			return returnArr;
+		}
+		
+		
+		private void deleteFile(String renameName) {
+			String root = "C:\\woofly\\";
+			String savePath = root + "\\board";
+			
+			File f = new File(savePath + "\\" + renameName);
+			if(f.exists()) {
+				f.delete();
 			}
 		}
 		
-		/*
-		 * public String[] saveFile(MultipartFile upload) { String root = "C:\\"; String
-		 * savePath = root + "\\finaluploadFiles";
-		 * 
-		 * File folder = new File(savePath); if(!folder.exists()) { folder.mkdir(); }
-		 * //2. 저장될 파일 rename Date time = new Date(System.currentTimeMillis());
-		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS"); int ranNum
-		 * = (int)(Math.random()*100000);
-		 * 
-		 * String originFileName = upload.getOriginalFilename(); String renameFileName =
-		 * sdf.format(time) + ranNum +
-		 * originFileName.substring(originFileName.lastIndexOf(".")); //substring는 일부를
-		 * 추출해오는 것 //(학생랜덤.xslx)이면 .뒤의 xslx만 가져와 확장자를 추출해 낼 수 있음
-		 * 
-		 * //3. rename된 파일을 저장소에 저장
-		 * 
-		 * String renamePath = folder + "\\" + renameFileName; try {
-		 * upload.transferTo(new File(renamePath)); } catch (IllegalStateException e) {
-		 * e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-		 * 
-		 * String[] returnArr = new String[2]; returnArr[0] = savePath;//파일 저장소 경로
-		 * returnArr[1] = renameFileName;
-		 * 
-		 * return returnArr; }
-		 * 
-		 * 
-		 * private void deleteFile(String fileName) { String root = "C:\\"; String
-		 * savePath = root + "\\uploadFiles";
-		 * 
-		 * File f = new File(savePath + " \\" + fileName); if(f.exists()) { f.delete();
-		 * }
-		 * 
-		 * 
-		 * }
-		 */
-
-		@GetMapping("/board/free/edit")
-		public String freeBoardEdit() {
+		@GetMapping("/board/free/editForm")
+		public String freeBoardEditForm(@RequestParam("bNo") int bNo, @RequestParam("page") int page, Model model) {
+			
+			Board b = bService.selectFreeBoard(bNo,null);
+			ArrayList<Attachment> list = bService.selectAttmFreeBoardList(bNo);
+			model.addAttribute("b", b);
+			model.addAttribute("page", page);
+			model.addAttribute("list", list);
 			
 			return "freeBoardEdit";
 		}
+
+
+		@PostMapping("/board/free/edit")
+		public String freeBoardEdit(@ModelAttribute Board b, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm
+,
+				 @RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+			/* int result = bService.updateFreeBoard(b); */
+			
+			ArrayList<Attachment> list = new ArrayList<>();
+			for(int i=0; i< files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment a = new Attachment();
+						a.setOriginalName(upload.getOriginalFilename());
+						a.setRenameName(returnArr[1]);
+						a.setAttmPath(returnArr[0]);
+						
+						list.add(a);
+					}
+				}
+			}
+			
+			ArrayList<String> delRename = new ArrayList<>();
+			ArrayList<Integer> delLevel = new ArrayList<>();
+			for(String a : deleteAttm) {
+				if(!a.equals("none")) {
+					String[] split = a.split("/");
+					delRename.add(split[0]);
+					delLevel.add(Integer.parseInt(split[1]));
+				}
+			}
+			
+			int deleteAttmResult = 0;
+			int updateBoardResult = 0;
+			boolean existBeforeAttm = true;
+			if(!delRename.isEmpty()) {
+				deleteAttmResult = bService.deleteFreeAttm(delRename);
+				if(deleteAttmResult > 0) {
+					for(String rename : delRename) {
+						deleteFile(rename);
+					}
+				}
+			
+				if(delRename.size() == deleteAttm.length) {
+					existBeforeAttm = false;
+					
+				} else {
+					for(int level : delLevel) {
+						if(level == 0) {
+							bService.updateAttmLevel(b.getBNo());
+							break;
+						}
+					}
+				}
+			}
+			
+
+			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            int level = Integer.parseInt(split[1]);
+		            if (level == 1) {
+		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                break;
+		            }
+		        }
+		    }
+
+		    for (int i = 0; i < list.size(); i++) {
+		        Attachment a = list.get(i);
+		        a.setAttmRefNo(b.getBNo());
+
+		        if (hasExistingFile) {
+		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		        } else {
+		            if (!hasLevelOne) {
+		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		            } else {
+		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		            }
+		        }
+		    }
+
+
+			System.out.println(b.getBNo());
+			updateBoardResult = bService.updateFreeBoard(b);
+			int updateAttmResult = 0;
+			if(!list.isEmpty())  {
+				updateAttmResult = bService.insertFreeAttm(list);
+			}
+			System.out.println(updateBoardResult);
+			System.out.println(updateAttmResult);
+			if(updateBoardResult + updateAttmResult > 0) {				
+				redirectAttributes.addAttribute("bNo", b.getBNo());
+				redirectAttributes.addAttribute("page", page);
+				
+				return "redirect:/board/free/detail";
+				
+			} else {
+				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+			}
+			
+			
+			
+		}
+		
+		@PostMapping("/board/free/delete")
+		public String deleteFreeBoard(@RequestParam("bNo") int bNo) throws BoardException {
+			int result1 = bService.deleteFreeBoard(bNo);
+			int result2 = bService.statusNAttm(bNo);
+			System.out.println(bNo);
+			if(result1 > 0 || result2> 0) {
+				return "redirect:/board/free";
+			} else {
+				throw new BoardException("게시글 삭제 실패");
+			}
+		}
+				
+		@GetMapping(value="/insertFreeReply.yk", produces="application/json; charset=UTF-8")
+		@ResponseBody
+		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+			int result = bService.insertFreeReply(r);
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : rlist) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickname());
+				jArr.put(json);
+			}
+			
+			
+			return jArr.toString();
+			
+		}
+		
+		@GetMapping(value="/deleteReply.yk", produces="application/json; charset=UTF-8")
+		@ResponseBody
+		public String deleteFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+			int result = bService.deleteFreeReply(r);
+			System.out.println(r);
+			
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : rlist) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickname());
+				jArr.put(json);
+			}			
+			
+			return jArr.toString();
+			
+		}
+
+
+		
+	
 		
 		// 2. 도그워커 //
 
@@ -340,7 +601,7 @@ public class BoardController {
 				model.addAttribute("m", m);
 				model.addAttribute("page", page);
 				model.addAttribute("mList", mList);
-				System.out.println(m);
+				//System.out.println(m);
 				return "lostBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
@@ -376,53 +637,56 @@ public class BoardController {
 			return "lostBoardEdit";
 		}
 		
-//		수정한 첨부파일 게시글을 업로드 //
-//		@PostMapping("/board/lost/updateLostBoard")
+//		//...하는 중...//
+////		// 수정한 첨부파일 게시글을 업로드 //
+//		@PostMapping("/board/lost/updateLostBoard") // 어노테이션 사용해 연결 요청(바인딩).//(HTTP 요청에서 전달된 데이터가, 메서드의 매개변수에 자동으로 연결되어(바인딩되어), 메서드에서 활용될 수 있도록 함)
 //		   public String updateLostBoardAttm(@ModelAttribute LostBoard m,
 //		                     @RequestParam("page") int page,
 //		                     @RequestParam("deleteLostBoardAttm") String[] deleteLostBoardAttm,
 //		                     @RequestParam("file") ArrayList<MultipartFile> files,
 //		                     HttpServletRequest request, RedirectAttributes re) {
-//		      
-//		      m.setLostBoardType(2);
-//		      
-//		      ArrayList<Attachment> mList = new ArrayList<>();
-//		      for(int i = 0; i < files.size(); i++) {
-//		         MultipartFile upload = files.get(i);
-//		         
-//		         if(!upload.getOriginalFilename().equals("")) {
-//		            String[] returnArr = saveFile(upload);
-//		            if(returnArr[1] != null) {
-//		               Attachment a = new Attachment();
-//		               a.setOriginalName(upload.getOriginalFilename());
-//		               a.setRenameName(returnArr[1]);
-//		               a.setAttmPath(returnArr[0]);
+//		      // m 객체의 lostBoardType 필드에 2라는 값을 설정
+//		    // m.setLostBoardType(2); // set다음에 오는 LostBoardType은 해당필드의 이름.(소괄호 안에는 필드에 설정할 값 담는다)
+//		      // ㄴ우린 게시판이 다 첨부파일 게시판이니까 게시판 타입 설정해줄 필요 없지않나
+//		      // 밑은 ArrayList 클래스를 이용하여 Attachment 타입의 객체를 저장하는 리스트를 생성하는 코드
+//		      ArrayList<Attachment> mList = new ArrayList<>(); // mList는 Attachment타입의 객체들을 저장하고 관리하는 동적 배열.
+//		      for(int i = 0; i < files.size(); i++) { // i의 초기값은 0; i가 파일사이즈보다 작을때; i는 1씩증가
+//		         MultipartFile LostUpload = files.get(i); // 업로드된 파일들(files) 중에서 인덱스 i에 해당하는 파일을 가져와 MultipartFile 타입의 변수 LostUpload에 할당하는 코드. 
+//		         // files는 @RequestParam("file") ArrayList<MultipartFile> files에서 전달된 파일들의 리스트.// get(i)는 리스트에서 인덱스 i에 해당하는 요소를 가져오는 메서드.
+//		         if(!LostUpload.getOriginalFilename().equals("")) {
+//		            String[] returnLostArr = saveLostFile(LostUpload);
+//		            if(returnLostArr[1] != null) {
+//		               Attachment a = new Attachment(); // a는 Attachment vo를 뜻한다.
+//		               a.setOriginalName(LostUpload.getOriginalFilename());
+//		               a.setRenameName(returnLostArr[1]);
+//		               a.setAttmPath(returnLostArr[0]);
 //		               
 //		               mList.add(a);
-//		            }
+//		            }//ㄴ업로드된 파일에 대한 정보가 Attachment 객체에 담겨 mList에 추가, mList는 업로드된 파일들의 정보를 담고 있는 리스트가 됨.
 //		         }
 //		      }
 //		      
-//		      ArrayList<String> delRename = new ArrayList<>();
-//		      ArrayList<Integer> delLevel = new ArrayList<>();
+//		      ArrayList<String> delLostRename = new ArrayList<>();
+//		      ArrayList<Integer> delLostLevel = new ArrayList<>();
 //		      
 //		      for(int i = 0; i < deleteLostBoardAttm.length; i++) {
 //		         //System.out.println(deleteAttm[i]);
-//		         String rename = deleteLostBoardAttm[i];      // 취소바구니에 담긴 스트링 배열
-//		         if(!rename.equals("none")) {
-//		            String[] split = rename.split("/");
-//		            delRename.add(split[0]);
-//		            delLevel.add(Integer.parseInt(split[1]));
+//		         String Lostrename = deleteLostBoardAttm[i];      // 취소바구니에 담긴 스트링 배열
+//		         if(!Lostrename.equals("none")) {
+//		            String[] split = Lostrename.split("/");
+//		            delLostRename.add(split[0]);
+//		            delLostLevel.add(Integer.parseInt(split[1]));
 //		         }
-//		      }
+//		      }// delLostRename 리스트에는 삭제할 첨부 파일의 리네임된 이름이, 
+//		       // delLostLevel 리스트에는 해당 첨부 파일의 레벨이 저장.(파일에 레벨을 설정해 놓으면 파일의 중요도나 순서 표시를 할 때 용이.)
 //		      
 //		      int deleteLostAttmResult = 0;
 //		      int updateLostResult = 0;
 //		      boolean existBeforeLostAttm = true;
-//		      if(!delRename.isEmpty()) {
-//		    	  deleteLostAttmResult = bService.deleteLostAttm(delRename); // DB삭제
+//		      if(!delLostRename.isEmpty()) {
+//		    	  deleteLostAttmResult = bService.deleteLostAttm(delLostRename); // DB삭제
 //		         if(deleteLostAttmResult > 0) {
-//		            for(String rename : delRename) {
+//		            for(String rename : delLostRename) {
 //		               deleteFile(rename);   // 서버 저장소에서 삭제
 //		            }
 //		         }
@@ -431,7 +695,7 @@ public class BoardController {
 //		         // deleteAttm : 파일삭제를 명시 안해도 none값으로 들어오기 때문에
 //		         //            기존파일 총량을 알 수 있음
 //		         
-//		         if(delRename.size() == deleteLostAttm.length) {
+//		         if(delLostRename.size() == deleteLostAttm.length) {
 //		            //기존 파일 전부 삭제
 //		        	 existBeforeLostAttm = false;
 //		            if(mList.isEmpty()) {
@@ -440,9 +704,9 @@ public class BoardController {
 //		         } else {
 //		            // 기존 파일 일부 삭제
 //		            // 썸네일레벨을 가지고 있는 파일이 있는지 확인 후 조치
-//		            for(int level : delLevel) {
+//		            for(int level : delLostLevel) {
 //		               if(level == 0) {
-//		                  bService.updateAttmLevel(b.getBoardId());
+//		                  bService.updateAttmLevel(m.getLostBoardId());
 //		                  break;
 //		               }
 //		            }
@@ -467,13 +731,13 @@ public class BoardController {
 //		      }
 //		      
 //		      updateLostResult = bService.updateLostBoard(m);
-//		      int updateAttmResult = 0;
+//		      int updateLostAttmResult = 0;
 //		      if(!mList.isEmpty()) {
-//		         updateAttmResult = bService.insertLostAttm(mList);
+//		    	  updateLostAttmResult = bService.insertLostAttm(mList);
 //		      }
 //		      
-//		      if(updateLostResult + updateAttmResult == mList.size() + 1) {
-//		         if(delRename.size() == deleteLostAttm.length && updateAttmResult == 0) {
+//		      if(updateLostResult + updateLostAttmResult == mList.size() + 1) {
+//		         if(delRename.size() == deleteLostAttm.length && updateLostAttmResult == 0) {
 //		            return "redirect:list.bo";
 //		         } else {
 //		            re.addAttribute("bId", m.getLostBoardId());
@@ -484,54 +748,56 @@ public class BoardController {
 //		         throw new BoardException("첨부파일 게시글 수정을 실패하였습니다.");
 //		      }
 //		   }
-		
-		
-		
-		// 파일을 저장 경로 및 rename하여(이름 안겹치도록) 나중에 찾기 쉽게 함.
-		
-		public String[] saveFile(MultipartFile upload) {
-		      String root = "C:\\";
-		      String savePath = root + "\\uploadFiles";
-		      
-		      File folder = new File(savePath);
-		      if(!folder.exists()) {
-		         folder.mkdirs();
-		      }
-		      
-		      // 2. 저장될 파일 rename
-		      Date time = new Date(System.currentTimeMillis());
-		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		      int ranNum = (int)(Math.random()*100000);
-		      
-		      String originFileName = upload.getOriginalFilename();
-		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
-		      
-		      // 3. rename된 파일을 저장소에 저장
-		      String renamePath = folder + "\\" + renameFileName;
-		      try {
-		         upload.transferTo(new File(renamePath));
-		      } catch (IllegalStateException e) {
-		         e.printStackTrace();
-		      } catch (IOException e) {
-		         e.printStackTrace();
-		      }
-		      
-		      String[] returnArr = new String[2];
-		      returnArr[0] = savePath;   // 경로 있음
-		      returnArr[1] = renameFileName; // renameName이 있음
-		      
-		      return returnArr;
-		   }
-		
-		public void deleteFile(String fileName) {
-			String root = "C:\\";
-			String savePath = root + "\\uploadFiles";
-			
-			File f = new File(savePath + "\\" + fileName);
-			if(f.exists()) { // f가 있으면 
-				f.delete();// 삭제
-			}
-		}
+//		
+//		
+//		
+//}
+//
+//		// 파일을 저장 경로 및 rename하여(이름 안겹치도록) 나중에 찾기 쉽게 함.
+//		
+//		public String[] saveLostFile(MultipartFile lostUpload) {
+//		      String root = "C:\\";
+//		      String savePath = root + "\\uploadLostFiles";
+//		      
+//		      File folder = new LostFile(savePath);
+//		      if(!folder.exists()) {
+//		         folder.mkdirs();
+//		      }
+//		      
+//		      // 2. 저장될 파일 rename
+//		      Date time = new Date(System.currentTimeMillis());
+//		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//		      int ranNum = (int)(Math.random()*100000);
+//		      
+//		      String originFileName = upload.getOriginalFilename();
+//		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+//		      
+//		      // 3. rename된 파일을 저장소에 저장
+//		      String renamePath = folder + "\\" + renameFileName;
+//		      try {
+//		         upload.transferTo(new File(renamePath));
+//		      } catch (IllegalStateException e) {
+//		         e.printStackTrace();
+//		      } catch (IOException e) {
+//		         e.printStackTrace();
+//		      }
+//		      
+//		      String[] returnArr = new String[2];
+//		      returnArr[0] = savePath;   // 경로 있음
+//		      returnArr[1] = renameFileName; // renameName이 있음
+//		      
+//		      return returnArr;
+//		   }
+//		
+//		public void deleteFile(String fileName) {
+//			String root = "C:\\";
+//			String savePath = root + "\\uploadFiles";
+//			
+//			File f = new File(savePath + "\\" + fileName);
+//			if(f.exists()) { // f가 있으면 
+//				f.delete();// 삭제
+//			}
+//		}
 		
 		
 		

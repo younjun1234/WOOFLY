@@ -10,13 +10,134 @@
 	<select id="petInfoList" resultType="Pet">
 		select *
 		from pet
-		where owner_id = #{ownerId}
+		where owner_id = #{ownerId} and pet_status = 'Y'
+		order by pet_id desc
 	</select>
 	
 	<select id="petDetail" resultType="Pet">
 		select *
 		from pet
 		where pet_id = #{petId}
+	</select>
+	
+	<update id="petEditName">
+		update pet
+		set pet_name = #{newPetName}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditIntro">
+		update pet
+		set pet_intro = #{newPetIntro}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditBirth">
+		update pet
+		set pet_birth = #{newPetBirth}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditBreed">
+		update pet
+		set pet_breed = #{newPetBreed}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditWeight">
+		update pet
+		set pet_weight = #{newPetWeight}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditGender">
+		update pet
+		set pet_gender = #{newPetGender}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petEditMemo">
+		update pet
+		set pet_memo = #{newPetMemo}
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="petDelete">
+		update pet
+		set pet_status = 'N'
+		where pet_id = #{petId}
+	</update> 
+	
+	<update id="editPetPhoto">
+		update pet
+		set pet_profile= #{petProfile}
+		where pet_id = #{petId}
+	</update>
+	
+	<update id="deletePetPhoto">
+		update pet
+		set pet_profile = default
+		where pet_id = #{petId}
+	</update>
+	
+	<insert id="petDiaryWrite" parameterType="Diary">
+		<selectKey order="BEFORE" keyProperty="drNo" resultType="_int">
+			select diary_seq.nextval from dual
+		</selectKey>
+		insert into diary
+		values (#{drNo}, #{drContent}, #{drDate}, default, #{writerId}, #{petId}, #{petHealth})
+	</insert>
+	
+	<select id="petDiaryList" parameterType="Diary">
+		select *
+		from diary
+			 join pet using(pet_id)
+		where dr_status = 'Y' and writer_Id=#{writerId}
+		order by dr_date desc
+	</select>
+	
+	<select id="petDiaryDetail" parameterType="Diary">
+		select *
+		from diary
+			join pet using(pet_id)
+		where dr_no = #{drNo} and dr_status = 'Y'
+	</select>
+	
+	<update id="petDiaryEdit">
+		update diary
+		set dr_content = #{drContent} , dr_date = #{drDate}, pet_id = #{petId}, pet_health = #{petHealth}
+		where dr_no = #{drNo}
+	</update>
+	
+	<update id="petDiaryDelete">
+		update diary
+		set dr_status = 'N'
+		where dr_no = #{drNo}
+	</update>
+	
+	<insert id="insertPetPhoto" parameterType="Album">
+		<selectKey order="BEFORE" keyProperty="abNo" resultType="_int">
+			select ab_seq.nextval from dual
+		</selectKey>
+		insert into album
+		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId})
+	</insert>
+	
+	<insert id="insertPetAlbum" parameterType="Attachment">
+		insert into attachment
+		values (attm_seq.nextval, #{originalName}, #{renameName}, default , default, 'test', default, #{attmRefType}, #{attmRefNo}, #{attmLevel})
+	</insert>
+	
+	<select id="selectMyAlbum" resultType="Album">
+		select *
+		from album
+		where ab_status = 'Y' and writer_id = #{id}
+	</select>
+	
+	<select id="selectMyAlbumAttm" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_level = 1
 	</select>
 	
 </mapper>

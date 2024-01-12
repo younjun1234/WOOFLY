@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.kh.woofly.admin.model.vo.Report;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.common.PageInfo;
 
 public interface AdminService {
 

@@ -27,4 +27,5 @@ public class Order {
 	private String paymentMethod;
 	private String orderRequest;
 	private String delStatus;
+	private int productCount;
 }

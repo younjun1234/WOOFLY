@@ -26,6 +26,5 @@ public class Pet {
 	private String petStatus;
 	private String ownerId;
 	private String petHealth;
-	private String petPhoto;
 	private String petIntro;
 }
