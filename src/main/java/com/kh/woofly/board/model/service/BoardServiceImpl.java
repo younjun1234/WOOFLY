@@ -1,6 +1,7 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,8 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Reply;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -23,8 +24,8 @@ public class BoardServiceImpl implements BoardService{
  //	자유게시판 "/board/free"
    
     @Override
-	public ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword) {
-    	return bDAO.searchFreeBoard(searchType, searchKeyword);
+	public ArrayList<Board> searchFreeBoards(HashMap<String, String> map) {
+    	return bDAO.searchFreeBoards(map);
 	}
    
 	@Override
@@ -110,6 +111,15 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.selectFreeReply(bNo);
 	}
 	
+	@Override
+	public int insertDwReply(Reply r) {
+		return bDAO.insertDwReply(r);
+	}
+
+	@Override
+	public int deleteDwReply(Reply r) {
+		return bDAO.deleteDwReply(r);
+	}
 	
 
 	
@@ -179,11 +189,17 @@ public class BoardServiceImpl implements BoardService{
 	public int insertDwAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertDwAttm(attachments);
 	}
+	
+	@Override
+	public int updateDwBoard(DwBoard dw) {
+		return bDAO.updateDwBoard(dw);
+	}
+	
+	@Override
+	public int deleteDwBoard(int dwNo) {
+		return bDAO.deleteDwBoard(dwNo);
+	}
 
-	
-	
-	
-	
 	
 	
 	
@@ -224,6 +240,13 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	
+
+	
+
+	
+	
 
 	
 	

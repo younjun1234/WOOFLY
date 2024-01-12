@@ -5,22 +5,22 @@
 	 
 	<!-- 자유게시판 -->	
 	
-	<select id="searchFreeBoard" resultType="Board">
-		select b.*, m.mb_nickname as "mbNickname" 
-	    from board b 
-	    join member m on b.mb_id = m.mb_id 
-	    where b.b_status = 'Y' 
-	    <if test="searchType != null and searchType.equals('writer')">
-    		and b.mb_nickname like '%#{ searchKeyword }%'
-    	</if>
-    	<if test="searchType != null and searchType.equals('title')">
-    		and b.b_title '%#{ searchKeyword }%'
-    	</if>
-    	<if test="searchType != null and searchType.equals('all')">
-    		and (b.mb_nickname like '%#{ searchKeyword }%' || b.b_title '%#{ searchKeyword }%')
-    	</if>
-	    order by b.b_no desc
-	</select>
+	<!-- 검색 기능 -->
+   <select id="searchFreeBoards" parameterType="map" resultType="Board">
+       SELECT *
+       FROM Board
+         JOIN Member using(mb_id)
+       WHERE b_status = 'Y'
+       <choose>
+           <when test="searchType == 'mn'">
+               AND b_title LIKE '%' || #{searchKeyword} || '%' or mb_nickName LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY b_no DESC
+   </select>
 	
 	<select id="getListCount" resultType="_int">
 		select count(*)
@@ -131,7 +131,7 @@
 		select  r.*, m.mb_nickname as "mbNickname" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
-		where r.b_no = #{bNo} and r.re_d_status = 'Y'
+		where r.b_no = #{bNo} and r.re_d_status = 'Y' and r.b_type = 'B'
 		order by r.r_no desc
 	</select>
 	
@@ -202,7 +202,7 @@
 		select  r.*, m.mb_nickname as "mbNickname" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
-		where r.b_no = #{dwNo} and r.re_d_status = 'Y'
+		where r.b_no = #{dwNo} and r.re_d_status = 'Y' and r.b_type = 'DW'
 		order by r.r_no desc
 	</select>
 	
@@ -217,9 +217,8 @@
 	        select dw_seq.nextval as dwNo from dual
 	    </selectKey>
 	    insert into dw_board 
-	    values (#{dwNo}, '0', #{dwTitle}, #{dwContent}, default, '나중에 추가해주세요', SYSDATE, default, default, #{mbId}, default, '50000000')
-	</insert>
-	
+	    values (#{dwNo}, #{dwType}, #{dwTitle}, #{dwContent}, default, '나중에 추가해주세요', SYSDATE, default, default, #{mbId}, default, #{dwPrice})
+	</insert>	
 	
 	<insert id="insertDwAttm">
 		insert all
@@ -231,8 +230,29 @@
 		select * from dual
 	</insert>
 	
+	<update id="updateDwBoard">
+		update dw_board
+		set dw_title = #{dwTitle}, dw_type = #{dwType}, dw_content = #{dwContent}, dw_price=#{dwPrice}
+		where dw_no = #{ dwNo }
+	</update>
 	
+	<update id="deleteDwBoard">
+		update dw_board
+		set dw_status = 'N'
+		where dw_no = #{ dwNo }
+	</update>
 	
+	<insert id="insertDwReply">
+      insert into reply
+      values(reply_seq.nextval, 'DW', #{dwNo}, 
+            #{reContent}, SYSDATE, default, default, #{mbId})
+   </insert>
+   
+   <update id="deleteDwReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo } and b_type = 'DW'
+	</update>
 	
 	
 	<!-- 실종게시판 -->

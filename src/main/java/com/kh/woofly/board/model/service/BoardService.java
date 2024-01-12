@@ -1,20 +1,21 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Reply;
 
 public interface BoardService {
 
 //	자유게시판 "/board/free"	
 	
-	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
-	
+	ArrayList<Board> searchFreeBoards(HashMap<String, String> map);
+		
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(PageInfo pi, int i);
@@ -66,6 +67,14 @@ public interface BoardService {
 	int insertDwBoard(DwBoard dw);
 	
 	int insertDwAttm(ArrayList<Attachment> attachments);
+	
+	int updateDwBoard(DwBoard dw);
+	
+	int deleteDwBoard(int dwNo);
+	
+	int insertDwReply(Reply r);
+
+	int deleteDwReply(Reply r);
 
 
 
@@ -86,6 +95,14 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+
+
+	
+
+	
 
 	
 

@@ -1,4 +1,4 @@
-package com.kh.woofly.board.model.vo;
+package com.kh.woofly.common;
 
 import java.sql.Date;
 
@@ -25,5 +25,6 @@ public class Reply {
 	private String reDStatus;
 	private String mbId;
 	private String mbNickname;
+	private int dwNo;
 }
 

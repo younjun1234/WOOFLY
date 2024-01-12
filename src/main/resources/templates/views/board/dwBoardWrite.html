@@ -27,10 +27,10 @@
 			<form  action="/board/free/insertDwBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
-					    <select class="form-select mb-1">
+					    <select class="form-select mb-1"  name="dwType">
 					    	<option value="" disabled selected></option>
-							<option value="1">도그워커게시판</option>
-							<option value="2">도그워커후기</option>
+							<option th:value="0" value="0">도그워커게시판</option>
+							<option th:value="1" value="1">도그워커후기</option>
 						</select>
 				</div>
 				<div class="mb-3">
@@ -39,11 +39,11 @@
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" name="bContent" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;"></textarea>
 				</div>
 				<div class="mb-3">
 	               <label for="title" class="form-label">지급할 금액</label>
-	                 <input style="width: 20%" type="text" class="form-control" id="productPrice" onkeyup="inputNumberFormat(this)" placeholder="금액 입력">
+	                 <input style="width: 20%" type="text" class="form-control" name="dwPrice" id="productPrice" onkeyup="inputNumberFormat(this)" placeholder="금액 입력">
 	            </div>	              
 
 				

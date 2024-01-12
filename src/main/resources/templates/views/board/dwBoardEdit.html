@@ -14,35 +14,49 @@
 			
 		</div>
 		<div class="container">
+			
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6>작성자</h6>
-						<p>2023.10.16</p>
+						<h6>[[${dw.mbNickName}]]</h6>
+						<p>[[${dw.dwCreateDate}]]</p>
 					</div>
 				</div>
 			</div>
 			
-			<form>
+			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/dw/edit">
+				<input type = "hidden" th:value ="${ dw.dwNo }" name="dwNo">
+				<input type = "hidden" th:value ="${ page }" name ="page">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
-					    <select class="form-select mb-1">
+					    <select class="form-select mb-1" name="dwType">
 					    	<option value="" disabled selected></option>
-							<option value="1">도그워커게시판</option>
-							<option value="2">도그워커후기</option>
+							<option value="0" th:selected="${dw.dwType == 0}">도그워커게시판</option>
+							<option value="1" th:selected="${dw.dwType == 1}">도그워커후기</option>
 						</select>
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="">
+				  	<input type="text" class="form-control" id="title" placeholder="" name="dwTitle" th:value="${dw.dwTitle}">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;">[[${dw.dwContent}]]</textarea>
 				</div>
+				<div class="mb-3">
+	               <label for="title" class="form-label">지급할 금액</label>
+	                 <input style="width: 20%" type="text" class="form-control" name="dwPrice" id="productPrice" onkeyup="inputNumberFormat(this)" th:value="${dw.dwPrice}" placeholder="금액 입력">
+	            </div>	    
 				<label for="file" class="form-label">첨부파일</label><br>
+					<div th:each="a : ${ list }">
+						<h5>
+							<a th:href="@{ image/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
+							<button type="button" class="btn btn-outline-dark btn-sm deleteAttm" th:id="|delete-${ a.renameName }/${a.attmLevel}|">유지</button>
+							<input type="hidden" name="deleteAttm" value="none">
+						</h5>
+					</div>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
 					   <div class="mb-3">
@@ -74,6 +88,24 @@
 				
 				fileArea.append(newDiv);
 			});
+			
+			const delBtns = document.getElementsByClassName("deleteAttm");
+	         for(const btn of delBtns) {
+	        	 btn.addEventListener('click', function() {
+	        		const nextHidden = this.nextElementSibling;
+					if(this.innerText == '유지') {
+						this.style.background = 'black';
+						this.style.color = 'white';
+						this.innerText = '삭제';
+						nextHidden.value = this.id.split('-')[1];
+					} else {
+						this.style.background = 'none';
+						this.style.color = 'black';
+						this.innerText = '유지';
+						nextHidden.value = 'none';
+					}
+	        	 });
+	         }
 		}
 	</script>
 	

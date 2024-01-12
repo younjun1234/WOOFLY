@@ -26,5 +26,5 @@ public class DwBoard {
 	private String mbId;
 	private String mbNickName;
 	private int dwLike;
-	private int dwPrice;
+	private String dwPrice;
 }
