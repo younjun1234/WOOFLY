@@ -376,7 +376,7 @@ public class BoardController {
 		
 		@GetMapping(value="/deleteFreeReply.yk")
 		@ResponseBody
-		public String deleteFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+		public String deleteFreeReply(@ModelAttribute Reply r) {
 			int result = bService.deleteFreeReply(r);
 			//System.out.println(r);
 			
@@ -660,8 +660,8 @@ public class BoardController {
 		
 		@GetMapping(value="/insertDwReply.yk")
 		@ResponseBody
-		public String insertDwReply(@ModelAttribute Reply r, @RequestParam("dwNo") int dwNo) {
-			 System.out.println(dwNo);
+		public String insertDwReply(@ModelAttribute Reply r) {
+			r.setBType("DW");
 			int result = bService.insertDwReply(r);
 			
 			if(result > 0) {
@@ -675,9 +675,13 @@ public class BoardController {
 		
 		@GetMapping(value="/deleteDwReply.yk")
 		@ResponseBody
-		public String deleteDwReply(@ModelAttribute Reply r, @RequestParam("dwNo") int dwNo) {
+		public String deleteDwReply(@ModelAttribute Reply r) {
 			int result = bService.deleteDwReply(r);
+			
 			//System.out.println(r);
+			// 우리 댓글테이블은 공유잖아?
+			// 그래서 댓글넘버가 프라이머리키야(고유해)
+			// 그래서 너는 1,2,3,4번을 가지고 있어 이건 도그워커 + 그 게시글에서 생성된 댓글
 			
 			if(result > 0) {
 				return "good";

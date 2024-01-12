@@ -29,7 +29,7 @@
 	</select>
 
 	<select id="selectFreeBoardList" resultType="Board">
-	    select b.*, m.mb_nickname as "mbNickname" 
+	    select b.*, m.mb_nickname as "mbNickName" 
 	    from board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.b_status = 'Y' 
@@ -49,7 +49,7 @@
 	</select>
 	
 	<select id="selectFreeBoard" resultType="board">
-		select  b.*, m.mb_nickname as "mbNickname" 
+		select  b.*, m.mb_nickname as "mbNickName" 
 		from board b
 			join member m on b.mb_id = m.mb_id 
 		where b.b_status = 'Y' and b.b_no = #{ bNo }
@@ -128,7 +128,7 @@
 	</update>
 	
 	<select id="selectFreeReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickname" 
+		select  r.*, m.mb_nickname as "mbNickName" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{bNo} and r.re_d_status = 'Y' and r.b_type = 'B'
@@ -199,7 +199,7 @@
 	</select>
 	
 	<select id="selectDwReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickname" 
+		select  r.*, m.mb_nickname as "mbNickName" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{dwNo} and r.re_d_status = 'Y' and r.b_type = 'DW'
@@ -217,7 +217,7 @@
 	        select dw_seq.nextval as dwNo from dual
 	    </selectKey>
 	    insert into dw_board 
-	    values (#{dwNo}, #{dwType}, #{dwTitle}, #{dwContent}, default, '나중에 추가해주세요', SYSDATE, default, default, #{mbId}, default, #{dwPrice})
+	    values (#{dwNo}, #{dwType}, #{dwTitle}, #{dwContent}, default, #{dwLocation}, SYSDATE, default, default, #{mbId}, default, #{dwPrice})
 	</insert>	
 	
 	<insert id="insertDwAttm">
@@ -244,7 +244,7 @@
 	
 	<insert id="insertDwReply">
       insert into reply
-      values(reply_seq.nextval, 'DW', #{dwNo}, 
+      values(reply_seq.nextval, #{bType}, #{bNo}, 
             #{reContent}, SYSDATE, default, default, #{mbId})
    </insert>
    
@@ -297,7 +297,7 @@
 		</selectKey>
 
 		insert into Missing_Board
-		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickname})
+		values (#{mNo}, #{mTitle}, #{mContent}, default, SYSDATE, default, #{mbId}, #{mbNickName})
 	</insert>
 	
 	<!-- 	 <select id="getListCount" resultType="_int">

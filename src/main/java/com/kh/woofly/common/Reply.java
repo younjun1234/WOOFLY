@@ -23,8 +23,9 @@ public class Reply {
 	private Date reDate;
 	private int reLike;
 	private String reDStatus;
-	private String mbId;
-	private String mbNickname;
-	private int dwNo;
+	private String mbId;		// 댓글 단 사람 아이디
+	
+	private String mbNickName;
+	private boolean userLiked;
 }
 
