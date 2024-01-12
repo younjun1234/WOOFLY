@@ -56,15 +56,15 @@ public class AccountController {
     }
 	
     //자동 로그인
-    @GetMapping("/")
-    public String test(HttpSession session) {
-       Member m = new Member();
-       String id = "test";
-       m.setMbId(id);
-       Member loginUser = aService.login(m);
-       session.setAttribute("loginUser", loginUser);
-       return "index";
-    }
+//    @GetMapping("/")
+//    public String test(HttpSession session) {
+//       Member m = new Member();
+//       String id = "test";
+//       m.setMbId(id);
+//       Member loginUser = aService.login(m);
+//       session.setAttribute("loginUser", loginUser);
+//       return "index";
+//    }
     
 	@GetMapping("/account/login")
 	public String loginView() {
