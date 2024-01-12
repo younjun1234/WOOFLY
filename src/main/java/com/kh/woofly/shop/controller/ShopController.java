@@ -21,14 +21,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.cart.model.vo.Cart;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.service.ShopService;
-import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;
@@ -334,7 +334,7 @@ public class ShopController {
 			}
 		}
 		
-		// true면 같은 항목이 비어있음을 나타냄
+		// true면 같은 항목이 비어있음을 나타냄 //productName
 		if(isEmpty) {
 			Properties prop = new Properties();
 			selectC.setMbId(mbId);

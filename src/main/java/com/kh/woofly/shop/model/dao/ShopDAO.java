@@ -2,14 +2,13 @@ package com.kh.woofly.shop.model.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
+import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
-import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;

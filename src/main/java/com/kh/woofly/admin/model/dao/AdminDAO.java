@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
@@ -15,6 +16,8 @@ public interface AdminDAO {
 
 	int getReportCount();
 
-	ArrayList<Report> selectReportList(PageInfo pi);
+	ArrayList<Report> selectReportList(RowBounds rowBounds, PageInfo pi);
+
+	ArrayList<HashMap<String, Object>> selectReportRank();
 
 }

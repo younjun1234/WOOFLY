@@ -13,6 +13,8 @@ public interface AdminService {
 	int getReportCount();
 
 	ArrayList<Report> selectReportList(PageInfo pi);
+
+	ArrayList<HashMap<String, Object>> selectReportRank();
 	
 
 }

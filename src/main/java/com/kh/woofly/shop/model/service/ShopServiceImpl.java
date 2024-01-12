@@ -2,17 +2,16 @@ package com.kh.woofly.shop.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.cart.model.vo.Cart;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.shop.model.dao.ShopDAO;
-import com.kh.woofly.shop.model.vo.Cart;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;

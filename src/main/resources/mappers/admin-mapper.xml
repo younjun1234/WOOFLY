@@ -10,6 +10,29 @@
 		SELECT *
 		FROM REPORT
 	</select>
+	
+	<select id="selectReportRank" resultType="map">
+		SELECT
+		    A.R_ACCUSED,
+		    A.R_SITUATION_W_COUNT,
+		    A.LAST_REPORT_DATE,
+		    A.TOTAL_REPORT_COUNT,
+		    B.MB_NAME
+		FROM (
+		    SELECT
+		        R_ACCUSED,
+		        COUNT(CASE WHEN R_SITUATION = 'W' THEN 1 END) AS R_SITUATION_W_COUNT,
+		        MAX(R_DATE) AS LAST_REPORT_DATE,
+		        COUNT(*) AS TOTAL_REPORT_COUNT
+		    FROM REPORT
+		    WHERE R_DATE BETWEEN SYSDATE - 7 AND SYSDATE
+		    GROUP BY R_ACCUSED
+		    ORDER BY TOTAL_REPORT_COUNT DESC
+		    FETCH FIRST 5 ROWS ONLY
+		) A
+		JOIN MEMBER B ON A.R_ACCUSED = B.MB_ID
+	</select>
+	
 </mapper>
 
 

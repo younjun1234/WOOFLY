@@ -24,12 +24,10 @@ import com.kh.woofly.board.model.service.BoardService;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
-import com.kh.woofly.shop.model.exception.ShopException;
-import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -366,7 +364,7 @@ public class BoardController {
 				json.put("reLike", reply.getReLike());
 				json.put("reDStatus", reply.getReDStatus());
 				json.put("mbId", reply.getMbId());
-				json.put("mbNickname", reply.getMbNickname());
+				json.put("mbNickname", reply.getMbNickName());
 				jArr.put(json);
 			}
 			
@@ -394,7 +392,7 @@ public class BoardController {
 				json.put("reLike", reply.getReLike());
 				json.put("reDStatus", reply.getReDStatus());
 				json.put("mbId", reply.getMbId());
-				json.put("mbNickname", reply.getMbNickname());
+				json.put("mbNickname", reply.getMbNickName());
 				jArr.put(json);
 			}			
 			

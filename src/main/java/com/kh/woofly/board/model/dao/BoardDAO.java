@@ -6,10 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.board.model.vo.Attachment;
-
 import com.kh.woofly.board.model.vo.Board;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.common.Reply;
 
 @Mapper
 public interface BoardDAO {
