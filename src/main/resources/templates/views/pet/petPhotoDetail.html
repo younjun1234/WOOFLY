@@ -52,15 +52,35 @@
                           <strong th:each="p : ${pList}" th:text="${p.petName}"></strong>
                           </div>
                           <div class="p-2 ms-auto">
-                              <div class="btn-group">
-                                   <svg role="button" data-bs-toggle="dropdown" aria-expanded="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots dropdown-toggle" viewBox="0 0 16 16">
+                              <!-- <div class="btn-group">
+                                 <svg role="button" data-bs-toggle="dropdown" aria-expanded="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots dropdown-toggle" viewBox="0 0 16 16">
                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
                                  </svg>
                                    <ul class="dropdown-menu">
                                       <li><a class="dropdown-item" href="#">수정</a></li>
                                       <li><a class="dropdown-item" href="#">삭제</a></li>
                                    </ul>
-                              </div>
+                              </div> -->
+                              <input type="hidden" name="abNo" value="abNo">
+                              <a th:href="'/pet/petPhotoEdit/' + ${abNo}" class="btn btn-outline-dark btn-sm">수정</a>
+                              <a role="button" class="btn btn-sm btn-dark" id="deletePhotoBtn">삭제</a>
+							       <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-dialog-centered" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="exampleModalLabel">마이펫 사진첩 삭제</h5>
+											</div>
+											<div class="modal-body">
+												<strong>마이펫 사진첩을 정말로 삭제하시겠습니까?</strong>
+								        		<p>(삭제된 사진첩은 복구되지 않습니다.)</p>
+											</div>
+											<div class="modal-footer justify-content-between">
+										        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
+										        <a th:href="'/pet/petPhotoDelete/' + ${abNo}" class="btn btn-dark">네</a>
+									      	</div>
+										</div>
+									</div>
+								</div>
                           </div>
                         </div>
                      </div>
@@ -91,13 +111,12 @@
                         <strong>1004</strong>
                        </div>
                        <div class="p-2">
-                          <a th:if="${aList.size() > 0}" th:text="${aList[0].abDate}"></a>
+                          <p th:if="${aList.size() > 0}" th:text="${aList[0].abDate}"></p>
                        </div>
                      </div>
                      <div class="d-flex mt-2 mb-2">
                         <p class=" mb-1">
-                        <a th:if="${aList.size() > 0}" th:text="${aList[0].abContent}"></a>
-                        </p> 
+                        <p th:if="${aList.size() > 0}" th:text="${aList[0].abContent}"></p>
                      </div>
                      <div class="d-flex mt-3 border-bottom">
                         <strong>댓글 4개</strong>
@@ -153,8 +172,9 @@
                               </div>
                           </div>
                         </div>
-                         <div class="input-comment mt-3 mb-5">
-                                <input id="input-comment" type="text" class="form-control" placeholder="댓글 달기...">
+                         <div class="input-comment mt-3 mb-5 d-flex">
+                                <input id="input-comment" id="replyContent" type="text" class="form-control" placeholder="댓글 달기..."> &nbsp;
+                                <button class="btn btn-sm btn-dark" id="replyBtn" style="width:70px;">등록</button>
                             </div>
                      </div>
                     </div>
@@ -168,31 +188,39 @@
       $(myNav).removeClass('text-secondary');
       $(myNav).addClass('active');
       
-      var currentIndex = 0;
-      var images = document.querySelectorAll('#image');
-      var totalImages = images.length;
-
-      function showImage(index) {
-          images.forEach(function(img, i) {
-              img.style.display = (i === index) ? 'block' : 'none';
+      //사진이 한 장인 경우 버튼 숨기기
+      document.addEventListener('DOMContentLoaded', function () {
+          var carousel = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
+              interval: false
           });
-      }
 
-      document.getElementById('prevBtn').addEventListener('click', function() {
-          currentIndex = (currentIndex === 0) ? totalImages - 1 : currentIndex - 1;
-          showImage(currentIndex);
+          if (document.querySelectorAll('#carouselExampleIndicators .carousel-item').length <= 1) {
+              document.querySelector('.carousel-control-prev').style.display = 'none';
+              document.querySelector('.carousel-control-next').style.display = 'none';
+          }
       });
-
-      document.getElementById('nextBtn').addEventListener('click', function() {
-          currentIndex = (currentIndex === totalImages - 1) ? 0 : currentIndex + 1;
-          showImage(currentIndex);
-      });
-
-      // 페이지 로드 시 첫 번째 이미지 표시
-      showImage(currentIndex);
       
+      //마이펫 사진첩 삭제 모달	
+	  $('#deletePhotoBtn').click(function(e){
+	      e.preventDefault();
+		  $('#deleteModal').modal("show");
+	  });
       
-      
+     /*  //댓글 ajax
+      doucment.getElementById('replyBtn').addEventListener('click', ()=>{
+    	  const replyContent = document.getElementById('replyContent').value;
+    	  if(!replyContent === '') {
+    		  $.ajax({
+    			  url: 'insertReply.dw',
+    			  data: {replyContent:document.getElementById('replyContent').value}
+    		 	  success: (data) =>{
+    		 		  
+    		 	  },
+    		 	  error: data => console.log(data)
+    		  })
+    	  }
+      }) */
+    
    </script>
 </body>
 </html>

@@ -60,4 +60,10 @@ public interface PetService {
 
 	ArrayList<Pet> petInfo(int abNo);
 
+	Album petAlbumDetail(int abNo);
+
+	ArrayList<Attachment> petAttmList(int abNo);
+
+	int petPhotoDelete(int abNo);
+
 }

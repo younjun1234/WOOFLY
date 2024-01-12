@@ -143,6 +143,21 @@ public class PetServiceImpl implements PetService{
 	public ArrayList<Pet> petInfo(int abNo) {
 		return pDAO.petInfo(abNo);
 	}
+
+	@Override
+	public Album petAlbumDetail(int abNo) {
+		return pDAO.petAlbumDetail(abNo);
+	}
+
+	@Override
+	public ArrayList<Attachment> petAttmList(int abNo) {
+		return pDAO.petAttmList(abNo);
+	}
+
+	@Override
+	public int petPhotoDelete(int abNo) {
+		return pDAO.petPhotoDelete(abNo);
+	}
 	 
 
 }
