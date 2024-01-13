@@ -28,10 +28,12 @@
 		</div>
 		<div class="header-container d-flex mt-5 justify-content-between">
 			<div class="d-flex">
-				<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+				<!--<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">-->
+				<img class="float-start me-4" th:src="@{/image/dog1.jpg}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 				<div class="header-text-container">
-					<h6>작성자</h6>
-					<p>2023.10.16</p>
+					<h6 th:text="${m.mNo}" name="mNo">글번호</h6>
+					<h6 th:text="${m.mbNickName}">작성자</h6>
+					<p th:text="${m.mCreateDate}">2023.10.16</p>
 				</div>
 			</div>
 			<div class="dropdown mt-1">
@@ -39,7 +41,7 @@
 				  	<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
 				</svg>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="/board/lost/edit">수정</a></li>
+					<li><a class="dropdown-item" th:href="@{/board/lost/edit}">수정</a></li>
 				    <li><a class="dropdown-item" id ="deleteModal" >삭제</a></li><!-- th:if="${ session.loginUser }" -->
 				    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
 				</ul>
@@ -56,7 +58,7 @@
 			      	<img src="/image/dog1.jpg" style="height:500px; width: 500px;">
 			    </div>
     			<div class="carousel-item">
-      				<img src="https://kream-phinf.pstatic.net/MjAyMzExMzBfMTkx/MDAxNzAxMzMyNzYyNTc3.UHki92T8iGvkrLOpGO-RyCUSz1GFLPxm5poyOYtH-0Ug._ZBLSk6mGHvXOQx89jYhwoiqFfyMlOwytVj6BAl-PLUg.JPEG/a_38c80c7c422c4aacb5249a7f04c5ce11.jpg" class="d-block h-100">
+      				<img th:src="@{https://kream-phinf.pstatic.net/MjAyMzExMzBfMTkx/MDAxNzAxMzMyNzYyNTc3.UHki92T8iGvkrLOpGO-RyCUSz1GFLPxm5poyOYtH-0Ug._ZBLSk6mGHvXOQx89jYhwoiqFfyMlOwytVj6BAl-PLUg.JPEG/a_38c80c7c422c4aacb5249a7f04c5ce11.jpg}" class="d-block h-100">
     			</div>
     			<div class="carousel-item">
       				<img src="" class="d-block h-100">
@@ -86,8 +88,8 @@
 	            <p>댓글 1개</p>
 	         </div>
 	         <hr>
-			<h3>강아지 유모차 팔아요</h3>
-			<p>거의 사용하지 않았던 제품입니다! 때문에 네고는 없어요ㅠㅠ</p>
+			<h3 th:text="${m.mTitle}">강아지 유모차 팔아요</h3>
+			<p th:text="${m.mContent}">거의 사용하지 않았던 제품입니다! 때문에 네고는 없어요ㅠㅠ</p>
 			<hr>
 		</div>
 		

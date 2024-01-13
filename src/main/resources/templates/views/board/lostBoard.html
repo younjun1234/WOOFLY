@@ -46,34 +46,20 @@
 		</div>
 		
 		<!-- 게시글 -->
-        <!--<div th:each="m : ${mList}" class="col">
-            <div class="card shadow-sm">
-				<div th:each="a : ${aList}" th:if="${a.attmRefNo == m.mNo}">
-					<img th:src="@{${a.attmPath}}" class="card-img-top" alt="사진을 찾을 수 없습니다" th:alt="${a.originalName}">
-				</div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <h6 th:text="${m.mTitle}">글제목</h6>
-                        <p th:text="${m.mbNickName}">작성자</p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-        <!-- 게시글 끝 -->
-        
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
            <div class="col" th:each="m : ${mList}">
-              <div class="card shadow-sm">
-                 <th:block th:each="a: ${aList}" th:if="${a.attmRefNo == m.mNo}">
+              <div class="card shadow-sm"> 
+                 <th:block th:each="a: ${aList}" th:if="${a.attmRefNo eq m.mNo}">
                     <img th:src="@{${a.attmPath}}" width="100%" height="225" th:if="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
                     <svg class="bd-placeholder-img card-img-top" width="100%" height="225" th:unless="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
                        <rect width="100%" height="100%" fill="#55595c"/>
                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
                     </svg>
-                 </th:block>
+                 </th:block> 
                  <div class="card-body">
                     <p class="card-text">
-						<p th:text="${m.mbNickName}">작성자</p>
+						<!--<p th:text="${m.mbNickName}">작성자</p>-->
+						 <label class="bId" th:text="${m.mNo}">No. [[${ m.mNo }]]</label> | <label class="writer" th:text="${m.mbNickName}">[[${ m.mbNickName }]]</label>
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
 						<h6 th:text="${m.mTitle}">글제목</h6>
@@ -82,9 +68,9 @@
               </div>
            </div>
         </div>
-            
+        <!-- 게시글 끝 -->    
+        
             <br><br><br>
-		
 		
 		<!--페이징처리 하는 부분-->	
 		<!--<nav class="border-top border-black pt-5">
@@ -147,22 +133,40 @@
           <!--페이지네이션 끝-->
 			
 	</div>
-
-
-
+	
 	<script>
-		// 해당 페이지 nav bar 강조 넣기
-		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
-		const boardNav = document.getElementById("topAdd7");
-		$(boardNav).addClass('active');
-		
-		// 카드에 클릭 이벤트 넣어주는 부분
-		const cards = document.getElementsByClassName("card");
-		for (const card of cards) {
-			card.addEventListener('click', () => {
-				window.location.href = "/board/lost/detail"
-			})
-		}
+	// 해당 페이지 nav bar 강조 넣기
+	// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
+	 const boardNav = document.getElementById("topAdd7");
+    $(boardNav).addClass('active');
+
+    // 카드에 클릭 이벤트 넣어주는 부분
+    const cards = document.getElementsByClassName("card");
+    for (const card of cards) {
+        card.addEventListener('click', function() {
+            const boardId = this.querySelector('.bId').textContent; // 카드에서 boardId 가져오기
+            const currentPage = /*[[${pi.currentPage}]]*/1; // 실제 현재 페이지 값으로 변경하세요
+
+            // boardId 및 currentPage 값을 사용하여 세부 페이지로 이동
+            window.location.href = `/board/lost/detail?mNo=${boardId}&page=${currentPage}`;
+        });
+    }
 	</script>
+	
+	<!--첨부파일 게시글 상세보기 script-->
+	<!--<script th:inline="javascript">
+		window.onload = () =>{
+			const divs = document.getElementsByClassName('card');
+			for(const div of divs){
+				div.addEventListener('click', function(){
+					const fullId = this.querySelector('bId').innerTest;
+					const boardId = boardId = fullId.split('')[1];
+					/*[CDATA[*/
+					location.href = 'selectAttm.at?bId=' + boardId + "&page=" + /*[[${pi.currentPage}]]*/1;
+					/*]]>*/
+				})
+			}
+		}
+	</script>-->
 </body>
 </html>

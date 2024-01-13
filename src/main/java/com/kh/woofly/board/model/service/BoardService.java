@@ -37,13 +37,13 @@ public interface BoardService {
 //	첨부파일 게시글 작성 //
 //	"/board/lost/detail"
 	// 글쓰기
-	LostBoard selectLostBoard(int mNo);
+	
 
 //	첨부파일 게시글 작성(등록) //
 //	/board/lost/insertLostBoard
 	
 
-	LostBoard selectLostBoard(int bId, Object object);
+	
 
 	
 	// 실종 검색 //
@@ -53,6 +53,8 @@ public interface BoardService {
 	int insertLostAttm(ArrayList<Attachment> attachments);
 
 	ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map);
+
+	LostBoard selectLostBoard(Integer mNo);
 
 
 	

@@ -315,7 +315,8 @@ public class BoardController {
 					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 	                                Model model,
 	                                HttpServletRequest request) throws BoardException {
-	        if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+	    	
+	    	if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
 	        	int listCount = bService.getMlistCount(1);
 	        	
 	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
@@ -328,6 +329,9 @@ public class BoardController {
 	        		model.addAttribute("pi", pi);
 	        		model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
 	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
+	        		
+	        		System.out.println("mList: " + mList.toString());
+	        		System.out.println("aList: " + aList.toString());
 	        	}
 	        } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
 	        	HashMap<String, String> map = new HashMap<>();
@@ -383,6 +387,7 @@ public class BoardController {
 	            }
 	         }
 	         
+	         // 아니 썸네일 첫번째 첨부파일으로 하는거 어케함
 	         for(int i=0; i < attachments.size(); i++) {
 	            Attachment a = attachments.get(i);
 	            if(i == 0) {
@@ -391,7 +396,6 @@ public class BoardController {
 	               a.setAttmLevel(2);
 	            }
 	         }
-	         
 	         
 	         int result2 = bService.insertLostAttm(attachments);
 	         System.out.println(attachments);
@@ -457,47 +461,56 @@ public class BoardController {
 	         }
 	      }
 
-
 		
 		
 		// 첨부파일 게시글 상세보기 //
-				@GetMapping("/board/lost/detail")
-				public String lostBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(name="mNo", required=false) Integer mNo, HttpSession session, Model model) throws BoardException {
-				
-					Member loginUser = (Member)session.getAttribute("loginUser");
-					String id = null;
-					if(loginUser != null) {
-						id = loginUser.getMbId();
-					}
-					LostBoard m = bService.selectLostBoard(mNo);
-					ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
-					
-					if(m != null) {
-						model.addAttribute("m", m);
-						model.addAttribute("page", page);
-						model.addAttribute("mList", mList);
-						//System.out.println(m);
-						return "lostBoardDetail";
-					} else {
-						throw new BoardException("게시글 상세보기를 실패하였습니다.");
-					}
-				}
+		@GetMapping("/board/lost/detail")
+		public String lostBoardDetail(@RequestParam(name="mNo", required=false) Integer mNo, 
+									  @RequestParam(value = "page", defaultValue = "1") int page, 
+									  HttpSession session, Model model) throws BoardException {
+		
+			Member loginUser = (Member)session.getAttribute("loginUser");
+			String mbId = null;
+			if(loginUser != null) {
+				mbId = loginUser.getMbId();
+			}
+			
+			System.out.println(mNo);
+			
+			if(mNo == null) {
+				// mNo가 null인 경우의 처리를 여기 추가
+				throw new BoardException("게시글 번호가 없습니다.");
+			}
+			
+			LostBoard m = bService.selectLostBoard(mNo);
+			ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
+			
+			if(m != null) {
+				model.addAttribute("m", m);
+				model.addAttribute("page", page);
+				model.addAttribute("mList", mList);
+				//System.out.println(m);
+				return "lostBoardDetail";
+			} else {
+				throw new BoardException("게시글 상세보기를 실패하였습니다.");
+			}
+		}
 		
 			
 
 		// 글 수정
-		@GetMapping("/board/lost/edit")
-		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
-				 @RequestParam("page") int page,
-				 Model model) {
-			LostBoard m = bService.selectLostBoard(bId, null);
-			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
-			model.addAttribute("m", m);
-			model.addAttribute("page", page);
-			model.addAttribute("mList", mList);
-			
-			return "lostBoardEdit";
-		}
+//		@GetMapping("/board/lost/edit")
+//		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
+//				 @RequestParam("page") int page,
+//				 Model model) {
+//			LostBoard m = bService.selectLostBoard(bId, null);
+//			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
+//			model.addAttribute("m", m);
+//			model.addAttribute("page", page);
+//			model.addAttribute("mList", mList);
+//			
+//			return "lostBoardEdit";
+//		}
 		
 		
 		

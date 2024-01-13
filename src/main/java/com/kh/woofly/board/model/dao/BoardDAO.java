@@ -36,13 +36,11 @@ public interface BoardDAO {
 
 	ArrayList<Attachment> selectAttmLostBoardList(Integer bId);
 
-	LostBoard selectLostBoard(int mNo);
 
 	int mListCount(int i);
 
 	
 
-	LostBoard selectLostBoard(int bId, Object object);
 
 	
 	
@@ -53,6 +51,8 @@ public interface BoardDAO {
 	int insertLostAttm(ArrayList<Attachment> attachments);
 
 	ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map);
+
+	LostBoard selectLostBoard(Integer mNo);
 
 
 	

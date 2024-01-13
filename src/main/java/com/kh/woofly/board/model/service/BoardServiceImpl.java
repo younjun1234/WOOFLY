@@ -72,17 +72,7 @@ private BoardServiceImpl boardDAO;
 		return bDAO.selectAttmLostBoardList(bId);
 	}
 
-	@Override
-	public LostBoard selectLostBoard(int mNo) {
-		return bDAO.selectLostBoard(mNo);
-	}
-
 	
-	@Override
-	public LostBoard selectLostBoard(int bId, Object object) {
-		return bDAO.selectLostBoard(bId, object);
-	}
-
 	
 
 	// 실종 검색 //
@@ -101,6 +91,11 @@ private BoardServiceImpl boardDAO;
 	@Override
 	public ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map) {
 		return bDAO.searchLostBoards(map);
+	}
+
+	@Override
+	public LostBoard selectLostBoard(Integer mNo) {
+		return bDAO.selectLostBoard(mNo);
 	}
 
 
