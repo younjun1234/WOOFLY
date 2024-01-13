@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -126,8 +127,57 @@ public class PetServiceImpl implements PetService{
 
 	@Override
 	public ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map) {
-		// TODO Auto-generated method stub
 		return pDAO.selectMyAlbumAttm(map);
+	}
+
+	@Override
+	public ArrayList<Album> selectMyAlbums(HashMap<String, String> map) {
+		return pDAO.selectMyAlbums(map);
+	}
+
+	@Override
+	public ArrayList<Album> petPhotoDetail(int abNo) {
+		return pDAO.petPhotoDetail(abNo);
+	}
+
+	@Override
+	public ArrayList<Pet> petInfo(int abNo) {
+		return pDAO.petInfo(abNo);
+	}
+
+	@Override
+	public Album petAlbumDetail(int abNo) {
+		return pDAO.petAlbumDetail(abNo);
+	}
+
+	@Override
+	public ArrayList<Attachment> petAttmList(int abNo) {
+		return pDAO.petAttmList(abNo);
+	}
+
+	@Override
+	public int petPhotoDelete(int abNo) {
+		return pDAO.petPhotoDelete(abNo);
+	}
+
+	@Override
+	public int insertAlbumReply(Reply r) {
+		return pDAO.insertAlbumReply(r);
+	}
+
+	@Override
+	public ArrayList<Reply> replyList(int abNo) {
+		return pDAO.replyList(abNo);
+	}
+
+	@Override
+	public int updateReply(Reply r) {
+		return pDAO.updateReply(r);
+	}
+
+	@Override
+	public int deleteReply(Reply r) {
+		return pDAO.deleteReply(r);
 	}
 	 
 
