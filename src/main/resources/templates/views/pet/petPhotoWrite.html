@@ -34,18 +34,16 @@
 					</div>
 					<br>
 					<div class="col-8">
-					  <select class="form-select" name="petId" style="width: 160px;" required>
+					  <select class="form-select" name="petId" id="petId" style="width: 160px;" required>
 						  <option selected disabled>강아지 선택</option>
 					  	  <option th:each="p : ${list}" th:value="${p.petId}" th:text="${p.petName}"></option>
 					  </select>
 						<p class="text-secondary mt-3">사진 첨부</p>
 			               <div class="d-flex">
-			   			   	 <button type="button" class="btn btn-sm btn-dark" onclick="fileAdd()">파일 찾기</button>&nbsp;&nbsp; 
-						     <input type="file" id="photo" name="file" style="display: none;" accept="image/*" value="123" multiple onchange="setThumbnail(event)"/>
-							 <button type="button" id="deleteAll" class="btn btn-outline-dark btn-sm">전체 삭제</button>
+			   			   	 <button type="button" class="btn btn-sm btn-dark" onclick="fileAdd()">파일 찾기</button>&nbsp;&nbsp;
+						     <input type="file" id="photo" style="display: none;" name="file" accept="image/*" value="123" multiple onchange="setThumbnail(event)"/>
 			   			   </div>
-							<div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4" id="preview">
-			               </div>
+							<div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4" id="preview"></div>
 			   		</div>
 					<div class="col-8 mt-4">
 						<p class="text-secondary">내용<p>
@@ -53,7 +51,8 @@
 						  <textarea name="abContent" placeholder="내용을 입력하세요..." class="form-control" id="exampleFormControlTextarea1" rows="10" style="resize:none;"></textarea>
 					</div>
 					<div class="d-flex justify-content-end mt-5 mx-5">
-					    <button class="btn btn-dark btn-sm">공유</button>
+					    <button onclick="validateForm();" type="button" class="btn btn-dark btn-sm">공유</button>
+					    <!-- <button type="submit" class="btn btn-dark btn-sm" id="chkbtn">공유</button> -->
 					</div>
 				</div>
 				<!-- 여기까지가 수정 -->
@@ -64,6 +63,8 @@
 				<!-- 여기까지가 수정 -->
 				<!-- 여기까지가 수정 -->
 				<!-- 여기까지가 수정 -->
+				
+				<!-- <button type="button" class="btn btn-outline-dark" id="chkbtn">확인</button> -->
 			</div>
 		</form>
 	</main>
@@ -77,27 +78,90 @@
 			photo.click();
 		}
 		
-		//파일 미리보기
+		//제출 유효성 검사
+	     function validateForm() {
+	        const petId = document.getElementById("petId");
+	        const abContent = document.getElementsByName("abContent");
+	        const photo = document.getElementById("photo");
+	        
+        	if (petId.value === '강아지 선택') {
+	            alert("마이펫을 선택해주세요!");
+	            return false;
+        	}
+
+	        if (abContent.value === null || abContent.value === '') {
+	            alert("내용을 입력해주세요!");
+	            return false;
+	        }
+
+	        if (photo.files.length === 0) {
+	            alert("사진을 최소 한 장 이상 첨부해주세요!");
+	            return false;
+	        }
+
+	        return document.querySelector('form').submit();
+	    } 
+		
+		
+		//파일 미리보기2
+		let count = 0;
 		function setThumbnail(event) {
-			const photo = document.getElementById("photo");
-	        for (var image of event.target.files) {
-	        	 var reader = new FileReader();
+		    const photo = document.getElementById("photo");
+		    for (var image of event.target.files) {
+		        var reader = new FileReader();
+			
+		        reader.onload = function (event) {
+		            var img = document.createElement("img");
+		            img.setAttribute("src", event.target.result);
+		            img.className = 'rounded';
+		            img.style.width = '150px';
+		            img.style.height = '150px';
+		            img.style.border = '1px grey';
+		
+		            // 썸네일을 감싸는 div 생성
+		            var thumbnailDiv = document.createElement("div");
+		            thumbnailDiv.appendChild(img);
+		            // 삭제 버튼 생성 및 이벤트 바인딩
+		            var deleteButton = document.createElement("button");
+		            deleteButton.className = 'btn btn-sm align-items-start';
+		            deleteButton.style.border = 'none';
+		            deleteButton.type = 'button';
+		            deleteButton.dataset.index = count++;
+		            deleteButton.innerHTML = 'x';
+		            thumbnailDiv.appendChild(deleteButton);
+		            
+		            deleteButton.addEventListener("click", function () {
+		            	const removeTargetId = this.dataset.index;
+		            	console.log(removeTargetId);
+		            	const files = photo.files;
+		                const dataTransfer = new DataTransfer();
+		                
+		                for(let i=0; i < files.length; i++) {
+		                	if(i != removeTargetId) {
+		                    	dataTransfer.items.add(files[i]);
+		                	}
+		                }
+		                photo.files = dataTransfer.files;
+		                thumbnailDiv.remove(); // 썸네일 삭제
+                 	});
+	                
+		            document.querySelector("div#preview").appendChild(thumbnailDiv);
+	            }
+		        reader.readAsDataURL(image);
+	
+		        console.log(image);
+	            // 썸네일 div에 삭제 버튼 추가
+	
+	            // 썸네일을 미리보기 영역에 추가
+        	};
 
-	             reader.onload = function(event) {
-	               var img = document.createElement("img");
-	               img.setAttribute("src", event.target.result);
-	               img.className = 'rounded';
-	               img.style.width = '150px';
-	               img.style.height = '150px';
-	               img.style.border = '1px solid black';
-	               document.querySelector("div#preview").appendChild(img);
-	             };
-
-	             console.log(image);
-	             reader.readAsDataURL(image);
-	            //document.querySelector("#preview").innerHTML += '<img src="'+ url +'" class="rounded me-3" alt="편집" style="width:150px; height:150px; border: 1px solid black; font-size: 1rem">'
-         	 };
-      	}
+	    }
+		
+	/* 	document.getElementById('chkbtn').addEventListener('click', () => {
+			console.log(document.getElementById('photo').files);
+		}) */
+		
+		
 	</script>
 </body>
 </html>

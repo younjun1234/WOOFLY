@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
@@ -24,8 +25,8 @@ public class BoardServiceImpl implements BoardService{
  //	자유게시판 "/board/free"
    
     @Override
-	public ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword) {
-    	return bDAO.searchFreeBoard(searchType, searchKeyword);
+	public ArrayList<Board> searchFreeBoards(HashMap<String, String> map) {
+    	return bDAO.searchFreeBoards(map);
 	}
    
 	@Override
@@ -110,6 +111,101 @@ public class BoardServiceImpl implements BoardService{
 	public ArrayList<Reply> selectFreeReply(int bNo) {
 		return bDAO.selectFreeReply(bNo);
 	}
+	
+	@Override
+	public int insertDwReply(Reply r) {
+		return bDAO.insertDwReply(r);
+	}
+
+	@Override
+	public int deleteDwReply(Reply r) {
+		return bDAO.deleteDwReply(r);
+	}
+	
+
+	
+//======// 도그워커  //===============================
+	
+	@Override
+	public int getDwListCount(int i) {
+		return bDAO.getDwListCount(i);
+	}
+	
+	@Override
+	public ArrayList<DwBoard> selectDwBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwBoardList(i, rowBounds);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmDwBoardList(Object object) {
+		return bDAO.selectAttmDwBoardList(object);
+	}
+	
+	//후기
+	
+	@Override
+	public int getDwRvListCount(int i) {
+		return bDAO.getDwRvListCount(i);
+	}
+
+	@Override
+	public ArrayList<DwBoard> selectDwRvBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwRvBoardList(i, rowBounds);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmDwRvBoardList(Object object) {
+		return bDAO.selectAttmDwRvBoardList(object);
+	}
+	
+	@Override
+	public DwBoard selectDwBoard(int dwNo, String id) {
+		DwBoard dw = bDAO.selectDwBoard(dwNo);
+		if(dw != null) {
+			if(id !=null && !dw.getMbId().equals(id)) {
+				int result = bDAO.updateDwCount(dwNo);
+				if(result >0) {
+					dw.setDwCount(dw.getDwCount() + 1);
+				}
+			}
+		}
+		return dw;
+	}
+
+	@Override
+	public ArrayList<Reply> selectDwReply(int dwNo) {
+		return bDAO.selectDwReply(dwNo);
+	}
+	
+	@Override
+	public int insertDwBoard(DwBoard dw) {
+		return bDAO.insertDwBoard(dw);
+	}
+
+	@Override
+	public int insertDwAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertDwAttm(attachments);
+	}
+	
+	@Override
+	public int updateDwBoard(DwBoard dw) {
+		return bDAO.updateDwBoard(dw);
+	}
+	
+	@Override
+	public int deleteDwBoard(int dwNo) {
+		return bDAO.deleteDwBoard(dwNo);
+	}
+
+	
+	
+	
+	
+	
 
 	
 // 실종신고 게시판
@@ -169,6 +265,23 @@ public class BoardServiceImpl implements BoardService{
 		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
 		return bDAO.selectMySelling(rowbounds, map);
 	}
+
+	
+
+	
+
+	
+	
+
+	
+	
+	
+
+	
+
+	
+
+	
 
 	
 

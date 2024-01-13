@@ -134,10 +134,54 @@
 		where ab_status = 'Y' and writer_id = #{id}
 	</select>
 	
+	<select id="selectMyAlbums" resultType="Album">
+		select *
+		from album
+			 join attachment on (ab_no = attm_ref_no)
+		where ab_status = 'Y' and writer_id = #{id} and attm_ref_type = 'AB' and attm_level = 1
+		order by ab_date desc
+	</select>
+	
 	<select id="selectMyAlbumAttm" resultType="Attachment">
+	<!-- 리스트를 뿌려줄 거기 때문에 썸네일 레벨 1인것들을 조건으로 -->
+	<!-- 마이펫 사진첩의 abNo를 가진 유일한 썸네일 사진을 반환 -->
 		select *
 		from attachment
 		where attm_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_level = 1
 	</select>
+	
+	<select id="petPhotoDetail" resultType="Album">
+		select *
+		from album 
+		    join attachment on (ab_no = attm_ref_no)
+		where ab_no= #{abNo} and ab_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo}
+		order by attm_level
+	</select>
+	
+	<select id="petInfo" resultType="pet">
+		select *
+		from pet
+			join album using(pet_id)
+		where ab_no = #{abNo}
+	</select>
+	
+	<select id="petAlbumDetail" resultType="Album">
+		select *
+		from album
+		where ab_no = #{abNo}
+	</select>
+	
+	<select id="petAttmList" resultType="Attachment">
+		select rename_name
+		from attachment
+    		join album on (ab_no = attm_ref_no)
+    	where ab_no = #{abNo} and ab_status = 'Y' and attm_ref_type='AB'
+	</select>
+	
+	<update id="petPhotoDelete">
+		update album
+		set ab_status = 'N'
+		where ab_no = #{abNo}
+	</update>
 	
 </mapper>
