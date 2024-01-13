@@ -191,6 +191,24 @@ public class CartController {
 		
 		return "redirect:/my/buying";
 	}
+	
+	@GetMapping("deleteOne.yj")
+	public String deleteOneCart(@RequestParam("cartId") int cartId) {
+		Cart c = new Cart();
+		c.setCartId(cartId);
+		int result = cService.deleteCart(c);
+		
+		return "redirect:/my/cart";
+	}
+	
+	@GetMapping("deleteAll.yj")
+	public String deleteAllCart(HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		int result = cService.deleteAllCart(id);
+		
+		return "redirect:/my/cart";
+	}
+		
 		
 }
 

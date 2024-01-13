@@ -32,7 +32,7 @@
 						<input type="hidden" name="cartId" th:value="${cart.cartId}">
 						<div class="ms-3"><b>[[${cart.productId}]]</b></div>
 						<div class="ms-3">[[${cart.productName}]]</div>
-						<div class="ms-3 text-secondary">[[${cart.pSize == 'N'} ? '' : ${cart.pSize}]] [[${cart.color == 'N'} ? '' : '/' + ${cart.color}]]</div>
+						<div class="ms-3 text-secondary">[[${cart.pSize == 'N'} ? '' : ${cart.pSize}]] [[${cart.pSize != 'N' and cart.color != 'N'} ? '/']] [[${cart.color == 'N'} ? '' : ${cart.color}]]</div>
 					</div>
 				</div>
 			</div>
@@ -813,6 +813,7 @@
 				}
 			}
 		}
+		
 		
 		
 	</script>

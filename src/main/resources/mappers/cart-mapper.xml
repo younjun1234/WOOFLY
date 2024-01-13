@@ -104,4 +104,9 @@
 		where mb_id = #{id}
 		
 	</update>
+	
+	<delete id="deleteAllCart">
+		delete from cart
+		where mb_id = #{id}
+	</delete>
 </mapper>

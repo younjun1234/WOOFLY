@@ -39,7 +39,7 @@
 							<div class="d-flex">
 								<input type="date" class="form-control d-block" name="startDate" id="startDate" th:value="${ startDate }">
 								<span class="my-auto">~</span>
-								<input type="date" class="form-control d-block" name="endDate" id="endDate" th:value="${ endDate }">
+								<input type="date" class="form-control d-block" name="endDate" id="endDate" th:value="${ endDate }" >
 							</div>
 							&nbsp;&nbsp;&nbsp;
 							<div>
@@ -190,7 +190,7 @@
 			
 			year = (endDate.getFullYear() + "");
 			month = ('0' + (endDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
-			day = ('0' + endDate.getDate()).slice(-2);
+			day = ('0' + (endDate.getDate()+1)).slice(-2);
 			
 			endDate = year + '-' + month + '-' + day;
 			window.location.href = '/my/buying?startDate=' + startDate + '&endDate=' + endDate;		
@@ -205,7 +205,7 @@
 			if(startDate.value == '' || sixMonthsBefore > newDate) {
 				let year = (sixMonthsBefore.getFullYear() + "");
 				let month = ('0' + (sixMonthsBefore.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
-				let day = ('0' + sixMonthsBefore.getDate()).slice(-2);
+				let day = ('0' + (sixMonthsBefore.getDate()+1)).slice(-2);
 				startDate.value = year + '-' + month + '-' + day;
 			}
 				

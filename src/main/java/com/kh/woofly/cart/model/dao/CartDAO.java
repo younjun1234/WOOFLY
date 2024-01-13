@@ -41,5 +41,7 @@ public interface CartDAO {
 
 	int usePoints(HashMap<String, Object> map);
 
+	int deleteAllCart(String id);
+
 
 }

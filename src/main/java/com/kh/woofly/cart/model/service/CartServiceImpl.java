@@ -85,4 +85,9 @@ public class CartServiceImpl implements CartService{
 		return cDAO.usePoints(map);
 	}
 
+	@Override
+	public int deleteAllCart(String id) {
+		return cDAO.deleteAllCart(id);
+	}
+
 }

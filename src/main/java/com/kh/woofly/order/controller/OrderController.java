@@ -103,6 +103,16 @@ public class OrderController {
 				map.put("endDate", sdf.format(calendar.getTime()));
 			} else {
 				map.put("endDate", sdf.parse(endDate));
+				
+				Date newDate = sdf.parse(endDate);
+				if (newDate.after(new Date())) {
+					
+					Calendar newCalendar = Calendar.getInstance();
+					newCalendar.setTime(newDate);
+					newCalendar.add(Calendar.DAY_OF_MONTH, -1);
+					endDate = sdf.format(newCalendar.getTime());
+				}
+				
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
