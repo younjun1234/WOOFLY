@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -347,10 +348,13 @@ public class PetController {
 	public String petPhotoDetail(@PathVariable("abNo") int abNo, Model model) {
 		ArrayList<Album> aList = pService.petPhotoDetail(abNo);
 		ArrayList<Pet> pList = pService.petInfo(abNo); 
+		ArrayList<Reply> rList = pService.replyList(abNo);
 		
 		if(aList != null) {
 			model.addAttribute("aList", aList);
 			model.addAttribute("pList", pList);
+			model.addAttribute("rList", rList);
+			
 			return "petPhotoDetail";
 		} else {
 			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
@@ -446,6 +450,49 @@ public class PetController {
 		return null;
 	}
 	
+	//댓글
+	@GetMapping(value="/insertReply.dw")
+	@ResponseBody
+	public String insertReply(@ModelAttribute Reply r, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		r.setMbId(id);
+		r.setBType("AB");
+		int result = pService.insertAlbumReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	@GetMapping("/updateReply.dw")
+	@ResponseBody
+	public String updateReply(@ModelAttribute Reply r){
+		int result = pService.updateReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	@GetMapping("/deleteReply.dw")
+	@ResponseBody
+	public String deleteReply(@ModelAttribute Reply r){
+		int result = pService.deleteReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
 	@GetMapping("pet/petDiaryWrite")
 	public String petDiaryWriteView(Model model, HttpSession session) { 
 		//보유 강아지 리스트 뿌리기
@@ -472,7 +519,6 @@ public class PetController {
 	    	throw new PetException("마이펫 다이어리 등록에 실패하였습니다.");
 	    }
 	}
-	
 
 	@GetMapping("pet/petDiaryDetail")
 	public String petDiaryDetailView(@ModelAttribute Diary d, @RequestParam("petId") int petId, HttpSession session) {
