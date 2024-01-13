@@ -186,7 +186,6 @@
 	    <input type="hidden" th:value="${session.loginUser?.mbId}" id="rAccuser" name="rAccuser">
 	    <input type="hidden" th:value='${dw.dwNo}' id="dwNo" name="dwNo">
 	    <input type="hidden" id="rContent" name="rContent"/>
-	    <input type="hidden" th:value="${page}" name="page">
 	
 	    <div class="modal fade reportReplyModal" id="modal1" tabindex="-1">
 	        <div class="modal-dialog modal-dialog-centered">
@@ -198,9 +197,9 @@
 	                <div class="modal-body content1" id="content1">
 	                    <select class="form-select mb-3" id="reportReason" name="reportReason">
 	                        <option disabled>신고 사유</option>
-	                        <option value="1">불법게시글</option>
-	                        <option value="2">음란물</option>
-	                        <option value="3">기타</option>
+	                        <option value="불법게시글">불법게시글</option>
+	                        <option value="음란물">음란물</option>
+	                        <option value="기타">기타</option>
 	                    </select>
 	                    <textarea class="form-control content2" id="content2" rows="5" style="resize: none;"></textarea>
 	                </div>
@@ -211,6 +210,7 @@
 	        </div>
 	    </div>
 	</form>
+	
 	<!-- 삭제 -->
 	<div class="modal fade" tabindex="-1" role="dialog" id="modalChoice">
 		<div class="modal-dialog" role="document">
@@ -279,41 +279,41 @@
 				form.submit();
 			})
 			
-			document.getElementById('reportModal').addEventListener('click', () => {
-		        $('#modal1').modal('show');
-		    });
-			
 			/* document.getElementById('reportReply').addEventListener('click', () =>{
 				form.action = '/board/dw/report';
 				form.submit();
 			}) */
 			
+			document.getElementById('reportModal').addEventListener('click', () => {
+		        $('#modal1').modal('show');
+		    });
+						
+			
 			// AJAX를 통한 폼 제출
 		    document.getElementById('reportSubmit').addEventListener('click', () => {
+		    	console.log(123);
 		        // 모달에서 선택한 사유 가져오기
 		        var reportReason = document.getElementById('reportReason').value;
-
+				console.log(reportReason);
 		        // 모달에서 입력한 내용 가져오기
 		        var reportContent = document.getElementById('content2').value;
-		        console.log(page);
+		        console.log(reportContent);
 		        // AJAX 요청
 		        $.ajax({
 		            url: '/board/dw/report',
-		            type: 'POST',
 		            data: {
 		                rAccused: $('#rAccused').val(),
 		                rAccuser: $('#rAccuser').val(),
 		                dwNo: $('#dwNo').val(),
 		                rContent: reportReason + '&^' + reportContent,
-		                page: $('#page').val()
-		                
+		               		                
 		            },
 		            success: function (data) {
 		                console.log(data);  
-		                
-		                 if (data == 'good') {
+		                if (data == 'good') {
 		                	 $('#modal1').modal('hide');
 			             }
+		                
 		            },
 		            error: function (data) {
 		                console.error(data);  

@@ -204,8 +204,14 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public int BoardReport(Report newRep) {
-		return bDAO.BoardReport(newRep);
+	public int deleteDwAttm(ArrayList<String> delRename) {
+		return bDAO.deleteDwAttm(delRename);
+	}
+
+	
+	@Override
+	public int BoardReport(Report rep) {
+		return bDAO.BoardReport(rep);
 	}
 	
 
@@ -256,14 +262,37 @@ public class BoardServiceImpl implements BoardService{
 	public WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id) {
 		return bDAO.selectWmBoard(wmNo, id);
 	}
+	
+	@Override
+	public int deleteWmAttm(ArrayList<String> delRename) {
+		return bDAO.deleteWmAttm(delRename);
+	}
+
+	@Override
+	public int updateWmBoard(WmBoard wm) {
+		return bDAO.updateWmBoard(wm);
+	}	
+
+	@Override
+	public int deleteWmBoard(int wmNo) {
+		return bDAO.deleteWmBoard(wmNo);
+	}	
+	
+	@Override
+	public int inserWmReply(Reply r) {
+		return bDAO.inserWmReply(r);
+	}
+
+	@Override
+	public int deletWmReply(Reply r) {
+		return bDAO.deletWmReply(r);
+	}
 
 	@Override
 	public ArrayList<Reply> selectWmReply(int wmNo) {
 		return bDAO.selectWmReply(wmNo);
 	}
 
-	
-	
 	
 	
 	
@@ -307,6 +336,13 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.selectLostBoard(bId, object);
 	}
 
+	
+
+
+
+	
+
+	
 	
 
 	

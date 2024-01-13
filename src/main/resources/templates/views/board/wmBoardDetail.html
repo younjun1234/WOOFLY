@@ -246,10 +246,13 @@
 		
 		window.onload = () =>{
 			
-			document.getElementById('reportModal').addEventListener('click', () => {
-		        $('#modal1').modal('show');
-		    });
-			
+			const reportModalElement = document.getElementById('reportModal');
+			   if (reportModalElement) {
+			       reportModalElement.addEventListener('click', () => {
+			           $('#modal1').modal('show');
+			       });
+			   }
+			   
 			const upd = document.getElementById("updateForm");
 			const form = document.getElementById('detailForm');			
 			if(upd != null){
@@ -258,6 +261,8 @@
 					form.submit();
 				});
 			}
+			
+			
 			
 			const del = document.getElementById('deleteModal')
 			if(del != null) {

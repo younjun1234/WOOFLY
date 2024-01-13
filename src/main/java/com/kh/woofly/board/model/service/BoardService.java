@@ -74,6 +74,8 @@ public interface BoardService {
 	
 	int deleteDwBoard(int dwNo);
 	
+	int deleteDwAttm(ArrayList<String> delRename);
+	
 	int insertDwReply(Reply r);
 
 	int deleteDwReply(Reply r);
@@ -99,10 +101,21 @@ public interface BoardService {
 	int insertWmAttm(ArrayList<Attachment> attachments);
 	
 	WmBoard selectWmBoard(int wmNo, String id);
+	
+	int deleteWmAttm(ArrayList<String> delRename);
+
+	int updateWmBoard(WmBoard wm);
+	
+	int deleteWmBoard(int wmNo);
 
 	ArrayList<Reply> selectWmReply(int wmNo);
+	
+	int inserWmReply(Reply r);
 
-	int BoardReport(Report newRep);
+	int deletWmReply(Reply r);
+
+	int BoardReport(Report rep);
+	
 
 
 // 실종신고 게시판 "/board/lost"
@@ -122,6 +135,14 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
 
 	
 

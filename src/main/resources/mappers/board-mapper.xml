@@ -230,9 +230,18 @@
 		select * from dual
 	</insert>
 	
+	<delete id="deleteDwAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
 	<update id="updateDwBoard">
 		update dw_board
-		set dw_title = #{dwTitle}, dw_type = #{dwType}, dw_content = #{dwContent}, dw_price=#{dwPrice}
+		set dw_title = #{dwTitle}, dw_type = #{dwType}, dw_content = #{dwContent}, dw_price=#{dwPrice}, dw_location =#{dwLocation}
 		where dw_no = #{ dwNo }
 	</update>
 	
@@ -241,7 +250,7 @@
 		set dw_status = 'N'
 		where dw_no = #{ dwNo }
 	</update>
-	
+		
 	<insert id="insertDwReply">
       insert into reply
       values(reply_seq.nextval, #{bType}, #{bNo}, 
@@ -319,7 +328,7 @@
 	        select wm_seq.nextval as wmNo from dual
 	    </selectKey>
 	    insert into wm_board 
-	    values (#{wmNo}, #{wmType}, #{wmTitle}, #{wmContent}, default,'주소', SYSDATE, default, #{mbId}, default)
+	    values (#{wmNo}, #{wmType}, #{wmTitle}, #{wmContent}, default,#{wmLocation}, SYSDATE, default, #{mbId}, default)
 	</insert>	
 	
 	<insert id="insertWmAttm">
@@ -338,6 +347,40 @@
 			join member m on b.mb_id = m.mb_id 
 		where b.wm_status = 'Y' and b.wm_no = #{ wmNo }
 	</select>
+	
+	<delete id="deleteWmAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<update id="updateWmBoard">
+		update wm_board
+		set wm_title = #{wmTitle}, wm_type = #{wmType}, wm_content = #{wmContent}, wm_location=#{wmLocation}
+		where wm_no = #{ wmNo }
+	</update>
+	
+	<update id="deleteWmBoard">
+		update wm_board
+		set wm_status = 'N'
+		where wm_no = #{ wmNo }
+	</update>
+	
+	<insert id="inserWmReply">
+      insert into reply
+      values(reply_seq.nextval, #{bType}, #{bNo}, 
+            #{reContent}, SYSDATE, default, default, #{mbId})
+   </insert>
+   
+   <update id="deletWmReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo } and b_type = 'WM'
+	</update>	
+	
 	
 	<select id="selectWmReply" resultType="Reply">
 		select  r.*, m.mb_nickname as "mbNickName" 

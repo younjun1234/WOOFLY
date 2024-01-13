@@ -85,11 +85,13 @@ public interface BoardDAO {
 	
 	int deleteDwBoard(int dwNo);
 	
+	int deleteDwAttm(ArrayList<String> delRename);
+	
 	int insertDwReply(Reply r);
 
 	int deleteDwReply(Reply r);	
 	
-	int BoardReport(Report newRep);
+	int BoardReport(Report rep);
 	
 	
 //======// 산책메이트  //===============================
@@ -111,6 +113,16 @@ public interface BoardDAO {
 	int insertWmAttm(ArrayList<Attachment> attachments);
 	
 	WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id);
+	
+	int deleteWmAttm(ArrayList<String> delRename);
+
+	int updateWmBoard(WmBoard wm);
+	
+	int deleteWmBoard(int wmNo);
+	
+	int inserWmReply(Reply r);
+
+	int deletWmReply(Reply r);
 
 	ArrayList<Reply> selectWmReply(int wmNo);
 	
@@ -136,6 +148,15 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
+	
 
 	
 

@@ -574,7 +574,7 @@ public class BoardController {
 			int updateBoardResult = 0;
 			boolean existBeforeAttm = true;
 			if(!delRename.isEmpty()) {
-				deleteAttmResult = bService.deleteFreeAttm(delRename);
+				deleteAttmResult = bService.deleteDwAttm(delRename);
 				if(deleteAttmResult > 0) {
 					for(String rename : delRename) {
 						deleteFile(rename);
@@ -692,16 +692,16 @@ public class BoardController {
 			
 		}
 		
-		@PostMapping("/board/dw/report")
-		public String wmBoardReport(@ModelAttribute Report rep,
-		                            @RequestParam("page") int page, @RequestParam("dwNo") int dwNo) {
+		@GetMapping("/board/dw/report")
+		@ResponseBody
+		public String wmBoardReport(@ModelAttribute Report rep, @RequestParam("dwNo") int dwNo) {
 
-		    Report newRep = new Report();
-		    newRep.setRCategory("DW");
-		    newRep.setRType("B");
-		    newRep.setRBoardNo(dwNo);
-		    System.out.println(newRep);
-		    int result = bService.BoardReport(newRep); // 수정된 부분
+		    
+		    rep.setRCategory("DW");
+		    rep.setRType("B");
+		    rep.setRBoardNo(dwNo);
+		    System.out.println(rep);
+		    int result = bService.BoardReport(rep); // 수정된 부분
 
 		    if(result > 0) {
 				return "good";
@@ -843,10 +843,172 @@ public class BoardController {
 			
 		}
 		
-		@GetMapping("/board/wm/edit")
-		public String wmBoardEdit() {
+		@GetMapping("/board/wm/editForm")
+		public String dwBoardWmitForm(@RequestParam("wmNo") int wmNo, @RequestParam("page") int page, Model model) {
 			
-			return "wmBoardEdit";
+			WmBoard wm = bService.selectWmBoard(wmNo,null);
+			//System.out.println(dw);
+			ArrayList<Attachment> list = bService.selectAttmWmBoardList(wmNo);
+			model.addAttribute("wm", wm);
+			model.addAttribute("page", page);
+			model.addAttribute("list", list);
+			
+			return "WmBoardEdit";
+		}
+		
+		@PostMapping("/board/wm/edit")
+		public String wmBoardEdit(@RequestParam("wmType") String wmTypeStr, @ModelAttribute WmBoard wm, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
+								@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+			
+			int wmType = Integer.parseInt(wmTypeStr);
+			System.out.println(wmType);
+			ArrayList<Attachment> list = new ArrayList<>();
+			for(int i=0; i< files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment a = new Attachment();
+						a.setOriginalName(upload.getOriginalFilename());
+						a.setRenameName(returnArr[1]);
+						a.setAttmPath(returnArr[0]);
+						
+						list.add(a);
+					}
+				}
+			}
+			
+			ArrayList<String> delRename = new ArrayList<>();
+			ArrayList<Integer> delLevel = new ArrayList<>();
+			for(String a : deleteAttm) {
+				if(!a.equals("none")) {
+					String[] split = a.split("/");
+					delRename.add(split[0]);
+					delLevel.add(Integer.parseInt(split[1]));
+				}
+			}
+			
+			int deleteAttmResult = 0;
+			int updateBoardResult = 0;
+			boolean existBeforeAttm = true;
+			if(!delRename.isEmpty()) {
+				deleteAttmResult = bService.deleteWmAttm(delRename);
+				if(deleteAttmResult > 0) {
+					for(String rename : delRename) {
+						deleteFile(rename);
+					}
+				}
+			
+				if(delRename.size() == deleteAttm.length) {
+					existBeforeAttm = false;
+					
+				} else {
+					for(int level : delLevel) {
+						if(level == 0) {
+							bService.updateAttmLevel(wm.getWmNo());
+							break;
+						}
+					}
+				}
+			}
+			
+
+			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            int level = Integer.parseInt(split[1]);
+		            if (level == 1) {
+		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                break;
+		            }
+		        }
+		    }
+
+		    for (int i = 0; i < list.size(); i++) {
+		        Attachment a = list.get(i);
+		        a.setAttmRefNo(wm.getWmNo());
+
+		        if (hasExistingFile) {
+		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		        } else {
+		            if (!hasLevelOne) {
+		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		            } else {
+		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		            }
+		        }
+		    }
+
+
+			//System.out.println(wm.getWmNo());
+			updateBoardResult = bService.updateWmBoard(wm);
+			int updateAttmResult = 0;
+			if(!list.isEmpty())  {
+				updateAttmResult = bService.insertWmAttm(list);
+			}
+			//System.out.println(updateBoardResult);
+			//System.out.println(updateAttmResult);
+			if(updateBoardResult + updateAttmResult > 0) {				
+				redirectAttributes.addAttribute("wmNo", wm.getWmNo());
+				redirectAttributes.addAttribute("page", page);
+				
+				return "redirect:/board/wm/detail";
+				
+			} else {
+				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+			}
+		}
+		
+		@GetMapping("/board/wm/delete")
+		public String deleteWmBoard(@RequestParam("wmNo") int wmNo) throws BoardException {
+			int result1 = bService.deleteWmBoard(wmNo);
+			int result2 = bService.statusNAttm(wmNo);
+			//System.out.println(bNo);
+			if(result1 > 0 || result2> 0) {
+				return "redirect:/board/wm";
+			} else {
+				throw new BoardException("게시글 삭제 실패");
+			}
+		}
+		
+		@GetMapping(value="/insertWmReply.yk")
+		@ResponseBody
+		public String insertWmReply(@ModelAttribute Reply r) {
+			r.setBType("WM");
+			int result = bService.inserWmReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		@GetMapping(value="/deleteWmReply.yk")
+		@ResponseBody
+		public String deleteWmReply(@ModelAttribute Reply r) {
+			int result = bService.deletWmReply(r);
+			
+			//System.out.println(r);
+			// 우리 댓글테이블은 공유잖아?
+			// 그래서 댓글넘버가 프라이머리키야(고유해)
+			// 그래서 너는 1,2,3,4번을 가지고 있어 이건 도그워커 + 그 게시글에서 생성된 댓글
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
 		}
 		
 		
