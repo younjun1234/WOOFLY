@@ -3,6 +3,9 @@ package com.kh.woofly.pet.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.pet.model.vo.Album;
+import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
 public interface PetService {
@@ -32,5 +35,23 @@ public interface PetService {
 	int editPetPhoto(Pet p);
 
 	int deletePetPhoto(int petId);
+
+	int petDiaryWrite(Diary d);
+
+	ArrayList<Diary> petDiaryList(String id);
+
+	Diary petDiaryDetail(int drNo);
+
+	int petDiaryEdit(Diary d);
+
+	int petDiaryDelete(int drNo);
+
+	int insertPetPhoto(Album a);
+
+	int insertPetAlbum(Attachment att);
+
+	ArrayList<Album> selectMyAlbum(String id);
+
+	ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map);
 
 }

@@ -75,7 +75,12 @@
 	
 	<insert id="addPoints">
 		insert into point_history
-		values (point_history_seq.nextval, 'A', #{points}, sysdate, #{id})
+		<if test="usedPoints == null">
+			values (point_history_seq.nextval, 'A', #{points}, sysdate, #{id})
+		</if>
+		<if test="usedPoints != null">
+			values (point_history_seq.nextval, 'S', #{usedPoints}, sysdate, #{id})
+		</if>
 	</insert>
 	
 	<select id="selectAddr" resultType="MemberAddress">
@@ -92,4 +97,11 @@
 		delete from cart
 		where cart_id = #{cartId}
 	</delete>
+	
+	<update id="usePoints">
+		update member
+		set mb_point = mb_point - #{usedPoints}
+		where mb_id = #{id}
+		
+	</update>
 </mapper>

@@ -3,14 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <title>WOOFLY</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
 <link rel="icon" href="/image/woofly.png">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+	crossorigin="anonymous"></script>
 <style>
-	.active {
-		color: black !important;
-		font-weight: 700 !important;
-	}
+.active {
+	color: black !important;
+	font-weight: 700 !important;
+}
 </style>
 </head>
 <body>
@@ -35,169 +42,159 @@
 					<h4>마이펫 정보</h4>
 					<br>
 					<div>
-						<p class="text-secondary">마이펫 프로필 사진</p>
-						   <div class="justify-content-center">
-							   <div class="d-flex align-items-center mt-2 mb-4" style="height: 150px;">
-				                 <img class="mx-3" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
-				               </div>
-				               <div class="d-flex">
-				              	    <form action="/editPetPhoto.dw" method="POST" enctype="multipart/form-data" id="petPhotoForm">
-				              	    	<!-- <input type="hidden" name="petId" th:value="${p.petId}"> -->
-										<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 추가</button>&nbsp;&nbsp;
-										<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
-									</form>
-									<form action="/deletePetPhoto.dw" method="get" id="deletePhotoForm">
-										<!-- <input type="hidden" name="petId" th:value="${p.petId}">  -->
-										<button type="button" class="btn btn-dark btn-sm">삭제</button>
-									</form>
-				   			   </div>
-			   			   </div>
-			   		</div>
-	   			   
-	   			 <!--   <div class="d-flex justify-content-center">
-						<form action="/editPetPhoto.dw" method="POST" enctype="multipart/form-data" id="petPhotoForm">
-							<input type="hidden" name="petId" th:value="${p.petId}">
-							<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 변경</button>&nbsp;&nbsp; 
-							<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
-						</form>
-						<form action="/deletePetPhoto.dw" method="get" id="deletePhotoForm">
-							<input type="hidden" name="petId" th:value="${p.petId}">
-							<button type="button" class="btn btn-dark btn-sm" id="deletePetPhoto">삭제</button>
-						</form>
-					</div> -->
-	   			   
-	   			   
-					<br>
-					<form action="/petAdd.dw" method="post">
-						<div>
-							<p class="text-secondary">마이펫 이름</p>
-							<div class="border-bottom d-flex justify-content-between maxlength='6'">
-								<input type="text" oninput="if (this.value.length > 6) this.value = this.value.slice(0, 6);" name="petName" style="border: none; background: transparent;" required>
+						<form action="/petAdd.dw" method="post">
+							<p class="text-secondary">마이펫 프로필 사진</p>
+							<div class="justify-content-center">
+								<div class="d-flex align-items-center mt-2 mb-4"
+									style="height: 150px;">
+									<img class="mx-3" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
+								</div>
+								<div class="d-flex">
+									<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 추가</button>&nbsp;&nbsp; 
+									<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
+									<button type="button" class="btn btn-dark btn-sm">삭제</button>
+								</div>
 							</div>
-						</div>
-						<div class="mt-4">
-							<p class="text-secondary">마이펫 소개 (30자 이내)</p>
-							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="petIntro" style="border: none; background: transparent;" oninput="if (this.value.length > 30) this.value = this.value.slice(0, 30);">
-							</div>
-						</div>
-						<br>
-						<div>
-							<p class="text-secondary">생년월일<p>
-							<div class="d-flex">
-								<input type="date" id="petBirth" name="petBirth" class="form-control d-block" style="width: 200px;">
-							</div>
-						</div>
-						<br>
-						<div>
-							<p class="text-secondary">견종<p>
-							<select class="form-select" aria-label="Default select example" name="petBreed">
-							  <option selected>선택</option>
-							  <option>골든리트리버</option>
-							  <option>그레이하운드</option>
-							  <option>노리치테리어</option>
-							  <option>닥스훈트</option>
-							  <option>도사</option>
-							  <option>동경견</option>
-							  <option>라브라도리트리버</option>
-							  <option>라이카</option>
-							  <option>리트리버</option>
-							  <option>말티즈</option>
-							  <option>말티푸</option>
-							  <option>미니어쳐푸들</option>
-							  <option>미니어쳐핀셔</option>
-							  <option>믹스견</option>
-							  <option>보더콜리</option>
-							  <option>보스턴테리어</option>
-							  <option>불독</option>
-							  <option>불테리어</option>
-							  <option>브리타니스파니엘</option>
-							  <option>비글</option>
-							  <option>비숑프리제</option>
-							  <option>사모예드</option>
-							  <option>삽살개</option>
-							  <option>샤페이</option>
-							  <option>셰퍼드</option>
-							  <option>슈나우져</option>
-							  <option>스코티쉬테리어</option>
-							  <option>스태퍼드셔불테리어</option>
-							  <option>스탠다드푸들</option>
-							  <option>스피츠</option>
-							  <option>시바</option>
-							  <option>시베리안허스키</option>
-							  <option>시츄</option>
-							  <option>아메리칸불리</option>
-							  <option>아메리칸코카스파니엘</option>
-							  <option>요크셔테리어</option>
-							  <option>울프독</option>
-							  <option>웰시코기</option>
-							  <option>웰시코기카디건</option>
-							  <option>웰시코기펨브로크</option>
-							  <option>재패니즈스피츠</option>
-							  <option>재패니즈칭</option>
-							  <option>진도견</option>
-							  <option>차우차우</option>
-							  <option>치와와</option>
-							  <option>카네코르소</option>
-							  <option>코카스파니엘</option>
-							  <option>토이푸들</option>
-							  <option>페키니즈</option>
-							  <option>포메라니안</option>
-							  <option>포인터</option>
-							  <option>푸들</option>
-							  <option>푸숑</option>
-							  <option>풍산견</option>
-							  <option>프렌치불독</option>
-							  <option>핏불테리어</option>
-							  <option>화이트리트리버</option>
-							  <option>휘펫</option>
-							</select>
-						</div>
-						<br>
-						<div>
-							<p class="text-secondary">몸무게 (kg)<p>
-							<div class="border-bottom d-flex justify-content-between">
-								<input type="number" min="0" name="petWeight" style="border: none; background: transparent;">
-							</div>
-						</div>
-						<br>
-						<div>
-							<p class="text-secondary">성별<p>
-							<select class="form-select" aria-label="Default select example" name="petGender" required>
-							  <option selected value="">선택</option>
-							  <option value="M">남아</option>
-							  <option value="F">여아</option>
-							</select>
-						</div>
-						<br>
-						<div class="form-group">
-							<p class="text-secondary">특이사항<p>
-							  <label for="exampleFormControlTextarea1" class="form-label"></label>
-							  <textarea class="form-control" id="exampleFormControlTextarea1" style="resize:none;"rows="5" name="petMemo" maxlength="80" placeholder="특이사항은 견주님만 볼 수 있어요!"></textarea>
-							<div class="textLengthWrap d-flex justify-content-end">
-							    <p class="textCount">0자</p>
-							    <p class="textTotal">/80자</p>
-							 </div>
-						</div>
-						<div class="d-flex justify-content-between">
+							<br>
 							<div>
-							    <button type="button" class="btn btn-sm btn-outline-dark" onclick="javascript:history.back();">뒤로가기</button>
-							</div>  
-							<div>  
-							    <button type="submit" class="btn btn-dark btn-sm">확인</button>
+								<p class="text-secondary">마이펫 이름</p>
+								<div class="border-bottom d-flex justify-content-between maxlength='6'">
+									<input type="text" oninput="if (this.value.length > 6) this.value = this.value.slice(0, 6);" name="petName" style="border: none; background: transparent;" required>
+								</div>
 							</div>
-						</div>
-					</form>
+							<div class="mt-4">
+								<p class="text-secondary">마이펫 소개 (30자 이내)</p>
+								<div class="border-bottom d-flex justify-content-between">
+									<input type="text" name="petIntro"
+										style="border: none; background: transparent;"
+										oninput="if (this.value.length > 30) this.value = this.value.slice(0, 30);">
+								</div>
+							</div>
+							<br>
+							<div>
+								<p class="text-secondary">생년월일
+								<p>
+								<div class="d-flex">
+									<input type="date" id="petBirth" name="petBirth" class="form-control d-block" style="width: 200px;">
+								</div>
+							</div>
+							<br>
+							<div>
+								<p class="text-secondary">견종
+								<p>
+									<select class="form-select" aria-label="Default select example"
+										name="petBreed">
+										<option selected>선택</option>
+										<option>골든리트리버</option>
+										<option>그레이하운드</option>
+										<option>노리치테리어</option>
+										<option>닥스훈트</option>
+										<option>도사</option>
+										<option>동경견</option>
+										<option>라브라도리트리버</option>
+										<option>라이카</option>
+										<option>리트리버</option>
+										<option>말티즈</option>
+										<option>말티푸</option>
+										<option>미니어쳐푸들</option>
+										<option>미니어쳐핀셔</option>
+										<option>믹스견</option>
+										<option>보더콜리</option>
+										<option>보스턴테리어</option>
+										<option>불독</option>
+										<option>불테리어</option>
+										<option>브리타니스파니엘</option>
+										<option>비글</option>
+										<option>비숑프리제</option>
+										<option>사모예드</option>
+										<option>삽살개</option>
+										<option>샤페이</option>
+										<option>셰퍼드</option>
+										<option>슈나우져</option>
+										<option>스코티쉬테리어</option>
+										<option>스태퍼드셔불테리어</option>
+										<option>스탠다드푸들</option>
+										<option>스피츠</option>
+										<option>시바</option>
+										<option>시베리안허스키</option>
+										<option>시츄</option>
+										<option>아메리칸불리</option>
+										<option>아메리칸코카스파니엘</option>
+										<option>요크셔테리어</option>
+										<option>울프독</option>
+										<option>웰시코기</option>
+										<option>웰시코기카디건</option>
+										<option>웰시코기펨브로크</option>
+										<option>재패니즈스피츠</option>
+										<option>재패니즈칭</option>
+										<option>진도견</option>
+										<option>차우차우</option>
+										<option>치와와</option>
+										<option>카네코르소</option>
+										<option>코카스파니엘</option>
+										<option>토이푸들</option>
+										<option>페키니즈</option>
+										<option>포메라니안</option>
+										<option>포인터</option>
+										<option>푸들</option>
+										<option>푸숑</option>
+										<option>풍산견</option>
+										<option>프렌치불독</option>
+										<option>핏불테리어</option>
+										<option>화이트리트리버</option>
+										<option>휘펫</option>
+									</select>
+							</div>
+							<br>
+							<div>
+								<p class="text-secondary">몸무게 (kg)
+								<p>
+								<div class="border-bottom d-flex justify-content-between">
+									<input type="number" min="0" name="petWeight" style="border: none; background: transparent;">
+								</div>
+							</div>
+							<br>
+							<div>
+								<p class="text-secondary">성별<p>
+									<select class="form-select" aria-label="Default select example" name="petGender" required>
+										<option selected value="">선택</option>
+										<option value="M">남아</option>
+										<option value="F">여아</option>
+									</select>
+							</div>
+							<br>
+							<div class="form-group">
+								<p class="text-secondary">특이사항
+								<p>
+									<label for="exampleFormControlTextarea1" class="form-label"></label>
+									<textarea class="form-control" id="exampleFormControlTextarea1" style="resize: none;" rows="5" name="petMemo" maxlength="80"
+										placeholder="특이사항은 견주님만 볼 수 있어요!"></textarea>
+								<div class="textLengthWrap d-flex justify-content-end">
+									<p class="textCount">0자</p>
+									<p class="textTotal">/80자</p>
+								</div>
+							</div>
+							<div class="d-flex justify-content-between">
+								<div>
+									<button type="button" class="btn btn-sm btn-outline-dark"
+										onclick="javascript:history.back();">뒤로가기</button>
+								</div>
+								<div>
+									<button type="submit" class="btn btn-dark btn-sm">확인</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+					<!-- 여기까지가 수정 -->
+				</div>
 			</div>
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-			<!-- 여기까지가 수정 -->
-		</div>
 		</div>
 	</main>
 	<script>
@@ -211,12 +208,13 @@
         const today = new Date(now_date-timeOff).toISOString().split("T")[0];
         document.getElementById("petBirth").setAttribute("max", today);
         
-	      //마이펫 삭제
-	  	  const deletePetPhoto = document.getElementById("deletePetPhoto");
-	  	  deletePetPhoto.addEventListener('click', ()=>{
-	  		  document.getElementById("deletePhotoForm").submit();
-	  	  })
-        
+      //마이펫 프로필 사진 삭제
+  	  const deletePetPhoto = document.getElementById("deletePetPhoto");
+  	  deletePetPhoto.addEventListener('click', ()=>{
+  		  document.getElementById("deletePhotoForm").submit();
+  	  })
+  	  
+        //마이펫 프로필 사진 추가, 변경
 		const profileChange = () => {
 			const profile = document.getElementById("profile");
 			profile.click();
@@ -225,7 +223,7 @@
 		const profile = document.getElementById('profile');
 		profile.addEventListener('change', () => {
 			if (profile.files.length > 0) {
-	 			document.getElementById("mbPhotoForm").submit();
+	 			document.getElementById("").submit();
 			}
 		})			
 		

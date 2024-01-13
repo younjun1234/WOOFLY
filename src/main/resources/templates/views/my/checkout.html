@@ -83,13 +83,14 @@
 					</div>
 				</div>
 				<div class="form-text mt-2">포인트</div>
+				[[${#numbers.formatInteger(session.loginUser.mbPoint, 3, 'COMMA')}]]P
 				<div class="d-flex align-items-center mt-2">
 					<div class="col-10">
-						<input type="text" class="form-control" th:disabled="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
+						<input type="number" class="form-control" th:disabled="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
 					</div>
 					&nbsp;&nbsp;&nbsp;
 					<div>
-						<button type="button" class="badge rounded-pill text-bg-secondary" disabled style="border: none;" th:styleappend="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'" onclick="useAllPoints();">최대 사용</button>
+						<button type="button" class="badge rounded-pill text-bg-secondary" th:disabled="${session.loginUser.mbPoint < 1000}" style="border: none;" role='button' th:styleappend="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'" id="allPoints">최대 사용</button>
 					</div>
 				</div>
 				<div class="d-flex">
@@ -100,7 +101,7 @@
 					  	<path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
 					</svg>
 					&nbsp;
-					<div class="form-text">[[${session.loginUser.mbPoint}]]</div>
+					<div class="form-text">[[${#numbers.formatInteger(session.loginUser.mbPoint, 3, 'COMMA')}]]P</div>
 				</div>
 			</div>
 			
@@ -163,9 +164,9 @@
 						<div>포인트 사용</div>
 					</div>
 					<div class="text-end">
-						<div>[[${#numbers.formatInteger(total, 3, 'COMMA')}]]원</div>
+						<div>[[${#numbers.formatInteger(total-3000, 3, 'COMMA')}]]원</div>
 						<div>3,000원</div>
-						<div>-</div>
+						<div id="uPoints">-</div>
 					</div>
 				</div>
 			</div>
@@ -173,7 +174,7 @@
 			<!-- 총 금액 -->
 			<div class="w-50 mx-auto p-4 border-top border-bottom bg-light ">
 				<p>총 결제 금액</p>
-				<h3 class="text-end">[[${#numbers.formatInteger(total+3000, 3, 'COMMA')}]]원</h3>
+				<h3 class="text-end" id="tPrice">[[${#numbers.formatInteger(total, 3, 'COMMA')}]]원</h3>
 			</div>
 			
 			<!-- 포인트 -->
@@ -184,12 +185,12 @@
 				</div>
 				<div class="d-flex justify-content-between py-2">
 					<div>계좌 간편결제 시</div>
-					<div>[[${points}]]P</div>
+					<div class="dPoints">[[${points}]]P</div>
 				</div>
 				<div class="border"></div>
 				<div class="d-flex justify-content-between py-2">
 					<div>적립 예정 포인트</div>
-					<div>[[${points}]]P</div>
+					<div class="dPoints">[[${points}]]P</div>
 				</div>
 			</div>
 			
@@ -242,7 +243,7 @@
 				<br>
 				<div class="d-flex justify-content-between">
 					<div><strong>총 결제 내역</strong></div>
-					<div><h3 class="text-danger">[[${#numbers.formatInteger(total+3000, 3, 'COMMA')}]]원</h3></div>
+					<div><h3 class="text-danger" id="rtPrice">[[${#numbers.formatInteger(total, 3, 'COMMA')}]]원</h3></div>
 				</div>
 				
 				<div class="d-grid mt-2">
@@ -464,15 +465,68 @@
 		
 		
 		
-	
+		const rtPrice = document.getElementById('rtPrice');
 		//포인트 전부 사용
-		const useAllPoints = () => {
+		document.getElementById('allPoints').addEventListener('click', () => {
 			const points = document.getElementsByName('usedPoints')[0];
 			/*<![CDATA[*/
 			const mbPoints = /*[[${session.loginUser.mbPoint}]]*/0;
-			/*]]>*/
 			points.value = mbPoints;
-		}
+			
+			const dPoints = document.getElementsByClassName('dPoints');
+			for(const dPoint of dPoints) {
+				dPoint.innerText = "0P";
+			}
+			
+			const uPoints = document.getElementById('uPoints');
+			uPoints.innerText = "-" + mbPoints.toLocaleString() + "원";
+
+			const tPrice = document.getElementById('tPrice');
+			const total = /*[[${total}]]*/0;
+			tPrice.innerText = (total - mbPoints).toLocaleString() + "원";
+			rtPrice.innerText = (total - mbPoints).toLocaleString() + "원";
+			/*]]>*/
+		});
+		
+		// 포인트 일부 사용
+		const points = document.getElementsByName('usedPoints')[0];
+		points.addEventListener('keyup', () => {
+			const x = parseInt(points.value);
+			console.log(x);
+			const uPoints = document.getElementById('uPoints');
+			
+			/*<![CDATA[*/
+			
+			const total = /*[[${total}]]*/0;
+			const mbPoints = /*[[${session.loginUser.mbPoint}]]*/0;
+			const sP = /*[[${points}]]*/0;
+			
+			/*]]>*/
+			const tPrice = document.getElementById('tPrice');
+			const dPoints = document.getElementsByClassName('dPoints');
+			
+			if(x < 1000) {
+				for(const dPoint of dPoints) {
+					dPoint.innerText = sP.toLocaleString() + "P";
+				}
+				uPoints.innerText = "-";
+				tPrice.innerText = (total).toLocaleString() + "원";
+				rtPrice.innerText = (total).toLocaleString() + "원";
+
+
+
+			} else if (x >= 1000){
+				for(const dPoint of dPoints) {
+					dPoint.innerText = "0P";
+				}
+				tPrice.innerText = (total - x).toLocaleString() + "원";
+				uPoints.innerText = "-" + x.toLocaleString() + "원";
+				rtPrice.innerText = (total - x).toLocaleString() + "원";
+
+
+
+			}
+		});
 	
 		// 요청 사항 저장
 		const saveRequest = document.getElementById('saveRequest');

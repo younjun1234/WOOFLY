@@ -103,7 +103,7 @@ public class CartController {
 		// 내 결제 정보
 		ArrayList<Payment> pList = cService.selectPayment(id);
 		model.addAttribute("pList", pList);
-		model.addAttribute("total", cart.getPrice() * cart.getQuantity());
+		model.addAttribute("total", cart.getPrice() * cart.getQuantity() + 3000);
 		model.addAttribute("cList", cList);
 		model.addAttribute("paList", paList);
 		model.addAttribute("maList", maList);
@@ -124,14 +124,14 @@ public class CartController {
 			total += c.getPrice() * c.getQuantity();
 			paList.add(cService.selectCartAttm(c));
 		}
-			
+		
 		
 		ArrayList<MemberAddress> maList = cService.selectDefaultAddr(id);
 		// 내 결제 정보
 		ArrayList<Payment> pList = cService.selectPayment(id);
 		model.addAttribute("points", Math.round(total * 0.1));
 		model.addAttribute("pList", pList);
-		model.addAttribute("total", total);
+		model.addAttribute("total", total+3000);
 		model.addAttribute("cList", cList);
 		model.addAttribute("paList", paList);
 		model.addAttribute("maList", maList);
@@ -141,12 +141,17 @@ public class CartController {
 	
 	@PostMapping("checkout.yj")
 	public String sendPayment(@RequestParam("amount") int amount, @RequestParam("cartId") int[] cartIds, @RequestParam("billingKey") String billingKey, HttpSession session,
-							  @RequestParam("addrId") int addrId, @RequestParam("orderRequest") String orderRequest, @RequestParam("points") int points) {
+							  @RequestParam("addrId") int addrId, @RequestParam("orderRequest") String orderRequest, @RequestParam("points") int points, @RequestParam("usedPoints") int usedPoints) {
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("points", points);
 		map.put("id", loginUser.getMbId());
-		int pResult = cService.addPoints(map);
+		map.put("points", points);
+		if (usedPoints >= 1000) {
+			map.put("usedPoints", usedPoints);
+			amount -= usedPoints;
+			int upResult = cService.usePoints(map);
+		}
+		int apResult = cService.addPoints(map);
 		MemberAddress ma = cService.selectAddr(addrId);
 		Order o = new Order(0, null, amount, loginUser.getMbId(), 3000, 0, ma.getMbName(), ma.getMbTel(), "("+ma.getPostcode()+")"+ma.getAddr()+ma.getAddrDetail(), "카드", orderRequest, "0", cartIds.length);
 		int oResult = cService.insertOrder(o);
@@ -168,7 +173,7 @@ public class CartController {
 			    .header("Authorization", "Basic dGVzdF9za19rWUc1N0ViYTNHNkFlRG40NXFhOThwV0RPeG1BOg==")
 			    .header("Content-Type", "application/json")
 			    .method("POST", HttpRequest.BodyPublishers.ofString("{\"customerKey\":\"" + loginUser.getMbId() + 
-			    													"\",\"amount\":" + amount + 
+			    													"\",\"amount\":" + (amount) + 
 			    													",\"orderId\":\"" + o.getOrderId() + 
 			    													"\",\"orderName\":\"" + "WOOFLY" + 
 			    													"\",\"customerEmail\":\"" + loginUser.getMbEmail() +
@@ -183,7 +188,7 @@ public class CartController {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println(response.body());
+		
 		return "redirect:/my/buying";
 	}
 		

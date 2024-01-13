@@ -80,4 +80,9 @@ public class CartServiceImpl implements CartService{
 		return cDAO.deleteCart(c);
 	}
 
+	@Override
+	public int usePoints(HashMap<String, Object> map) {
+		return cDAO.usePoints(map);
+	}
+
 }

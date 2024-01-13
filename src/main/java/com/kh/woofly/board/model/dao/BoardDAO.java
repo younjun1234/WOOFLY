@@ -7,16 +7,18 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.board.model.vo.Attachment;
-
 import com.kh.woofly.board.model.vo.Board;
-import com.kh.woofly.board.model.vo.Reply;
-import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.UsedBoard;
+import com.kh.woofly.common.Reply;
 
 @Mapper
 public interface BoardDAO {
 
 //	자유게시판 "/board/free"
+	
+	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
+	
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(int i, RowBounds rowBounds);
@@ -30,14 +32,20 @@ public interface BoardDAO {
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
+	
+	int updateFreeBoard(Board b);
 
 	int deleteFreeBoard(int bNo);
 	
-	int deleteFreeReply(int rNo);
+	int deleteFreeAttm(ArrayList<String> delRename);
 
+	void updateAttmLevel(int bNo);
+	
 	int statusNAttm(int bNo);
 
 	int insertFreeReply(Reply r);
+	
+	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 
@@ -64,6 +72,16 @@ public interface BoardDAO {
 	int selectMySellingCount(String id);
 
 	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 

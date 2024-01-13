@@ -6,13 +6,16 @@ import java.util.HashMap;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Reply;
 
 public interface BoardService {
 
-//	자유게시판 "/board/free"
+//	자유게시판 "/board/free"	
+	
+	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
+	
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(PageInfo pi, int i);
@@ -24,14 +27,20 @@ public interface BoardService {
 	int insertFreeBoard(Board b);
 
 	int insertFreeAttm(ArrayList<Attachment> attachments);
+	
+	int updateFreeBoard(Board b);
 
 	int deleteFreeBoard(int bNo);
 	
-	int deleteFreeReply(int rNo);
-
+	int deleteFreeAttm(ArrayList<String> delRename);
+	
+	void updateAttmLevel(int bNo);
+	
 	int statusNAttm(int bNo);
 
 	int insertFreeReply(Reply r);
+	
+	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 
@@ -64,6 +73,18 @@ public interface BoardService {
 	int selectMySellingCount(String id);
 
 	ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map);
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
 
 
 	

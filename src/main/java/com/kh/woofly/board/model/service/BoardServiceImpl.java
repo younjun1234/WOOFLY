@@ -11,9 +11,9 @@ import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Reply;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -22,6 +22,12 @@ public class BoardServiceImpl implements BoardService{
    private BoardDAO bDAO;
    
  //	자유게시판 "/board/free"
+   
+    @Override
+	public ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword) {
+    	return bDAO.searchFreeBoard(searchType, searchKeyword);
+	}
+   
 	@Override
 	public int getListCount(int i) {
 		return bDAO.getListCount(i);
@@ -62,6 +68,11 @@ public class BoardServiceImpl implements BoardService{
 	public int insertFreeAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertFreeAttm(attachments);
 	}
+	
+	@Override
+	public int updateFreeBoard(Board b) {
+		return bDAO.updateFreeBoard(b);
+	}
 
 	@Override
 	public int deleteFreeBoard(int bNo) {
@@ -69,10 +80,16 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public int deleteFreeReply(int rNo) {
-		return bDAO.deleteFreeReply(rNo);
+	public int deleteFreeAttm(ArrayList<String> delRename) {
+		return bDAO.deleteFreeAttm(delRename);
 	}
 
+	@Override
+	public void updateAttmLevel(int bNo) {
+		bDAO.updateAttmLevel(bNo);
+		
+	}
+	
 	@Override
 	public int statusNAttm(int bNo) {
 		return bDAO.statusNAttm(bNo);
@@ -82,6 +99,12 @@ public class BoardServiceImpl implements BoardService{
 	public int insertFreeReply(Reply r) {
 		return bDAO.insertFreeReply(r);
 	}
+	
+	@Override
+	public int deleteFreeReply(Reply r) {
+		return bDAO.deleteFreeReply(r);
+	}
+
 
 	@Override
 	public ArrayList<Reply> selectFreeReply(int bNo) {
@@ -147,6 +170,17 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.selectMySelling(rowbounds, map);
 	}
 
+	
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 	
