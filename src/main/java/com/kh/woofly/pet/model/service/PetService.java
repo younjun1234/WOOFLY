@@ -69,4 +69,10 @@ public interface PetService {
 
 	int insertAlbumReply(Reply r);
 
+	ArrayList<Reply> replyList(int abNo);
+
+	int updateReply(Reply r);
+
+	int deleteReply(Reply r);
+
 }

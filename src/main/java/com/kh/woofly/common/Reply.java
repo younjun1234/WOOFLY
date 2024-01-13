@@ -27,5 +27,6 @@ public class Reply {
 	
 	private String mbNickName;
 	private boolean userLiked;
+	private String mbPhoto;
 }
 

@@ -49,6 +49,7 @@ public class AccountController {
 	
 	private Logger logger = LoggerFactory.getLogger(AccountController.class);
 	
+	
 	final DefaultMessageService messageService;
 
     public AccountController() {
@@ -75,20 +76,36 @@ public class AccountController {
 	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
 		Member loginUser = aService.login(m);
 		
-		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-			model.addAttribute("loginUser", loginUser);
-//			if (loginUser.getIsAdmin().equals("N")) {
-//				//로그 추가
-//				logger.info(loginUser.getMbId());
-//				return "redirect:/";
-//			} else {
-//				return "redirect:admin.ad";
-//			}
-			return "redirect:/";
-		} else {
-			throw new AccountException("로그인을 실패하였습니다.");
-		}
+//		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
+//			model.addAttribute("loginUser", loginUser);
+////			if (loginUser.getIsAdmin().equals("N")) {
+////				//로그 추가
+////				logger.info(loginUser.getMbId());
+////				return "redirect:/";
+////			} else {
+////				return "redirect:admin.ad";
+////			}
+//			return "redirect:/";
+//		} else {
+//			throw new AccountException("로그인을 실패하였습니다.");
+//		}
 		
+		if(loginUser != null) {
+	         if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
+	            model.addAttribute("loginUser",loginUser);
+	            
+	            if(!beforeURL.equals("http://localhost:8080/account/logout") && !beforeURL.equals("http://localhost:8080/signUp.dw"))
+	            {
+	               return "redirect:" + beforeURL;
+	            }else {
+	               return "redirect:/";
+	            }
+	         }else {
+	            return "redirect:signUp.dw";
+	         }
+	      }else {
+	         return "redirect:signUp.dw";
+	      }
 	}
 	
 	@GetMapping("/idCheck.dw")

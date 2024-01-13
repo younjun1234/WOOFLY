@@ -164,6 +164,21 @@ public class PetServiceImpl implements PetService{
 	public int insertAlbumReply(Reply r) {
 		return pDAO.insertAlbumReply(r);
 	}
+
+	@Override
+	public ArrayList<Reply> replyList(int abNo) {
+		return pDAO.replyList(abNo);
+	}
+
+	@Override
+	public int updateReply(Reply r) {
+		return pDAO.updateReply(r);
+	}
+
+	@Override
+	public int deleteReply(Reply r) {
+		return pDAO.deleteReply(r);
+	}
 	 
 
 }

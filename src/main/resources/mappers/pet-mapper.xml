@@ -186,7 +186,27 @@
 	
 	<insert id="insertAlbumReply" parameterType="Reply">
 		insert into reply
-     	values(reply_seq.nextval, 'AB', #{abNo}, #{reContent}, SYSDATE, default, default, #{mbId})
+     	values(reply_seq.nextval, 'AB', #{bNo}, #{reContent}, SYSDATE, default, default, #{mbId})
 	</insert>
+	
+	<select id="replyList" resultType="Reply">
+		select *
+		from reply
+			join MEMBER using (MB_ID)
+		where b_type = 'AB' and re_d_status = 'Y' and B_NO = #{abNo}
+		order by re_date desc
+	</select>
+	
+	<update id="updateReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
+	
+	<update id="deleteReply">
+		update reply
+		set re_d_status = 'N'
+		where r_No = #{rNo}
+	</update>
 	
 </mapper>
