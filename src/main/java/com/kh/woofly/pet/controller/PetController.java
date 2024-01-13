@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -444,6 +445,22 @@ public class PetController {
 	@PostMapping("petPhotoEdit.dw")
 	public String petPhotoEdit(@RequestParam("file") ArrayList<MultipartFile> files) {
 		return null;
+	}
+	
+	//댓글
+	@GetMapping(value="/insertReply.dw")
+	@ResponseBody
+	public String insertReply(@ModelAttribute Reply r) {
+		r.setBType("AB");
+		int result = pService.insertAlbumReply(r);
+		System.out.println(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
 	}
 	
 	@GetMapping("pet/petDiaryWrite")

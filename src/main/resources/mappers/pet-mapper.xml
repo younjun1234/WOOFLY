@@ -184,4 +184,9 @@
 		where ab_no = #{abNo}
 	</update>
 	
+	<insert id="insertAlbumReply" parameterType="Reply">
+		insert into reply
+     	values(reply_seq.nextval, 'AB', #{abNo}, #{reContent}, SYSDATE, default, default, #{mbId})
+	</insert>
+	
 </mapper>

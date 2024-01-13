@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
@@ -68,5 +69,7 @@ public interface PetDAO {
 	ArrayList<Attachment> petAttmList(int abNo);
 
 	int petPhotoDelete(int abNo);
+
+	int insertAlbumReply(Reply r);
 
 }

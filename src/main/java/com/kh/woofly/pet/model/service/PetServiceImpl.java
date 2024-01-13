@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -157,6 +158,11 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int petPhotoDelete(int abNo) {
 		return pDAO.petPhotoDelete(abNo);
+	}
+
+	@Override
+	public int insertAlbumReply(Reply r) {
+		return pDAO.insertAlbumReply(r);
 	}
 	 
 
