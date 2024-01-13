@@ -43,7 +43,7 @@
 					<ul class="dropdown-menu"> <!--  href="/board/free/editForm" -->
 						<li><a class="dropdown-item" id="updateForm" th:if="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">수정</a></li>
 					    <li><a class="dropdown-item" id ="deleteModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">삭제</a></li>
-					    <li><button class="dropdown-item" id ="reportModal" data-bs-toggle="modal" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">신고</button></li>
+					    <li><a class="dropdown-item" id ="reportModal" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">신고</a></li>
 					</ul> <!-- data-bs-target="#modal1" -->
 				</div>
 			</div>
@@ -102,6 +102,7 @@
 						<input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
 						<input type="hidden" id="mbId" name="mbId" th:value="${session.loginUser?.mbId}">
 						<input type="hidden" id="mbNickname" name="mbNickname" th:value="${session.loginUser?.mbNickName}">
+						<input type = "hidden" th:value ="${ page }" name ="page">
 		<!-- 댓글 작성 영역 --> 
 		
 		<div class="mt-3" th:if="${ session.loginUser != null}" >
@@ -148,7 +149,7 @@
 								</svg>
 								<ul class="dropdown-menu">
 								    <li><a class="dropdown-item deleteReply" id ="deleteReplyModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">삭제</a></li>
-								    <li><button class="dropdown-item reportReply" data-bs-toggle="modal"  th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
+								    <li><a class="dropdown-item reportReply" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</a></li>
 								</ul> <!-- data-bs-target="#modal1" -->
 							</div>
 						</div>   
@@ -180,31 +181,36 @@
 		</nav>
 	</div>
 	<!-- 신고 영역 -->
-	<form>
-		<div class="modal fade reportReplyModal" id="modal1" tabindex="-1">
-		  	<div class="modal-dialog modal-dialog-centered">
-		    	<div class="modal-content">
-		      		<div class="modal-header">
-		        		<h1 class="modal-title fs-5" id="modalToggleLabel1">신고</h1>
-		        		<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-		      		</div>
-		      		<div class="modal-body">
-			      		<select class="form-select mb-3">
-						  	<option disabled>신고 사유</option>
-						  	<option value="1">불법게시글</option>
-						  	<option value="2">음란물</option>
-						  	<option value="3">기타</option>
-						</select>
-		        		<textarea class="form-control" rows="5" style="resize: none;"></textarea>
-		    		</div>
-		    		<div class="modal-footer">
-		        		<button class="btn btn-primary" data-bs-toggle="modal"  id="reportReply">제출</button>
-		      		</div>
-		    	</div>
-		  	</div>
-		</div>
-	</form>
+	<form id="reportForm">
+	    <input type="hidden" th:value='${dw.mbId}' id="rAccused" name="rAccused">
+	    <input type="hidden" th:value="${session.loginUser?.mbId}" id="rAccuser" name="rAccuser">
+	    <input type="hidden" th:value='${dw.dwNo}' id="dwNo" name="dwNo">
+	    <input type="hidden" id="rContent" name="rContent"/>
+	    <input type="hidden" th:value="${page}" name="page">
 	
+	    <div class="modal fade reportReplyModal" id="modal1" tabindex="-1">
+	        <div class="modal-dialog modal-dialog-centered">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h1 class="modal-title fs-5" id="modalToggleLabel1">신고</h1>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+	                </div>
+	                <div class="modal-body content1" id="content1">
+	                    <select class="form-select mb-3" id="reportReason" name="reportReason">
+	                        <option disabled>신고 사유</option>
+	                        <option value="1">불법게시글</option>
+	                        <option value="2">음란물</option>
+	                        <option value="3">기타</option>
+	                    </select>
+	                    <textarea class="form-control content2" id="content2" rows="5" style="resize: none;"></textarea>
+	                </div>
+	                <div class="modal-footer">
+	                    <button class="btn btn-primary" data-bs-dismiss="modal" id="reportSubmit">제출</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</form>
 	<!-- 삭제 -->
 	<div class="modal fade" tabindex="-1" role="dialog" id="modalChoice">
 		<div class="modal-dialog" role="document">
@@ -272,6 +278,48 @@
 				form.action = '/board/dw/delete';
 				form.submit();
 			})
+			
+			document.getElementById('reportModal').addEventListener('click', () => {
+		        $('#modal1').modal('show');
+		    });
+			
+			/* document.getElementById('reportReply').addEventListener('click', () =>{
+				form.action = '/board/dw/report';
+				form.submit();
+			}) */
+			
+			// AJAX를 통한 폼 제출
+		    document.getElementById('reportSubmit').addEventListener('click', () => {
+		        // 모달에서 선택한 사유 가져오기
+		        var reportReason = document.getElementById('reportReason').value;
+
+		        // 모달에서 입력한 내용 가져오기
+		        var reportContent = document.getElementById('content2').value;
+		        console.log(page);
+		        // AJAX 요청
+		        $.ajax({
+		            url: '/board/dw/report',
+		            type: 'POST',
+		            data: {
+		                rAccused: $('#rAccused').val(),
+		                rAccuser: $('#rAccuser').val(),
+		                dwNo: $('#dwNo').val(),
+		                rContent: reportReason + '&^' + reportContent,
+		                page: $('#page').val()
+		                
+		            },
+		            success: function (data) {
+		                console.log(data);  
+		                
+		                 if (data == 'good') {
+		                	 $('#modal1').modal('hide');
+			             }
+		            },
+		            error: function (data) {
+		                console.error(data);  
+		            }
+		        });
+		    });
 					
 			
 			/* 댓글 */
@@ -280,10 +328,8 @@
 			    deleteReplyButton.addEventListener('click', () => {
 			        const rNo = deleteReplyButton.closest('tr').querySelector('[name=rNo]').value;
 			
-			        // 삭제 버튼을 눌렀을 때 모달 창 띄우기
 			        $('.deleteReplyModal').modal('show');
 			
-			        // 모달 창에서 "네" 버튼을 눌렀을 때 삭제 처리
 			        document.getElementById('deleteReply').addEventListener('click', () => {
 			            $.ajax({
 			                url: '/deleteDwReply.yk',
@@ -297,7 +343,6 @@
 			                error: (data) => console.log(data),
 			            });
 			
-			            // 모달 창 닫기
 			            $('.deleteReplyModal').modal('hide');
 			        });
 			    });

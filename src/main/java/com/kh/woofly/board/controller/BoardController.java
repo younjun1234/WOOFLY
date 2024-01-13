@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.exception.BoardException;
 import com.kh.woofly.board.model.service.BoardService;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
@@ -691,27 +693,100 @@ public class BoardController {
 			}
 			
 		}
+		
+		@PostMapping("/board/dw/report")
+		public String wmBoardReport(@ModelAttribute Report rep,
+		                            @RequestParam("page") int page, @RequestParam("dwNo") int dwNo) {
+
+		    Report newRep = new Report();
+		    newRep.setRCategory("DW");
+		    newRep.setRType("B");
+		    newRep.setRBoardNo(dwNo);
+		    System.out.println(newRep);
+		    int result = bService.BoardReport(newRep); // 수정된 부분
+
+		    if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+		}
+
 			
 		// 3. 산책메이트 //
 		
 		@GetMapping("/board/wm")
-		public String wmBoardView(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String wmBoardView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
 			
-			model.addAttribute("page", page);
-			return "wmBoard";
+			int listCount = bService.getWmListCount(1);
+			
+			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+			ArrayList<WmBoard> list = bService.selectWmBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmWmBoardList(null);
+			
+			//System.out.println(list);
+			if(list != null) {
+				model.addAttribute("pi", pi);
+				model.addAttribute("list", list);
+				model.addAttribute("aList", aList);
+				model.addAttribute("loc", request.getRequestURI());
+				
+				return "wmBoard";
+			} else {
+				throw new BoardException("게시글 조회 실패");
+			}
+			
 		}
 		
 		@GetMapping("/board/wmReview")
-		public String wmReviewBoard(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String wmReviewBoard(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
 			
-			model.addAttribute("page", page);
-			return "wmReviewBoard";
+			int listCount = bService.getWmRvListCount(1);
+			
+			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+			ArrayList<WmBoard> list = bService.selectWmRvBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmWmRvBoardList(null);
+			
+			//System.out.println(list);
+			if(list != null) {
+				model.addAttribute("pi", pi);
+				model.addAttribute("list", list);
+				model.addAttribute("aList", aList);
+				model.addAttribute("loc", request.getRequestURI());
+				
+				return "wmReviewBoard";
+			} else {
+				throw new BoardException("게시글 조회 실패");
+			}
 		}
 		
 		@GetMapping("/board/wm/detail")
-		public String wmBoardDetail(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String wmBoardDetail(@RequestParam(value="page", defaultValue="1") String page, @RequestParam("wmNo") int wmNo, HttpSession session, Model model) {
 			
-			return "wmBoardDetail";
+			Member loginUser = (Member)session.getAttribute("loginUser");
+			String id = null;
+			if(loginUser != null) {
+				id = loginUser.getMbId();
+			}
+			System.out.println(wmNo);
+			System.out.println(id);
+			WmBoard wm = bService.selectWmBoard(wmNo, id);
+			System.out.println(wm);
+			ArrayList<Attachment> list = bService.selectAttmWmBoardList(wmNo); 
+			ArrayList<Reply> rList = bService.selectWmReply(wmNo);
+			
+			if(wm != null) {
+				model.addAttribute("wm", wm);
+				model.addAttribute("page", page);
+				model.addAttribute("list", list);
+				model.addAttribute("rList", rList);
+				//System.out.println(rList);
+				return "wmBoardDetail";
+			} else {
+				throw new BoardException("게시글 상세보기를 실패하였습니다.");
+			}
+			
 		}
 		
 		@GetMapping("/board/wm/write")
@@ -720,12 +795,63 @@ public class BoardController {
 			return "wmBoardWrite";
 		}
 		
+		@PostMapping("/board/free/insertWmBoard")
+		public String insertWmBoard(@RequestParam("wmType") String wmTypeStr, @ModelAttribute WmBoard wm, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
+			
+			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+			wm.setMbId(boardWriter);
+			
+			int wmType = Integer.parseInt(wmTypeStr);
+			int result1 = bService.insertWmBoard(wm); 
+			
+			ArrayList<Attachment> attachments = new ArrayList<>();
+			for(int i = 0; i<files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment attachment = new Attachment();
+						attachment.setOriginalName(upload.getOriginalFilename());
+						attachment.setRenameName(returnArr[1]);
+						attachment.setAttmPath(returnArr[0]);
+						attachment.setAttmRefType("Wm");
+						attachment.setAttmRefNo(wm.getWmNo());
+						
+						attachments.add(attachment);
+					}
+				}
+			}
+			
+			for(int i=0; i < attachments.size(); i++) {
+				Attachment a = attachments.get(i);
+				if(i == 0) {
+					a.setAttmLevel(1);
+				} else {
+					a.setAttmLevel(2);
+				}
+			}
+			
+			int result2 = bService.insertWmAttm(attachments);
+			//System.out.println(result1);
+			//System.out.println(result2);
+			if(result1 + result2 > 0) {
+				return "redirect:/board/wm";
+			} else {
+				for(Attachment a : attachments) {
+					deleteFile(a.getRenameName());
+				}
+				throw new BoardException("게시글 작성을 실패하였습니다.");
+		    }
+			
+		}
+		
 		@GetMapping("/board/wm/edit")
 		public String wmBoardEdit() {
 			
 			return "wmBoardEdit";
 		}
-			
+		
+		
 		
 		//<< 카드댁 형식 >>
 		// 

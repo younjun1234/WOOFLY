@@ -3,10 +3,12 @@ package com.kh.woofly.board.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
@@ -75,7 +77,32 @@ public interface BoardService {
 	int insertDwReply(Reply r);
 
 	int deleteDwReply(Reply r);
+	
+	
+	
+//======// 워킹메이트  //===============================
+	
+	int getWmListCount(int i);
 
+	ArrayList<WmBoard> selectWmBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmWmBoardList(Object object);
+	
+	int getWmRvListCount(int i);
+
+	ArrayList<WmBoard> selectWmRvBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmWmRvBoardList(Object object);
+	
+	int insertWmBoard(WmBoard wm);
+
+	int insertWmAttm(ArrayList<Attachment> attachments);
+	
+	WmBoard selectWmBoard(int wmNo, String id);
+
+	ArrayList<Reply> selectWmReply(int wmNo);
+
+	int BoardReport(Report newRep);
 
 
 // 실종신고 게시판 "/board/lost"
@@ -95,6 +122,19 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+	
 
 	
 

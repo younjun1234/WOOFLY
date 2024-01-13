@@ -24,4 +24,5 @@ public class WmBoard {
 	private String wmStatus;
 	private String mbId;
 	private String mbNickName;
+	private int wmLike;
 }

@@ -24,22 +24,23 @@
 				</div>
 			</div>
 			
-			<form>
+			<form  action="/board/free/insertWmBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
-					    <select class="form-select mb-1">
+					    <select class="form-select mb-1"  name="wmType">
 					    	<option value="" disabled selected></option>
-							<option value="1">산책메이트게시판</option>
-							<option value="2">산책메이트후기</option>
+							<option th:value="0" value="0">도그워커게시판</option>
+							<option th:value="1" value="1">도그워커후기</option>
 						</select>
 				</div>
+				
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="제목을 입력하세요">
+				  	<input type="text" class="form-control" id="title" name="wmTitle" placeholder="제목을 입력하세요">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="wmContent" rows="20" style="resize: none;"></textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>

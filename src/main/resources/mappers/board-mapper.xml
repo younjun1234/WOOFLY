@@ -254,6 +254,119 @@
 		where r_no = #{ rNo } and b_type = 'DW'
 	</update>
 	
+	<insert id="BoardReport">	    
+	    insert into report 
+	    values (rep_seq.nextval, #{rContent}, SYSDATE, default, #{rCategory},#{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
+	</insert>
+	
+	
+	<!-- 산책메이트 -->
+	
+	<select id="getWmListCount" resultType="_int">
+		select count(*)
+		from wm_board
+		where wm_status = 'Y' and wm_type = '0'
+	</select>
+
+	<select id="selectWmBoardList" resultType="WmBoard">
+	    select b.*, m.mb_nickname as "mbNickName" 
+	    from wm_board b 
+	    join member m on b.mb_id = m.mb_id 
+	    where b.wm_status = 'Y' and wm_type = '0'
+	    order by b.wm_no desc
+	</select>
+
+
+	<select id="selectAttmWmBoardList" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status='Y'
+		<if test="bId != null">
+			and attm_ref_type = 'WM'
+			and attm_ref_no = #{ wmNo }
+		</if>
+		order by attm_id
+	</select>
+	
+	<select id="getWmRvListCount" resultType="_int">
+		select count(*)
+		from wm_board
+		where wm_status = 'Y' and wm_type = '1'
+	</select>
+
+	<select id="selectWmRvBoardList" resultType="WmBoard">
+	    select b.*, m.mb_nickname as "mbNickName" 
+	    from wm_board b 
+	    join member m on b.mb_id = m.mb_id 
+	    where b.wm_status = 'Y' and wm_type = '1'
+	    order by b.wm_no desc
+	</select>
+
+
+	<select id="selectAttmWmRvBoardList" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status='Y'
+		<if test="bId != null">
+			and attm_ref_type = 'WM'
+			and attm_ref_no = #{ wmNo }
+		</if>
+		order by attm_id
+	</select>
+	
+	<insert id="insertWmBoard">
+	    <selectKey keyProperty="wmNo" order="BEFORE" resultType="_int"> 
+	        select wm_seq.nextval as wmNo from dual
+	    </selectKey>
+	    insert into wm_board 
+	    values (#{wmNo}, #{wmType}, #{wmTitle}, #{wmContent}, default,'주소', SYSDATE, default, #{mbId}, default)
+	</insert>	
+	
+	<insert id="insertWmAttm">
+		insert all
+		<foreach collection="list" item="item">
+			into attachment
+			values(new_aid, #{item.originalName}, #{item.renameName},
+			SYSDATE, SYSDATE, #{item.attmPath}, default, 'WM', #{item.attmRefNo}, #{item.attmLevel})
+		</foreach>
+		select * from dual
+	</insert>
+	
+	<select id="selectWmBoard" resultType="WmBoard">
+		select  b.*, m.mb_nickname as "mbNickName" 
+		from wm_board b
+			join member m on b.mb_id = m.mb_id 
+		where b.wm_status = 'Y' and b.wm_no = #{ wmNo }
+	</select>
+	
+	<select id="selectWmReply" resultType="Reply">
+		select  r.*, m.mb_nickname as "mbNickName" 
+		from reply r
+			join member m on r.mb_id = m.mb_id 
+		where r.b_no = #{wmNo} and r.re_d_status = 'Y' and r.b_type = 'WM'
+		order by r.r_no desc
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	<!-- 실종게시판 -->
 	<select id="mListCount" resultType="_int">
