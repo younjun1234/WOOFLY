@@ -1,19 +1,21 @@
 package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Reply;
 
 public interface BoardService {
 
 //	자유게시판 "/board/free"	
 	
-	ArrayList<Board> searchFreeBoard(String searchType, String searchKeyword);
-	
+	ArrayList<Board> searchFreeBoards(HashMap<String, String> map);
+		
 	int getListCount(int i);
 
 	ArrayList<Board> selectFreeBoardList(PageInfo pi, int i);
@@ -41,6 +43,38 @@ public interface BoardService {
 	int deleteFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
+	
+//======// 도그워커  //===============================
+	
+	int getDwListCount(int i);
+	
+	ArrayList<DwBoard> selectDwBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmDwBoardList(Object object);
+	
+	//후기
+	int getDwRvListCount(int i);
+
+	ArrayList<DwBoard> selectDwRvBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmDwRvBoardList(Object object);
+	
+	
+	DwBoard selectDwBoard(int dwNo, String id);
+
+	ArrayList<Reply> selectDwReply(int dwNo);
+	
+	int insertDwBoard(DwBoard dw);
+	
+	int insertDwAttm(ArrayList<Attachment> attachments);
+	
+	int updateDwBoard(DwBoard dw);
+	
+	int deleteDwBoard(int dwNo);
+	
+	int insertDwReply(Reply r);
+
+	int deleteDwReply(Reply r);
 
 
 
@@ -61,6 +95,26 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
 
 	
 

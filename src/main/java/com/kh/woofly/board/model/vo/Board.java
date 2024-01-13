@@ -23,5 +23,5 @@ public class Board {
 	private String bStatus;
 	private String mbId;
 	private String bContent;
-	private String mbNickname;
+	private String mbNickName;
 }

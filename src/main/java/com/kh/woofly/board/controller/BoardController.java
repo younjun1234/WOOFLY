@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,10 +24,11 @@ import com.kh.woofly.board.model.exception.BoardException;
 import com.kh.woofly.board.model.service.BoardService;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
+import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.Reply;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -46,43 +48,50 @@ public class BoardController {
 		//<< 글형식 >>
 		// 
 		// 1. 자유게시판 //
-		
-		@GetMapping("/board/free/search")
-		public String searchFreeBoard(@RequestParam(value = "searchType", required = false) String searchType, @RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model) {
-			   
-			ArrayList<Board> searchResults = bService.searchFreeBoard(searchType, searchKeyword);
-		    System.out.println(searchType);
-		    model.addAttribute("searchResults", searchResults);
-		    return "freeBoard";
+				
+		@GetMapping("/board/free")
+		public String freeBoardView(@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value = "searchType", required = false) String searchType,
+					@RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model, HttpServletRequest request) throws BoardException {
+			
+			if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+
+				int listCount = bService.getListCount(1);
+				
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+				ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
+				ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
+				
+				//System.out.println(list);
+				if(list != null) {
+					model.addAttribute("pi", pi);
+					model.addAttribute("list", list);
+					model.addAttribute("aList", aList);					
+					
+				} else {
+					throw new BoardException("게시글 조회 실패");
+				}
+				
+			  } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+	              HashMap<String, String> map = new HashMap<>();
+	            map.put("searchKeyword", searchKeyword);
+	            map.put("searchType", searchType);
+	            
+	            int listCount = bService.getListCount(1);
+	            PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+	            
+	            ArrayList<Board> searchResults = bService.searchFreeBoards(map);
+	            ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
+	            model.addAttribute("pi", pi);
+				model.addAttribute("list", searchResults);
+				model.addAttribute("aList", aList);	
+	           }
+			
+			model.addAttribute("loc", request.getRequestURI());
+			
+			return "freeBoard";
 
 		}
 		
-		@GetMapping("/board/free")
-		public String freeBoardView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) throws BoardException {
-			
-			int listCount = bService.getListCount(1);
-			
-			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-			ArrayList<Board> list = bService.selectFreeBoardList(pi, 1);		
-			ArrayList<Attachment> aList = bService.selectAttmFreeBoardList(null);
-			
-			//System.out.println(list);
-			if(list != null) {
-				model.addAttribute("pi", pi);
-				model.addAttribute("list", list);
-				model.addAttribute("aList", aList);
-				model.addAttribute("loc", request.getRequestURI());
-				
-				return "freeBoard";
-			} else {
-				throw new BoardException("게시글 조회 실패");
-			}
-		}
-		
-		@PostMapping("/board/free/search")
-		public String searchFreeBoard() {
-			return null;
-		}
 		
 		@GetMapping("/board/free/detail")
 		public String freeBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("bNo") int bNo, HttpSession session, Model model) throws BoardException {
@@ -109,60 +118,63 @@ public class BoardController {
 		}
 		
 		@GetMapping("/board/free/write")
-		public String freeBoardWrite() {
+		public String freeBoardWrite(@ModelAttribute Board b) {
 			
 			return "freeBoardWrite";
 		}
 		
 		@PostMapping("/board/free/insertFreeBoard")
-		public String insertFreeBoard(@ModelAttribute Board b, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
-			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-			b.setMbId(boardWriter);
-			//System.out.println(boardWriter);
-			int result1 = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
-			//System.out.println(b.getBNo());
-			
-			
-			ArrayList<Attachment> attachments = new ArrayList<>();
-			for(int i = 0; i<files.size(); i++) {
-				MultipartFile upload = files.get(i);
-				if(!upload.getOriginalFilename().equals("")) {
-					String[] returnArr = saveFile(upload);
-					if(returnArr[1] != null) {
-						Attachment attachment = new Attachment();
-						attachment.setOriginalName(upload.getOriginalFilename());
-						attachment.setRenameName(returnArr[1]);
-						attachment.setAttmPath(returnArr[0]);
-						attachment.setAttmRefType("B");
-						attachment.setAttmRefNo(b.getBNo());
-						
-						attachments.add(attachment);
-					}
-				}
-			}
-			
-			for(int i=0; i < attachments.size(); i++) {
-				Attachment a = attachments.get(i);
-				if(i == 0) {
-					a.setAttmLevel(1);
-				} else {
-					a.setAttmLevel(2);
-				}
-			}
-			
-			
-			int result2 = bService.insertFreeAttm(attachments);
-			//System.out.println(result1);
-			//System.out.println(result2);
-			if(result1 + result2 > 0) {
-				return "redirect:/board/free";
-			} else {
-				for(Attachment a : attachments) {
-					deleteFile(a.getRenameName());
-				}
-				throw new BoardException("게시글 작성을 실패하였습니다.");
+		public String insertFreeBoard(@ModelAttribute Board b, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
+		    String boardWriter = ((Member) session.getAttribute("loginUser")).getMbId();
+		    b.setMbId(boardWriter);
+		    int result1 = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
+		    
+		    ArrayList<Attachment> attachments = new ArrayList<>();
+		    if (files != null) {
+		        for (int i = 0; i < files.size(); i++) {
+		            MultipartFile upload = files.get(i);
+		            if (!upload.getOriginalFilename().equals("")) {
+		                String[] returnArr = saveFile(upload);
+		                if (returnArr[1] != null) {
+		                    Attachment attachment = new Attachment();
+		                    attachment.setOriginalName(upload.getOriginalFilename());
+		                    attachment.setRenameName(returnArr[1]);
+		                    attachment.setAttmPath(returnArr[0]);
+		                    attachment.setAttmRefType("B");
+		                    attachment.setAttmRefNo(b.getBNo());
+		                    attachments.add(attachment);
+		                }
+		            }
+		        }
+		        
+		        for (int i = 0; i < attachments.size(); i++) {
+		            Attachment a = attachments.get(i);
+		            if (i == 0) {
+		                a.setAttmLevel(1);
+		            } else {
+		                a.setAttmLevel(2);
+		            }
+		        }
+		        
+		        int result2 = bService.insertFreeAttm(attachments);
+		        
+		        if (result1 + result2 > 0) {
+		            return "redirect:/board/free";
+		        } else {
+		            for (Attachment a : attachments) {
+		                deleteFile(a.getRenameName());
+		            }
+		            throw new BoardException("게시글 작성을 실패하였습니다.");
+		        }
+		    } else {
+		        if (result1 > 0) {
+		            return "redirect:/board/free";
+		        } else {
+		            throw new BoardException("게시글 작성을 실패하였습니다.");
+		        }
 		    }
 		}
+
 			
 		
 		
@@ -226,9 +238,8 @@ public class BoardController {
 
 
 		@PostMapping("/board/free/edit")
-		public String freeBoardEdit(@ModelAttribute Board b, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm
-,
-				 @RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+		public String freeBoardEdit(@ModelAttribute Board b, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
+									@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
 			/* int result = bService.updateFreeBoard(b); */
 			
 			ArrayList<Attachment> list = new ArrayList<>();
@@ -315,14 +326,14 @@ public class BoardController {
 		    }
 
 
-			System.out.println(b.getBNo());
+			//System.out.println(b.getBNo());
 			updateBoardResult = bService.updateFreeBoard(b);
 			int updateAttmResult = 0;
 			if(!list.isEmpty())  {
 				updateAttmResult = bService.insertFreeAttm(list);
 			}
-			System.out.println(updateBoardResult);
-			System.out.println(updateAttmResult);
+			//System.out.println(updateBoardResult);
+			//System.out.println(updateAttmResult);
 			if(updateBoardResult + updateAttmResult > 0) {				
 				redirectAttributes.addAttribute("bNo", b.getBNo());
 				redirectAttributes.addAttribute("page", page);
@@ -337,11 +348,11 @@ public class BoardController {
 			
 		}
 		
-		@PostMapping("/board/free/delete")
+		@GetMapping("/board/free/delete")
 		public String deleteFreeBoard(@RequestParam("bNo") int bNo) throws BoardException {
 			int result1 = bService.deleteFreeBoard(bNo);
 			int result2 = bService.statusNAttm(bNo);
-			System.out.println(bNo);
+			//System.out.println(bNo);
 			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/free";
 			} else {
@@ -349,56 +360,32 @@ public class BoardController {
 			}
 		}
 				
-		@GetMapping(value="/insertFreeReply.yk", produces="application/json; charset=UTF-8")
+		@GetMapping(value="/insertFreeReply.yk")
 		@ResponseBody
 		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
 			int result = bService.insertFreeReply(r);
-			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
 			
-			JSONArray jArr = new JSONArray();  
-			for(Reply reply : rlist) {
-				JSONObject json = new JSONObject();  
-				json.put("rNo", reply.getRNo());
-				json.put("bType", reply.getBType());
-				json.put("bNo", reply.getBNo());
-				json.put("reContent", reply.getReContent());
-				json.put("reDate", reply.getReDate());
-				json.put("reLike", reply.getReLike());
-				json.put("reDStatus", reply.getReDStatus());
-				json.put("mbId", reply.getMbId());
-				json.put("mbNickname", reply.getMbNickname());
-				jArr.put(json);
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
 			}
-			
-			
-			return jArr.toString();
 			
 		}
 		
-		@GetMapping(value="/deleteReply.yk", produces="application/json; charset=UTF-8")
+		@GetMapping(value="/deleteFreeReply.yk")
 		@ResponseBody
-		public String deleteFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+		public String deleteFreeReply(@ModelAttribute Reply r) {
 			int result = bService.deleteFreeReply(r);
-			System.out.println(r);
+			//System.out.println(r);
 			
-			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
-			
-			JSONArray jArr = new JSONArray();  
-			for(Reply reply : rlist) {
-				JSONObject json = new JSONObject();  
-				json.put("rNo", reply.getRNo());
-				json.put("bType", reply.getBType());
-				json.put("bNo", reply.getBNo());
-				json.put("reContent", reply.getReContent());
-				json.put("reDate", reply.getReDate());
-				json.put("reLike", reply.getReLike());
-				json.put("reDStatus", reply.getReDStatus());
-				json.put("mbId", reply.getMbId());
-				json.put("mbNickname", reply.getMbNickname());
-				jArr.put(json);
-			}			
-			
-			return jArr.toString();
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
 			
 		}
 
@@ -409,23 +396,76 @@ public class BoardController {
 		// 2. 도그워커 //
 
 		@GetMapping("/board/dw")
-		public String dwBoardView(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String dwBoardView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
 			
-			model.addAttribute("page", page);
-			return "dwBoard";
+			int listCount = bService.getDwListCount(1);
+			
+			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+			ArrayList<DwBoard> list = bService.selectDwBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmDwBoardList(null);
+			
+			//System.out.println(list);
+			if(list != null) {
+				model.addAttribute("pi", pi);
+				model.addAttribute("list", list);
+				model.addAttribute("aList", aList);
+				model.addAttribute("loc", request.getRequestURI());
+				
+				return "dwBoard";
+			} else {
+				throw new BoardException("게시글 조회 실패");
+			}
+			
 		}
 		
 
 		@GetMapping("/board/dwReview")
-		public String dwReviewBoard(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String dwReviewBoard(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
 			
-			model.addAttribute("page", page);
-			return "dwReviewBoard";
+			int listCount = bService.getDwRvListCount(1);
+			
+			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+			ArrayList<DwBoard> list = bService.selectDwRvBoardList(pi, 1);		
+			ArrayList<Attachment> aList = bService.selectAttmDwRvBoardList(null);
+			
+			//System.out.println(list);
+			if(list != null) {
+				model.addAttribute("pi", pi);
+				model.addAttribute("list", list);
+				model.addAttribute("aList", aList);
+				model.addAttribute("loc", request.getRequestURI());
+				
+				return "dwReviewBoard";
+			} else {
+				throw new BoardException("게시글 조회 실패");
+			}
+			
 		}
 		@GetMapping("/board/dw/detail")
-		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") String page, Model model) {
+		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") String page, @RequestParam("dwNo") int dwNo, HttpSession session, Model model) {
 			
-			return "dwBoardDetail";
+			Member loginUser = (Member)session.getAttribute("loginUser");
+			String id = null;
+			if(loginUser != null) {
+				id = loginUser.getMbId();
+			}
+			//System.out.println(dwNo);
+			//System.out.println(id);
+			DwBoard dw = bService.selectDwBoard(dwNo, id);
+			//System.out.println(dw);
+			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
+			ArrayList<Reply> rList = bService.selectDwReply(dwNo);
+			
+			if(dw != null) {
+				model.addAttribute("dw", dw);
+				model.addAttribute("page", page);
+				model.addAttribute("list", list);
+				model.addAttribute("rList", rList);
+				//System.out.println(rList);
+				return "dwBoardDetail";
+			} else {
+				throw new BoardException("게시글 상세보기를 실패하였습니다.");
+			}
 		}
 		
 		@GetMapping("/board/dw/write")
@@ -434,10 +474,222 @@ public class BoardController {
 			return "dwBoardWrite";
 		}
 		
-		@GetMapping("/board/dw/edit")
-		public String dwBoardEdit() {
+		@PostMapping("/board/free/insertDwBoard")
+		public String insertDwBoard(@RequestParam("dwType") String dwTypeStr, @ModelAttribute DwBoard dw, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
+			
+			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+			dw.setMbId(boardWriter);
+			
+			int dwType = Integer.parseInt(dwTypeStr);
+			int result1 = bService.insertDwBoard(dw); 
+			
+			ArrayList<Attachment> attachments = new ArrayList<>();
+			for(int i = 0; i<files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment attachment = new Attachment();
+						attachment.setOriginalName(upload.getOriginalFilename());
+						attachment.setRenameName(returnArr[1]);
+						attachment.setAttmPath(returnArr[0]);
+						attachment.setAttmRefType("DW");
+						attachment.setAttmRefNo(dw.getDwNo());
+						
+						attachments.add(attachment);
+					}
+				}
+			}
+			
+			for(int i=0; i < attachments.size(); i++) {
+				Attachment a = attachments.get(i);
+				if(i == 0) {
+					a.setAttmLevel(1);
+				} else {
+					a.setAttmLevel(2);
+				}
+			}
+			
+			int result2 = bService.insertDwAttm(attachments);
+			//System.out.println(result1);
+			//System.out.println(result2);
+			if(result1 + result2 > 0) {
+				return "redirect:/board/dw";
+			} else {
+				for(Attachment a : attachments) {
+					deleteFile(a.getRenameName());
+				}
+				throw new BoardException("게시글 작성을 실패하였습니다.");
+		    }
+			
+		}
+		
+		@GetMapping("/board/dw/editForm")
+		public String dwBoardEditForm(@RequestParam("dwNo") int dwNo, @RequestParam("page") int page, Model model) {
+			
+			DwBoard dw = bService.selectDwBoard(dwNo,null);
+			//System.out.println(dw);
+			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo);
+			model.addAttribute("dw", dw);
+			model.addAttribute("page", page);
+			model.addAttribute("list", list);
 			
 			return "dwBoardEdit";
+		}
+		
+		@PostMapping("/board/dw/edit")
+		public String dwBoardEdit(@RequestParam("dwType") String dwTypeStr, @ModelAttribute DwBoard dw, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
+								@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+			
+			int dwType = Integer.parseInt(dwTypeStr);
+			System.out.println(dwType);
+			ArrayList<Attachment> list = new ArrayList<>();
+			for(int i=0; i< files.size(); i++) {
+				MultipartFile upload = files.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					String[] returnArr = saveFile(upload);
+					if(returnArr[1] != null) {
+						Attachment a = new Attachment();
+						a.setOriginalName(upload.getOriginalFilename());
+						a.setRenameName(returnArr[1]);
+						a.setAttmPath(returnArr[0]);
+						
+						list.add(a);
+					}
+				}
+			}
+			
+			ArrayList<String> delRename = new ArrayList<>();
+			ArrayList<Integer> delLevel = new ArrayList<>();
+			for(String a : deleteAttm) {
+				if(!a.equals("none")) {
+					String[] split = a.split("/");
+					delRename.add(split[0]);
+					delLevel.add(Integer.parseInt(split[1]));
+				}
+			}
+			
+			int deleteAttmResult = 0;
+			int updateBoardResult = 0;
+			boolean existBeforeAttm = true;
+			if(!delRename.isEmpty()) {
+				deleteAttmResult = bService.deleteFreeAttm(delRename);
+				if(deleteAttmResult > 0) {
+					for(String rename : delRename) {
+						deleteFile(rename);
+					}
+				}
+			
+				if(delRename.size() == deleteAttm.length) {
+					existBeforeAttm = false;
+					
+				} else {
+					for(int level : delLevel) {
+						if(level == 0) {
+							bService.updateAttmLevel(dw.getDwNo());
+							break;
+						}
+					}
+				}
+			}
+			
+
+			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            int level = Integer.parseInt(split[1]);
+		            if (level == 1) {
+		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                break;
+		            }
+		        }
+		    }
+
+		    for (int i = 0; i < list.size(); i++) {
+		        Attachment a = list.get(i);
+		        a.setAttmRefNo(dw.getDwNo());
+
+		        if (hasExistingFile) {
+		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		        } else {
+		            if (!hasLevelOne) {
+		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		            } else {
+		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		            }
+		        }
+		    }
+
+
+			//System.out.println(dw.getDwNo());
+			updateBoardResult = bService.updateDwBoard(dw);
+			int updateAttmResult = 0;
+			if(!list.isEmpty())  {
+				updateAttmResult = bService.insertDwAttm(list);
+			}
+			//System.out.println(updateBoardResult);
+			//System.out.println(updateAttmResult);
+			if(updateBoardResult + updateAttmResult > 0) {				
+				redirectAttributes.addAttribute("dwNo", dw.getDwNo());
+				redirectAttributes.addAttribute("page", page);
+				
+				return "redirect:/board/dw/detail";
+				
+			} else {
+				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+			}
+		}
+		
+		@GetMapping("/board/dw/delete")
+		public String deleteDwBoard(@RequestParam("dwNo") int dwNo) throws BoardException {
+			int result1 = bService.deleteDwBoard(dwNo);
+			int result2 = bService.statusNAttm(dwNo);
+			//System.out.println(bNo);
+			if(result1 > 0 || result2> 0) {
+				return "redirect:/board/dw";
+			} else {
+				throw new BoardException("게시글 삭제 실패");
+			}
+		}
+		
+		@GetMapping(value="/insertDwReply.yk")
+		@ResponseBody
+		public String insertDwReply(@ModelAttribute Reply r) {
+			r.setBType("DW");
+			int result = bService.insertDwReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		@GetMapping(value="/deleteDwReply.yk")
+		@ResponseBody
+		public String deleteDwReply(@ModelAttribute Reply r) {
+			int result = bService.deleteDwReply(r);
+			
+			//System.out.println(r);
+			// 우리 댓글테이블은 공유잖아?
+			// 그래서 댓글넘버가 프라이머리키야(고유해)
+			// 그래서 너는 1,2,3,4번을 가지고 있어 이건 도그워커 + 그 게시글에서 생성된 댓글
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
 		}
 			
 		// 3. 산책메이트 //
