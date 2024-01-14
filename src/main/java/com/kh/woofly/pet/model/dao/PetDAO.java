@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.vo.Album;
@@ -77,5 +78,9 @@ public interface PetDAO {
 	int updateReply(Reply r);
 
 	int deleteReply(Reply r);
+
+	int insertReport(Report rt);
+
+	int checkResult(Report rt);
 
 }

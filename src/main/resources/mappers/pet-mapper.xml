@@ -209,4 +209,15 @@
 		where r_No = #{rNo}
 	</update>
 	
+	<insert id="insertReport" parameterType="Report">
+		insert into report
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+	</insert>
+	
+	<select id="checkResult" resultType="_int">
+		select count(*)
+		from report
+		where r_board_no = #{rBoardNo} and r_accuser = #{rAccuser}
+	</select>
+	
 </mapper>
