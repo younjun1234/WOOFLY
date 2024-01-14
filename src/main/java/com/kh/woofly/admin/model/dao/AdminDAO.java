@@ -14,10 +14,20 @@ public interface AdminDAO {
 
 	HashMap<String, ArrayList<Object>> selectAllBoard();
 
-	int getReportCount();
+	int getReportCount(String searchId);
 
-	ArrayList<Report> selectReportList(RowBounds rowBounds, PageInfo pi);
+	ArrayList<Report> selectReportList(RowBounds rowBounds, String search);
 
 	ArrayList<HashMap<String, Object>> selectReportRank();
+
+	Report selectReportDetail(int rNo);
+
+	ArrayList<Report> selectTargetList(String rAccused);
+
+	int updateStopDate(String rAccused);
+
+	int updateReportSit(int rNo);
+
+	int selectWarningCount(Report r);
 
 }

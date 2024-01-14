@@ -23,23 +23,48 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public int getReportCount() {
-		return aDAO.getReportCount();
+	public int getReportCount(String searchId) {
+		return aDAO.getReportCount(searchId);
 	}
 
-	@Override
-	public ArrayList<Report> selectReportList(PageInfo pi) {
+	@Override			
+	public ArrayList<Report> selectReportList(PageInfo pi, String searchId) {
 		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
 		int limit = pi.getBoardLimit();
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
-		return aDAO.selectReportList(rowBounds, pi);
+		return aDAO.selectReportList(rowBounds, searchId);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> selectReportRank() {
 		return aDAO.selectReportRank();
+	}
+
+	@Override
+	public Report selectReportDetail(int rNo) {
+		return aDAO.selectReportDetail(rNo);
+	}
+
+	@Override
+	public ArrayList<Report> selectTargetList(String rAccused) {
+		return aDAO.selectTargetList(rAccused);
+	}
+
+	@Override
+	public int updateStopDate(String rAccused) {
+		return aDAO.updateStopDate(rAccused);
+	}
+
+	@Override
+	public int updateReportSit(int rNo) {
+		return aDAO.updateReportSit(rNo);
+	}
+
+	@Override
+	public int selectWarningCount(Report r) {
+		return aDAO.selectWarningCount(r);
 	}
 
 }

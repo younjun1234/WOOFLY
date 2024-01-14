@@ -4,11 +4,18 @@
 	<select id="getReportCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM REPORT
+		<if test="searchId != null and searchId != ''">
+			WHERE R_ACCUSED LIKE '%' || #{searchId} || '%'
+		</if>
 	</select>
 
 	<select id="selectReportList" resultType="Report">
 		SELECT *
 		FROM REPORT
+		<if test="searchId != null">
+			WHERE R_ACCUSED LIKE '%' || #{searchId} || '%'
+		</if>
+		ORDER BY R_NO DESC
 	</select>
 	
 	<select id="selectReportRank" resultType="map">
@@ -31,6 +38,43 @@
 		    FETCH FIRST 5 ROWS ONLY
 		) A
 		JOIN MEMBER B ON A.R_ACCUSED = B.MB_ID
+	</select>
+	
+	<select id="selectReportDetail" resultType="Report">
+		SELECT 
+		    REPORT.*,
+		    MEMBER.mb_Name AS mbName,           
+		    ACCUSED_MEMBER.mb_Name AS mbSubName,
+		    ACCUSED_MEMBER.mb_Date AS mbDate
+		FROM REPORT
+			JOIN MEMBER ON REPORT.R_ACCUSER = MEMBER.MB_ID
+			LEFT JOIN MEMBER ACCUSED_MEMBER ON REPORT.R_ACCUSED = ACCUSED_MEMBER.MB_ID
+		WHERE REPORT.R_NO = #{rNo}
+	</select>
+	
+	<select id="selectTargetList" resultType="Report">
+		SELECT *
+		FROM REPORT
+			JOIN MEMBER ON(R_ACCUSER = MB_ID)
+		WHERE R_ACCUSED = #{rAccused}
+	</select>
+	
+	<update id="updateStopDate">
+		UPDATE MEMBER
+		SET IS_BANNED = 'Y'
+		WHERE MB_ID = #{rAccused}
+	</update>
+	
+	<update id="updateReportSit">
+		UPDATE REPORT
+		SET R_SITUATION = 'B'
+		WHERE R_NO = #{rNo}
+	</update>
+	
+	<select id="selectWarningCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM REPORT
+		WHERE R_ACCUSED = #{rAccused} AND R_SITUATION = #{rSituation}
 	</select>
 	
 </mapper>

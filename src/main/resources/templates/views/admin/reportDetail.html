@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script type="text/javascript" src="https://chir.ag/projects/ntc/ntc.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- 사용자와 관리자에 따라 nav 변경
          CSS 세세한 조정
@@ -53,31 +54,10 @@
 </head>
 <body>
     <!-- tap -->
-    <nav class="navbar sticky-top bg-white">
-		<div class="container-fluid justify-content-end mx-5">
-			<ul class="nav bg-white">
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
-			</ul>
-		</div>
-		<div class="container-fluid mx-5">
-    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
-    		<ul class="nav">
-    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
-    		</ul>
-		</div>
-	</nav>
+    <div th:replace="~{common/top :: top}"></div>
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
-			<!-- 추후에 common 파일로 이동 할 예정 -->
-			<!-- 안에 들어가있는 inline style은 추후에 수정 예정  -->
 			<div class="navbar w-20">
 				<div class="container-fluid flex-column align-items-start">
 					<a class="navbar-brand" href="#"><h2>관리자 페이지</h2></a>
@@ -134,24 +114,29 @@
                                                 <tbody>
                                                     <tr>
                                                         <th>신고자</th>
-                                                        <td>변윤호</td>
+                                                        <td>[[${r.mbName}]]([[${r.rAccuser}]])</td>
                                                     </tr>
                                                     <tr>
                                                         <th>게시글/댓글</th>
-                                                        <td>게시글</td>
+                                                        <td th:text="${ rType == 'B' ? '게시글' : '댓글'}"></td>
                                                     </tr>
                                                     <tr>
-                                                        <th>신고 카테고리(게시글타입)</th>
-                                                        <td>중고거래</td>
+                                                    	<th>신고 구분</th>
+                                                    	<td th:text="${#strings.arraySplit(r.rContent, '&^')[0]}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>신고 게시글 타입</th>
+                                                        <td>[[${r.rCategory}]]</td>
                                                     </tr>
                                                     <tr>
                                                         <th>신고 날짜</th>
-                                                        <td>2023-12-14</td>
+                                                        <td>[[${r.rDate}]]</td>
                                                     </tr>
                                                     <tr>
+                                                    	<!-- 나중에는 신고카테 + 내용으로 넘어오니까 분리해서 넣자 -->
                                                         <th>신고 자세한 내용</th>
                                                         <td>
-                                                            <textarea class="form-control" rows="4" readonly style="resize: none;">사기꾼입니다 이 사람</textarea>
+                                                            <textarea class="form-control" rows="4" readonly style="resize: none;" th:text="${#strings.arraySplit(r.rContent, '&^')[1]}">[[${#strings.arraySplit(r.rContent, '&^')[1]}]]</textarea>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -168,9 +153,9 @@
                                         <div class="card-header d-flex justify-content-between">
                                             <h4>피신고자 정보</h4>
                                             <div class="d-flex gap-3">
-                                                <button class="btn btn-outline-danger bg-danger-subtle">정지</button>
-                                                <button class="btn btn-outline-warning bg-warning-subtle">경고</button>
-                                                <button class="btn btn-outline-success bg-success-subtle">반려</button>
+                                                <button class="btn btn-outline-danger bg-danger-subtle" id="stopBtn">정지</button>
+                                                <button class="btn btn-outline-warning bg-warning-subtle" id="warningBtn">경고</button>
+                                                <button class="btn btn-outline-success bg-success-subtle" id="returnBtn">반려</button>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -180,23 +165,24 @@
                                                         <tbody>
                                                             <tr>
                                                                 <th>피신고자</th>
-                                                                <td>최다원</td>
+                                                                <td>[[${r.mbSubName}]]</td>
                                                             </tr>
                                                             <tr>
                                                                 <th>아이디</th>
-                                                                <td>dw02</td>
+                                                                <td>[[${r.rAccused}]]</td>
                                                             </tr>
                                                             <tr>
                                                                 <th>누적경고횟수</th>
-                                                                <td>3회</td>
+                                                                <td>[[${pileWarning}]]회</td>
                                                             </tr>        
                                                             <tr>
                                                                 <th>누적정지횟수</th>
-                                                                <td>1회</td>
+                                                                <td>[[${pileBanded}]]회</td>
                                                             </tr>
                                                             <tr>
+                                                            	<!-- DB에 없는거 같은데 생기면 셀렉할 때 같이 가져와야 함. -->
                                                                 <th>가입날짜</th>
-                                                                <td>2018-07-15</td>
+                                                                <td>[[${r.mbDate}]]</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -206,69 +192,133 @@
                                                             <tr class="text-center">
                                                                 <th>번호</th>
                                                                 <th>신고자</th>
+                                                                <th>신고구분</th>
                                                                 <th>내용</th>
                                                                 <th>게시판타입</th>
-                                                                <th>구분</th>
+                                                                <th>글 구분</th>
                                                                 <th>처리결과</th>      
                                                             </tr>
                                                         </thead>
                                                         <tbody class="table-group-divider">
-                                                            <tr>
-                                                                <td>157</td>
-                                                                <td>김로사</td>
-                                                                <td>가격이 너무너무너무해요</td>
-                                                                <td>중고거래</td>
-                                                                <td>게시글</td>
-                                                                <td>접수</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>144</td>
-                                                                <td>최재영</td>
-                                                                <td>계속 같은 질문을 하면서 어그로를 끄네요.</td>
-                                                                <td>자유게시판</td>
-                                                                <td>게시글</td>
-                                                                <td>경고</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>120</td>
-                                                                <td>변윤호</td>
-                                                                <td>자꾸 게시글로 분탕질합니다.</td>
-                                                                <td>도그워커</td>
-                                                                <td>게시글</td>
-                                                                <td>경고</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>111</td>
-                                                                <td>곽하은</td>
-                                                                <td>신고신고신고신고신고신고</td>
-                                                                <td>실종게시판</td>
-                                                                <td>댓글</td>
-                                                                <td>반려</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>52</td>
-                                                                <td>황유경</td>
-                                                                <td>점메추점메추점메추점메추</td>
-                                                                <td>콘테스트게시판/td>
-                                                                <td>댓글</td>
-                                                                <td>반려</td>
+                                                            <tr th:each="rl : ${rList}">
+                                                                <td th:text="${rl.rNo}"></td>
+                                                                <td th:text="${rl.mbName}"></td>
+                                                                <td th:text="${#strings.arraySplit(r.rContent, '&^')[0]}"></td>
+                                                                <td th:text="${#strings.arraySplit(r.rContent, '&^')[1]}"></td>
+                                                                <td th:text="${rl.rCategory}"></td>
+                                                                <td th:text="${rl.rType == 'B' ? '게시글' : '댓글'}"></td>
+                                                                <th:block th:switch="${rl.rSituation}">
+																    <td th:case="'A'">접수</td>
+																    <td th:case="'W'">경고</td>
+																    <td th:case="'R'">반려</td>
+																    <td th:case="'B'">정지</td>
+																</th:block>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </main>
+    
+    <div class="modal fade" tabindex="-1" role="dialog" id="confirm">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-1 shadow">
+                <div class="modal-body p-4 text-center fs-4 fw-bold">
+                	
+                </div>
+                <div class="modal-body p-2 fw-bold fs-6">
+                
+                </div>
+                <div class="modal-footer flex-nowrap p-1">
+                    <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="submitForm">
+                        <strong>네</strong>
+                     </button>
+                     <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script th:inline="javascript">
+	// 정지, 경고, 반려에 관한 로직 구성 // 정지는 IS_BANNED
+	// 정지 기믹 구성할 때 생각 좀 해보기 + 처리결과에 대해서 "B" 생긴거 생각하기
+	// 카테고리(게시판타입)에 관해서 스위치문으로 이름으로 바꿔주기
+	// 회원 가입 날짜 생기면 그것도 받아오기(피신고자 정보)
+	
+	// DB에 보낼 때 IF문 
+	//stopBtn
+	
+	// - 사유 작성해야 한다면 modal에 
+	window.onload = () =>{
+		/*<![CDATA[*/
+		const r = /*[[${r}]]*/null;
+		const rContent = r.rcontent.split('&^');
+		const rNo = r.rno;
+		/*]]>*/
+		console.log(r);
+		const modal = document.getElementById('confirm');
+		
+		document.getElementById('stopBtn').addEventListener('click', function(){
+			const modalBody = modal.querySelectorAll('.modal-body');
+			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님을 <" + rContent[0] + "> 사유로 정지하시겠습니까? </span>";
+			modalBody[1].innerHTML = "<div class='d-flex row stopBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			
+			$('#confirm').modal('show');
+		});
+		
+		document.getElementById('warningBtn').addEventListener('click', function(){
+			const modalBody = modal.querySelectorAll('.modal-body');
+			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님을 <" + rContent[0] + "> 사유로 경고를 부여하시겠습니까? </span>";
+			modalBody[1].innerHTML = "<div class='d-flex row warningBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			
+			$('#confirm').modal('show');
+		});
+		
+		document.getElementById('returnBtn').addEventListener('click', function(){
+			const modalBody = modal.querySelectorAll('.modal-body');
+			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님의 <" + rContent[0] + "> 사유의 신고를 반려하시겠습니까? </span>";
+			modalBody[1].innerHTML = "<div class='d-flex row returnBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			
+			$('#confirm').modal('show');
+		});
+		
+		document.getElementById('submitForm').addEventListener('click', function(){
+			const modalBody = modal.querySelectorAll('.modal-body');
+			const target = modalBody[1].querySelector('div');
+			console.log(target);
+			const stopBtn = target.classList.contains('stopBtn');
+			const warningBtn = target.classList.contains('warningBtn');
+			const returnBtn = target.classList.contains('returnBtn');
+			if(stopBtn){
+				$('confirm').modal('hide');
+				location.href="/admin/stopUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+			}
+			
+			// 카운트 되는지 확인하고 DB에서 r_rContent 구분자 애들한테 정리하라고 해야함
+			// 일단 가서 카운트로 세서 카운트 % 3이 2인 즉, 이번 경고를 먹으면 3번째 경고이므로 정지로 넘겨야함
+			if(warningBtn) {
+				$('confirm').modal('hide');
+				location.href="/admin/warningUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+			}
+			
+			if(returnBtn) {
+				console.log('returnBtn');
+			}
+		});
+	}
+	
+	//warningBtn
+    //returnBtn
+	
+</script>
 </html>
