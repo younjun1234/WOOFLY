@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.dao.PetDAO;
@@ -178,6 +179,16 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int deleteReply(Reply r) {
 		return pDAO.deleteReply(r);
+	}
+
+	@Override
+	public int insertReport(Report rt) {
+		return pDAO.insertReport(rt);
+	}
+
+	@Override
+	public int checkResult(Report rt) {
+		return pDAO.checkResult(rt);
 	}
 	 
 
