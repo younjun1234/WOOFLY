@@ -19,27 +19,28 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6 name="mbNickName">작성자</h6>
-						<p name="mCreateDate">2023.10.16</p>
+						<h6 name="mbNickName">[[${m.mbNickName}]]</h6>
+						<p name="mCreateDate">[[${m.mCreateDate}]]</p>
 					</div>
 				</div>
 			</div>
 			
-			<form>
+			<form action="/editLostBoard.he" method="post">
+				<input type="hidden" th:value="${m.mNo}" name="mNo">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
-					    <select class="form-select mb-1">
-					    	<option value="1">구조중</option>
-							<option value="2">구조완료</option>
+					    <select name="rescue" class="form-select mb-1">
+					    	<option th:selected="${m.rescue==1}" value="1">구조중</option>
+							<option th:selected="${m.rescue==2}" value="2">구조완료</option>
 						</select>
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="" name="mTitle">
+				  	<input th:value="${m.mTitle}" type="text" class="form-control" id="title" placeholder="" name="mTitle">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent"></textarea>
+				  	<textarea th:text="${m.mContent}" class="form-control" id="content" rows="20" style="resize: none;" name="mContent"></textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>

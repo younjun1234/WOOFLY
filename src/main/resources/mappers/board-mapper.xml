@@ -159,9 +159,23 @@
 	                select="selectAttmLostBoardList" column="m_no" javaType="list"/>
 	</resultMap>
 	
+	<update id="deleteLostBoard">
+		update missing_board
+		set m_status = 'N'
+		where m_no = #{bId}
+	</update>
 	
+	<update id="deleteLostBoardAttm">
+		update attachment
+		set attm_status = 'N'
+		where attm_ref_type = 'M' and attm_ref_no = #{bId}
+	</update>
 	
-	
+	<update id="editLostBoard">
+		update missing_board
+		set m_title = #{mTitle}, m_content = #{mContent}, rescue = #{rescue}
+		where m_no = #{mNo}
+	</update>
 	
 	
 </mapper>

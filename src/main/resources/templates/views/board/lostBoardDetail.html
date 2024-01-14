@@ -41,7 +41,7 @@
 				  	<path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
 				</svg>
 				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" th:href="@{/board/lost/edit}">수정</a></li>
+					<li><a class="dropdown-item" th:href="'/board/lost/edit/' + ${m.mNo}">수정</a></li>
 				    <li><a class="dropdown-item" id ="deleteModal" >삭제</a></li><!-- th:if="${ session.loginUser }" -->
 				    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
 				</ul>
@@ -187,8 +187,8 @@
 	        			<p class="mb-0">삭제 후 게시글은 복구할 수 없습니다.</p>
 	      			</div>
 	      			<div class="modal-footer flex-nowrap p-0">
-	        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="delete">
-	        				<strong>네</strong>
+	        			<button th:onclick="|location.href='/board/lost/delete/${m.mNo}'|" type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="delete">
+	        				<strong>네</astrong>
 	        			</button>
 	        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
 	      			</div>

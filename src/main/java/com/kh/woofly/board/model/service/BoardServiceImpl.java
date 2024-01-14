@@ -104,6 +104,24 @@ private BoardServiceImpl boardDAO;
 		return bDAO.editLostBoard(bId, object);
 	}
 
+	@Override
+	public int deleteLostBoard(int bId) {
+		// TODO Auto-generated method stub
+		return bDAO.deleteLostBoard(bId);
+	}
+
+	@Override
+	public int deleteLostBoardAttm(int bId) {
+		// TODO Auto-generated method stub
+		return bDAO.deleteLostBoardAttm(bId);
+	}
+
+	@Override
+	public int editLostBoard(LostBoard lb) {
+		// TODO Auto-generated method stub
+		return bDAO.editLostBoard(lb);
+	}
+
 
 
 	

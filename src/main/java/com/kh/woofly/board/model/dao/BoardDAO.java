@@ -56,6 +56,12 @@ public interface BoardDAO {
 
 	LostBoard editLostBoard(int bId, Object object);
 
+	int deleteLostBoard(int bId);
+
+	int deleteLostBoardAttm(int bId);
+
+	int editLostBoard(LostBoard lb);
+
 	
 
 

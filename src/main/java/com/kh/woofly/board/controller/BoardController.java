@@ -6,18 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.woofly.board.model.exception.BoardException;
 import com.kh.woofly.board.model.service.BoardService;
@@ -499,20 +497,39 @@ public class BoardController {
 			
 		//24.01.14_ing
 		// 글 수정
-		@GetMapping("/board/lost/edit")
-		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
-				 						  @RequestParam("page") int page,
+		@GetMapping("/board/lost/edit/{boardId}")
+		public String updateLostBoardEdit(@PathVariable("boardId") int bId,
 				 						  Model model) {
-			LostBoard m = bService.editLostBoard(bId, null);
+			
+			LostBoard m = bService.selectLostBoard(bId);
 			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
 			model.addAttribute("m", m);
-			model.addAttribute("page", page);
 			model.addAttribute("mList", mList);
 			
 			return "lostBoardEdit";
 		}
 		
+//		글삭제
+		@GetMapping("/board/lost/delete/{boardId}")
+		public String updateLostBoardDelete(@PathVariable("boardId") int bId,
+				 						  Model model) {
+			
+			int bResult = bService.deleteLostBoard(bId);
+			int aResult = bService.deleteLostBoardAttm(bId);
+			
+			
+			
+			return "redirect:/board/lost";
+		}
 		
+		
+		@PostMapping("/editLostBoard.he")
+		public String updateLostBoard(@ModelAttribute LostBoard lb) {
+			
+			int result = bService.editLostBoard(lb);
+			
+			return "redirect:/board/lost/detail?mNo="+lb.getMNo();
+		}
 		
 		
 }

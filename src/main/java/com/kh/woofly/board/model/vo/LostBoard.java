@@ -23,6 +23,7 @@ public class LostBoard {
    private String mStatus;
    private String mbId;
    private String mbNickName;
+   private int rescue;
 //   private String mPhotoPath;
    
    private List<Attachment> attachments;
