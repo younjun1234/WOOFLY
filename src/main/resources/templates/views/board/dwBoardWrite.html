@@ -54,6 +54,9 @@
                      	<div>
 	                       	<button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
 	                     </div>
+	                     <div>
+	                       	<button type="button" onclick="clearAddress()" class="btn btn-outline-dark btn-sm">비우기</button>
+	                     </div>
                      </div>
                      
                   </div>
@@ -171,8 +174,12 @@
 	                document.getElementById("detailAddress").focus();
 	            }
 	        }).open();
-	    }      
-		 
+	    }  
+		
+	      function clearAddress() {
+	          // 주소 입력 필드를 비웁니다.
+	          document.getElementById('address').value = '';
+	      }
 		 
 		 
 		
