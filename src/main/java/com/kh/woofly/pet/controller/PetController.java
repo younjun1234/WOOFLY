@@ -6,22 +6,19 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
@@ -32,7 +29,6 @@ import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
 import jakarta.servlet.http.HttpSession;
-import kotlin.reflect.jvm.internal.impl.types.model.TypeSystemOptimizationContext;
 
 @Controller
 public class PetController {
@@ -485,6 +481,26 @@ public class PetController {
 	public String deleteReply(@ModelAttribute Reply r){
 		int result = pService.deleteReply(r);
 		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	//댓글 신고
+	@GetMapping("/insertReport.dw")
+	@ResponseBody
+	public String insertReport(@ModelAttribute Report rt, HttpSession session){
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		rt.setRAccuser(id);
+		int checkResult = pService.checkResult(rt);
+		int result = pService.insertReport(rt);
+		
+		if(checkResult > 0) {
+			return "exist";
+		}
 		if(result > 0) {
 			return "good";
 			
