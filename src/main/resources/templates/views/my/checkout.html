@@ -692,7 +692,7 @@
 												   'address' : address,
 												   'addressDetail' : addressDetail},
 											success: data => {
-												$('#addrBody').load(location.href + " #addrBody");
+												$('#addrBody').load(location.href);
 												const addrView = document.getElementById('addrView');
 												addrView.children[0].innerText = mbName.substring(0, 1) + '**';
 												addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);

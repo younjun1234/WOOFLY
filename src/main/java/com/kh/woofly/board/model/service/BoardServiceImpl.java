@@ -3,16 +3,19 @@ package com.kh.woofly.board.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.UsedBoard;
+import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
@@ -200,7 +203,99 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteDwBoard(int dwNo) {
 		return bDAO.deleteDwBoard(dwNo);
 	}
+	
+	@Override
+	public int deleteDwAttm(ArrayList<String> delRename) {
+		return bDAO.deleteDwAttm(delRename);
+	}
 
+	
+	@Override
+	public int BoardReport(Report rep) {
+		return bDAO.BoardReport(rep);
+	}
+	
+
+//======// 산책메이트  //===============================
+	
+
+	@Override
+	public int getWmListCount(int i) {
+		return bDAO.getWmListCount(i);
+	}
+
+	@Override
+	public ArrayList<WmBoard> selectWmBoardList(PageInfo pi, int i) {
+		return bDAO.selectWmBoardList(pi, i);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmWmBoardList(Object object) {
+		return bDAO.selectAttmWmBoardList(object);
+	}	
+	
+	@Override
+	public int getWmRvListCount(int i) {
+		return bDAO.getWmRvListCount(i);
+	}
+
+	@Override
+	public ArrayList<WmBoard> selectWmRvBoardList(PageInfo pi, int i) {
+		return bDAO.selectWmRvBoardList(pi, i);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmWmRvBoardList(Object object) {
+		return bDAO.selectAttmWmRvBoardList(object);
+	}
+	
+	@Override
+	public int insertWmBoard(WmBoard wm) {
+		return bDAO.insertWmBoard(wm);
+	}
+
+	@Override
+	public int insertWmAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertWmAttm(attachments);
+	}
+	
+	@Override
+	public WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id) {
+		return bDAO.selectWmBoard(wmNo, id);
+	}
+	
+	@Override
+	public int deleteWmAttm(ArrayList<String> delRename) {
+		return bDAO.deleteWmAttm(delRename);
+	}
+
+	@Override
+	public int updateWmBoard(WmBoard wm) {
+		return bDAO.updateWmBoard(wm);
+	}	
+
+	@Override
+	public int deleteWmBoard(int wmNo) {
+		return bDAO.deleteWmBoard(wmNo);
+	}	
+	
+	@Override
+	public int inserWmReply(Reply r) {
+		return bDAO.inserWmReply(r);
+	}
+
+	@Override
+	public int deletWmReply(Reply r) {
+		return bDAO.deletWmReply(r);
+	}
+
+	@Override
+	public ArrayList<Reply> selectWmReply(int wmNo) {
+		return bDAO.selectWmReply(wmNo);
+	}
+
+	
+	
 	
 	
 	
@@ -265,6 +360,23 @@ public class BoardServiceImpl implements BoardService{
 		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
 		return bDAO.selectMySelling(rowbounds, map);
 	}
+
+	
+
+
+
+	
+
+	
+	
+
+	
+
+	
+	
+
+	
+
 
 	
 
