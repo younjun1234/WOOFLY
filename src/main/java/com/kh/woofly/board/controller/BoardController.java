@@ -497,7 +497,7 @@ public class BoardController {
 		}
 		
 			
-
+		//24.01.14_ing
 		// 글 수정
 		@GetMapping("/board/lost/edit")
 		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
