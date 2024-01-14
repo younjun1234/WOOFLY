@@ -51,6 +51,8 @@ public interface BoardDAO {
 	int insertFreeReply(Reply r);
 	
 	int deleteFreeReply(Reply r);
+	
+	int updateFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 	
@@ -90,6 +92,10 @@ public interface BoardDAO {
 	int insertDwReply(Reply r);
 
 	int deleteDwReply(Reply r);	
+	
+	int updateDwReply(Reply r);
+	
+	int selectBoardReport(Report rep);
 	
 	int BoardReport(Report rep);
 	
@@ -148,6 +154,12 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+
 
 	
 

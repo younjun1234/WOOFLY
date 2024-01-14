@@ -43,6 +43,8 @@ public interface BoardService {
 	int insertFreeReply(Reply r);
 	
 	int deleteFreeReply(Reply r);
+	
+	int updateFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 	
@@ -80,6 +82,12 @@ public interface BoardService {
 
 	int deleteDwReply(Reply r);
 	
+	int updateDwReply(Reply r);
+	
+	int selectBoardReport(Report rep);
+
+	int BoardReport(Report rep);
+	
 	
 	
 //======// 워킹메이트  //===============================
@@ -113,8 +121,8 @@ public interface BoardService {
 	int inserWmReply(Reply r);
 
 	int deletWmReply(Reply r);
-
-	int BoardReport(Report rep);
+	
+	
 	
 
 
@@ -135,6 +143,12 @@ public interface BoardService {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+
+	
+
+	
+
+	
 
 	
 

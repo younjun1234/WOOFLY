@@ -362,7 +362,11 @@ public class BoardController {
 				
 		@GetMapping(value="/insertFreeReply.yk")
 		@ResponseBody
-		public String insertFreeReply(@ModelAttribute Reply r, @RequestParam("bNo") int bNo) {
+		public String insertFreeReply(@ModelAttribute Reply r, HttpSession session) {
+			
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			r.setMbId(id);
+			r.setBType("B");
 			int result = bService.insertFreeReply(r);
 			
 			if(result > 0) {
@@ -387,6 +391,47 @@ public class BoardController {
 				return "bad";
 			}
 			
+		}
+		
+		@GetMapping(value="/updateFreeReply.yk")
+		@ResponseBody
+		public String updateFreeReply(@ModelAttribute Reply r) {
+
+			int result = bService.updateDwReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		@GetMapping("/board/free/report")
+		@ResponseBody
+		public String freeBoardReport(@ModelAttribute Report rep, @RequestParam("bNo") int bNo) {
+
+		    
+		    rep.setRCategory("B");
+		    rep.setRType("B");
+		    rep.setRBoardNo(bNo);
+		    
+		    int selectBoardReport = bService.selectBoardReport(rep);
+		    System.out.println(selectBoardReport);
+		    if (selectBoardReport >0) {
+		        // 사용자가 이미 동일한 게시물을 신고함
+		        return "existBoardReport";
+		    }
+
+		    int result = bService.BoardReport(rep); // 수정된 부분
+
+		    if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
 		}
 
 
@@ -660,7 +705,9 @@ public class BoardController {
 		
 		@GetMapping(value="/insertDwReply.yk")
 		@ResponseBody
-		public String insertDwReply(@ModelAttribute Reply r) {
+		public String insertDwReply(@ModelAttribute Reply r, HttpSession session) {
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			r.setMbId(id);
 			r.setBType("DW");
 			int result = bService.insertDwReply(r);
 			
@@ -692,6 +739,23 @@ public class BoardController {
 			
 		}
 		
+		@GetMapping(value="/updateDwReply.yk")
+		@ResponseBody
+		public String updateDwReply(@ModelAttribute Reply r) {
+
+			int result = bService.updateDwReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		
+		
 		@GetMapping("/board/dw/report")
 		@ResponseBody
 		public String wmBoardReport(@ModelAttribute Report rep, @RequestParam("dwNo") int dwNo) {
@@ -700,7 +764,14 @@ public class BoardController {
 		    rep.setRCategory("DW");
 		    rep.setRType("B");
 		    rep.setRBoardNo(dwNo);
-		    System.out.println(rep);
+		    
+		    int selectBoardReport = bService.selectBoardReport(rep);
+		    System.out.println(selectBoardReport);
+		    if (selectBoardReport >0) {
+		        // 사용자가 이미 동일한 게시물을 신고함
+		        return "existBoardReport";
+		    }
+
 		    int result = bService.BoardReport(rep); // 수정된 부분
 
 		    if(result > 0) {

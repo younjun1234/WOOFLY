@@ -107,22 +107,19 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteFreeReply(Reply r) {
 		return bDAO.deleteFreeReply(r);
 	}
-
+	
+	@Override
+	public int updateFreeReply(Reply r) {
+		return bDAO.updateFreeReply(r);
+	}
 
 	@Override
 	public ArrayList<Reply> selectFreeReply(int bNo) {
 		return bDAO.selectFreeReply(bNo);
 	}
 	
-	@Override
-	public int insertDwReply(Reply r) {
-		return bDAO.insertDwReply(r);
-	}
+	
 
-	@Override
-	public int deleteDwReply(Reply r) {
-		return bDAO.deleteDwReply(r);
-	}
 	
 
 	
@@ -207,7 +204,26 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteDwAttm(ArrayList<String> delRename) {
 		return bDAO.deleteDwAttm(delRename);
 	}
+	
+	@Override
+	public int insertDwReply(Reply r) {
+		return bDAO.insertDwReply(r);
+	}
 
+	@Override
+	public int deleteDwReply(Reply r) {
+		return bDAO.deleteDwReply(r);
+	}
+	
+	@Override
+	public int updateDwReply(Reply r) {
+		return bDAO.updateDwReply(r);
+	}
+	
+	@Override
+	public int selectBoardReport(Report rep) {
+		return bDAO.selectBoardReport(rep);
+	}
 	
 	@Override
 	public int BoardReport(Report rep) {
@@ -335,6 +351,9 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	
+	
 
 	
 

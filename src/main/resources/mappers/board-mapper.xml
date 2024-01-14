@@ -263,6 +263,19 @@
 		where r_no = #{ rNo } and b_type = 'DW'
 	</update>
 	
+	<update id="updateDwReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
+	
+	
+	<select id="selectBoardReport" resultType="int">
+		select count(*)
+		from report
+		where r_accuser= #{rAccuser} and r_board_no = #{rBoardNo}
+	</select>
+	
 	<insert id="BoardReport">	    
 	    insert into report 
 	    values (rep_seq.nextval, #{rContent}, SYSDATE, default, #{rCategory},#{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
