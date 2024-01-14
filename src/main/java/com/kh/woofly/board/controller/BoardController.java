@@ -499,18 +499,18 @@ public class BoardController {
 			
 
 		// 글 수정
-//		@GetMapping("/board/lost/edit")
-//		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
-//				 @RequestParam("page") int page,
-//				 Model model) {
-//			LostBoard m = bService.selectLostBoard(bId, null);
-//			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
-//			model.addAttribute("m", m);
-//			model.addAttribute("page", page);
-//			model.addAttribute("mList", mList);
-//			
-//			return "lostBoardEdit";
-//		}
+		@GetMapping("/board/lost/edit")
+		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
+				 						  @RequestParam("page") int page,
+				 						  Model model) {
+			LostBoard m = bService.editLostBoard(bId, null);
+			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
+			model.addAttribute("m", m);
+			model.addAttribute("page", page);
+			model.addAttribute("mList", mList);
+			
+			return "lostBoardEdit";
+		}
 		
 		
 		

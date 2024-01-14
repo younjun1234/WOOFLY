@@ -98,6 +98,12 @@ private BoardServiceImpl boardDAO;
 		return bDAO.selectLostBoard(mNo);
 	}
 
+	@Override
+	public LostBoard editLostBoard(int bId, Object object) {
+		// TODO Auto-generated method stub
+		return bDAO.editLostBoard(bId, object);
+	}
+
 
 
 	

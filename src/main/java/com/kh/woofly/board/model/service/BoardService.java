@@ -56,6 +56,8 @@ public interface BoardService {
 
 	LostBoard selectLostBoard(Integer mNo);
 
+	LostBoard editLostBoard(int bId, Object object);
+
 
 	
 

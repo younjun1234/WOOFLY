@@ -54,6 +54,8 @@ public interface BoardDAO {
 
 	LostBoard selectLostBoard(Integer mNo);
 
+	LostBoard editLostBoard(int bId, Object object);
+
 
 	
 
