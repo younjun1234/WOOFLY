@@ -35,9 +35,10 @@
 					<form action="/petPhotoEdit.dw" method="POST" enctype="multipart/form-data">
 						<input type="hidden" name="abNo" value="abNo">
 						<div class="col-8">
+						  <p class="text-secondary">마이펫 선택</p>
 						  <select class="form-select" name="petId" style="width: 160px;" required>
-							  <option selected disabled>강아지 선택</option>
-						  	  <option th:each="p : ${pList}" th:value="${p.petId}" th:text="${p.petName}">
+							  <option selected disabled>마이펫 선택</option>
+						  	  <option th:each="p : ${pList}" th:value="${p.petId}" th:text="${p.petName}" th:selected="${p.petId eq a.petId}">
 						  </select>
 							<p class="text-secondary mt-3">사진 첨부</p>
 				               <div class="d-flex">

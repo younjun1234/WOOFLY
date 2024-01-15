@@ -370,6 +370,7 @@ p {
                 idCheckWarn.innerText = '';
                 regCheckWarn.innerText = '아이디는 영문, 숫자, 특수문자(._) 포함 4~30자리 이상입니다.';
                 regCheckWarn.style.color = 'red';
+                
                 check_idReg = false;
              }
              
@@ -379,6 +380,7 @@ p {
          document.getElementById('mbPwd').addEventListener('keyup', function() {
              const reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
              const regCheckWarn = document.getElementById('regCheckWarn');
+             const pwWarn = document.getElementById('pwdCheckWarn');   
             if(document.getElementById('mbPwd').value.match(reg) != null) {
                regCheckWarn.innerText = '사용가능한 비밀번호 입니다.';
                regCheckWarn.style.color = 'grey';
@@ -386,6 +388,7 @@ p {
             }else{
                regCheckWarn.innerText = '비밀번호는 영문,숫자,특수문자 포함 8자리~15자리 이상입니다.';
                regCheckWarn.style.color = 'red';
+               pwWarn.style.display = 'none';
                check_pwdReg = false;
             }
             

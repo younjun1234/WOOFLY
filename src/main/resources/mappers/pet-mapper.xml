@@ -252,4 +252,21 @@
 		where r_board_no = #{rBoardNo} and r_accuser = #{rAccuser}
 	</select>
 	
+	<select id="selectReplyLike" resultType="ReplyLike">
+		select *
+			from reply
+	             join reply_like on (r_no = like_ref_board)
+	      where like_ref_board = #{rNo} and like_user = #{mbId}
+	</select>
+	
+	<insert id="insertReplyLike">
+		insert into reply_like
+		values (rl_seq.nextval, #{rNo}, #{id})
+	</insert>
+	
+	<delete id="deleteReplyLike">
+		delete from reply_like
+		where like_ref_board = #{rNo}
+		
+	</delete>
 </mapper>

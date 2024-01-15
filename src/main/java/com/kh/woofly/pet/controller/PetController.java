@@ -2,11 +2,11 @@ package com.kh.woofly.pet.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -34,6 +35,7 @@ import com.kh.woofly.pet.model.vo.Pet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import kotlin.reflect.jvm.internal.impl.types.model.TypeSystemOptimizationContext;
 
 @Controller
 public class PetController {
@@ -396,19 +398,55 @@ public class PetController {
 	}
 	
 	@GetMapping("pet/petPhotoDetail/{abNo}")
-	public String petPhotoDetail(@PathVariable("abNo") int abNo, Model model) {
+	public String petPhotoDetail(@PathVariable("abNo") int abNo, Model model, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		ArrayList<Album> aList = pService.petPhotoDetail(abNo);
 		ArrayList<Pet> pList = pService.petInfo(abNo); 
 		ArrayList<Reply> rList = pService.replyList(abNo);
-		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("abNo", abNo);
+		map.put("id", id);
+		ArrayList<ReplyLike> likeList = new ArrayList<>();
+		for(Reply r: rList) {
+			Reply tempR = new Reply();
+			tempR.setRNo(r.getRNo());
+			tempR.setMbId(id);
+			
+			likeList.add(pService.selectReplyLike(tempR));
+		}
+		System.out.println(likeList);
 		if(aList != null) {
 			model.addAttribute("aList", aList);
 			model.addAttribute("pList", pList);
 			model.addAttribute("rList", rList);
-			
+			model.addAttribute("lList", likeList);
 			return "petPhotoDetail";
 		} else {
 			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("insertDeleteReply.dw")
+	@ResponseBody
+	public String insertDeleteReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+		HashMap<String, Object> map = new HashMap<>();
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+		map.put("rNo", rNo);
+		map.put("id", id);
+		
+		int result = 0;
+		if (replyInDel.equals("delete")) {
+			result = pService.deleteReplyLike(map);
+		} else {
+			result = pService.insertReplyLike(map);
+		}
+			
+		if (result > 0) {
+			return "good";
+		} else {
+			return "bad";
+					
 		}
 	}
 	
@@ -615,7 +653,7 @@ public class PetController {
 		
 		Diary list = pService.petDiaryDetail(drNo);
 		ArrayList<Pet> pet = pService.petInfoList(id); //가지고 있는 pet리스트 뿌려줘야해서
-
+		//System.out.println(pet);
 		if(list != null) {
 			model.addAttribute("d", list);
 			model.addAttribute("pet", pet);
@@ -628,7 +666,7 @@ public class PetController {
 	@PostMapping("/petDiaryEdit.dw")
 	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") Date date) {
 		d.setDrDate(date);
-		
+		System.out.println(d);
 		int result = pService.petDiaryEdit(d);
 		int drNo = d.getDrNo();
 		

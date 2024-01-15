@@ -57,15 +57,15 @@ public class AccountController {
     }
 	
     //자동 로그인
-    @GetMapping("/")
-    public String test(HttpSession session) {
-       Member m = new Member();
-       String id = "test";
-       m.setMbId(id);
-       Member loginUser = aService.login(m);
-       session.setAttribute("loginUser", loginUser);
-       return "index";
-    }
+//    @GetMapping("/")
+//    public String test(HttpSession session) {
+//       Member m = new Member();
+//       String id = "test";
+//       m.setMbId(id);
+//       Member loginUser = aService.login(m);
+//       session.setAttribute("loginUser", loginUser);
+//       return "index";
+//    }
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
@@ -94,6 +94,7 @@ public class AccountController {
 //			throw new AccountException("로그인을 실패하였습니다.");
 //		}
 		
+		//beforeUrl
 		if(loginUser != null) {
 	         if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
 	            model.addAttribute("loginUser",loginUser);
@@ -111,6 +112,7 @@ public class AccountController {
 	         return "redirect:signUp.dw";
 	      }
 	}
+	
 	
 	@GetMapping("/idCheck.dw")
 	@ResponseBody

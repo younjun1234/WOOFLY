@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
@@ -87,5 +88,11 @@ public interface PetDAO {
 	int getDiaryCount(HashMap<String, Object> map);
 
 	ArrayList<Diary> petDiaryList(RowBounds rowbounds, HashMap<String, Object> map);
+
+	ReplyLike selectReplyLike(Reply r);
+
+	int deleteReplyLike(HashMap<String, Object> map);
+
+	int insertReplyLike(HashMap<String, Object> map);
 
 }

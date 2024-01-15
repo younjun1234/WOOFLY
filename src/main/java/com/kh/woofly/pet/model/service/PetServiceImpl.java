@@ -11,6 +11,7 @@ import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -199,6 +200,22 @@ public class PetServiceImpl implements PetService{
 		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
 		return pDAO.petDiaryList(rowbounds, map);
 	}
+
+	@Override
+	public ReplyLike selectReplyLike(Reply r) {
+		return pDAO.selectReplyLike(r);
+	}
+
+	@Override
+	public int deleteReplyLike(HashMap<String, Object> map) {
+		return pDAO.deleteReplyLike(map);
+	}
+
+	@Override
+	public int insertReplyLike(HashMap<String, Object> map) {
+		return pDAO.insertReplyLike(map);
+	}
+
 	 
 
 }
