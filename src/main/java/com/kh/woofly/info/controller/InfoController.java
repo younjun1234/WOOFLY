@@ -1,6 +1,5 @@
 package com.kh.woofly.info.controller;
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -25,12 +24,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class InfoController {
-=======
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
->>>>>>> refs/heads/develop
 
-<<<<<<< HEAD
 	@Autowired
 	private InfoService iService;
 	
@@ -715,13 +709,3 @@ import org.springframework.web.bind.annotation.GetMapping;
 	}
 
 }
-=======
-@Controller
-public class InfoController {
-	
-	@GetMapping("map")
-	public String mapView() {
-		return "map";
-	}
-}
->>>>>>> refs/heads/develop
