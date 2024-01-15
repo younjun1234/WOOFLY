@@ -9,12 +9,13 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
-
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.UsedBoard;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.board.model.vo.WmBoard;
 
 @Mapper
@@ -169,6 +170,16 @@ public interface BoardDAO {
 	int insertLostBoard(LostBoard m);
 
 	LostBoard selectLostBoard(int bId, Object object);
+	
+	// 연준이꺼
+	
+	ArrayList<UsedBoard> selectMyUsedBuying(RowBounds rowbounds, HashMap<String, Object> map);
+
+	int selectMyUsedBuyingCount(String id);
+
+	int selectMySellingCount(String id);
+
+	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
 
 	
 

@@ -3,12 +3,70 @@
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
 
+
 	<select id="getReplyListCount" resultType="_int">
 		select count(*)
 		from Reply
 		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
 	</select>
-	 
+
+	<!-- 연준이꺼 -->
+	<select id="selectMyUsedBuyingCount" resultType="_int">
+		select count(*)
+		from used_board
+		where buyer_id = #{id}
+	</select>
+	
+	<select id="selectMyUsedBuying" resultType="UsedBoard">
+		select *
+		from used_board
+ 		where buyer_id = #{id}
+ 			<if test="startDate != null">
+		    	and sold_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and sold_date <![CDATA[<]]> #{endDate}
+		    </if>
+			<if test="orderDate != null">
+			    order by sold_date ${orderDate}
+			</if>
+			<if test="price != null">
+			    order by product_price ${price}
+			</if>
+	</select>
+	
+	<select id="selectMySellingCount" resultType="_int">
+		select count(*)
+		from used_board
+		where mb_id = #{id}
+	</select>
+	
+	<select id="selectMySelling" resultType="UsedBoard">
+		select *
+		from used_board
+ 		where mb_id = #{id}
+ 			<if test="startDate != null">
+		    	and sold_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and sold_date <![CDATA[<]]> #{endDate}
+		    </if>
+	        <if test="startDate != null">
+		    	or sold_date is null
+		    </if>
+			<if test="soldDate != null">
+			    order by sold_date ${soldDate}
+			</if>
+			<if test="price != null">
+			    order by product_price ${price}
+			</if>
+			<if test="uEnd != null">
+			    order by u_end ${uEnd}
+			</if>
+	</select>
+	
+		 
+>>>>>>> refs/heads/develop
 	<!-- 자유게시판 -->	
 	
 	<!-- 검색 기능 -->
