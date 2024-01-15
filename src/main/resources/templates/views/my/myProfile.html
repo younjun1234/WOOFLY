@@ -161,6 +161,7 @@
 							<div class="d-flex justify-content-center" th:if="${ #arrays.isEmpty(list) }" >
 								<p>차단한 프로필이 없습니다</p>
 							</div>
+							[[${list}]]
 							<form class="d-flex justify-content-between" action="/removeBlock.yj" method="POST" th:each="blockedEntity : ${ list }">
 								<input type="hidden" name="blockedEntity" th:value="${ blockedEntity.mbId }">
 								<h4>[[${ blockedEntity.mbNickName }]]</h4>
@@ -176,7 +177,7 @@
 			</div>
 		</div>
 	</main>
-	<script>
+	<script th:inline="javascript">
 		const myNav = document.getElementById("myNav5");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
@@ -235,6 +236,10 @@
 			$('#nicknameCheck').css('display', 'none');
 			$('#nicknameChangeBtn').css('display', 'block');
 			$('#nicknameCont').removeClass('border-2').removeClass('border-black');
+			/*<![CDATA[*/
+			const nickname = /*[[${session.loginUser.mbNickName}]]*/'error';
+			/*]]>*/
+			$('#nickname')[0].value = nickname;
 		});
 		
 		// 이름 수정
@@ -254,6 +259,10 @@
 			$('#nameHideCont').css('display', 'none');
 			$('#nameChangeBtn').css('display', 'block');
 			$('#nameCont').removeClass('border-2').removeClass('border-black');
+			/*<![CDATA[*/
+			const name = /*[[${session.loginUser.mbName}]]*/'error';
+			/*]]>*/
+			$('#name')[0].value = name;
 		});
 		
 		// 자기소개 수정
@@ -273,6 +282,10 @@
 			$('#introHideCont').css('display', 'none');
 			$('#introChangeBtn').css('display', 'block');
 			$('#introCont').removeClass('border-2').removeClass('border-black');
+			/*<![CDATA[*/
+			const intro = /*[[${session.loginUser.mbIntro}]]*/'error';
+			/*]]>*/
+			$('#intro')[0].value = intro;
 		});
 		
 		// 비공개 설정

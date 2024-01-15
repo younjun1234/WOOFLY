@@ -81,7 +81,7 @@ public class PetController {
 	public String petDiaryView(HttpSession session, Model model,@RequestParam(value="page", defaultValue="1") int page,
 							 @RequestParam(value="startDate", required=false) String startDate, 
 							 @RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request,
-							 @RequestParam(value="petName", required=false) int petId, @RequestParam(value="petHealth", required=false) String petHealth) {
+							 @RequestParam(value="petName", required=false) Integer petId, @RequestParam(value="petHealth", required=false) String petHealth) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("id", id);
@@ -103,19 +103,40 @@ public class PetController {
 				map.put("endDate", sdf.format(calendar.getTime()));
 			} else {
 				map.put("endDate", sdf.parse(endDate));
+				
+				Date newDate = sdf.parse(endDate);
+				if (newDate.after(new Date())) {
+					
+					Calendar newCalendar = Calendar.getInstance();
+					newCalendar.setTime(newDate);
+					newCalendar.add(Calendar.DAY_OF_MONTH, -1);
+					endDate = sdf.format(newCalendar.getTime());
+				}
+				
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		int listCount = oService.getBuyingCount(id);
+		
+		map.put("petId", petId);
+		map.put("petHealth", petHealth);
+		
+		
+		int listCount = pService.getDiaryCount(map);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
 		
 		
-		ArrayList<Diary> list = pService.petDiaryList(id);
+		ArrayList<Diary> list = pService.petDiaryList(pi, map);
 		ArrayList<Pet> pet = pService.petInfoList(id);
 		
+		model.addAttribute("petId", petId);
+		model.addAttribute("petHealth", petHealth);
 		model.addAttribute("list", list);
 		model.addAttribute("pet", pet);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		model.addAttribute("loc", request.getRequestURI());
+		model.addAttribute("pi", pi);
 		
 		return "petDiary";
 	}

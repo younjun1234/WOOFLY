@@ -88,11 +88,43 @@
 		values (#{drNo}, #{drContent}, #{drDate}, default, #{writerId}, #{petId}, #{petHealth})
 	</insert>
 	
-	<select id="petDiaryList" parameterType="Diary">
+	<select id="getDiaryCount" resultType="_int">
+		select count(*)
+		from diary
+			 join pet using(pet_id)
+		where dr_status = 'Y' and writer_Id=#{id}
+			<if test="startDate != null">
+		    	and dr_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and dr_date <![CDATA[<]]> #{endDate}
+		    </if>
+		    <if test="petId != null">
+		    	and pet_id = #{petId}
+		    </if>
+		    <if test="petHealth != null">
+		    	and pet_health = #{petHealth}
+		    </if>
+		order by dr_date desc
+	</select>
+	
+	<select id="petDiaryList" resultType="Diary">
 		select *
 		from diary
 			 join pet using(pet_id)
-		where dr_status = 'Y' and writer_Id=#{writerId}
+		where dr_status = 'Y' and writer_Id=#{id}
+			<if test="startDate != null">
+		    	and dr_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and dr_date <![CDATA[<]]> #{endDate}
+		    </if>
+		    <if test="petId != null">
+		    	and pet_id = #{petId}
+		    </if>
+		    <if test="petHealth != null">
+		    	and pet_health = #{petHealth}
+		    </if>
 		order by dr_date desc
 	</select>
 	

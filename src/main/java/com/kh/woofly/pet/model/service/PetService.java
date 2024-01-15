@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -39,8 +40,6 @@ public interface PetService {
 	int deletePetPhoto(int petId);
 
 	int petDiaryWrite(Diary d);
-
-	ArrayList<Diary> petDiaryList(String id);
 
 	Diary petDiaryDetail(int drNo);
 
@@ -79,5 +78,9 @@ public interface PetService {
 	int insertReport(Report rt);
 
 	int checkResult(Report rt);
+
+	int getDiaryCount(HashMap<String, Object> map);
+
+	ArrayList<Diary> petDiaryList(PageInfo pi, HashMap<String, Object> map);
 
 }

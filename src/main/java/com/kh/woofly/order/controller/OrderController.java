@@ -103,21 +103,29 @@ public class OrderController {
 				map.put("endDate", sdf.format(calendar.getTime()));
 			} else {
 				map.put("endDate", sdf.parse(endDate));
+				
+				Date newDate = sdf.parse(endDate);
+				if (newDate.after(new Date())) {
+					
+					Calendar newCalendar = Calendar.getInstance();
+					newCalendar.setTime(newDate);
+					newCalendar.add(Calendar.DAY_OF_MONTH, -1);
+					endDate = sdf.format(newCalendar.getTime());
+				}
+				
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(map.get("endDate"));
+		
 		int listCount = oService.getBuyingCount(id);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-		System.out.println(pi);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
 		ArrayList<Order> oList = oService.selectMyBuying(pi, map);
 		ArrayList<ProductAttm> paList = new ArrayList<>();
 		ArrayList<Product> pList = new ArrayList<>();
 		
-		System.out.println(oList.size());
 		
 		for(Order o : oList) {
 			paList.add(oService.selectOrderAttm(o));
@@ -152,11 +160,6 @@ public class OrderController {
 		return "myBuyingDetail";
 	}
 	
-	@GetMapping("my/selling")
-	public String sellingView() {
-		return "mySelling";
-	}
-
 	@GetMapping("my/saved")
 	public String savedView() {
 		return "mySaved";

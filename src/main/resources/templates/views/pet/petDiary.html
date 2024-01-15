@@ -48,31 +48,31 @@
 							<button class="btn btn-dark btn-sm">조회</button>
 						</div>
 					</div>
-				</form>	
 				    <span class="text-secondary" style="font-size: 13px;">한 번에 조회 가능한 기간은 최대 3개월입니다.</span>
-				<div class="d-flex bd-highlight mb-2">
-				  <div class="p-2 bd-highlight">
-					  <select class="form-select" name="petName" style="width: 160px;">
-						  <option selected disabled>마이펫 선택</option>
-					  	  <option th:each="p : ${pet}" th:value="${p.petId}" th:text="${p.petName}"></option>
-					  </select>
-				  </div>
-				  <div class="p-2 bd-highlight">
-					  <select class="form-select" name="petHealth" style="width:160px">
-							<option selected disabled>오늘의 상태</option>
-							<option value="A">😻 신나요</option>
-							<option value="B">😸 그냥 그래요</option>
-							<option value="C">😺 무기력해요</option>
-							<option value="D">😿 아파요</option>
-					  </select>
-				  </div>
-				  <div class="p-2 bd-highlight">
-				  		<button class="btn btn-dark btn-sm">조회</button>
-				  </div>
-				  <div class="ms-auto p-2 bd-highlight">
-				  	 <a href="/pet/petDiaryWrite" class="btn btn-dark btn-sm justify-content-end">다이어리 쓰기</a>
-				  </div>
-				</div>
+					<div class="d-flex bd-highlight mb-2">
+					  	<div class="p-2 bd-highlight">
+						  	<select class="form-select" name="petName" style="width: 160px;">
+							  	<option selected disabled>마이펫 선택</option>
+						  	  	<option th:each="p : ${pet}" th:selected="${petId == p.petId}"th:value="${p.petId}" th:text="${p.petName}"></option>
+						  	</select>
+					  	</div>
+					  	<div class="p-2 bd-highlight">
+						  	<select class="form-select" name="petHealth" style="width:160px">
+								<option selected disabled>오늘의 상태</option>
+								<option value="A" th:selected="${petHealth == 'A'}">😻 신나요</option>
+								<option value="B" th:selected="${petHealth == 'B'}">😸 그냥 그래요</option>
+								<option value="C" th:selected="${petHealth == 'C'}">😺 무기력해요</option>
+								<option value="D" th:selected="${petHealth == 'D'}">😿 아파요</option>
+						  	</select>
+					  	</div>
+					  	<div class="p-2 bd-highlight">
+					  		<button class="btn btn-dark btn-sm">조회</button>
+					  	</div>
+					  	<div class="ms-auto p-2 bd-highlight">
+					  	 	<a href="/pet/petDiaryWrite" class="btn btn-dark btn-sm justify-content-end">다이어리 쓰기</a>
+					  	</div>
+					</div>
+				</form>	
 				
 				<div th:each="d : ${list}" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px;" role="button" th:onclick="|location.href='/pet/petDiaryDetail/${d.drNo}'|">
 				    <div class="d-flex align-content-center ms-3">
@@ -112,7 +112,10 @@
 		const today = new Date(now_date-timeOff).toISOString().split("T")[0];
 		startDate.setAttribute("max", today);
 		endDate.setAttribute("max", today);
-		
+		/*<![CDATA[*/
+		const petId = /*[[${petId}]]*/null;
+		const petHealth = /*[[${petHealth}]]*/null;
+		/*]]>*/
 		const getMonths = (months) => {
 			let startDate = new Date();
 			startDate.setMonth(startDate.getMonth() - months);
@@ -129,12 +132,15 @@
 			day = ('0' + endDate.getDate()).slice(-2);
 			
 			endDate = year + '-' + month + '-' + day;
-			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate;		
+			
+
+			
+			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate + '&petId=' + petId + '&petHealth' + petHealth;		
 		}
 		
-		const getWeeks = (week) => {
+		const getOneWeek = (week) => {
 			let startDate = new Date(); // 새 날짜를 가져오는거
-			startDate.setMonth(startDate.getDate() - week * 7); // 그 날짜에서 7일을 빼주고
+			startDate.setDate(startDate.getDate() - 7); // 그 날짜에서 7일을 빼주고
 			let endDate = new Date(); // 
 
 			let year = (startDate.getFullYear() + "");
@@ -148,12 +154,12 @@
 			day = ('0' + endDate.getDate()).slice(-2);
 			
 			endDate = year + '-' + month + '-' + day;
-			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate;		
+			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate + '&petId=' + petId + '&petHealth' + petHealth;		
 		}
 		
 		endDate.addEventListener('change', () => {
 			let sixMonthsBefore = new Date(endDate.value);
-			sixMonthsBefore.setMonth(sixMonthsBefore.getMonth() - 6);
+			sixMonthsBefore.setMonth(sixMonthsBefore.getMonth() - 3);
 			var newDate = new Date(startDate.value);
 			
 			
@@ -168,7 +174,7 @@
 		
 		startDate.addEventListener('change', () => {
 			let sixMonthsAfter = new Date(startDate.value);
-			sixMonthsAfter.setMonth(sixMonthsAfter.getMonth() + 6);
+			sixMonthsAfter.setMonth(sixMonthsAfter.getMonth() + 3);
 			var newDate = new Date(endDate.value);
 
 			if(sixMonthsAfter < newDate) {

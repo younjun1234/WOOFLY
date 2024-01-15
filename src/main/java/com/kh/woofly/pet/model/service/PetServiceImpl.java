@@ -3,11 +3,13 @@ package com.kh.woofly.pet.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
@@ -89,11 +91,6 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int petDiaryWrite(Diary d) {
 		return pDAO.petDiaryWrite(d);
-	}
-
-	@Override
-	public ArrayList<Diary> petDiaryList(String id) {
-		return pDAO.petDiaryList(id);
 	}
 
 	@Override
@@ -189,6 +186,18 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int checkResult(Report rt) {
 		return pDAO.checkResult(rt);
+	}
+
+	@Override
+	public int getDiaryCount(HashMap<String, Object> map) {
+		return pDAO.getDiaryCount(map);
+	}
+
+	@Override
+	public ArrayList<Diary> petDiaryList(PageInfo pi, HashMap<String, Object> map) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
+		return pDAO.petDiaryList(rowbounds, map);
 	}
 	 
 
