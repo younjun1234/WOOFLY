@@ -7,7 +7,7 @@
 	<select id="getReplyListCount" resultType="_int">
 		select count(*)
 		from Reply
-		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
+		where b_type= 'DW' and b_no = #{dwNo} and re_d_status ='Y'
 	</select>
 
 	<!-- 연준이꺼 -->
@@ -64,9 +64,7 @@
 			    order by u_end ${uEnd}
 			</if>
 	</select>
-	
-		 
->>>>>>> refs/heads/develop
+
 	<!-- 자유게시판 -->	
 	
 	<!-- 검색 기능 -->

@@ -21,7 +21,7 @@ import com.kh.woofly.board.model.vo.WmBoard;
 @Mapper
 public interface BoardDAO {
 	
-	int getReplyListCount(int i, int dwNo, String bType);
+	int getReplyListCount(int dwNo);
 
 //	자유게시판 "/board/free"
 	
