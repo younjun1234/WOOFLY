@@ -4,7 +4,7 @@
 <mapper namespace="com.kh.woofly.pet.model.dao.PetDAO">
 	<insert id="petAdd" parameterType="Pet">
 		INSERT INTO pet
-		VALUES (pet_seq.nextval, default, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, null, #{petIntro})
+		VALUES (pet_seq.nextval, default, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, #{petIntro})
 	</insert>
 	
 	<select id="petInfoList" resultType="Pet">

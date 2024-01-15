@@ -116,7 +116,7 @@ public class PetController {
 		
 		int result = pService.petAdd(p);
 		if(result > 0) {
-			return "petInfo";
+			return "redirect:/pet/petInfo";
 		} else {
 			throw new PetException("마이펫 등록에 실패하였습니다.");
 		}
