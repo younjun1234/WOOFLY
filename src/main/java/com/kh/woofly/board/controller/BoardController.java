@@ -266,9 +266,11 @@ public class BoardController {
 		    String boardWriter = ((Member) session.getAttribute("loginUser")).getMbId();
 		    b.setMbId(boardWriter);
 		    int result1 = bService.insertFreeBoard(b); // 글 내용을 board 테이블에 저장
-		    
+
 		    ArrayList<Attachment> attachments = new ArrayList<>();
+		    System.out.println(files);
 		    if (files != null) {
+		    	System.out.println(files);
 		        for (int i = 0; i < files.size(); i++) {
 		            MultipartFile upload = files.get(i);
 		            if (!upload.getOriginalFilename().equals("")) {
@@ -578,14 +580,13 @@ public class BoardController {
 			DwBoard dw = bService.selectDwBoard(dwNo, id);
 			//System.out.println(dw);
 			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
-			ArrayList<Reply> rList = bService.selectDwReply(dwNo);
+
 			
 			if(dw != null) {
 				model.addAttribute("dw", dw);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
-				model.addAttribute("rList", rList);
-				//System.out.println(rList);
+
 				return "dwBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
