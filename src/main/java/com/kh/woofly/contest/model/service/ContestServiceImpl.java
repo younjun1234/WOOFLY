@@ -71,6 +71,12 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.itemList(id);
 	}
 
+	@Override
+	public ArrayList<ContestItem> searchItem(String pSearch) {
+		// TODO Auto-generated method stub
+		return cDAO.searchItem(pSearch);
+	}
+
 	
 
 	

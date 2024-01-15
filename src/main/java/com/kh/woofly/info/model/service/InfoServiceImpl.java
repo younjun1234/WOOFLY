@@ -193,6 +193,26 @@ public class InfoServiceImpl implements InfoService{
 		return iDAO.selectNoticeCategory(rowBounds, prop);
 	}
 
+	@Override
+	public ArrayList<Notice> searchAllNotice(PageInfo pi, Properties prop) {
+		
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return iDAO.searchAllNotice(rowBounds, prop);
+	}
+
+	@Override
+	public ArrayList<QNA> searchAllQNA(PageInfo pi, Properties prop) {
+		
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return iDAO.searchAllQNA(rowBounds, prop);
+	}
+
 
 	
 }

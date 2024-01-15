@@ -9,3 +9,7 @@ a{color:#000;}
 #modalLayer .modalContent{width:50%; height:75%; padding:20px; border:2px solid #ccc; position:fixed; left:30%; top:16%; z-index:1; background:#fff;}
 
 #modalLayer .modalContent button{position:absolute; right:0; top:0; cursor:pointer;}
+
+
+/* .pNum{display: none;  }
+.bbb{display: none;  } */

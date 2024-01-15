@@ -27,6 +27,8 @@ public interface ContestService {
 
 	ArrayList<ContestItem> itemList(String id);
 
+	ArrayList<ContestItem> searchItem(String pSearch);
+
 	
 	
 }

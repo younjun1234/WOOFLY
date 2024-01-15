@@ -61,4 +61,10 @@ public interface InfoDAO {
 
 	ArrayList<Notice> selectNoticeCategory(RowBounds rowBounds, Properties prop);
 
+	ArrayList<Notice> searchAllNotice(RowBounds rowBounds, Properties prop);
+
+	ArrayList<QNA> searchAllQNA(RowBounds rowBounds, Properties prop);
+	
+	
+
 }

@@ -49,13 +49,13 @@
 										<tr>
 											<th>콘테스트 시작일</th>
 											<td>
-												<input type="date" name="conStartDate"  th:min="${ c.conEndDate }" th:value="${ c.conEndDate }" style="width: 14%">
+												<input type="date" name="conStartDate" id="conStartDate" style="width: 15%" th:min="${ c.conEndDate }">
 											</td>
 										</tr>
 										<tr>
 											<th>콘테스트 종료일</th>
 											<td>
-												<input type="date" name="conEndDate" id="conEndDate" th:min="${ c.conEndDate }" style="width: 14%">
+												<input type="date" name="conEndDate" id="conEndDate" style="width: 15%">
 											</td>
 										</tr>
 									</tbody>
@@ -63,7 +63,7 @@
 								<div class="container text-center">
 									<button class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">등록</button>
 									<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascript:history.back();">이전</button>
-	 							</div>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -79,38 +79,43 @@
 		}
 		
 		function getFutureDates(numDays) {
-		    const today = new Date(/*[[${ c.conEndDate }]]*/);
-		    const futureDates = [];
+			const today = new Date(/*[[${ c.conEndDate }]]*/);
+			const futureDates = [];
 			
-		    for (let i = 1; i <= numDays; i++) {
-		        const futureDate = new Date(today);
-		        futureDate.setDate(today.getDate() + i);
-		        futureDates.push(futureDate);
-		    }
-		    return futureDates;
+			for (let i = 1; i <= numDays; i++) {
+				const futureDate = new Date(today);
+				futureDate.setDate(today.getDate() + i);
+				futureDates.push(futureDate);
+			}
+			return futureDates;
 		}
-
-		const numDaysToFetch = 7;  // 7일 이후의 날짜들을 가져옵니다.
-		const futureDates = getFutureDates(numDaysToFetch);
+		
 		var conEndDate = document.getElementById("conEndDate");
 		
-		futureDates.forEach(date => {
-		    
-		    function formatDate(date) {
-		        const year = date.getFullYear();
-		        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 해주고, 2자리로 맞춰줍니다.
-		        const day = String(date.getDate()).padStart(2, '0'); // 일자도 2자리로 맞춰줍니다.
-
-		        return `${year}-${month}-${day}`;
-		    }
-
-		    const yourDate = new Date(date); 
-		    const formattedDate = formatDate(yourDate); // 여기에 자신의 날짜를 넣으세요.
-//		    console.log(formattedDate); // yyyy-mm-dd 형식의 날짜 출력
-		    
-		    conEndDate.value = formattedDate;
-		});
+		const numDaysToFetch = 8; // 7일 이후의 날짜들을 가져옵니다.
+		const futureDates = getFutureDates(numDaysToFetch);
 		
+		futureDates.forEach(date => {
+			function formatDate(date, daysToAdd = 0) {
+				const adjustedDate = new Date(date);
+				adjustedDate.setDate(adjustedDate.getDate() + daysToAdd);
+
+				const year = adjustedDate.getFullYear();
+				const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
+				const day = String(adjustedDate.getDate()).padStart(2, '0');
+
+				return `${year}-${month}-${day}`;
+			}
+
+			const yourDate = new Date(date);
+			const formattedDate = formatDate(yourDate);
+			const formattedDateSixDaysLater = formatDate(yourDate, 6);
+
+
+			conEndDate.value = formattedDateSixDaysLater;
+			conStartDate.value = formattedDate;
+		    // conEndDateSixDaysLater.value = formattedDateSixDaysLater; // You can use this line if you have another element for six days later value.
+		});
 		
 	</script>
 	

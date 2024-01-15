@@ -152,39 +152,88 @@ public class InfoController {
 		
 		String table = "notice";
 		String status = "n_status";
+		String abc = "N_CATEGORY";
+		String type = "";
 		
 		Properties prop = new Properties();
 		int currentPage = page;
 		int listCount = 0;
 		
 		if(Category.equals("all")) {
-			String type = "1";
-			String title = "n_Title";
-			String content = "n_Content";
 			
-			prop.setProperty("value", value);
-			prop.setProperty("type", type);
-			prop.setProperty("table", table);
-			prop.setProperty("search", search);
-			prop.setProperty("Category", Category);
-			prop.setProperty("status", status);
-			prop.setProperty("title", title);
-			prop.setProperty("content", content);
+			if(value == "") {
+				type = "1";
+				String title = "n_Title";
+				String content = "n_Content";
+				
+				prop.setProperty("value", value);
+				prop.setProperty("type", type);
+				prop.setProperty("table", table);
+				prop.setProperty("search", search);
+				prop.setProperty("Category", Category);
+				prop.setProperty("status", status);
+				prop.setProperty("title", title);
+				prop.setProperty("content", content);
+			}else {
+				type = "4";
+				String title = "n_Title";
+				String content = "n_Content";
+				
+				prop.setProperty("abc", abc);
+				prop.setProperty("value", value);
+				prop.setProperty("type", type);
+				prop.setProperty("table", table);
+				prop.setProperty("search", search);
+				prop.setProperty("Category", Category);
+				prop.setProperty("status", status);
+				prop.setProperty("title", title);
+				prop.setProperty("content", content);
+			}
 			
 			listCount = iService.searchCount(prop);
+			
 		} else {
-			String type = "2";
-			prop.setProperty("value", value);
-			prop.setProperty("type", type);
 			prop.setProperty("table", table);
 			prop.setProperty("search", search);
 			prop.setProperty("Category", Category);
 			prop.setProperty("status", status);
-			
+			if(value == "") {
+				type = "3";
+				prop.setProperty("type", type);
+			} else {
+				type = "2";
+				
+				prop.setProperty("abc", abc);
+				prop.setProperty("type", type);
+				prop.setProperty("value", value);
+			}
 			listCount = iService.searchCount(prop);
+			
 		}
+		
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 7);
-		ArrayList<Notice> list = iService.searchNotice(pi, prop);
+		ArrayList<Notice> list;
+		
+		if(value == ""){
+			if(Category.equals("all")) {
+				type = "1";
+			}else {
+				type = "2";
+			}
+			prop.setProperty("type", type);
+			
+			list = iService.searchAllNotice(pi, prop);
+		} else {
+			if(Category.equals("all")) {
+				type = "1";
+				prop.setProperty("type", type);
+			}else {
+				type = "2";
+				prop.setProperty("type", type);
+			}
+			
+			list = iService.searchNotice(pi, prop);
+		}
 		
 		if(list != null) {
 			model.addAttribute("value", value);
@@ -195,7 +244,6 @@ public class InfoController {
 			model.addAttribute("loc", request.getRequestURI());
 			
 			return "noticeList";
-			
 		} else {
 			return null;
 		}
@@ -334,42 +382,103 @@ public class InfoController {
 		String table = "QNA";
 		String status = "q_status";
 		String id = "Q_ID";
+		String abc = "Q_CATEGORY";
+		String type = "";
 		
 		Properties prop = new Properties();
 		int currentPage = page;
 		int listCount = 0;
 		
 		if(Category.equals("all")) {
-			String type = "1";
-			String title = "q_Title";
-			String content = "q_Content";
 			
-			prop.setProperty("value", value);
-			prop.setProperty("type", type);
-			prop.setProperty("table", table);
-			prop.setProperty("search", search);
-			prop.setProperty("Category", Category);
-			prop.setProperty("status", status);
-			prop.setProperty("title", title);
-			prop.setProperty("content", content);
-			prop.setProperty("id", id);
+			if(value == "") {
+				type = "1";
+				String title = "q_Title";
+				String content = "q_Content";
+				
+				prop.setProperty("value", value);
+				prop.setProperty("type", type);
+				prop.setProperty("table", table);
+				prop.setProperty("search", search);
+				prop.setProperty("Category", Category);
+				prop.setProperty("status", status);
+				prop.setProperty("title", title);
+				prop.setProperty("content", content);
+				prop.setProperty("id", id);
+			}else{
+				type = "4";
+				String title = "q_Title";
+				String content = "q_Content";
+				
+				prop.setProperty("abc", abc);
+				prop.setProperty("value", value);
+				prop.setProperty("type", type);
+				prop.setProperty("table", table);
+				prop.setProperty("search", search);
+				prop.setProperty("Category", Category);
+				prop.setProperty("status", status);
+				prop.setProperty("title", title);
+				prop.setProperty("content", content);
+				prop.setProperty("id", id);
+			}
 			
 			listCount = iService.searchCount(prop);
 		} else {
-			String type = "2";
-			prop.setProperty("value", value);
-			prop.setProperty("type", type);
+			
 			prop.setProperty("table", table);
 			prop.setProperty("search", search);
 			prop.setProperty("Category", Category);
 			prop.setProperty("status", status);
 			prop.setProperty("id", id);
+			
+			if(value == "") {
+				type = "3";
+				prop.setProperty("type", type);
+			} else {
+				type = "2";
+				
+				prop.setProperty("abc", abc);
+				prop.setProperty("type", type);
+				prop.setProperty("value", value);
+			}
 			
 			listCount = iService.searchCount(prop);
 		}
 		
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 5);
-		ArrayList<QNA> list = iService.searchQNA(pi, prop);
+		
+		ArrayList<QNA> list; // = iService.searchQNA(pi, prop);
+		
+		if(value == ""){
+			if(Category.equals("all")) {
+				type = "1";
+			}else {
+				type = "2";
+			}
+			prop.setProperty("type", type);
+			
+			list = iService.searchAllQNA(pi, prop);
+		} else {
+			if(Category.equals("all")) {
+				type = "1";
+				prop.setProperty("type", type);
+			}else {
+				type = "2";
+				prop.setProperty("type", type);
+			}
+			
+			list = iService.searchQNA(pi, prop);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		if(list != null) {
 			model.addAttribute("value", value);
@@ -542,25 +651,51 @@ public class InfoController {
 	
 	// 협력업체 검색
 	@GetMapping("/info/searchCompany")
-	public String searchCompany(@RequestParam("Category") String Category, @RequestParam("search") String search, @RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
+	public String searchCompany(@RequestParam("comCategory") String comCategory, 
+			@RequestParam("Category") String Category, @RequestParam("search") String search, @RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
 		
 		String table = "Company";
 		String status = "COM_STATUS";
 		
 		Properties prop = new Properties();
-		String type = "2";
-		prop.setProperty("type", type);
-		prop.setProperty("table", table);
-		prop.setProperty("search", search);
-		prop.setProperty("status", status);
-		prop.setProperty("Category", Category);
+		ArrayList<Company> list;
+		PageInfo pi;
 		
-		int listCount = iService.searchCount(prop);
-		int currentPage = page;
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 7);
-		ArrayList<Company> list = iService.searchCompany(pi, prop);
+		int listCount = 0;
+		int currentPage = 0;
 		
+		if(comCategory.equals("all")) {
+			
+			String type = "3";
+			
+			prop.setProperty("type", type);
+			prop.setProperty("table", table);
+			prop.setProperty("search", search);
+			prop.setProperty("status", status);
+			prop.setProperty("Category", Category);
+			
+			listCount = iService.searchCount(prop);
+			currentPage = page;
+		}else {
+			
+			String type = "5";
+			
+			prop.setProperty("comCategory", comCategory);
+			prop.setProperty("type", type);
+			prop.setProperty("table", table);
+			prop.setProperty("search", search);
+			prop.setProperty("status", status);
+			prop.setProperty("Category", Category);
+			
+			listCount = iService.searchCount(prop);
+			currentPage = page;
+		}
+		
+		pi = Pagination.getPageInfo(currentPage, listCount, 7);
+		list = iService.searchCompany(pi, prop);
+
 		if(list != null) {
+			model.addAttribute("comCategory", comCategory);
 			model.addAttribute("Category", Category);
 			model.addAttribute("search", search);
 			model.addAttribute("pi", pi);
@@ -568,7 +703,6 @@ public class InfoController {
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
 			
 			return "companyList";
-			
 		} else {
 			return null;
 		}

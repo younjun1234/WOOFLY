@@ -69,7 +69,6 @@
 										</th>
 										
 										<td>
-											
 											<div id="td">
 											</div>
 											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
@@ -104,6 +103,7 @@
 				</div>
 				
 				
+				
 				<table class="table" style="margin-top: 20px;">
 					<thead>
 						<tr>
@@ -115,7 +115,7 @@
 					</thead>
 					<tbody id="case1">
 						<tr th:each="l : ${itemList}">
-							<td scope="row" class="pNum">[[${l.orderDetailId}]]+@</td>
+							<td scope="row" class="pNum">[[${l.orderDetailId}]]</td>
 							<td><input type="image" alt="사진"></td>
 							<td>[[${l.productName}]]</td>
 							<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
@@ -198,7 +198,7 @@
 			                    
 			                const titleCell1 = document.createElement('td');
 			                titleCell1.classList.add('pNum'); 
-			                titleCell1.textContent = data[i].productId;
+			                titleCell1.textContent = data[i].productId+"@";
 			                
 			                const titleCell2 = document.createElement('td');
 			                titleCell2.classList.add('pName'); 
@@ -245,7 +245,6 @@
 		    const md = document.getElementById("modalLayer");
 		    const checkboxes = md.querySelectorAll('.checkbox');
 		    const selectedItems = [];
-		    const selectedItemsNum = [];
 		    const tdDiv = document.getElementById('td');
 
 		    // 기존의 자식 요소들을 제거
@@ -254,36 +253,25 @@
 		    checkboxes.forEach((checkbox, index) => {
 		        if (checkbox.checked) {
 		            const tdElements = document.querySelectorAll('td:nth-child(3)');
-		            const iNumber = document.querySelectorAll('td:nth-child(1)');
 		            if (tdElements[index]) {
 		                const productName = tdElements[index].textContent;
-		                const productNum = iNumber[index].textContent;
 		                selectedItems.push(productName);
-		                selectedItemsNum.push(productNum);
-		                
 		            }
 		        }
 		    });
-		    console.log(selectedItems);
-		    console.log(selectedItemsNum);
+		    
+		    
 
 		    for (let i = 0; i < selectedItems.length; i++) {
 		        const a = selectedItems[i];
-		        const b = selectedItemsNum[i];
 		        const newDiv = document.createElement('div');
-		        const newDivNum = document.createElement('div');
 		        const newCheckbox = document.createElement('input');
-		        
-		        newDivNum.style.display = 'none';
-		        
+
 		        newCheckbox.type = 'checkbox';
 		        newCheckbox.className = 'checkbox';
 
 		        newDiv.textContent = a;
 		        newDiv.prepend(newCheckbox);
-		        
-		        newDivNum.textContent = b;
-		        
 		        tdDiv.appendChild(newDiv);
 		    }
 

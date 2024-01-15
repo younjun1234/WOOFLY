@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.woofly.contest.model.service.ContestService;
 import com.kh.woofly.contest.model.vo.Contest;
@@ -18,6 +19,7 @@ import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.info.Pagination;
 import com.kh.woofly.info.model.vo.Company;
+import com.kh.woofly.info.model.vo.Notice;
 import com.kh.woofly.info.model.vo.PageInfo;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,11 +60,11 @@ public class ContestController {
 		
 		int result = cService.contestOpen(c);
 		
-		if(result > 0) {			
+		if(result > 0) {
 			return "redirect:/contest/edit";
 		}else {
 			return null;
-		}		
+		}
 	}
 	
 	// 콘테스트 수정페이지 이동
@@ -80,14 +82,16 @@ public class ContestController {
 	
 	// 콘테스트 수정
 	@GetMapping("/contest/contestUpdate")
-	public String contestUpdate(@ModelAttribute Contest c, HttpSession session) {
+	public String contestUpdate(@ModelAttribute Contest c, HttpSession session, Model model) {
 //		String id = ((Member)session.getAttribute("loginUser")).getId();	
 //		n.setBoardWriter(id);
 		
 		int result = cService.contestUpdate(c);
-		
-		if(result > 0) {			
-			return "redirect:/contest/edit";
+		ArrayList<Contest> contestList = cService.contestList();
+		if(result > 0) {		
+			model.addAttribute("c", c);
+			model.addAttribute("contestList", contestList);
+			return "contestEdit";
 		}else {
 			return null;
 		}
@@ -119,7 +123,6 @@ public class ContestController {
 		int cNo = c.getConNo();
 		
 		int result = cService.contestEnroll(p, cNo);
-		System.out.println(result);
 		
 		return "redirect:/contest/list";
 	}
@@ -127,15 +130,16 @@ public class ContestController {
 	
 	// 콘테스트 아이템 검색
 	@GetMapping("/contest/searchItem")
-	public String searchCompany(@RequestParam("search") String search, Model model) {
+	@ResponseBody
+	public ArrayList<ContestItem> searchItem(@RequestParam("pSearch") String pSearch, Model model) {
 		
-		System.out.println(search);
+		ArrayList<ContestItem> list = cService.searchItem(pSearch);
 		
-		return null;
+		System.out.println(list);
+		
+		return list;
 		
 	}
-	
-	
 	
 	
 }

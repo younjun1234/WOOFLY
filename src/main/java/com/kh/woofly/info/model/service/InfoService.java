@@ -53,7 +53,11 @@ public interface InfoService {
 	int selectCount(Properties prop);
 
 	ArrayList<QNA> selectQNACategory(PageInfo pi, Properties prop);
-
+	
 	ArrayList<Notice> selectNoticeCategory(PageInfo pi, Properties prop);
+	
+	ArrayList<Notice> searchAllNotice(PageInfo pi, Properties prop);
+
+	ArrayList<QNA> searchAllQNA(PageInfo pi, Properties prop);
 
 }

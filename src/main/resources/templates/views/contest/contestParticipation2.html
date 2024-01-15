@@ -69,7 +69,6 @@
 										</th>
 										
 										<td>
-											
 											<div id="td">
 											</div>
 											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
@@ -104,10 +103,11 @@
 				</div>
 				
 				
+				
 				<table class="table" style="margin-top: 20px;">
 					<thead>
 						<tr>
-							<th scope="col" class="bbb">#</th>
+							<th scope="col" >#</th>
 							<th scope="col">사진</th>
 							<th scope="col">애완용품명</th>
 							<th scope="col">선택</th>
@@ -115,7 +115,7 @@
 					</thead>
 					<tbody id="case1">
 						<tr th:each="l : ${itemList}">
-							<td scope="row" class="pNum">[[${l.orderDetailId}]]+@</td>
+							<th scope="row">[[${l.orderDetailId}]]</th>
 							<td><input type="image" alt="사진"></td>
 							<td>[[${l.productName}]]</td>
 							<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
@@ -195,19 +195,19 @@
 			            // 각각의 행에 대해 제목을 추가
 			            for (var i = 0; i < data.length; i++) {
 			                console.log(data[i].productName);
+
+			                const titleCell = document.createElement('td');
+			                titleCell.classList.add('pName'); 
+			                titleCell.textContent = data[i].productName;
 			                    
-			                const titleCell1 = document.createElement('td');
-			                titleCell1.classList.add('pNum'); 
-			                titleCell1.textContent = data[i].productId;
-			                
 			                const titleCell2 = document.createElement('td');
-			                titleCell2.classList.add('pName'); 
-			                titleCell2.textContent = data[i].productName;
+			                titleCell2.classList.add('pNum'); 
+			                titleCell2.textContent = data[i].productId;
 
 			                const newRow = document.createElement('tr');
-			                newRow.appendChild(titleCell1);
-			                newRow.appendChild(document.createElement('td')).appendChild(createImg());
+			                newRow.appendChild(document.createElement('th'));
 			                newRow.appendChild(titleCell2);
+			                newRow.appendChild(titleCell);
 			                newRow.appendChild(document.createElement('td')).appendChild(createCheckbox());
 
 			                case2.appendChild(newRow);
@@ -229,15 +229,6 @@
 			    return checkbox;
 			}
 			
-			function createImg() {
-			    const img = document.createElement('input');
-			    img.type = 'image';
-			    img.style.width = '50px'; // 원하는 스타일을 설정할 수 있습니다.
-			    img.style.height = '50px';
-			    img.className = 'itemImg'; // 동적으로 클래스 추가
-			    return img;
-			}
-			
 		}	
 		
 		function register() {
@@ -245,7 +236,6 @@
 		    const md = document.getElementById("modalLayer");
 		    const checkboxes = md.querySelectorAll('.checkbox');
 		    const selectedItems = [];
-		    const selectedItemsNum = [];
 		    const tdDiv = document.getElementById('td');
 
 		    // 기존의 자식 요소들을 제거
@@ -254,36 +244,25 @@
 		    checkboxes.forEach((checkbox, index) => {
 		        if (checkbox.checked) {
 		            const tdElements = document.querySelectorAll('td:nth-child(3)');
-		            const iNumber = document.querySelectorAll('td:nth-child(1)');
 		            if (tdElements[index]) {
 		                const productName = tdElements[index].textContent;
-		                const productNum = iNumber[index].textContent;
 		                selectedItems.push(productName);
-		                selectedItemsNum.push(productNum);
-		                
 		            }
 		        }
 		    });
-		    console.log(selectedItems);
-		    console.log(selectedItemsNum);
+		    
+		    
 
 		    for (let i = 0; i < selectedItems.length; i++) {
 		        const a = selectedItems[i];
-		        const b = selectedItemsNum[i];
 		        const newDiv = document.createElement('div');
-		        const newDivNum = document.createElement('div');
 		        const newCheckbox = document.createElement('input');
-		        
-		        newDivNum.style.display = 'none';
-		        
+
 		        newCheckbox.type = 'checkbox';
 		        newCheckbox.className = 'checkbox';
 
 		        newDiv.textContent = a;
 		        newDiv.prepend(newCheckbox);
-		        
-		        newDivNum.textContent = b;
-		        
 		        tdDiv.appendChild(newDiv);
 		    }
 

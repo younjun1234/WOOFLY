@@ -28,10 +28,25 @@
 			FROM ${table}
 			WHERE ${status} ='Y' AND ( (${title} LIKE '%${search}%') OR (${content} LIKE '%${search}%') )
 		</if>
+		<if test="type == 4">
+			SELECT COUNT(*)
+			FROM ${table}
+			WHERE ${status} ='Y' AND ( (${title} LIKE '%${search}%') OR (${content} LIKE '%${search}%')) AND ${abc} = #{value}
+		</if>
 		<if test="type == 2">
 			SELECT COUNT(*)
 			FROM ${table}
+			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%' AND ${abc} = #{value}
+		</if>
+		<if test="type == 3">
+			SELECT COUNT(*)
+			FROM ${table}
 			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%'
+		</if>
+		<if test="type == 5">
+			SELECT COUNT(*)
+			FROM ${table}
+			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%' AND COM_CATEGORY = #{comCategory }
 		</if>
 	</select>
 	
@@ -83,7 +98,7 @@
 		<if test="type == 2">
 			select *
 			from Notice
-			WHERE ${status} ='Y' AND ( ${Category} LIKE '%${search}%') AND N_CATEGORY = #{value}
+			WHERE ${status} ='Y' AND  ${Category} LIKE '%${search}%' AND N_CATEGORY = #{value}
 			ORDER BY N_CREATE_DATE DESC
 		</if>
 	</select>
@@ -93,6 +108,21 @@
 		from Notice
 		WHERE ${status} ='Y' AND N_CATEGORY = #{value}
 		ORDER BY N_CREATE_DATE DESC
+	</select>
+	
+	<select id="searchAllNotice" resultType="Notice">
+		<if test="type == 1">
+			select *
+			from Notice
+			WHERE ${status} ='Y' AND ( ${title} LIKE '%${search}%' OR ${content} LIKE '%${search}%' )
+			ORDER BY N_CREATE_DATE DESC
+		</if>
+		<if test="type == 2">
+			select *
+			from Notice
+			WHERE ${status} ='Y' AND ( ${Category} LIKE '%${search}%')
+			ORDER BY N_CREATE_DATE DESC
+		</if>
 	</select>
 	
 	<!-- 조회수 -->
@@ -147,6 +177,21 @@
 		</if>
 	</select>
 	
+	<select id="searchAllQNA" resultType="QNA">
+		<if test="type == 1">
+			select *
+			from QNA
+			WHERE ${status} ='Y' AND ( ${title} LIKE '%${search}%' OR ${content} LIKE '%${search}%' )
+			ORDER BY Q_ID DESC
+		</if>
+		<if test="type == 2">
+			select *
+			from QNA
+			WHERE ${status} ='Y' AND ( ${Category} LIKE '%${search}%')
+			ORDER BY Q_ID DESC
+		</if>
+	</select>
+	
 	<select id="selectQNACategory" resultType="QNA">
 		select *
 		from QNA
@@ -164,7 +209,7 @@
 		select *
 		from company
 		WHERE COM_STATUS ='Y'
-		ORDER BY COM_ADDR ASC		
+		ORDER BY COM_CATEGORY ASC	
 	</select>
 	
 	<select id="selectCompany" resultType="Company">
@@ -186,10 +231,21 @@
 	</update>
 	
 	<select id="searchCompany" resultType="Company">
-		select *
-		from Company
-		WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%'
-		ORDER BY COM_NO DESC
+		<if test="type == 5">
+			select *
+			from Company
+			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%'And COM_CATEGORY = #{comCategory}
+			ORDER BY COM_CATEGORY ASC
+		</if>
+		<if test="type == 3">
+			select *
+			from Company
+			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%'
+			ORDER BY COM_CATEGORY ASC
+		</if>
 	</select>
-				
+	
+	
+	
+	
 </mapper>

@@ -67,4 +67,11 @@
 	</select>
 	
 	
+	<select id="searchItem" resultType="ContestItem">
+		select *
+		from PRODUCT
+		WHERE PRODUCT_NAME LIKE '%${pSearch}%'
+	</select>	
+	
+	
 </mapper>

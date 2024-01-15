@@ -35,14 +35,23 @@
 							<label for="search-box" class="form-label">업체 검색</label>
 						</div>
 						<div class="row g-0 text-center">
+							<div class="col-2 col-md-1">
+								<select  class="form-select-lg" th:value="${ comCategory }" name=comCategory style="display: inline-block;">
+									<option value="all" th:selected="${ comCategory == 'all' }"> 전 체 </option>
+									<option value="동물병원" th:selected="${ comCategory == '동물병원'}"> 병 원 </option>
+									<option value="애견 카페" th:selected="${ comCategory == '애견 카페'}"> 카 페 </option>
+									<option value="애견 유치원" th:selected="${ comCategory == '애견 유치원'}"> 유치원 </option>
+									<option value="애견 쇼핑몰" th:selected="${ comCategory == '애견 쇼핑몰'}"> 쇼핑몰</option>
+								</select>
+							</div>
 							<div class="col-2 col-md-2">
-								<select  class="form-select-lg" name="Category" style="display: inline-block;">
+								<select  class="form-select-lg" name="Category" style="display: inline-block; margin-right: 30px">
 									<option value="com_Name" th:selected="${ Category == 'com_Name'}">업체명 </option>
 									<option value="com_Addr" th:selected="${ Category == 'com_Addr'}">업체 주소 </option>
 								</select>
 							</div>
-							<div class="col-sm-6 col-md-9 input-group-lg">
-								<input type="text" id="search-box" class="form-control" placeholder="검색" name="search" th:value="${ search }">
+							<div class="col-sm-6 col-md-7 input-group-lg" style="margin-right: 50px" >
+								<input type="text" id="search-box" class="form-control" placeholder="검색" name="search" th:value="${ search }" >
 							</div>
 							<div class="col-6 col-md-1">
 								<button class="btn btn-outline-dark btn-lg">검색</button>
