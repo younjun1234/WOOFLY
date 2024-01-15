@@ -12,6 +12,7 @@ import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.dao.OrderDAO;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
+import com.kh.woofly.order.model.vo.Saved;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 
@@ -75,6 +76,11 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public ArrayList<Point> selectMyPoints(String id) {
 		return oDAO.selectMyPoints(id);
+	}
+
+	@Override
+	public ArrayList<Saved> selectMySaved(HashMap<String, Object> map) {
+		return oDAO.selectMySaved(map);
 	}
 
 }
