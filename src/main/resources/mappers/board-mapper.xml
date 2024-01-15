@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
+
+	<select id="getReplyListCount" resultType="_int">
+		select count(*)
+		from Reply
+		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
+	</select>
 	 
 	<!-- 자유게시판 -->	
 	
@@ -13,7 +19,7 @@
        WHERE b_status = 'Y'
        <choose>
            <when test="searchType == 'mn'">
-               AND b_title LIKE '%' || #{searchKeyword} || '%' or mb_nickName LIKE '%' || #{searchKeyword} || '%'
+               AND (b_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%')
            </when>
            <when test="searchType != null">
                AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
@@ -138,6 +144,22 @@
 	
 	<!--/////////// 도그워커 게시판 ////////////-->
 	
+	<select id="searchDwBoards" parameterType="map" resultType="DwBoard">
+       SELECT *
+       FROM dw_board
+         JOIN Member using(mb_id)
+       WHERE dw_status = 'Y' and dw_type = 0
+       <choose>
+           <when test="searchType == 'mn'">
+               AND dw_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY dw_no DESC
+   </select>   
+	
 	<select id="getDwListCount" resultType="_int">
 		select count(*)
 		from dw_board
@@ -163,6 +185,22 @@
 		</if>
 		order by attm_id
 	</select>
+	
+	<select id="searchDwRvBoards" parameterType="map" resultType="DwBoard">
+       SELECT *
+       FROM dw_board
+         JOIN Member using(mb_id)
+       WHERE dw_status = 'Y' and dw_type = 1
+       <choose>
+           <when test="searchType == 'mn'">
+               AND dw_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY dw_no DESC
+   </select>
 	
 	<select id="getDwRvListCount" resultType="_int">
 		select count(*)
@@ -281,8 +319,53 @@
 	    values (rep_seq.nextval, #{rContent}, SYSDATE, default, #{rCategory},#{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
 	</insert>
 	
+	<select id="checkReplyResult" resultType="_int">
+		select count(*)
+		from report
+		where r_board_no = #{rBoardNo} and r_accuser = #{rAccuser}
+	</select>
+	
+	<insert id="insertReplyReport" parameterType="Report">
+		insert into report
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', #{rCategory}, #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+	</insert>
+	
+	
+	
 	
 	<!-- 산책메이트 -->
+	
+	<select id="searchWmBoards" parameterType="map" resultType="WmBoard">
+       SELECT *
+       FROM wm_board
+         JOIN Member using(mb_id)
+       WHERE wm_status = 'Y' and wm_type = 0
+       <choose>
+           <when test="searchType == 'mn'">
+               AND wm_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY wm_no DESC
+   </select> 
+   
+   <select id="searchWmRvBoards" parameterType="map" resultType="WmBoard">
+       SELECT *
+       FROM wm_board
+         JOIN Member using(mb_id)
+       WHERE wm_status = 'Y' and wm_type = 1
+       <choose>
+           <when test="searchType == 'mn'">
+               AND wm_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY wm_no DESC
+   </select> 
 	
 	<select id="getWmListCount" resultType="_int">
 		select count(*)

@@ -24,6 +24,12 @@ public class BoardServiceImpl implements BoardService{
    @Autowired
    private BoardDAO bDAO;
    
+   @Override
+	public int getReplyListCount(int i, int dwNo, String bType) {
+	   return bDAO.getReplyListCount(i, dwNo, bType);
+	}
+
+   
  //	자유게시판 "/board/free"
    
     @Override
@@ -126,6 +132,11 @@ public class BoardServiceImpl implements BoardService{
 //======// 도그워커  //===============================
 	
 	@Override
+	public ArrayList<DwBoard> searchDwBoards(HashMap<String, String> map) {
+		return bDAO.searchDwBoards(map);
+	}
+	
+	@Override
 	public int getDwListCount(int i) {
 		return bDAO.getDwListCount(i);
 	}
@@ -143,6 +154,11 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	//후기
+	
+	@Override
+	public ArrayList<DwBoard> searchDwRvBoards(HashMap<String, String> map) {
+		return bDAO.searchDwRvBoards(map);
+	}
 	
 	@Override
 	public int getDwRvListCount(int i) {
@@ -176,8 +192,10 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public ArrayList<Reply> selectDwReply(int dwNo) {
-		return bDAO.selectDwReply(dwNo);
+	public ArrayList<Reply> selectDwReply(PageInfo pi, int dwNo) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwReply(dwNo, rowBounds);
 	}
 	
 	@Override
@@ -230,9 +248,28 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.BoardReport(rep);
 	}
 	
+	@Override
+	public int checkReplyResult(Report rep) {
+		return bDAO.checkReplyResult(rep);
+	}
+
+	@Override
+	public int insertReplyReport(Report rep) {
+		return bDAO.insertReplyReport(rep);
+	}
+	
 
 //======// 산책메이트  //===============================
 	
+	@Override
+	public ArrayList<WmBoard> searchWmBoards(HashMap<String, String> map) {
+		return bDAO.searchWmBoards(map);
+	}
+
+	@Override
+	public ArrayList<WmBoard> searchWmRvBoards(HashMap<String, String> map) {
+		return bDAO.searchWmRvBoards(map);
+	}
 
 	@Override
 	public int getWmListCount(int i) {
@@ -351,6 +388,13 @@ public class BoardServiceImpl implements BoardService{
 	public LostBoard selectLostBoard(int bId, Object object) {
 		return bDAO.selectLostBoard(bId, object);
 	}
+
+	
+	
+
+
+
+	
 
 	
 	

@@ -138,11 +138,12 @@
 						                    </svg>
 						                    <ul class="dropdown-menu">
 					                        	<input type="hidden" th:value="${r.rNo}">
+					                        	<input type="hidden" th:value="${r.mbId}">
 						                        <li>
 						                        	<button class="dropdown-item editReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">수정</button>
 						                        </li>
 						                        <li><button class="dropdown-item deleteReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">삭제</button></li>
-						                        <li><button class="dropdown-item" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
+						                        <li><button class="dropdown-item reportBtn" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
 						                    </ul> 
 						                </div>
 			                          </div>
@@ -202,6 +203,33 @@
 	            </div>
 	        </div>
 	    </div>
+	</form>
+	
+	<!-- 댓글 신고 -->
+	<form id="resetF">
+		<div class="modal fade" id="reportReplyModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">댓글 신고</h5>
+					</div>
+					<div class="modal-body">
+						<select class="form-select mb-3" id="reportType">
+							<option disabled>신고 사유</option>
+							<option value="불법게시글">불법게시글</option>
+							<option value="음란물">음란물</option>
+							<option value="기타">기타</option>
+						</select>
+						<textarea class="form-control" id="reportContent" rows="5" style="resize: none;"></textarea>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
+						<button type="button" class="btn btn-dark" id="reportReplySubmit">네</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form>
 	
 	<!-- 삭제 -->
@@ -400,6 +428,45 @@
 		    	})
 		    	
 		      }
+		      
+		      //댓글 신고 ajax
+			    
+			    const reportBtns = document.getElementsByClassName('reportBtn');
+		 	    const reportReplySubmit = document.getElementById('reportReplySubmit');
+		 	    
+			      let rNoSave;
+			      let mbIdSave;
+			      for(const reportBtn of reportBtns){
+			    	  reportBtn.addEventListener('click',()=>{
+			    		  rNoSave = reportBtn.parentElement.parentElement.firstElementChild.value;
+			    		  mbIdSave = reportBtn.parentElement.parentElement.children[1].value;
+						  $('#reportReplyModal').modal("show");
+			    	  })
+			      }
+			      
+			      reportReplySubmit.addEventListener('click',()=>{
+					 	const reportContent = document.getElementById('reportContent').value;
+					 	const reportType = document.getElementById('reportType').value;
+						
+						$.ajax({
+							url: "/insertReplyReport.yk",
+							data: {rBoardNo:rNoSave, rContent : reportType + "&^" + reportContent, rAccused : mbIdSave},
+							success : (data)=>{
+								if(data == 'good') {
+									alert("신고가 정상적으로 접수되었습니다.");
+									$('#resetF')[0].reset();
+									$('#reportReplyModal').modal("hide");
+								} else if(data == 'bad'){
+									alert("신고가 정상 접수되지 않았습니다.");
+								} else {
+									alert("해당 계정은 이미 같은 사유로 신고처리 되었습니다.");
+									$('#resetF')[0].reset();
+									$('#reportReplyModal').modal("hide");
+								}
+							},
+							error : (data)=>console.log(data)
+						})
+			      })
 		      
 		}
 	</script>
