@@ -2,8 +2,10 @@ package com.kh.woofly.board.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -25,13 +27,12 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
-import com.kh.woofly.shop.model.exception.ShopException;
-import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -44,8 +45,145 @@ public class BoardController {
 	
 		@Autowired
 		private BoardService bService;
+		
+		// 중고 거래 내역  // 연준이꺼
+		@GetMapping("my/usedBuying")
+		public String usedBuyingView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpSession session,
+									 @RequestParam(value="startDate", required=false) String startDate, 
+									 @RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request,
+									 @RequestParam(value="sort", defaultValue="orderDate desc") String sort) {
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("id", id);
+			try {
+		        Date currentDate = new Date();
+		        Calendar calendar = Calendar.getInstance();
+		        calendar.setTime(currentDate);
+		        calendar.add(Calendar.DAY_OF_MONTH, 1);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				
+				if (startDate == null) {
+					map.put("startDate", null);
+				} else {
+					map.put("startDate", sdf.parse(startDate));
+				}
+		 		if (endDate == null) {
+					map.put("endDate", sdf.format(calendar.getTime()));
+				} else {
+					Date newDate = sdf.parse(endDate);
+			        calendar.setTime(newDate);
+			        calendar.add(Calendar.DAY_OF_MONTH, 1);
+					map.put("endDate", sdf.format(calendar.getTime()));
+					
+					if (newDate.after(new Date())) {
+						
+						Calendar newCalendar = Calendar.getInstance();
+						newCalendar.setTime(newDate);
+						newCalendar.add(Calendar.DAY_OF_MONTH, -1);
+						endDate = sdf.format(newCalendar.getTime());
+					}
+					
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			int listCount = bService.selectMyUsedBuyingCount(id);
+			PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
+			map.put(sort.split(" ")[0], sort.split(" ")[1]);
+
+			ArrayList<UsedBoard> list = bService.selectMyUsedBuying(pi, map);
+//			ArrayList<Attachment> aList = new ArrayList<>();
+
+//			for(UsedBoard ub : list) {
+//				aList.add(bService.selectUsedAttm(ub.getUNo()));
+//			}
+			
+			if (list != null) {
+				model.addAttribute("sort", sort);
+				model.addAttribute("startDate", startDate);
+				model.addAttribute("endDate", endDate);
+				model.addAttribute("loc", request.getRequestURI());
+				model.addAttribute("list", list);
+//				model.addAttribute("aList", aList);
+				model.addAttribute("pi", pi);
+				return "myUsedBuying";
+				
+			} else {
+				throw new BoardException("중고 거래 조회에 실패하였습니다");
+			}
+		}
+		
+		
+		@GetMapping("my/selling")
+		public String usedSellingView(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpSession session,
+									 @RequestParam(value="startDate", required=false) String startDate, 
+									 @RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request,
+									 @RequestParam(value="sort", defaultValue="soldDate asc") String sort) {
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("id", id);
+			try {
+		        Date currentDate = new Date();
+		        Calendar calendar = Calendar.getInstance();
+		        calendar.setTime(currentDate);
+		        calendar.add(Calendar.DAY_OF_MONTH, 1);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				
+				if (startDate == null) {
+					map.put("startDate", null);
+				} else {
+					map.put("startDate", sdf.parse(startDate));
+				}
+				
+		 		if (endDate == null) {
+					map.put("endDate", null);
+				} else {
+					Date newDate = sdf.parse(endDate);
+			        calendar.setTime(newDate);
+			        calendar.add(Calendar.DAY_OF_MONTH, 1);
+					map.put("endDate", sdf.format(calendar.getTime()));
+					
+					if (newDate.after(new Date())) {
+						
+						Calendar newCalendar = Calendar.getInstance();
+						newCalendar.setTime(newDate);
+						newCalendar.add(Calendar.DAY_OF_MONTH, -1);
+						endDate = sdf.format(newCalendar.getTime());
+					}
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			int listCount = bService.selectMySellingCount(id);
+			PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
+			map.put(sort.split(" ")[0], sort.split(" ")[1]);
+
+			ArrayList<UsedBoard> list = bService.selectMySelling(pi, map);
+//			ArrayList<Attachment> aList = new ArrayList<>();
+
+//			for(UsedBoard ub : list) {
+//				aList.add(bService.selectUsedAttm(ub.getUNo()));
+//			}
+			
+			if (list != null) {
+				model.addAttribute("sort", sort);
+				model.addAttribute("startDate", startDate);
+				model.addAttribute("endDate", endDate);
+				model.addAttribute("loc", request.getRequestURI());
+				model.addAttribute("list", list);
+//				model.addAttribute("aList", aList);
+				model.addAttribute("pi", pi);
+				return "mySelling";
+				
+			} else {
+				throw new BoardException("중고 거래 조회에 실패하였습니다");
+			}
+		}
+		
 	
-		//<< 글형식 >>
+		// << 글형식 >>
 		// 
 		// 1. 자유게시판 //
 				
@@ -374,20 +512,6 @@ public class BoardController {
 			
 		}
 		
-		@GetMapping(value="/deleteFreeReply.yk")
-		@ResponseBody
-		public String deleteFreeReply(@ModelAttribute Reply r) {
-			int result = bService.deleteFreeReply(r);
-			//System.out.println(r);
-			
-			if(result > 0) {
-				return "good";
-				
-			} else {
-				return "bad";
-			}
-			
-		}
 
 
 		
