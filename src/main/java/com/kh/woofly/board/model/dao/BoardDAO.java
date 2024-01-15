@@ -20,6 +20,8 @@ import com.kh.woofly.board.model.vo.WmBoard;
 
 @Mapper
 public interface BoardDAO {
+	
+	int getReplyListCount(int i, int dwNo, String bType);
 
 //	자유게시판 "/board/free"
 	
@@ -52,10 +54,14 @@ public interface BoardDAO {
 	int insertFreeReply(Reply r);
 	
 	int deleteFreeReply(Reply r);
+	
+	int updateFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 	
 	//======// 도그워커  //===============================	
+	
+	ArrayList<DwBoard> searchDwBoards(HashMap<String, String> map);
 	
 	int getDwListCount(int i);
 
@@ -65,6 +71,8 @@ public interface BoardDAO {
 	
 	//후기
 	
+	ArrayList<DwBoard> searchDwRvBoards(HashMap<String, String> map);
+	
 	int getDwRvListCount(int i);
 
 	ArrayList<DwBoard> selectDwRvBoardList(int i, RowBounds rowBounds);
@@ -73,8 +81,8 @@ public interface BoardDAO {
 	
 	
 	DwBoard selectDwBoard(int dwNo);
-
-	ArrayList<Reply> selectDwReply(int dwNo);
+	
+	ArrayList<Reply> selectDwReply(int dwNo, RowBounds rowBounds);
 	
 	int updateDwCount(int dwNo);
 
@@ -92,10 +100,23 @@ public interface BoardDAO {
 
 	int deleteDwReply(Reply r);	
 	
+	int updateDwReply(Reply r);
+	
+	int selectBoardReport(Report rep);
+	
 	int BoardReport(Report rep);
+	
+	int checkReplyResult(Report rep);
+
+	int insertReplyReport(Report rep);
+
 	
 	
 //======// 산책메이트  //===============================
+	
+	ArrayList<WmBoard> searchWmBoards(HashMap<String, String> map);
+
+	ArrayList<WmBoard> searchWmRvBoards(HashMap<String, String> map);
 	
 	int getWmListCount(int i);
 
@@ -159,6 +180,21 @@ public interface BoardDAO {
 	int selectMySellingCount(String id);
 
 	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
+
+	
+
+	
+
+	
+
+
+
+	
+	
+
+	
+
+
 
 	
 
