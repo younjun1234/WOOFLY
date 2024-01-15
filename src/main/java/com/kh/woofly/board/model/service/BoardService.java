@@ -14,6 +14,8 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
 public interface BoardService {
+	
+	int getReplyListCount(int i, int dwNo, String bType);
 
 //	자유게시판 "/board/free"	
 	
@@ -44,11 +46,15 @@ public interface BoardService {
 	int insertFreeReply(Reply r);
 	
 	int deleteFreeReply(Reply r);
+	
+	int updateFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
 	
 //======// 도그워커  //===============================
 	
+	ArrayList<DwBoard> searchDwBoards(HashMap<String, String> map);
+
 	int getDwListCount(int i);
 	
 	ArrayList<DwBoard> selectDwBoardList(PageInfo pi, int i);
@@ -56,6 +62,8 @@ public interface BoardService {
 	ArrayList<Attachment> selectAttmDwBoardList(Object object);
 	
 	//후기
+	ArrayList<DwBoard> searchDwRvBoards(HashMap<String, String> map);
+	
 	int getDwRvListCount(int i);
 
 	ArrayList<DwBoard> selectDwRvBoardList(PageInfo pi, int i);
@@ -65,7 +73,7 @@ public interface BoardService {
 	
 	DwBoard selectDwBoard(int dwNo, String id);
 
-	ArrayList<Reply> selectDwReply(int dwNo);
+	ArrayList<Reply> selectDwReply(PageInfo pi, int dwNo);
 	
 	int insertDwBoard(DwBoard dw);
 	
@@ -81,9 +89,23 @@ public interface BoardService {
 
 	int deleteDwReply(Reply r);
 	
+	int updateDwReply(Reply r);
+	
+	int selectBoardReport(Report rep);
+
+	int BoardReport(Report rep);
+	
+	int checkReplyResult(Report rep);
+
+	int insertReplyReport(Report rep);
+	
 	
 	
 //======// 워킹메이트  //===============================
+	
+	ArrayList<WmBoard> searchWmBoards(HashMap<String, String> map);
+
+	ArrayList<WmBoard> searchWmRvBoards(HashMap<String, String> map);
 	
 	int getWmListCount(int i);
 
@@ -114,8 +136,8 @@ public interface BoardService {
 	int inserWmReply(Reply r);
 
 	int deletWmReply(Reply r);
-
-	int BoardReport(Report rep);
+	
+	
 	
 
 
@@ -146,6 +168,23 @@ public interface BoardService {
 	int selectMySellingCount(String id);
 
 	ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map);
+
+	
+
+	
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 

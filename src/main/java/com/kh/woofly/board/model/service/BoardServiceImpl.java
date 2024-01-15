@@ -25,6 +25,12 @@ public class BoardServiceImpl implements BoardService{
    @Autowired
    private BoardDAO bDAO;
    
+   @Override
+	public int getReplyListCount(int i, int dwNo, String bType) {
+	   return bDAO.getReplyListCount(i, dwNo, bType);
+	}
+
+   
  //	자유게시판 "/board/free"
    
     @Override
@@ -108,26 +114,28 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteFreeReply(Reply r) {
 		return bDAO.deleteFreeReply(r);
 	}
-
+	
+	@Override
+	public int updateFreeReply(Reply r) {
+		return bDAO.updateFreeReply(r);
+	}
 
 	@Override
 	public ArrayList<Reply> selectFreeReply(int bNo) {
 		return bDAO.selectFreeReply(bNo);
 	}
 	
-	@Override
-	public int insertDwReply(Reply r) {
-		return bDAO.insertDwReply(r);
-	}
+	
 
-	@Override
-	public int deleteDwReply(Reply r) {
-		return bDAO.deleteDwReply(r);
-	}
 	
 
 	
 //======// 도그워커  //===============================
+	
+	@Override
+	public ArrayList<DwBoard> searchDwBoards(HashMap<String, String> map) {
+		return bDAO.searchDwBoards(map);
+	}
 	
 	@Override
 	public int getDwListCount(int i) {
@@ -147,6 +155,11 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	//후기
+	
+	@Override
+	public ArrayList<DwBoard> searchDwRvBoards(HashMap<String, String> map) {
+		return bDAO.searchDwRvBoards(map);
+	}
 	
 	@Override
 	public int getDwRvListCount(int i) {
@@ -180,8 +193,10 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public ArrayList<Reply> selectDwReply(int dwNo) {
-		return bDAO.selectDwReply(dwNo);
+	public ArrayList<Reply> selectDwReply(PageInfo pi, int dwNo) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectDwReply(dwNo, rowBounds);
 	}
 	
 	@Override
@@ -208,16 +223,54 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteDwAttm(ArrayList<String> delRename) {
 		return bDAO.deleteDwAttm(delRename);
 	}
+	
+	@Override
+	public int insertDwReply(Reply r) {
+		return bDAO.insertDwReply(r);
+	}
 
+	@Override
+	public int deleteDwReply(Reply r) {
+		return bDAO.deleteDwReply(r);
+	}
+	
+	@Override
+	public int updateDwReply(Reply r) {
+		return bDAO.updateDwReply(r);
+	}
+	
+	@Override
+	public int selectBoardReport(Report rep) {
+		return bDAO.selectBoardReport(rep);
+	}
 	
 	@Override
 	public int BoardReport(Report rep) {
 		return bDAO.BoardReport(rep);
 	}
 	
+	@Override
+	public int checkReplyResult(Report rep) {
+		return bDAO.checkReplyResult(rep);
+	}
+
+	@Override
+	public int insertReplyReport(Report rep) {
+		return bDAO.insertReplyReport(rep);
+	}
+	
 
 //======// 산책메이트  //===============================
 	
+	@Override
+	public ArrayList<WmBoard> searchWmBoards(HashMap<String, String> map) {
+		return bDAO.searchWmBoards(map);
+	}
+
+	@Override
+	public ArrayList<WmBoard> searchWmRvBoards(HashMap<String, String> map) {
+		return bDAO.searchWmRvBoards(map);
+	}
 
 	@Override
 	public int getWmListCount(int i) {
@@ -360,6 +413,16 @@ public class BoardServiceImpl implements BoardService{
 		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
 		return bDAO.selectMySelling(rowbounds, map);
 	}
+
+	
+	
+
+
+
+	
+
+	
+	
 
 	
 
