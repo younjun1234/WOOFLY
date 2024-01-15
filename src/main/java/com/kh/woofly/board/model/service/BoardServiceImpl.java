@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
@@ -54,7 +56,7 @@ private BoardServiceImpl boardDAO;
 		return bDAO.insertBoard(b);
 	}
 
-// 실종신고 게시판
+// 실종신고 게시판 "/board/lost" //
 	@Override
 	public int getMlistCount(int i) {
 		return bDAO.mListCount(i);
@@ -100,27 +102,59 @@ private BoardServiceImpl boardDAO;
 
 	@Override
 	public LostBoard editLostBoard(int bId, Object object) {
-		// TODO Auto-generated method stub
 		return bDAO.editLostBoard(bId, object);
 	}
 
 	@Override
 	public int deleteLostBoard(int bId) {
-		// TODO Auto-generated method stub
 		return bDAO.deleteLostBoard(bId);
 	}
 
 	@Override
 	public int deleteLostBoardAttm(int bId) {
-		// TODO Auto-generated method stub
 		return bDAO.deleteLostBoardAttm(bId);
 	}
 
 	@Override
 	public int editLostBoard(LostBoard lb) {
-		// TODO Auto-generated method stub
 		return bDAO.editLostBoard(lb);
 	}
+
+//	@Override
+//	public Reply selectReplyLostBoard(Integer rNo) {
+//		// TODO Auto-generated method stub
+//		return bDAO.selectReplyLostBoard(rNo);
+//	}
+	
+// 중고게시판 "/board/used"//
+	@Override
+	public int getUlistCount(int i) {
+		// TODO Auto-generated method stub
+		return bDAO.uListCount(i);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> selectUsedBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectUsedBoardList(rowBounds, i);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmUsedBoardList(Object object) {
+		return bDAO.selectAttmUsedBoardList(object);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map) {
+		return bDAO.searchUsedBoards(map);
+	}
+
+	@Override
+	public UsedBoard selectUsedBoard(Integer uNo) {
+		return bDAO.selectUsedBoard(uNo);
+	}
+
 
 
 

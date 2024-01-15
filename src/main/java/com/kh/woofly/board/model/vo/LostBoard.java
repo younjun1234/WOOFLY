@@ -24,7 +24,7 @@ public class LostBoard {
    private String mbId;
    private String mbNickName;
    private int rescue;
-//   private String mPhotoPath;
+   private int likeUser; // 좋아요 누른 사람
    
    private List<Attachment> attachments;
 }

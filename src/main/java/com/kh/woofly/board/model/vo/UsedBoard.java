@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class UsedBoard {
 	private int uNo;
-	private int uType;
+	private String uType;
 	private String uTitle;
 	private String uContent;
 	private int uCount;

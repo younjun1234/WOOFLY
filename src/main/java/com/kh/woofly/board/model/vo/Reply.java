@@ -23,5 +23,8 @@ public class Reply {
 	private Date replyCreateDate;
 	private Date replyModifyDate;
 	private String replyStatus;
+	
+	private int rNo;
+	
 }
 

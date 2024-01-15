@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.PageInfo;
+import com.kh.woofly.board.model.vo.Reply;
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.LostBoard;
@@ -41,9 +43,6 @@ public interface BoardService {
 
 //	첨부파일 게시글 작성(등록) //
 //	/board/lost/insertLostBoard
-	
-
-	
 
 	
 	// 실종 검색 //
@@ -64,12 +63,23 @@ public interface BoardService {
 
 	int editLostBoard(LostBoard lb);
 
-
-	
+//	Reply selectReplyLostBoard(Integer rNo);
 
 //	수정된 첨부파일 게시글 업로드 //
 //	int deleteLostAttm(ArrayList<String> delRename);
 //	ArrayList<Member> selectMemberList(PageInfo pi, int i);
+	
+	
+	// 중고게시판 //
+	int getUlistCount(int i);
+
+	ArrayList<UsedBoard> selectUsedBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmUsedBoardList(Object object);
+
+	ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map);
+
+	UsedBoard selectUsedBoard(Integer uNo);
 	
 
 
