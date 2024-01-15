@@ -8,6 +8,8 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 @Mapper
 public interface AdminDAO {
@@ -26,8 +28,14 @@ public interface AdminDAO {
 
 	int updateStopDate(String rAccused);
 
-	int updateReportSit(int rNo);
+	int updateReportSit(Report r);
 
 	int selectWarningCount(Report r);
+
+	ArrayList<Member> selectAllMembers(RowBounds rowBounds, String mbId);
+
+	ArrayList<MemberAddress> selectAllAddress();
+
+	int getMembersCount(String mbId);
 
 }

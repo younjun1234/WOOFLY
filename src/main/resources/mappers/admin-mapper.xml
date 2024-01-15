@@ -57,6 +57,7 @@
 		FROM REPORT
 			JOIN MEMBER ON(R_ACCUSER = MB_ID)
 		WHERE R_ACCUSED = #{rAccused}
+		ORDER BY R_NO DESC
 	</select>
 	
 	<update id="updateStopDate">
@@ -67,14 +68,41 @@
 	
 	<update id="updateReportSit">
 		UPDATE REPORT
-		SET R_SITUATION = 'B'
+		SET R_SITUATION = #{rSituation}
 		WHERE R_NO = #{rNo}
 	</update>
 	
 	<select id="selectWarningCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM REPORT
-		WHERE R_ACCUSED = #{rAccused} AND R_SITUATION = #{rSituation}
+		WHERE R_ACCUSED = #{rAccused} AND R_SITUATION = 'W'
+	</select>
+	
+	<select id="selectAllMembers" resultType="Member">
+		SELECT *
+		FROM MEMBER
+		<if test="mbId != null">
+			WHERE MB_ID LIKE '%' || #{mbId} || '%'
+		</if>
+	</select>
+	
+	<select id="selectAllAddress" resultType="MemberAddress">
+		SELECT *
+		FROM (
+		    SELECT 
+		        MA.*,
+		        ROW_NUMBER() OVER (PARTITION BY MB_ID ORDER BY CASE WHEN ADDR_TYPE = 'Y' THEN 0 ELSE 1 END, ROWNUM) AS rnk
+		    FROM MEMBER_ADDRESS MA
+			)
+		WHERE rnk = 1
+	</select>
+	
+	<select id="getMembersCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		<if test="mbId != null">
+			WHERE MB_ID LIKE '%' || #{mbId} || '%'
+		</if>
 	</select>
 	
 </mapper>

@@ -48,6 +48,10 @@
         width: auto;
         height: 100%;
     }
+    
+    h4 > span {
+    	font-size: 14px;
+    }
 
 
 </style>
@@ -88,10 +92,10 @@
 					<h4 class="mt-5">회원 관리</h4>
 					<ul class="nav flex-column">
 					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">신고 리스트 관리</a>
+					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="/admin/reportList.ad">신고 리스트 관리</a>
 					  	</li>
 					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">전체 회원 관리</a>
+					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="/admin/memberManagement.ad">전체 회원 관리</a>
 					  	</li> 	
 					</ul>
 					
@@ -107,7 +111,15 @@
                                 <div class="col-md-12 mb-4">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h4>신고 정보</h4>
+                                            <h4>
+                                            	신고 정보 <!-- #b88f09 -->
+                                            	 <th:block th:switch="${r.rSituation}">
+												    <span th:case="'A'" style='color:green'>(접수)</span>
+												    <span th:case="'W'" style='color:#b88f09'>(경고)</span>
+												    <span th:case="'R'" style='color:blue'>(반려)</span>
+												    <span th:case="'B'" style='color:red'>(정지)</span>
+												</th:block>
+                                            </h4>
                                         </div>
                                         <div class="card-body">
                                             <table class="table">
@@ -133,7 +145,6 @@
                                                         <td>[[${r.rDate}]]</td>
                                                     </tr>
                                                     <tr>
-                                                    	<!-- 나중에는 신고카테 + 내용으로 넘어오니까 분리해서 넣자 -->
                                                         <th>신고 자세한 내용</th>
                                                         <td>
                                                             <textarea class="form-control" rows="4" readonly style="resize: none;" th:text="${#strings.arraySplit(r.rContent, '&^')[1]}">[[${#strings.arraySplit(r.rContent, '&^')[1]}]]</textarea>
@@ -153,9 +164,9 @@
                                         <div class="card-header d-flex justify-content-between">
                                             <h4>피신고자 정보</h4>
                                             <div class="d-flex gap-3">
-                                                <button class="btn btn-outline-danger bg-danger-subtle" id="stopBtn">정지</button>
-                                                <button class="btn btn-outline-warning bg-warning-subtle" id="warningBtn">경고</button>
-                                                <button class="btn btn-outline-success bg-success-subtle" id="returnBtn">반려</button>
+                                                <button class="btn btn-outline-danger bg-danger-subtle" id="stopBtn" th:disabled="${r.rSituation != 'A'}">정지</button>
+                                                <button class="btn btn-outline-warning bg-warning-subtle" id="warningBtn" th:disabled="${r.rSituation != 'A'}">경고</button>
+                                                <button class="btn btn-outline-success bg-success-subtle" id="returnBtn" th:disabled="${r.rSituation != 'A'}">반려</button>
                                             </div>
                                         </div>
                                         <div class="card-body">
@@ -203,8 +214,8 @@
                                                             <tr th:each="rl : ${rList}">
                                                                 <td th:text="${rl.rNo}"></td>
                                                                 <td th:text="${rl.mbName}"></td>
-                                                                <td th:text="${#strings.arraySplit(r.rContent, '&^')[0]}"></td>
-                                                                <td th:text="${#strings.arraySplit(r.rContent, '&^')[1]}"></td>
+                                                                <td th:text="${#strings.arraySplit(rl.rContent, '&^')[0]}"></td>
+                                                                <td th:text="${#strings.arraySplit(rl.rContent, '&^')[1]}"></td>
                                                                 <td th:text="${rl.rCategory}"></td>
                                                                 <td th:text="${rl.rType == 'B' ? '게시글' : '댓글'}"></td>
                                                                 <th:block th:switch="${rl.rSituation}">
@@ -271,7 +282,7 @@
 		document.getElementById('stopBtn').addEventListener('click', function(){
 			const modalBody = modal.querySelectorAll('.modal-body');
 			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님을 <" + rContent[0] + "> 사유로 정지하시겠습니까? </span>";
-			modalBody[1].innerHTML = "<div class='d-flex row stopBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			modalBody[1].innerHTML = "<div class='d-flex row stopBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2' required></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
 			
 			$('#confirm').modal('show');
 		});
@@ -279,7 +290,7 @@
 		document.getElementById('warningBtn').addEventListener('click', function(){
 			const modalBody = modal.querySelectorAll('.modal-body');
 			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님을 <" + rContent[0] + "> 사유로 경고를 부여하시겠습니까? </span>";
-			modalBody[1].innerHTML = "<div class='d-flex row warningBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			modalBody[1].innerHTML = "<div class='d-flex row warningBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2' required></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
 			
 			$('#confirm').modal('show');
 		});
@@ -287,7 +298,7 @@
 		document.getElementById('returnBtn').addEventListener('click', function(){
 			const modalBody = modal.querySelectorAll('.modal-body');
 			modalBody[0].innerHTML = "<span>정말로 " + r.mbSubName + "님의 <" + rContent[0] + "> 사유의 신고를 반려하시겠습니까? </span>";
-			modalBody[1].innerHTML = "<div class='d-flex row returnBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2'></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
+			modalBody[1].innerHTML = "<div class='d-flex row returnBtn'><div>신고된 내용 : " + rContent[1] + " </div><div>사유 작성 : <input type='text' name='reason' class='form-control m-2' required></div><input type='hidden' name='rNo' value='" + rNo + "'></div>";
 			
 			$('#confirm').modal('show');
 		});
@@ -296,29 +307,40 @@
 			const modalBody = modal.querySelectorAll('.modal-body');
 			const target = modalBody[1].querySelector('div');
 			console.log(target);
+			const inputField = target.querySelector('input[name="reason"]');
+			
+			// 사유
+			const reason = inputField.value;
+			
 			const stopBtn = target.classList.contains('stopBtn');
 			const warningBtn = target.classList.contains('warningBtn');
 			const returnBtn = target.classList.contains('returnBtn');
+			
+			if(reason.trim() == '') {
+				alert('사유를 반드시 작성해주세요.');
+				return;
+			}
+			
+			// 사유 저장할 곳 생기거나 로직 생기면 사유도 보내도록 해야함
+			
 			if(stopBtn){
 				$('confirm').modal('hide');
 				location.href="/admin/stopUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
 			}
 			
-			// 카운트 되는지 확인하고 DB에서 r_rContent 구분자 애들한테 정리하라고 해야함
-			// 일단 가서 카운트로 세서 카운트 % 3이 2인 즉, 이번 경고를 먹으면 3번째 경고이므로 정지로 넘겨야함
+			
 			if(warningBtn) {
 				$('confirm').modal('hide');
 				location.href="/admin/warningUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
 			}
 			
 			if(returnBtn) {
-				console.log('returnBtn');
+				$('confirm').modal('hide');
+				location.href="/admin/returnReport.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
 			}
 		});
 	}
 	
-	//warningBtn
-    //returnBtn
 	
 </script>
 </html>

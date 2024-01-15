@@ -31,4 +31,6 @@ public class Member {
 	private String isAdmin;
 	private String isPrivate;
 	private Date nextChange;
+	private String isBanned;
+	
 }

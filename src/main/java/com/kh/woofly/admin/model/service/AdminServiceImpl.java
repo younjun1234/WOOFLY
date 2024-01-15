@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.admin.model.dao.AdminDAO;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -58,13 +60,33 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public int updateReportSit(int rNo) {
-		return aDAO.updateReportSit(rNo);
+	public int updateReportSit(Report r) {
+		return aDAO.updateReportSit(r);
 	}
 
 	@Override
 	public int selectWarningCount(Report r) {
 		return aDAO.selectWarningCount(r);
+	}
+
+	@Override
+	public ArrayList<Member> selectAllMembers(PageInfo pi, String mbId) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return aDAO.selectAllMembers(rowBounds, mbId);
+	}
+
+	@Override
+	public ArrayList<MemberAddress> selectAllAddress() {
+		return aDAO.selectAllAddress();
+	}
+
+	@Override
+	public int getMembersCount(String mbId) {
+		return aDAO.getMembersCount(mbId);
 	}
 
 }

@@ -17,6 +17,7 @@ import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.member.model.vo.MemberAddress;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -47,10 +48,6 @@ public class AdminController {
 		
 		ArrayList<Report> rList = aService.selectReportList(pi, searchId);
 		
-		for(Report r : rList) {
-			System.out.println(r);
-		}
-		
 		// 랭킹 리스트 나중에 일자 별 검색으로 바꿀 때는 검색할 N 숫자 보내면 됨
 		ArrayList<HashMap<String, Object>> rkList = aService.selectReportRank();
 		for(int i = 0; i < rkList.size(); i ++) {
@@ -73,7 +70,7 @@ public class AdminController {
 		// 현재 신고한 신고 정보(신고자, 게시글 구분, 카테고리, date, 내용, 피신고자 이름)
 		Report r = aService.selectReportDetail(rNo);
 		ArrayList<Report> rList = aService.selectTargetList(r.getRAccused());
-		System.out.println(r);
+		System.out.println(rList);
 		
 		int pileWarning = 0;
 		int pileBanded = 0;
@@ -107,21 +104,20 @@ public class AdminController {
 		if(r != null) {
 			r.setRSituation("B");
 			int result1 = aService.updateStopDate(r.getRAccused());
-			int result2 = aService.updateReportSit(r.getRNo());
+			int result2 = aService.updateReportSit(r);
 			
 			re.addAttribute("rNo", r.getRNo());
 			
 			return "redirect:/admin/reportDetail";
 		} else {
-			// 응답으로 바꿔야하나..
-			re.addAttribute("msg", "필요한 데이터가 없습니다.");
 			return "/adminMain.ad";
 		}
 	}
 	
 	@GetMapping("/admin/warningUser.ad")
 	public String warningUser(@ModelAttribute Report r,
-								HttpSession session) {
+								HttpSession session,
+								RedirectAttributes re) {
 		
 		Member admin = (Member)session.getAttribute("loginUser");
 		if(admin == null || !admin.getIsAdmin().equals("Y")) {
@@ -130,13 +126,71 @@ public class AdminController {
 		
 		// 카운트 되는지 확인하고 DB에서 r_rContent 구분자 애들한테 정리하라고 해야함
 		if(r != null) {
-			r.setRSituation("W");
 			int count = aService.selectWarningCount(r);
 			System.out.println(count);
-			//int result1 = aService.update(r);
+			r.setRSituation("W");
+			if(count != 0) {
+				if(count % 3 == 2) {
+					r.setRSituation("B");
+					int result1 = aService.updateReportSit(r);
+					int result2 = aService.updateStopDate(r.getRAccused());
+				} else {
+					int result3 = aService.updateReportSit(r);
+				}
+			} else {
+				int result4 = aService.updateReportSit(r);
+			}
+			
+			re.addAttribute("rNo", r.getRNo());
+			
+			return "redirect:/admin/reportDetail";
+		} else {
+			return "/adminMain.ad";
 		}
-		return null;
 	}
 	
+	@GetMapping("/admin/returnReport.ad")
+	public String returnReport(@ModelAttribute Report r,
+								HttpSession session,
+								RedirectAttributes re) {
+		
+		Member admin = (Member)session.getAttribute("loginUser");
+		if(admin == null || !admin.getIsAdmin().equals("Y")) {
+			return "index";
+		} 
+		
+		if(r != null) {
+			r.setRSituation("R");
+			aService.updateReportSit(r);
+			
+			re.addAttribute("rNo", r.getRNo());
+			
+			return "redirect:/admin/reportDetail";
+		} else {
+			return "/adminMain.ad";
+		}
+	}
+	
+	@GetMapping("/admin/memberManagement.ad")
+	public String moveToManagement(@RequestParam(value="mbId", required=false) String mbId,
+									@RequestParam(value="page", defaultValue="1") int page,
+									Model model,
+									HttpServletRequest request) {
+		
+		int listCount = aService.getMembersCount(mbId);
+		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+		
+		 ArrayList<Member> mList = aService.selectAllMembers(pi, mbId);
+		 ArrayList<MemberAddress> addrList = aService.selectAllAddress();
+		 System.out.println(mList);
+		 System.out.println(addrList);
+		 
+		 model.addAttribute("loc", request.getRequestURI());
+		 model.addAttribute("pi", pi);
+		 model.addAttribute("mList", mList);
+		 model.addAttribute("addrList", addrList);
+		
+		return "memberManagement";
+	}
 
 }
