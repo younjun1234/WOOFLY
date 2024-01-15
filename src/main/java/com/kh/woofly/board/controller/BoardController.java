@@ -510,7 +510,11 @@ public class BoardController {
 			r.setBType("B");
 			int result = bService.insertFreeReply(r);
 			
-			ArrayList<Reply> rList = bService.
+			if(result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
 			
 		}
 		
@@ -536,9 +540,11 @@ public class BoardController {
 				json.put("mbId", reply.getMbId());
 				json.put("mbNickname", reply.getMbNickName());
 				jArr.put(json);
+				
+				return jArr.toString();
 			}			
 			
-			return jArr.toString();
+			
 			if(result > 0) {
 				return "good";
 				
