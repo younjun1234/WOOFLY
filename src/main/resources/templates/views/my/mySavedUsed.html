@@ -38,7 +38,7 @@
 						</div>
 						&nbsp;&nbsp;&nbsp;
 						<div>
-							<button class="btn btn-outline-dark btn-sm" onclick="location.href='/my/saved/used'">중고</button>
+							<button class="btn btn-dark btn-sm" onclick="location.href='/my/saved/used'">중고</button>
 						</div>
 					</div>
 					<div>
@@ -50,56 +50,17 @@
 						</button>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
+				<div role="button" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px" th:each="b : ${list}">
 					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
+						<img th:src="'/image/' + ${b.renameName}"class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
 						<div class="ms-3" style="line-height: 50px;">
-							게시글 제목 <br>
-							게시글 내용
+							[[${b.uTitle}]] <br>
+							[[${b.uContent}]]
 						</div>		
 					</div>
 					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성자</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성일자</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 50px;">
-							게시글 제목 <br>
-							게시글 내용
-						</div>		
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성자</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성일자</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 50px;">
-							게시글 제목 <br>
-							게시글 내용
-						</div>		
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성자</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성일자</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 50px;">
-							게시글 제목 <br>
-							게시글 내용
-						</div>		
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성자</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">작성일자</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[${b.mbNickName}]]</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#dates.format(b.uCreateDate, 'yy/MM/dd')}]]</div>
 					</div>
 				</div>
 			</div>

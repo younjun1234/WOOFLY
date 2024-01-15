@@ -88,4 +88,19 @@
  		select * from point_history
  		where mb_id = #{id}
  	</select>
+ 	
+ 	<select id="selectMySaved" resultType="Saved">
+ 		select *
+ 		from saved
+ 			 join attachment on (attm_ref_no = product_id)
+ 			 <if test='savedType == "P"'>
+ 			 	join product using (product_id)
+ 			 </if>
+ 			 <if test='savedType == "U"'>
+ 			 	join used_board on (product_id = u_no)
+	 			join member on (used_board.mb_id = member.mb_id)
+ 			 </if>
+	 	where attm_ref_type = #{savedType} and saved.mb_id = #{id} and attm_level = 1
+ 			 
+ 	</select>
 </mapper>
