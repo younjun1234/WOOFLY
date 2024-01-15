@@ -29,25 +29,26 @@
 			<div class="col-10">
 				<div class="border-bottom border-3 border-black">
 					<h3>마이펫 다이어리</h3>
-				</div>	
-				<div class="border-top border-bottom bg-body-tertiary d-flex align-items-center justify-content-center" style="height: 70px;">
-					<div>
-						<button class="btn btn-outline-dark btn-sm" onclick="getMonths(7);">일주일</button>
-						<button class="btn btn-outline-dark btn-sm" onclick="getMonths(1);">한달</button>
-						<button class="btn btn-outline-dark btn-sm" onclick="getMonths(3);">3개월</button>
-					</div>
-					&nbsp;&nbsp;&nbsp;
-					<div class="d-flex">
-						<input type="date" class="form-control d-block">
-						<span class="my-auto">~</span>
-						<input type="date" class="form-control d-block">
-					</div>
-					&nbsp;&nbsp;&nbsp;
-					
-					<div>
-						<button class="btn btn-dark btn-sm">조회</button>
-					</div>
 				</div>
+				<form action="/pet/petDiary" method="get">
+					<div class="border-top border-bottom bg-body-tertiary d-flex align-items-center justify-content-center" style="height: 70px;">
+						<div>
+							<button type="button" class="btn btn-outline-dark btn-sm" onclick="getOneWeek(1);">일주일</button>
+							<button type="button" class="btn btn-outline-dark btn-sm" onclick="getMonths(1);">한달</button>
+							<button type="button" class="btn btn-outline-dark btn-sm" onclick="getMonths(3);">3개월</button>
+						</div>
+						&nbsp;&nbsp;&nbsp;
+						<div class="d-flex">
+							<input type="date" class="form-control d-block" name="startDate" id="startDate" th:value="${ startDate }">
+							<span class="my-auto">~</span>
+							<input type="date" class="form-control d-block" name="endDate" id="endDate" th:value="${ endDate }">
+						</div>
+						&nbsp;&nbsp;&nbsp;
+						<div>
+							<button class="btn btn-dark btn-sm">조회</button>
+						</div>
+					</div>
+				</form>	
 				    <span class="text-secondary" style="font-size: 13px;">한 번에 조회 가능한 기간은 최대 3개월입니다.</span>
 				<div class="d-flex bd-highlight mb-2">
 				  <div class="p-2 bd-highlight">
@@ -99,11 +100,88 @@
 				</div>
 			</div>
 	</main>
-	<script>
+	<script th:inline="javascript">
 		const myNav = document.getElementById("myPet3");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
 		
+		
+		//생일 넘어가기
+		const now_date = Date.now();
+		const timeOff = new Date().getTimezoneOffset()*60000;
+		const today = new Date(now_date-timeOff).toISOString().split("T")[0];
+		startDate.setAttribute("max", today);
+		endDate.setAttribute("max", today);
+		
+		const getMonths = (months) => {
+			let startDate = new Date();
+			startDate.setMonth(startDate.getMonth() - months);
+			let endDate = new Date();
+
+			let year = (startDate.getFullYear() + "");
+			let month = ('0' + (startDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+			let day = ('0' + startDate.getDate()).slice(-2);
+
+			startDate = year + '-' + month + '-' + day;
+			
+			year = (endDate.getFullYear() + "");
+			month = ('0' + (endDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+			day = ('0' + endDate.getDate()).slice(-2);
+			
+			endDate = year + '-' + month + '-' + day;
+			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate;		
+		}
+		
+		const getWeeks = (week) => {
+			let startDate = new Date(); // 새 날짜를 가져오는거
+			startDate.setMonth(startDate.getDate() - week * 7); // 그 날짜에서 7일을 빼주고
+			let endDate = new Date(); // 
+
+			let year = (startDate.getFullYear() + "");
+			let month = ('0' + (startDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+			let day = ('0' + startDate.getDate()).slice(-2);
+
+			startDate = year + '-' + month + '-' + day;
+			
+			year = (endDate.getFullYear() + "");
+			month = ('0' + (endDate.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+			day = ('0' + endDate.getDate()).slice(-2);
+			
+			endDate = year + '-' + month + '-' + day;
+			window.location.href = '/pet/petDiary?startDate=' + startDate + '&endDate=' + endDate;		
+		}
+		
+		endDate.addEventListener('change', () => {
+			let sixMonthsBefore = new Date(endDate.value);
+			sixMonthsBefore.setMonth(sixMonthsBefore.getMonth() - 6);
+			var newDate = new Date(startDate.value);
+			
+			
+			if(startDate.value == '' || sixMonthsBefore > newDate) {
+				let year = (sixMonthsBefore.getFullYear() + "");
+				let month = ('0' + (sixMonthsBefore.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+				let day = ('0' + sixMonthsBefore.getDate()).slice(-2);
+				startDate.value = year + '-' + month + '-' + day;
+			}
+				
+		})
+		
+		startDate.addEventListener('change', () => {
+			let sixMonthsAfter = new Date(startDate.value);
+			sixMonthsAfter.setMonth(sixMonthsAfter.getMonth() + 6);
+			var newDate = new Date(endDate.value);
+
+			if(sixMonthsAfter < newDate) {
+				if (sixMonthsAfter > new Date()) {
+					sixMonthsAfter = new Date();
+				}
+				
+				let year = (sixMonthsAfter.getFullYear() + "");
+				let month = ('0' + (sixMonthsAfter.getMonth() + 1)).slice(-2); // Adding 1 because months are zero-based
+				let day = ('0' + sixMonthsAfter.getDate()).slice(-2);
+				endDate.value = year + '-' + month + '-' + day;
+			}
+		})
 	</script>
 </body>
 </html>

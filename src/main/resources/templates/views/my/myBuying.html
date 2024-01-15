@@ -36,15 +36,15 @@
 							<button type="button" class="btn btn-outline-dark btn-sm" onclick="getMonths(6);">6개월</button>
 						</div>
 						&nbsp;&nbsp;&nbsp;
-							<div class="d-flex">
-								<input type="date" class="form-control d-block" name="startDate" id="startDate" th:value="${ startDate }">
-								<span class="my-auto">~</span>
-								<input type="date" class="form-control d-block" name="endDate" id="endDate" th:value="${ endDate }">
-							</div>
-							&nbsp;&nbsp;&nbsp;
-							<div>
-								<button class="btn btn-dark btn-sm">조회</button>
-							</div>
+						<div class="d-flex">
+							<input type="date" class="form-control d-block" name="startDate" id="startDate" th:value="${ startDate }">
+							<span class="my-auto">~</span>
+							<input type="date" class="form-control d-block" name="endDate" id="endDate" th:value="${ endDate }">
+						</div>
+						&nbsp;&nbsp;&nbsp;
+						<div>
+							<button class="btn btn-dark btn-sm">조회</button>
+						</div>
 					</div>
 				</form>
 				<p class="text-secondary" style="font-size: 13px;">한 번에 조회 가능한 기간은 최대 6개월입니다.</p>

@@ -2,9 +2,11 @@ package com.kh.woofly.pet.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
@@ -28,6 +32,7 @@ import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -73,9 +78,38 @@ public class PetController {
 	}
 
 	@GetMapping("pet/petDiary")
-	public String petDiaryView(@ModelAttribute Diary d, @ModelAttribute Pet p, Model model, HttpSession session) {
+	public String petDiaryView(HttpSession session, Model model,@RequestParam(value="page", defaultValue="1") int page,
+							 @RequestParam(value="startDate", required=false) String startDate, 
+							 @RequestParam(value="endDate", required=false) String endDate, HttpServletRequest request,
+							 @RequestParam(value="petName", required=false) int petId, @RequestParam(value="petHealth", required=false) String petHealth) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		d.setWriterId(id);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		
+		try {
+	        Date currentDate = new Date();
+	        Calendar calendar = Calendar.getInstance();
+	        calendar.setTime(currentDate);
+	        calendar.add(Calendar.DAY_OF_MONTH, 1);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			
+			if (startDate == null) {
+				map.put("startDate", null);
+			} else {
+				map.put("startDate", sdf.parse(startDate));
+			}
+			
+			if (endDate == null) {
+				map.put("endDate", sdf.format(calendar.getTime()));
+			} else {
+				map.put("endDate", sdf.parse(endDate));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		int listCount = oService.getBuyingCount(id);
+		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+		
 		
 		ArrayList<Diary> list = pService.petDiaryList(id);
 		ArrayList<Pet> pet = pService.petInfoList(id);
