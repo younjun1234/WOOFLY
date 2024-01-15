@@ -26,8 +26,8 @@ public class BoardServiceImpl implements BoardService{
    private BoardDAO bDAO;
    
    @Override
-	public int getReplyListCount(int i, int dwNo, String bType) {
-	   return bDAO.getReplyListCount(i, dwNo, bType);
+	public int getReplyListCount(int dwNo) {
+	   return bDAO.getReplyListCount(dwNo);
 	}
 
    

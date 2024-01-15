@@ -721,6 +721,8 @@ public class BoardController {
 			
 			return "dwReviewBoard";
 		}
+		
+		
 		@GetMapping("/board/dw/detail")
 		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") int page, @RequestParam("dwNo") int dwNo, HttpSession session, Model model, HttpServletRequest request) {
 			
@@ -733,8 +735,8 @@ public class BoardController {
 			
 			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
 			
-			String bType = "DW";
-			int listCount = bService.getReplyListCount(1, dwNo, bType);
+			System.out.println(dwNo);
+			int listCount = bService.getReplyListCount(dwNo);
 			
 			
 			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);

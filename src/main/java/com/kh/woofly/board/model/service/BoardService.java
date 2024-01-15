@@ -15,7 +15,7 @@ import com.kh.woofly.common.Reply;
 
 public interface BoardService {
 	
-	int getReplyListCount(int i, int dwNo, String bType);
+	int getReplyListCount(int dwNo);
 
 //	자유게시판 "/board/free"	
 	
