@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.Reply;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -25,7 +28,6 @@ import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -46,8 +48,28 @@ public class PetController {
 	}
 
 	@GetMapping("pet/petPhoto")
-	public String petPhotoView() {
-		return "petPhoto";
+	public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
+			@RequestParam(value="petName", required=false) String petName, @RequestParam(value="petHealth", required=false) String petHealth) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		HashMap<String, String> map = new HashMap<>();
+		map.put("id", id);
+		if (petName !=  null) {
+			map.put("petHealth", petHealth);
+		}
+		if (petHealth != null) {
+			map.put("petName", petName);
+		}
+		ArrayList<Album> aList = pService.selectMyAlbums(map);
+		ArrayList<Pet> pList = pService.petInfoList(id);
+		 
+		if(aList != null) {
+			model.addAttribute("pList", pList);
+			model.addAttribute("aList", aList);
+			return "petPhoto";
+			
+		} else {
+			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
+		}
 	}
 
 	@GetMapping("pet/petDiary")
@@ -291,7 +313,6 @@ public class PetController {
 	public String deletePetPhoto(@RequestParam("petId") int petId) {
 		
 		Pet p = pService.petDetail(petId);
-		System.out.println(p);
 		if(!p.getPetProfile().equals("default_petprofile.jpg")) {
 			deleteFile(p.getPetProfile());
 			
@@ -318,21 +339,24 @@ public class PetController {
 			throw new PetException("마이펫 삭제에 실패하였습니다.");
 		}
 	}
-
-	@GetMapping("pet/petPhotoDetail")
-	public String petPhotoDetailView(HttpSession session, Model model) {
-		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		ArrayList<Album> aList = pService.selectMyAlbum(id);
-		ArrayList<Attachment> attmList = new ArrayList<>();
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("id", id);
-		for(Album a : aList) {
-			map.put("abNo", a.getAbNo());
-			pService.selectMyAlbumAttm(map);
+	
+	@GetMapping("pet/petPhotoDetail/{abNo}")
+	public String petPhotoDetail(@PathVariable("abNo") int abNo, Model model) {
+		ArrayList<Album> aList = pService.petPhotoDetail(abNo);
+		ArrayList<Pet> pList = pService.petInfo(abNo); 
+		ArrayList<Reply> rList = pService.replyList(abNo);
+		
+		if(aList != null) {
+			model.addAttribute("aList", aList);
+			model.addAttribute("pList", pList);
+			model.addAttribute("rList", rList);
+			
+			return "petPhotoDetail";
+		} else {
+			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
 		}
-		return "petPhotoDetail";
 	}
-
+	
 	@GetMapping("/pet/petPhotoWrite")
 	public String petpetPhotoWriteView(HttpSession session, @ModelAttribute Diary d, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -342,12 +366,14 @@ public class PetController {
 		return "petPhotoWrite";
 	}
 	
-	@PostMapping("petPhotoWrite.dw")
+	@PostMapping("/petPhotoWrite.dw")
 	public String insertPetPhoto(@RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
 		//게시판 내용 보내기
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		a.setWriterId(id);
 		a.setPetId(p.getPetId());
+		
+		System.out.println(files);
 		
 		//게시물 보내기
 		int result = pService.insertPetPhoto(a);
@@ -359,9 +385,6 @@ public class PetController {
 			if(files != null && !files.isEmpty()) {
 				ArrayList<Attachment> attachments = new ArrayList<>();
 				for(MultipartFile file : files) {
-					
-					System.out.println(file);
-					
 					String savedFileName = saveFile(file);
 					Attachment att = new Attachment();
 					att.setOriginalName(file.getOriginalFilename());
@@ -379,7 +402,6 @@ public class PetController {
 			          }
 			       }
 					result2 = pService.insertPetAlbum(att);
-					System.out.println(att);
 				}
 			}
 		} else {
@@ -387,9 +409,103 @@ public class PetController {
 		}
 		
 		if(result > 0) {
-			return "redirect:/pet/petPhotoDetail";
+			System.out.println(a.getAbNo());
+			return "redirect:/pet/petPhotoDetail/"+a.getAbNo();
 		} else {
 			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("deleteImage.dw")
+	@ResponseBody
+	public String deleteImage() {
+		return null;
+	    }
+	
+	@GetMapping("pet/petPhotoEdit/{abNo}")
+	public String petPhotoEditView(@PathVariable("abNo") int abNo, Model model, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		
+		Album a = pService.petAlbumDetail(abNo);
+		ArrayList<Pet> pList = pService.petInfoList(id);
+		ArrayList<Attachment> aList = pService.petAttmList(abNo);
+		
+		if(a != null) {
+			model.addAttribute("a", a);
+			model.addAttribute("pList", pList);
+			model.addAttribute("aList", aList);
+			return "petPhotoEdit";
+		} else {
+			throw new PetException("마이펫 사진첩 수정에 실패하였습니다.");
+		}
+		
+	}
+	
+	@PostMapping("petPhotoEdit.dw")
+	public String petPhotoEdit(@RequestParam("file") ArrayList<MultipartFile> files) {
+		return null;
+	}
+	
+	//댓글
+	@GetMapping(value="/insertReply.dw")
+	@ResponseBody
+	public String insertReply(@ModelAttribute Reply r, HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		r.setMbId(id);
+		r.setBType("AB");
+		int result = pService.insertAlbumReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	@GetMapping("/updateReply.dw")
+	@ResponseBody
+	public String updateReply(@ModelAttribute Reply r){
+		int result = pService.updateReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	@GetMapping("/deleteReply.dw")
+	@ResponseBody
+	public String deleteReply(@ModelAttribute Reply r){
+		int result = pService.deleteReply(r);
+		
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+	}
+	
+	//댓글 신고
+	@GetMapping("/insertReport.dw")
+	@ResponseBody
+	public String insertReport(@ModelAttribute Report rt, HttpSession session){
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		rt.setRAccuser(id);
+		int checkResult = pService.checkResult(rt);
+		int result = pService.insertReport(rt);
+		
+		if(checkResult > 0) {
+			return "exist";
+		}
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
 		}
 	}
 	
@@ -410,7 +526,6 @@ public class PetController {
 	    d.setWriterId(id);
 	    d.setPetId(petId);
 	    
-	    System.out.println(d);
 	    int result = pService.petDiaryWrite(d);
 	    int drNo = d.getDrNo();
 	    
@@ -420,13 +535,9 @@ public class PetController {
 	    	throw new PetException("마이펫 다이어리 등록에 실패하였습니다.");
 	    }
 	}
-	
 
 	@GetMapping("pet/petDiaryDetail")
 	public String petDiaryDetailView(@ModelAttribute Diary d, @RequestParam("petId") int petId, HttpSession session) {
-//		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-//		d.setPetId(petId);
-//		System.out.println(petId);
 		return "petDiaryDetail";
 	}
 	
@@ -459,18 +570,6 @@ public class PetController {
 		}
 	}
 	
-//	@GetMapping("pet/petDetail/{petId}")
-//	public String petDetail(@PathVariable("petId") int petId, Model model) {
-//		Pet pet = pService.petDetail(petId);
-//		
-//		if(pet != null) {
-//			model.addAttribute("p", pet);
-//			return "petDetail";
-//		} else {
-//			throw new PetException("마이펫 상세조회에 실패하였습니다.");
-//		}
-//	}
-	
 	@PostMapping("/petDiaryEdit.dw")
 	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") Date date) {
 		d.setDrDate(date);
@@ -493,6 +592,18 @@ public class PetController {
 			return "redirect:/pet/petDiary";	
 		} else {
 			throw new PetException("마이펫 다이어리 삭제에 실패하였습니다.");
+		}
+	}
+	
+	@GetMapping("pet/petPhotoDelete/{abNo}")
+	public String petPhotoDelete(@PathVariable("abNo") int abNo) {
+		int result = pService.petPhotoDelete(abNo);
+		System.out.println(abNo);
+		
+		if(result > 0) {
+			return "redirect:/pet/petPhoto";	
+		} else {
+			throw new PetException("마이펫 사진첩 삭제에 실패하였습니다.");
 		}
 	}
 	

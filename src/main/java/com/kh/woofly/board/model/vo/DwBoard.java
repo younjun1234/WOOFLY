@@ -25,4 +25,6 @@ public class DwBoard {
 	private String dwEnd;
 	private String mbId;
 	private String mbNickName;
+	private int dwLike;
+	private String dwPrice;
 }

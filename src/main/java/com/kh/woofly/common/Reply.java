@@ -15,6 +15,7 @@ import lombok.ToString;
 @ToString
 
 public class Reply {
+
 	private int rNo;
 	private String bType;
 	private int bNo;
@@ -26,4 +27,6 @@ public class Reply {
 	
 	private String mbNickName;
 	private boolean userLiked;
+	private String mbPhoto;
 }
+

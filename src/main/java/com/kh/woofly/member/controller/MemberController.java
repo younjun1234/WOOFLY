@@ -420,7 +420,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\uploadFiles\\woolfy";
+			savePath = "C:\\" + "\\uploadFiles\\woofly";
 		} else if (os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 		}

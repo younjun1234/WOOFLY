@@ -36,4 +36,8 @@ public interface CartService {
 
 	int deleteCart(Cart c);
 
+	int usePoints(HashMap<String, Object> map);
+
+	int deleteAllCart(String id);
+
 }
