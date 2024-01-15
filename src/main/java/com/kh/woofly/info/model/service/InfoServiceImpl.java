@@ -7,10 +7,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.info.model.dao.InfoDAO;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
-import com.kh.woofly.info.model.vo.PageInfo;
 import com.kh.woofly.info.model.vo.QNA;
 
 @Service

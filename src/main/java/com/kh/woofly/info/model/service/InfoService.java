@@ -3,9 +3,9 @@ package com.kh.woofly.info.model.service;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
-import com.kh.woofly.info.model.vo.PageInfo;
 import com.kh.woofly.info.model.vo.QNA;
 
 public interface InfoService {

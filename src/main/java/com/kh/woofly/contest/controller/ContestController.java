@@ -2,7 +2,6 @@ package com.kh.woofly.contest.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,12 +16,7 @@ import com.kh.woofly.contest.model.service.ContestService;
 import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
-import com.kh.woofly.info.Pagination;
-import com.kh.woofly.info.model.vo.Company;
-import com.kh.woofly.info.model.vo.Notice;
-import com.kh.woofly.info.model.vo.PageInfo;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller

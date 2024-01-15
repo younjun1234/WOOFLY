@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.kh.woofly.info.Pagination;
+import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Pagination;
 import com.kh.woofly.info.model.service.InfoService;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
-import com.kh.woofly.info.model.vo.PageInfo;
 import com.kh.woofly.info.model.vo.QNA;
 
 import jakarta.servlet.http.HttpServletRequest;
