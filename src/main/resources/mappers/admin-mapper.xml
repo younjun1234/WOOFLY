@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kh.woofly.admin.model.dao.AdminDAO">
+	<select id="getReportCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM REPORT
+	</select>
+
+	<select id="selectReportList" resultType="Report">
+		SELECT *
+		FROM REPORT
+	</select>
+</mapper>
+
+

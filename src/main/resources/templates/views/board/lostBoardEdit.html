@@ -2,15 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>실종신고 수정</title>
+<title>WOOFLY</title>
 <link rel="icon" href="/image/woofly.png">
 </head>
 <body>
 	<div th:replace="~{common/topAdd :: topAdd}"></div>
-	<div class="container mx-5 mt-5 mb-5">
-	
-		<!-- 게시글 영역 -->
-		<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
+	 <div class="container mt-5 mb-3">
+      	<div class="container d-flex px-0 mb-3 border-bottom border-black border-3 justify-content-between align-items-center">
 			<h1>실종신고 게시판</h1>
 			<h3>게시글 수정하기</h3>
 			
@@ -31,7 +29,7 @@
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
 					    <select class="form-select mb-1">
-					    	<option value="1" disabled selected>구조중</option>
+					    	<option value="1">구조중</option>
 							<option value="2">구조완료</option>
 						</select>
 				</div>
@@ -43,10 +41,13 @@
 				  	<label for="content" class="form-label">내용</label>
 				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
 				</div>
-				<div class="mb-5">
-				  	<label for="file" class="form-label">첨부파일</label>
-				  	<input class="form-control form-control-sm" id="file" type="file">
-				</div>
+				<label for="file" class="form-label">첨부파일</label><br>
+				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
+					<div id="fileArea">
+					   <div class="mb-3">
+					      <input type="file" class="form-control form-control-sm" name="file">
+					   </div>
+					</div>
 				<div class="row border-top border-black pt-3">
 					<button class="btn btn-dark">수정하기</button>
 				</div>
@@ -60,6 +61,17 @@
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd7");
 		$(boardNav).addClass('active');
+		
+		window.onload = () =>{
+			const fileArea = document.querySelector('#fileArea');
+			document.getElementById('addFile').addEventListener('click', () =>{
+				const newDiv = document.createElement('div');
+				newDiv.classList.add('mb-3');
+				newDiv.innerHTML = '<input type = "file" class = "form-control form-control-sm" name ="file">';
+				
+				fileArea.append(newDiv);
+			});
+		}
 	</script>
 	
 </body>

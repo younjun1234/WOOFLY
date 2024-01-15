@@ -15,6 +15,7 @@
         outline: none;
     }
 </style>
+<link rel="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
 <body>
 	<!-- top navigation bar -->
@@ -22,7 +23,7 @@
 	<div th:replace="~{common/top :: top}"></div>
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
-		<div class="d-flex justify-content-between mx-5">
+		<div class="d-flex justify-content-center mx-5">
 			<!-- 아래만 수정해주세요 -->
 			<!-- 아래만 수정해주세요 -->
 			<!-- 아래만 수정해주세요 -->
@@ -35,27 +36,38 @@
 						<img src="/image/woofly.png" style="width:200px">
 					</div>	
 					<br>
-					<div class="mt-3">
-						<p>아이디</p>
-						<div class="border-bottom d-flex justify-content-between">
-							<input type="text" name="text" style="border: none; background: transparent;">
+					<form action="/login.dw" method="post" onsubmit="return checkData()">
+						<div class="mt-3">
+							<p>아이디</p>
+							<div class="border-bottom d-flex justify-content-between">
+								<input id="mbId" type="text" name="mbId" style="border: none; background: transparent; width:100%">
+							</div>
 						</div>
-					</div>
-					<br>
-					<div class="mb-3">
-						<p>비밀번호</p>
-						<div class="border-bottom d-flex justify-content-between">
-							<input type="password" name="text" style="border: none; background: transparent;">
+						<br>
+						<div class="mb-3">
+							<p>비밀번호</p>
+							<div class="border-bottom d-flex justify-content-between" id="pwd">
+								<input id="mbPwd" type="password" name="mbPwd" style="border: none; background: transparent; width:100%">
+								 <svg id="togglePwd" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+						            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+						            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+						        </svg>
+						       <!--  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+								  <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
+								  <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+								</svg> -->
+							</div>
 						</div>
-					</div>
-					<br>
-					<div class="">
-						<button class="btn btn-outline-white mb-3 text-white" style="background-color: #ebebeb; width:100%">로그인</button>
-					</div>
+						<br>
+						<div>
+							<button type="submit" id="loginBtn" class="btn btn-outline-white mb-3 text-white" style="background-color: #ebebeb; width:100%">로그인</button>
+						</div>
+						<input type="hidden" name="beforeURL"> <!-- 로그인하면 이전 페이지로 넘어가는 코드 -->
+					</form>
 					<br>
 					<div class="gap-3 d-flex">
-						<a role="button" class="text-secondary" id="testBtn">회원가입</a>
-							<div class="modal fade" id="testModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<a role="button" class="text-secondary" id="signUpBtn">회원가입</a>
+							<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-dialog-centered" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -101,10 +113,123 @@
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
 		
-		$('#testBtn').click(function(e){
+		$('#signUpBtn').click(function(e){
 			e.preventDefault();
-			$('#testModal').modal("show");
+			$('#signUpModal').modal("show");
 		});
+		
+		$(document).ready(function(){
+		    $('#togglePwd').on('click', function(){
+		        var pwdInput = $('#mbPwd');
+		        var icon = $(this);
+		        
+		        if(pwdInput.attr('type') === 'password'){
+		            pwdInput.attr('type', 'text');
+		            icon.removeClass('bi-eye-fill').addClass('bi-eye-slash-fill');
+		        } else {
+		            pwdInput.attr('type', 'password');
+		            icon.removeClass('bi-eye-slash-fill').addClass('bi-eye-fill');
+		        }
+		    });
+		});
+		
+		//input값에 데이터가 있으면 버튼 색상 변경
+		document.getElementById('mbPwd').addEventListener('keyup', function() {
+			const id = document.getElementById('mbId')
+			const pwd = document.getElementById('mbPwd')
+			const loginBtn = document.getElementById('loginBtn');
+			
+			if (id !== '' && pwd !== '') {
+	            loginBtn.style.backgroundColor = 'black';
+	        } else {
+	            loginBtn.style.backgroundColor = '#ebebeb';
+	        }
+			
+		});
+         
+		//null값이면 경고
+	    function checkData() {
+	        const id = document.getElementById('mbId').value.trim();
+	        const pwd = document.getElementById('mbPwd').value.trim();
+			
+	        if (id === '' || pwd === '') {
+	            alert('아이디와 비밀번호를 모두 입력하세요.');
+	            return false;
+	        } else {
+	        	document.querySelector('form').submit()
+	        	return true;
+	        }
+	    }
+		
+		window.onload = () =>{
+			const beforeURL = document.referrer; //이전 URL 정보를 갖고잇음
+			document.getElementsByName('beforeURL')[0].value = beforeURL;
+		}
+		
+		Kakao.init('b44d15cda5fc3d137d1fdef5b7c6ee60'); //발급받은 키 중 javascript키를 사용해준다.
+		//console.log(Kakao.isInitialized()); // sdk초기화여부판단
+		//카카오로그인 시 API 이용하여 정보 받아오기 - 02.10 장재호
+		//naverCallback.jsp와 같은 형식이니 참조하세요
+		function kakaoLogin() {
+		    Kakao.Auth.login({
+		      success: function (response) {
+		        Kakao.API.request({
+		          url: '/v2/user/me',
+		          success: function (response) {
+		        	  console.log(response);
+		        	  const id = response.id;
+		        	  const nickname = response.properties.nickname;
+		        	  const email = response.kakao_account.email;
+		        	  $.ajax({
+		        		  type : 'post',
+		        		  url : 'user/kakaoLogin',
+		        		  data : {"id" : id, "nickname" : nickname, "email" : email},
+		        		  dataType : 'text',
+		        		  success: function(result){
+		        			  if(result=="ok"){
+		        				  var newNickname = prompt('사용하실 닉네임을 입력해주세요');
+		        				  if(newNickname != null){
+		        					  $.ajax({
+		        						  type : 'post',
+		        						  url : 'kakaoSignUp',
+		        						  data : {"id" : id, "nickname" : newNickname, "email": email}
+		        					  });
+		        					  alert(newNickname + "님 환영합니다.");
+		        					  location.href = "/video/list";
+		        				  }
+		        				  else{
+		        					  location.href = "/user/signin";
+		        				  }
+		        			  }
+		        			  else{
+		        				  $.ajax({
+		        					  url : '/user/kakaoLogins',
+		        					  data : {"id" : id},
+		        					  dataType : 'text',
+		        					  type : 'post',
+		        					  success : function(data){
+		        						  console.log(data);
+		                				  alert(data + "님 반갑습니다.")
+		                				  location.href = "/video/list";
+		        					  }
+		        				  })
+
+		        			  }
+		        		  }
+		        		  
+		        	  })
+		          },
+		          fail: function (error) {
+		            console.log(error)
+		          },
+		        })
+		      },
+		      fail: function (error) {
+		        console.log(error)
+		      },
+		    })
+		  }
 	</script>
+	<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 </body>
 </html>

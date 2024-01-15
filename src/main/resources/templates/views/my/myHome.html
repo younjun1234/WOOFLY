@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WOOFLY</title>
-<link rel="icon" href="image/woofly.png">
+<link rel="icon" href="/image/woofly.png">
 </head>
 <body>
 	<!-- top navigation bar -->
@@ -22,12 +22,12 @@
 		<div class="col-10 mb-5 pt-3 me-4">
 			<!-- 첫번째 박스 -->
 			<div class="d-flex align-items-center mb-5" style="height: 150px; border: 1px solid black; border-radius: 5px;">
-				<img src="..." class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
+				<img th:src="@{${ '/image/' + session.loginUser.mbPhoto }}" class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
 				<div class="ps-3">
 					<p class="mb-0">
-						이메일
+						[[${ session.loginUser.mbEmail }]]1
 						<br>
-						아이디
+						[[${ session.loginUser.mbId }]]
 					</p>
 					<div>
 						<a class="btn btn-sm btn-outline-secondary" href="/my/profile-edit">프로필 관리</a>
@@ -41,7 +41,7 @@
 						  	<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
 						  	<path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12"/>
 						</svg>
-						<p class="text-center">0P</p>
+						<p class="text-center">[[${#numbers.formatInteger(pointsUsable, 3, 'COMMA')}]]P</p>
 					</div>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<div class="text-center my-auto" role="button" onclick="location.href='#'">
@@ -60,34 +60,30 @@
 						<button class="btn btn-dark btn-sm" onclick="location.href='/my/buying'">더보기</button>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
+				<div class="border-bottom d-flex justify-content-between mb-3 sold" role="button" style="height: 100px" th:each="buying, buyingStat: ${oList}">
+					<input type="hidden" th:value="${ buying.orderId }">
 					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
+						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}">
+							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px;">
+						</th:block>
+						<th:block th:each="product, productStat : ${pList}" th:if="${productStat.index == buyingStat.index}">
+							<div class="ms-3" style="line-height: 100px;">[[${product.productName}]]<span th:if="${buying.productCount > 1}"> 외 [[${buying.productCount - 1}]]개의 상품</span></div>
+						</th:block>			
 					</div>
 					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
+						
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 0">배송전</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 1">배송중</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;" th:if="${buying.delStatus} == 2">배송완료</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[|${#numbers.formatInteger(buying.total, 3, 'COMMA')} 원|]]</div>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
+				<div class="d-flex justify-content-center align-items-center" style="min-height: 200px" th:if="${oList == null }">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						<p>구매 입찰 내역이 없습니다.</p>
+						<div>
+							<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -192,8 +188,16 @@
 		<!-- 여기까지가 수정 -->
 		<!-- 여기까지가 수정 -->
 		</div>
-		
 	</div>
-
+	
+	<script>
+		const solds = document.querySelectorAll('.sold');
+		for (const sold of solds) {
+			sold.addEventListener('click', () => {
+				window.location.href = '/my/buying/' + sold.querySelector('input').value;
+			})
+		}
+		
+	</script>
 </body>
 </html>
