@@ -1,4 +1,3 @@
-
 package com.kh.woofly.board.controller;
 
 import java.io.File;
@@ -10,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,44 +31,7 @@ import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
-import com.kh.woofly.common.PageInfo;
-import com.kh.woofly.common.Pagination;
-import com.kh.woofly.common.Reply;
-import com.kh.woofly.member.model.vo.Member;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.kh.woofly.admin.model.vo.Report;
-import com.kh.woofly.board.model.exception.BoardException;
-import com.kh.woofly.board.model.service.BoardService;
-import com.kh.woofly.board.model.vo.Attachment;
-import com.kh.woofly.board.model.vo.Board;
-import com.kh.woofly.board.model.vo.DwBoard;
-import com.kh.woofly.board.model.vo.LostBoard;
-import com.kh.woofly.board.model.vo.UsedBoard;
-import com.kh.woofly.board.model.vo.WmBoard;
+//github.com/younjun1234/WOOFLY.git
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
@@ -358,7 +322,7 @@ public class BoardController {
 		// 파일 저장소 파일 저장(copy)
 		private String[] saveFile(MultipartFile upload) {
 			
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
@@ -548,7 +512,6 @@ public class BoardController {
 			
 			if(result > 0) {
 				return "good";
-				
 			} else {
 				return "bad";
 			}
@@ -561,6 +524,26 @@ public class BoardController {
 		public String deleteFreeReply(@ModelAttribute Reply r) {
 			int result = bService.deleteFreeReply(r);
 			//System.out.println(r);
+			
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : rlist) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickName());
+				jArr.put(json);
+				
+				return jArr.toString();
+			}			
+			
 			
 			if(result > 0) {
 				return "good";
@@ -721,8 +704,6 @@ public class BoardController {
 			
 			return "dwReviewBoard";
 		}
-		
-		
 		@GetMapping("/board/dw/detail")
 		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") int page, @RequestParam("dwNo") int dwNo, HttpSession session, Model model, HttpServletRequest request) {
 			
@@ -735,8 +716,8 @@ public class BoardController {
 			
 			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
 			
-			System.out.println(dwNo);
-			int listCount = bService.getReplyListCount(dwNo);
+			String bType = "DW";
+			int listCount = bService.getReplyListCount(1, dwNo, bType);
 			
 			
 			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
@@ -1727,5 +1708,4 @@ public class BoardController {
 		
 		
 }
-
     
