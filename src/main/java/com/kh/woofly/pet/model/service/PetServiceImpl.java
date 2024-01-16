@@ -12,6 +12,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -216,6 +217,10 @@ public class PetServiceImpl implements PetService{
 		return pDAO.insertReplyLike(map);
 	}
 
-	 
+	@Override
+	public ArrayList<Participants> petContestList(HashMap<String, String> map) {
+		return pDAO.petContestList(map);
+	}
+
 
 }

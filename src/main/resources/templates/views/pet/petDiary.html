@@ -93,10 +93,38 @@
 				        <div class="me-3" style="width: 100px; line-height: 100px;" th:text="${#dates.format(d.drDate, 'yyyy-MM-dd')}"></div>
 				    </div>
 				</div>
-					<!-- 최대 7개만 보여주고 더보기 누를 때 마다 7개식 추가로 보여주면 될 듯..? -->
-					<!-- <div class="d-flex my-3 justify-content-center my-4">
-						<button class="btn btn-outline-dark col-3">더보기 ▼</button>
-					</div> -->
+				
+				<nav th:if=${!#arrays.isEmpty(list)}>
+					<ul class="pagination pagination-sm justify-content-center mt-5">
+					 	<!-- 이전 -->
+						<li class="page-item" th:if="${ pi.currentPage > 1 }">
+							<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous"> 
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+					
+						<!-- 숫자 -->
+						<li class="page-item" th:each="page : ${ #numbers.sequence(pi.startPage, pi.endPage) }">
+							<a class="page-link" th:href="@{${loc}(page=${page})}" th:text="${ page }"></a>
+						</li>
+						
+						
+						<!-- 다음 -->
+						<li class="page-item" th:if="${ pi.currentPage < pi.maxPage }">
+							<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next"> 
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+				  	</ul>
+				</nav>
+				
+				<div class="d-flex justify-content-center align-items-center" style="min-height: 500px" th:if="${ #arrays.isEmpty(list) }">
+					<div class="d-flex flex-column justify-content-center align-items-center">
+						<img src="/image/cryingdog.png" style="width:200px;">
+						<p>다이어리가 없습니다.😢</p>
+					</div>
+				</div>
+				
 				</div>
 			</div>
 	</main>

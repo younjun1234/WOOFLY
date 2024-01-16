@@ -267,6 +267,18 @@
 	<delete id="deleteReplyLike">
 		delete from reply_like
 		where like_ref_board = #{rNo}
-		
 	</delete>
+	
+	<select id="petContestList" resultType="Participants">
+		<!-- select *
+		from participants
+			 join attachment on (p_no = attm_ref_no)
+		where p_status = 'Y' and writer_id = #{id} and attm_ref_type = 'C' and attm_level = 1
+		order by ab_date desc -->
+		select *
+		from participants
+			join pet using (pet_id)
+			join contest on (contest_id = con_no)
+		where p_status = 'Y' and owner_id = #{id}
+	</select>
 </mapper>

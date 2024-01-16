@@ -208,36 +208,7 @@
       $(myNav).removeClass('text-secondary');
       $(myNav).addClass('active');
       
-      //하트 아이콘
-      /* const heartIcon = document.getElementById('heart');
-	  const heartFillIcon = document.getElementById('blackHeart');
-	
-	  let isHeartFilled = false;
-	
-	  heartFillIcon.style.display = 'none';
-	
-	  function Heart() {
-	    if (isHeartFilled) {
-	      heartIcon.style.display = 'inline';
-	      heartFillIcon.style.display = 'none';
-	    } else {
-	      heartIcon.style.display = 'none';
-	      heartFillIcon.style.display = 'inline';
-	    }
-	
-	    isHeartFilled = !isHeartFilled;
-	  }
-	
-	  heartIcon.addEventListener('click', Heart);
-	  heartFillIcon.addEventListener('click', Heart);
-	  
-	  //댓글 좋아요 넘기기
-	  const heartRno = document.getElementById('heart').parentElement.firstElementChild.value;
-	  //console.log(heart);
-	  document.getElementById('heart').addEventListener('click', ()=>{
-		  console.log(heartRno);
-	  }) */
-	  
+      //좋아요
 	  const replyLike = (target) => {
 		  let replyInDel;
 		  if ($(target).hasClass('heart')) {

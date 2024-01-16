@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.exception.PetException;
 import com.kh.woofly.pet.model.service.PetService;
@@ -56,22 +58,28 @@ public class PetController {
 
 	@GetMapping("pet/petPhoto")
 	public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
-			@RequestParam(value="petName", required=false) String petName, @RequestParam(value="petHealth", required=false) String petHealth) {
+			@RequestParam(value="petName", required=false) String petName) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		HashMap<String, String> map = new HashMap<>();
+		
 		map.put("id", id);
-		if (petName !=  null) {
-			map.put("petHealth", petHealth);
-		}
-		if (petHealth != null) {
+		
+		if(petName == null) {
+			map.put("petName", null);
+		} else {
 			map.put("petName", petName);
 		}
+		System.out.println(map);
 		ArrayList<Album> aList = pService.selectMyAlbums(map);
 		ArrayList<Pet> pList = pService.petInfoList(id);
-		 
+		
+//		int listCount = pService.getPhotoCount(map);
+//		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+        
 		if(aList != null) {
 			model.addAttribute("pList", pList);
 			model.addAttribute("aList", aList);
+			//model.addAttribute("pi", pi);
 			return "petPhoto";
 			
 		} else {
@@ -145,7 +153,26 @@ public class PetController {
 
 	
 	@GetMapping("pet/petContest")
-	public String petContestView() {
+	public String petContestView(HttpSession session, Model model, @RequestParam(value="petName", required=false) String petName) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("petName", petName);
+		map.put("id", id);
+		
+		System.out.println(map);
+		
+		ArrayList<Participants> ptList = pService.petContestList(map);
+		ArrayList<Pet> pList = pService.petInfoList(id);
+		
+		if(ptList != null) {
+			model.addAttribute("pList", pList);
+			model.addAttribute("ptList", ptList);
+			System.out.println(ptList);
+		} else {
+			throw new PetException("개통령 콘테스트 조회에 실패하였습니다.");
+		}
+		
 		return "petContest";
 	}
 
@@ -460,7 +487,7 @@ public class PetController {
 	}
 	
 	@PostMapping("/petPhotoWrite.dw")
-	public String insertPetPhoto(@RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
+	public String insertPetPhoto(@RequestParam("saveFile") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
 		//게시판 내용 보내기
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		a.setWriterId(id);
@@ -664,9 +691,9 @@ public class PetController {
 	}
 	
 	@PostMapping("/petDiaryEdit.dw")
-	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") Date date) {
+	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 		d.setDrDate(date);
-		System.out.println(d);
+		System.out.println(date);
 		int result = pService.petDiaryEdit(d);
 		int drNo = d.getDrNo();
 		
