@@ -17,13 +17,14 @@
 </style>
 <title>WOOFLY</title>
 <link rel="icon" href="image/woofly.png">
+<script src="https://js.tosspayments.com/v1/payment-widget"></script>
+
 </head>
 <body>
 	<!-- top navigation bar -->
 	<!-- 모든 페이지에 공통으로 들어가는 navigation bar -->
 	<!-- 추후에 common folder로 이동 -->
 	<div th:replace="~{common/topAdd :: topAdd}"></div>
-
 	<!-- 메인페이지에 광고 사진 등등일 들어가는 carousel 영역 -->
 	<header>
 		<div id="carousel" class="carousel slide" data-bs-ride="carousel" style="height: 480px;">
@@ -235,6 +236,7 @@
 		const navSelect = document.getElementById("top1");
 		$(navSelect).removeClass('text-black');
 		$(navSelect).addClass('topActive');
+		
 	</script>
 </body>
 </html>

@@ -31,5 +31,9 @@ public class Member {
 	private String isAdmin;
 	private String isPrivate;
 	private Date nextChange;
+
+	// 추가한다고 했음.
+	private String isBanned;
 	
+
 }

@@ -51,7 +51,7 @@
 				<div class="border-bottom d-flex justify-content-between pb-3">
 					<div class="col-6">
 						<button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modal">
-							상품
+							중고
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
 							  	<path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
 							</svg>
@@ -84,13 +84,11 @@
 						</div>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="buying : ${list}">
+				<div th:onclick="|location.href='/board/used/detail?uNo=${buying.uNo}'|" class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="buying : ${list}">
 					<input type="hidden" th:value="${ buying.uNo }">
 					<div class="d-flex align-content-center ms-3 col-6">
-<!-- 						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}"> -->
-<!-- 							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;"> -->
-<!-- 						</th:block> -->
-							<div class="ms-3" style="line-height: 100px;">[[${buying.uTitle}]]</div>
+						<img class="rounded float-start my-auto" th:src="'/image/' + ${buying.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
+						<div class="ms-3" style="line-height: 100px;">[[${buying.uTitle}]]</div>
 					</div>
 					<div class='col-6 d-flex justify-content-end'>
 						<div class="me-5 col-4 text-center" style="width: 100px; line-height: 100px;">[[|${#numbers.formatInteger(buying.productPrice, 3, 'COMMA')} 원|]]</div>

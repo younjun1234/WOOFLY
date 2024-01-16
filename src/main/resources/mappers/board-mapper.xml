@@ -3,6 +3,13 @@
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
 
+
+	<select id="getReplyListCount" resultType="_int">
+		select count(*)
+		from Reply
+		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
+	</select>
+
 	<!-- 연준이꺼 -->
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
@@ -13,7 +20,8 @@
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
- 		where buyer_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -37,7 +45,8 @@
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
- 		where mb_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -45,7 +54,7 @@
 		    	and sold_date <![CDATA[<]]> #{endDate}
 		    </if>
 	        <if test="startDate != null">
-		    	or sold_date is null
+		    	or (mb_id = #{id} and sold_date is null)
 		    </if>
 			<if test="soldDate != null">
 			    order by sold_date ${soldDate}
@@ -59,6 +68,7 @@
 	</select>
 	
 		 
+>>>>>>> refs/heads/develop
 	<!-- 자유게시판 -->	
 	
 	<!-- 검색 기능 -->
@@ -69,7 +79,7 @@
        WHERE b_status = 'Y'
        <choose>
            <when test="searchType == 'mn'">
-               AND b_title LIKE '%' || #{searchKeyword} || '%' or mb_nickName LIKE '%' || #{searchKeyword} || '%'
+               AND (b_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%')
            </when>
            <when test="searchType != null">
                AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
@@ -194,6 +204,22 @@
 	
 	<!--/////////// 도그워커 게시판 ////////////-->
 	
+	<select id="searchDwBoards" parameterType="map" resultType="DwBoard">
+       SELECT *
+       FROM dw_board
+         JOIN Member using(mb_id)
+       WHERE dw_status = 'Y' and dw_type = 0
+       <choose>
+           <when test="searchType == 'mn'">
+               AND dw_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY dw_no DESC
+   </select>   
+	
 	<select id="getDwListCount" resultType="_int">
 		select count(*)
 		from dw_board
@@ -219,6 +245,22 @@
 		</if>
 		order by attm_id
 	</select>
+	
+	<select id="searchDwRvBoards" parameterType="map" resultType="DwBoard">
+       SELECT *
+       FROM dw_board
+         JOIN Member using(mb_id)
+       WHERE dw_status = 'Y' and dw_type = 1
+       <choose>
+           <when test="searchType == 'mn'">
+               AND dw_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY dw_no DESC
+   </select>
 	
 	<select id="getDwRvListCount" resultType="_int">
 		select count(*)
@@ -319,13 +361,71 @@
 		where r_no = #{ rNo } and b_type = 'DW'
 	</update>
 	
+	<update id="updateDwReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
+	
+	
+	<select id="selectBoardReport" resultType="int">
+		select count(*)
+		from report
+		where r_accuser= #{rAccuser} and r_board_no = #{rBoardNo}
+	</select>
+	
 	<insert id="BoardReport">	    
 	    insert into report 
 	    values (rep_seq.nextval, #{rContent}, SYSDATE, default, #{rCategory},#{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
 	</insert>
 	
+	<select id="checkReplyResult" resultType="_int">
+		select count(*)
+		from report
+		where r_board_no = #{rBoardNo} and r_accuser = #{rAccuser}
+	</select>
+	
+	<insert id="insertReplyReport" parameterType="Report">
+		insert into report
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', #{rCategory}, #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+	</insert>
+	
+	
+	
 	
 	<!-- 산책메이트 -->
+	
+	<select id="searchWmBoards" parameterType="map" resultType="WmBoard">
+       SELECT *
+       FROM wm_board
+         JOIN Member using(mb_id)
+       WHERE wm_status = 'Y' and wm_type = 0
+       <choose>
+           <when test="searchType == 'mn'">
+               AND wm_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY wm_no DESC
+   </select> 
+   
+   <select id="searchWmRvBoards" parameterType="map" resultType="WmBoard">
+       SELECT *
+       FROM wm_board
+         JOIN Member using(mb_id)
+       WHERE wm_status = 'Y' and wm_type = 1
+       <choose>
+           <when test="searchType == 'mn'">
+               AND wm_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY wm_no DESC
+   </select> 
 	
 	<select id="getWmListCount" resultType="_int">
 		select count(*)
