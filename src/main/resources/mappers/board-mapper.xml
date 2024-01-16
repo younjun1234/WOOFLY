@@ -20,7 +20,8 @@
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
- 		where buyer_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -44,7 +45,8 @@
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
- 		where mb_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>

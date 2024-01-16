@@ -30,4 +30,6 @@ public class UsedBoard {
 	private int productPrice;
 	private Date soldDate;
 	private String buyerId;
+	
+	private String renameName;
 }

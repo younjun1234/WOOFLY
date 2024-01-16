@@ -23,7 +23,7 @@ public class Saved {
 	private String productName;
 	private int price;
 	
-	private String uNo;
+	private int uNo;
 	private int productPrice;
 	private String uTitle;
 	private String uContent;
