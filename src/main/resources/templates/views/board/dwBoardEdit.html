@@ -95,7 +95,7 @@
 				<label for="file" class="form-label">첨부파일</label><br>
 					<div th:each="a : ${ list }">
 						<h5>
-							<a th:href="@{ image/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
+							<a th:href="@{ image/board/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
 							<button type="button" class="btn btn-outline-dark btn-sm deleteAttm" th:id="|delete-${ a.renameName }/${a.attmLevel}|">유지</button>
 							<input type="hidden" name="deleteAttm" value="none">
 						</h5>
