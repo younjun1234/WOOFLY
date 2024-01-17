@@ -80,6 +80,33 @@ public class TemplateResolverConfig {
 	}
 	
 	@Bean
+	public ClassLoaderTemplateResolver contestResolver() {
+		ClassLoaderTemplateResolver contest = new ClassLoaderTemplateResolver();
+		contest.setPrefix("templates/views/contest/");
+		contest.setSuffix(".html");
+		contest.setTemplateMode(TemplateMode.HTML);
+		contest.setCharacterEncoding("UTF-8");
+		contest.setOrder(2);
+		contest.setCacheable(false);
+		contest.setCheckExistence(true);
+		
+		return contest;
+	}
+	
+	@Bean
+	public ClassLoaderTemplateResolver infoResolver() {
+		ClassLoaderTemplateResolver info = new ClassLoaderTemplateResolver();
+		info.setPrefix("templates/views/info/");
+		info.setSuffix(".html");
+		info.setTemplateMode(TemplateMode.HTML);
+		info.setCharacterEncoding("UTF-8");
+		info.setOrder(2);
+		info.setCacheable(false);
+		info.setCheckExistence(true);
+		
+		return info;
+	}
+	
 	public ClassLoaderTemplateResolver adminResolver() {
 		ClassLoaderTemplateResolver admin = new ClassLoaderTemplateResolver();
 		admin.setPrefix("templates/views/admin/");
@@ -107,17 +134,5 @@ public class TemplateResolverConfig {
 		return shop;
 	}
 	
-	@Bean
-	public ClassLoaderTemplateResolver infoResolver() {
-		ClassLoaderTemplateResolver info = new ClassLoaderTemplateResolver();
-		info.setPrefix("templates/views/info/");
-		info.setSuffix(".html");
-		info.setTemplateMode(TemplateMode.HTML);
-		info.setCharacterEncoding("UTF-8");
-		info.setOrder(2);
-		info.setCacheable(false);
-		info.setCheckExistence(true);
-		
-		return info;
-	}
+
 }

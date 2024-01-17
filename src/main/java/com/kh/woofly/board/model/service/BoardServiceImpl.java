@@ -18,8 +18,10 @@ import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
+
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
@@ -200,10 +202,8 @@ private BoardServiceImpl boardDAO;
 	}
 
 	@Override
-	public ArrayList<Reply> selectDwReply(PageInfo pi, int dwNo) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-		return bDAO.selectDwReply(dwNo, rowBounds);
+	public ArrayList<Reply> selectDwReply(int dwNo) {
+		return bDAO.selectDwReply(dwNo);
 	}
 	
 	@Override
@@ -321,7 +321,16 @@ private BoardServiceImpl boardDAO;
 	
 	@Override
 	public WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id) {
-		return bDAO.selectWmBoard(wmNo, id);
+		WmBoard wm = bDAO.selectWmBoard(wmNo);
+		if(wm != null) {
+			if(id !=null && !wm.getMbId().equals(id)) {
+				int result = bDAO.updateWmCount(wmNo);
+				if(result >0) {
+					wm.setWmCount(wm.getWmCount() + 1);
+				}
+			}
+		}
+		return wm;
 	}
 	
 	@Override
@@ -354,7 +363,11 @@ private BoardServiceImpl boardDAO;
 		return bDAO.selectWmReply(wmNo);
 	}
 
-	
+	@Override
+	public int updateWmReply(Reply r) {
+		return bDAO.updateWmReply(r);
+	}
+
 	
 	
 	
@@ -497,6 +510,9 @@ private BoardServiceImpl boardDAO;
 	}
 
 
+
+
+	/* 하은 중고 */
 	@Override
 	public UsedBoard selectUsedBoard(Integer uNo) {
 		return bDAO.selectUsedBoard(uNo);
@@ -519,6 +535,135 @@ private BoardServiceImpl boardDAO;
 	public int insertUsedAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertUsedAttm(attachments);
 	}
+
+	
+	
+	
+	
+	
+	//==========================중고게시판 황유경
+	
+	
+	@Override
+	public int insertUsedRvBoard(UsedBoard selectProduct) {
+		return bDAO.insertUsedRvBoard(selectProduct);
+	}
+
+
+	@Override
+	public int insertUsedRvAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertUsedRvAttm(attachments);
+	}
+
+
+	@Override
+	public ArrayList<UsedBoard> selectProdList(UsedBoard u) {
+		return bDAO.selectProdList(u);
+	}
+
+
+	@Override
+	public UsedBoard checkProdList(int prodNo) {
+		return bDAO.checkProdList(prodNo);
+	}
+
+	/* 글 목록 */
+	@Override
+	public int getUsedRvListCount(int i) {
+		return bDAO.getUsedRvListCount(i);
+	}
+
+
+	@Override
+	public ArrayList<UsedBoard> selectUsedRvBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectUsedRvBoardList(i, rowBounds);
+	}
+
+
+	@Override
+	public ArrayList<Attachment> selectAttmUsedRvBoardList(Object object) {
+		return bDAO.selectAttmUsedRvBoardList(object);
+	}
+
+
+	@Override
+	public ArrayList<UsedBoard> searchUsedRvBoards(HashMap<String, String> map) {
+		return bDAO.searchUsedRvBoards(map);
+	}
+
+
+	@Override
+	public UsedBoard selectUsedRvBoard(int uNo, String id) {
+		
+		UsedBoard u = bDAO.selectUsedRvBoard(uNo);
+		if(u != null) {
+			if(id !=null && !u.getMbId().equals(id)) {
+				int result = bDAO.updateUsedRvCount(uNo);
+				if(result >0) {
+					u.setUCount(u.getUCount() + 1);
+				}
+			}
+		}
+		return u;
+	}
+
+
+	@Override
+	public int getUsedRvReplyListCount(int uNo) {
+		return bDAO.getUsedRvReplyListCount(uNo);
+	}
+
+
+	@Override
+	public ArrayList<Reply> selectUsedRvReply(int uNo) {
+		return bDAO.selectUsedRvReply(uNo);
+	}
+
+	/* 글 수정 */
+
+	@Override
+	public int deleteUsedRvAttm(ArrayList<String> delRename) {
+		return bDAO.deleteUsedRvAttm(delRename);
+	}
+
+
+	@Override
+	public int updateUsedRvBoard(UsedBoard u) {
+		return bDAO.updateUsedRvBoard(u);
+	}
+
+
+	@Override
+	public int deleteUsedRvBoard(int uNo) {
+		return bDAO.deleteUsedRvBoard(uNo);
+	}
+	
+	
+	/* 댓글 */
+
+
+	@Override
+	public int insertUsedRvReply(Reply r) {
+		return bDAO.insertUsedRvReply(r);
+	}
+
+
+	@Override
+	public int deleteUsedRvReply(Reply r) {
+		return bDAO.deleteUsedRvReply(r);
+	}
+
+
+	@Override
+	public int updateUsedRvReply(Reply r) {
+		return bDAO.updateUsedRvReply(r);
+	}
+
+
+
+
 
 	
 	

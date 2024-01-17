@@ -94,7 +94,11 @@
             <p th:text="${u.uContent}"></p>
          <hr>
          <!-- 중고상품 설명 -->
-            <table style="width:550px; height: 30px; border: 1px; font-size : 25px;" >
+            <table style="width:330px; height: 30px; border: 1px; font-size : 25px;" >
+            	<tr style="border: 1px ;">
+                  <th style="border: 1px ; height: 40px; border: 1px;">판매인</th>
+                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.buyerId]]</td>
+              </tr>
                <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">제품명</th>
                   <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productName}]]</td>
@@ -115,7 +119,6 @@
                   <th style="border: 1px ; height: 40px; border: 1px;">거래장소</th>
                   <td style="border: 1px ; height: 40px; border: 1px;">[[${u.uLocation}]]</td>
               </tr>
-              
             </table>
          <br>
          <hr>

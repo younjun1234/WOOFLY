@@ -101,7 +101,7 @@
 						</div>
 					</div>
 				</div>
-				<nav>
+				<nav th:if=${!#arrays.isEmpty(oList)}>
 					<ul class="pagination pagination-sm justify-content-center mt-5">
 					 	<!-- 이전 -->
 						<li class="page-item" th:if="${ pi.currentPage > 1 }">

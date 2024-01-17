@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>WOOFLY</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="icon" href="image/woofly.png">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
+
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/contestParticipation.css}" /> 
+</head>
+<body>
+   <div th:replace="~{common/top :: top}"></div>
+	<main>
+		<form action="/contest/contestEnroll" method="POST">
+			<div class="container-fluid d-flex mx-5">
+				
+				<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+				
+				<div class="col-10 b-5">
+				 <div class="container mt-4">
+				  <div class="row">
+				   <div class="col-md-12 mb-4">
+				    <div class="card">
+						<div class="card-header">
+							<h4>콘테스트 참가</h4>
+						</div>
+						<div class="card-body">
+							<table class="table">
+								<tbody>
+									<tr>
+										<th  style="width: 22%">제목</th>
+										<td>
+											<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
+										</td>
+									</tr>                                                   
+									<tr>
+										<th>강아지이름</th>
+										<td>
+											<input class="form-control" type="text" aria-label="default input example" placeholder="강아지이름" name="pPet">
+										</td>
+									</tr>
+									<tr>
+										<th>내용</th>
+										<td>
+											<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<th>사진</th>
+										<td>															
+									        <div id="fileArea">
+									        	<div class="mb-3">
+									        		<input type="file" class="form-control form-control-sm" name="file">
+									        	</div>
+									        </div>
+									        <button type="button" class="w-15 btn btn-outline-dark" id="addFile">+ 사진추가</button>
+										</td>
+									</tr>
+									<tr>
+										<th>애완용품 검색
+											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
+											
+										</th>
+										
+										<td>
+											<div id="td">
+											</div>
+											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="container text-center">
+								<button class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary">등록</button>
+								<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark">이전</button>
+							</div>
+						</div>	
+				    </div>
+				   </div>
+				  </div>                    
+				 </div>
+				</div>
+			</div>
+		</form> 
+		<div id="modalLayer" >
+			<div class="modalContent">
+				<button type="button" class="btn-close" aria-label="Close" id="modalLink"> </button>		
+				<br>
+				
+				
+				<span style="margin-left: 20%;">애완용품</span>
+				<div style="display: inline-block; margin-left: 40px;" >
+					<input type="text" placeholder="검색" name="search" id="searchInput">
+				</div>
+				<div style="display: inline-block; margin-left: 30px;">
+					<input class="btn btn-sm btn-outline-dark" type="button"  id="pSearchButton" value="검색" >
+				</div>
+				
+				
+				
+				<table class="table" style="margin-top: 20px;">
+					<thead>
+						<tr>
+							<th scope="col" >#</th>
+							<th scope="col">사진</th>
+							<th scope="col">애완용품명</th>
+							<th scope="col">선택</th>
+						</tr>
+					</thead>
+					<tbody id="case1">
+						<tr th:each="l : ${itemList}">
+							<th scope="row">[[${l.orderDetailId}]]</th>
+							<td><input type="image" alt="사진"></td>
+							<td>[[${l.productName}]]</td>
+							<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
+						</tr>
+					</tbody>
+					<tbody id="case2" style="display: none;">
+						
+					</tbody>
+				</table>
+				<div style="text-align: center;">
+	 				<input class="btn btn-outline-dark" type="button" value="추가" onclick="register()">			
+				</div>
+			</div>
+		</div>
+    </main>
+	
+	<script>
+		$(document).ready(function(){
+			var modalLayer = $("#modalLayer");
+			var modalLink = $("#modalLink");
+			var modalCont = $(".modalContent");
+			var marginLeft = modalCont.outerWidth()/2;
+			var marginTop = modalCont.outerHeight()/2; 
+		
+		
+			modalLink.click(function(){
+				modalLayer.fadeIn("slow");
+				modalCont.css({"margin-top" : -marginTop, "margin-left" : -marginLeft});
+				$(this).blur();
+				$(".modalContent > a").focus(); 
+				return false;
+			});
+			
+			$(".modalContent > button").click(function(){
+				modalLayer.fadeOut("slow");
+				modalLink.focus();
+			});		
+		});
+	
+		window.onload = () =>{
+			const fileArea = document.querySelector('#fileArea');
+			document.getElementById('addFile').addEventListener('click', () =>{
+				const newDiv = document.createElement('div');
+				newDiv.classList.add('mb-3');
+				newDiv.innerHTML = '<input type="file" class="form-control form-control-sm" name="file">';
+				
+				fileArea.append(newDiv);
+				
+			});
+			
+			const searchBtn = document.getElementById('pSearchButton');
+		    
+			searchBtn.addEventListener('click', function() {
+			    var inputValue = document.getElementById("searchInput").value;
+			    
+			    const case1 = document.getElementById("case1");
+			    const case2 = document.getElementById("case2");
+			    
+			    // 기존 데이터 지우기
+			    case2.innerHTML = '';
+			    
+			    console.log(case1);
+			    case1.style.display = 'none'; // 숨기기
+			    case2.style.display = 'table-row-group'; // 보이기
+			    
+			    $.ajax({
+			        url: '/contest/searchItem',
+			        data: {pSearch: inputValue},
+			        success: function(data) {
+			            console.log(data);
+			                
+			            const existingPNames = document.querySelectorAll('.pName');
+			            existingPNames.forEach(element => {
+			                element.remove();
+			            });
+			                
+			            // 각각의 행에 대해 제목을 추가
+			            for (var i = 0; i < data.length; i++) {
+			                console.log(data[i].productName);
+
+			                const titleCell = document.createElement('td');
+			                titleCell.classList.add('pName'); 
+			                titleCell.textContent = data[i].productName;
+			                    
+			                const titleCell2 = document.createElement('td');
+			                titleCell2.classList.add('pNum'); 
+			                titleCell2.textContent = data[i].productId;
+
+			                const newRow = document.createElement('tr');
+			                newRow.appendChild(document.createElement('th'));
+			                newRow.appendChild(titleCell2);
+			                newRow.appendChild(titleCell);
+			                newRow.appendChild(document.createElement('td')).appendChild(createCheckbox());
+
+			                case2.appendChild(newRow);
+			            }
+			        },
+			        error: function(error) {
+			            console.log(error);
+			        }
+			    });
+			});
+			
+			// 새로운 체크박스 엘리먼트 생성 함수
+			function createCheckbox() {
+			    const checkbox = document.createElement('input');
+			    checkbox.type = 'checkbox';
+			    checkbox.style.width = '20px'; // 원하는 스타일을 설정할 수 있습니다.
+			    checkbox.style.height = '20px';
+			    checkbox.className = 'checkbox'; // 동적으로 클래스 추가
+			    return checkbox;
+			}
+			
+		}	
+		
+		function register() {
+		    console.log("Register 함수가 호출되었습니다.");
+		    const md = document.getElementById("modalLayer");
+		    const checkboxes = md.querySelectorAll('.checkbox');
+		    const selectedItems = [];
+		    const tdDiv = document.getElementById('td');
+
+		    // 기존의 자식 요소들을 제거
+		    tdDiv.innerHTML = '';
+
+		    checkboxes.forEach((checkbox, index) => {
+		        if (checkbox.checked) {
+		            const tdElements = document.querySelectorAll('td:nth-child(3)');
+		            if (tdElements[index]) {
+		                const productName = tdElements[index].textContent;
+		                selectedItems.push(productName);
+		            }
+		        }
+		    });
+		    
+		    
+
+		    for (let i = 0; i < selectedItems.length; i++) {
+		        const a = selectedItems[i];
+		        const newDiv = document.createElement('div');
+		        const newCheckbox = document.createElement('input');
+
+		        newCheckbox.type = 'checkbox';
+		        newCheckbox.className = 'checkbox';
+
+		        newDiv.textContent = a;
+		        newDiv.prepend(newCheckbox);
+		        tdDiv.appendChild(newDiv);
+		    }
+
+		    var modalLayer = $("#modalLayer");
+		    modalLayer.fadeOut("fast");
+		}
+		
+		document.addEventListener('DOMContentLoaded', function () {
+	        var deleteButton = document.getElementById('itemsDelete');
+	        deleteButton.addEventListener('click', function () {
+	            var checkboxes = document.querySelectorAll('#td input[type="checkbox"]');
+	            checkboxes.forEach(function (checkbox) {
+	                if (checkbox.checked) {
+	                    checkbox.parentElement.remove(); // 체크된 체크박스의 부모인 div를 제거
+	                }
+	            });
+	        });
+	    });
+	</script>
+
+	
+</body>
+</html>

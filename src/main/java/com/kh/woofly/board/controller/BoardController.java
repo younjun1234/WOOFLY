@@ -1,3 +1,4 @@
+
 package com.kh.woofly.board.controller;
 
 import java.io.File;
@@ -9,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +33,7 @@ import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
+//github.com/younjun1234/WOOFLY.git
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
@@ -379,115 +383,154 @@ public class BoardController {
 
 
 		@PostMapping("/board/free/edit")
-		public String freeBoardEdit(@ModelAttribute Board b, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
-									@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
-			/* int result = bService.updateFreeBoard(b); */
-			
-			ArrayList<Attachment> list = new ArrayList<>();
-			for(int i=0; i< files.size(); i++) {
-				MultipartFile upload = files.get(i);
-				
-				if(!upload.getOriginalFilename().equals("")) {
-					String[] returnArr = saveFile(upload);
-					if(returnArr[1] != null) {
-						Attachment a = new Attachment();
-						a.setOriginalName(upload.getOriginalFilename());
-						a.setRenameName(returnArr[1]);
-						a.setAttmPath(returnArr[0]);
-						
-						list.add(a);
-					}
-				}
-			}
-			
-			ArrayList<String> delRename = new ArrayList<>();
-			ArrayList<Integer> delLevel = new ArrayList<>();
-			for(String a : deleteAttm) {
-				if(!a.equals("none")) {
-					String[] split = a.split("/");
-					delRename.add(split[0]);
-					delLevel.add(Integer.parseInt(split[1]));
-				}
-			}
-			
-			int deleteAttmResult = 0;
-			int updateBoardResult = 0;
-			boolean existBeforeAttm = true;
-			if(!delRename.isEmpty()) {
-				deleteAttmResult = bService.deleteFreeAttm(delRename);
-				if(deleteAttmResult > 0) {
-					for(String rename : delRename) {
-						deleteFile(rename);
-					}
-				}
-			
-				if(delRename.size() == deleteAttm.length) {
-					existBeforeAttm = false;
-					
-				} else {
-					for(int level : delLevel) {
-						if(level == 0) {
-							bService.updateAttmLevel(b.getBNo());
-							break;
-						}
-					}
-				}
-			}
-			
+		public String freeBoardEdit(
+		    @ModelAttribute Board b,
+		    @RequestParam("page") int page,
+		    @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm,
+		    @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files,
+		    HttpServletRequest request,
+		    RedirectAttributes redirectAttributes) {
 
-			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+		    int updateBoardResult = 0;
 
-		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+		    // 파일이 존재하는 경우에만 파일 및 DB 업데이트 처리 수행
+		    if (files != null) {
+		        ArrayList<Attachment> list = new ArrayList<>();
+		        for (int i = 0; i < files.size(); i++) {
+		            MultipartFile upload = files.get(i);
 
-		    for (String a : deleteAttm) {
-		        if (!a.equals("none")) {
-		            String[] split = a.split("/");
-		            int level = Integer.parseInt(split[1]);
-		            if (level == 1) {
-		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
-		                break;
+		            if (!upload.getOriginalFilename().equals("")) {
+		                String[] returnArr = saveFile(upload);
+		                if (returnArr[1] != null) {
+		                    Attachment a = new Attachment();
+		                    a.setOriginalName(upload.getOriginalFilename());
+		                    a.setRenameName(returnArr[1]);
+		                    a.setAttmPath(returnArr[0]);
+
+		                    list.add(a);
+		                }
 		            }
 		        }
-		    }
 
-		    for (int i = 0; i < list.size(); i++) {
-		        Attachment a = list.get(i);
-		        a.setAttmRefNo(b.getBNo());
+		        ArrayList<String> delRename = new ArrayList<>();
+		        ArrayList<Integer> delLevel = new ArrayList<>();
+		        for (String a : deleteAttm) {
+		            if (!a.equals("none")) {
+		                String[] split = a.split("/");
+		                delRename.add(split[0]);
+		                delLevel.add(Integer.parseInt(split[1]));
+		            }
+		        }
 
-		        if (hasExistingFile) {
-		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
-		        } else {
-		            if (!hasLevelOne) {
-		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
-		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		        int deleteAttmResult = 0;
+		        boolean existBeforeAttm = true;
+		        if (!delRename.isEmpty()) {
+		            deleteAttmResult = bService.deleteFreeAttm(delRename);
+		            if (deleteAttmResult > 0) {
+		                for (String rename : delRename) {
+		                    deleteFile(rename);
+		                }
+		            }
+
+		            if (delRename.size() == deleteAttm.length) {
+		                existBeforeAttm = false;
+
 		            } else {
-		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		                for (int level : delLevel) {
+		                    if (level == 0) {
+		                        bService.updateAttmLevel(b.getBNo());
+		                        break;
+		                    }
+		                }
 		            }
 		        }
+
+		        boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		        boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		        for (String a : deleteAttm) {
+		            if (!a.equals("none")) {
+		                String[] split = a.split("/");
+		                int level = Integer.parseInt(split[1]);
+		                if (level == 1) {
+		                    hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                    break;
+		                }
+		            }
+		        }
+
+		        for (int i = 0; i < list.size(); i++) {
+		            Attachment a = list.get(i);
+		            a.setAttmRefNo(b.getBNo());
+
+		            if (hasExistingFile) {
+		                a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		            } else {
+		                if (!hasLevelOne) {
+		                    a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                    hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		                } else {
+		                    a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		                }
+		            }
+		        }
+
+		        // 파일 및 DB 업데이트 처리 수행
+		        updateBoardResult = bService.updateFreeBoard(b);
+		        int updateAttmResult = 0;
+		        if (!list.isEmpty()) {
+		            updateAttmResult = bService.insertFreeAttm(list);
+		        }
+		    } else {
+		        // 파일이 없는 경우에는 DB 업데이트만 수행
+		        ArrayList<String> delRename = new ArrayList<>();
+		        ArrayList<Integer> delLevel = new ArrayList<>();
+		        for (String a : deleteAttm) {
+		            if (!a.equals("none")) {
+		                String[] split = a.split("/");
+		                delRename.add(split[0]);
+		                delLevel.add(Integer.parseInt(split[1]));
+		            }
+		        }
+
+		        int deleteAttmResult = 0;
+		        boolean existBeforeAttm = true;
+		        if (!delRename.isEmpty()) {
+		            deleteAttmResult = bService.deleteFreeAttm(delRename);
+		            if (deleteAttmResult > 0) {
+		                for (String rename : delRename) {
+		                    deleteFile(rename);
+		                }
+		            }
+
+		            if (delRename.size() == deleteAttm.length) {
+		                existBeforeAttm = false;
+
+		            } else {
+		                for (int level : delLevel) {
+		                    if (level == 0) {
+		                        bService.updateAttmLevel(b.getBNo());
+		                        break;
+		                    }
+		                }
+		            }
+		        }
+
+		        // 파일 삭제만 수행
+		        updateBoardResult = bService.updateFreeBoard(b);
 		    }
 
+		    if (updateBoardResult > 0) {
+		        redirectAttributes.addAttribute("bNo", b.getBNo());
+		        redirectAttributes.addAttribute("page", page);
 
-			//System.out.println(b.getBNo());
-			updateBoardResult = bService.updateFreeBoard(b);
-			int updateAttmResult = 0;
-			if(!list.isEmpty())  {
-				updateAttmResult = bService.insertFreeAttm(list);
-			}
-			//System.out.println(updateBoardResult);
-			//System.out.println(updateAttmResult);
-			if(updateBoardResult + updateAttmResult > 0) {				
-				redirectAttributes.addAttribute("bNo", b.getBNo());
-				redirectAttributes.addAttribute("page", page);
-				
-				return "redirect:/board/free/detail";
-				
-			} else {
-				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
-			}
-			
-			
-			
+		        return "redirect:/board/free/detail";
+		    } else {
+		        throw new BoardException("게시글 수정 실패하였습니다.");
+		    }
 		}
+
 		
 		@GetMapping("/board/free/delete")
 		public String deleteFreeBoard(@RequestParam("bNo") int bNo) throws BoardException {
@@ -512,7 +555,6 @@ public class BoardController {
 			
 			if(result > 0) {
 				return "good";
-				
 			} else {
 				return "bad";
 			}
@@ -525,6 +567,26 @@ public class BoardController {
 		public String deleteFreeReply(@ModelAttribute Reply r) {
 			int result = bService.deleteFreeReply(r);
 			//System.out.println(r);
+			
+			ArrayList<Reply> rlist = bService.selectFreeReply(r.getBNo());
+			
+			JSONArray jArr = new JSONArray();  
+			for(Reply reply : rlist) {
+				JSONObject json = new JSONObject();  
+				json.put("rNo", reply.getRNo());
+				json.put("bType", reply.getBType());
+				json.put("bNo", reply.getBNo());
+				json.put("reContent", reply.getReContent());
+				json.put("reDate", reply.getReDate());
+				json.put("reLike", reply.getReLike());
+				json.put("reDStatus", reply.getReDStatus());
+				json.put("mbId", reply.getMbId());
+				json.put("mbNickname", reply.getMbNickName());
+				jArr.put(json);
+				
+				return jArr.toString();
+			}			
+			
 			
 			if(result > 0) {
 				return "good";
@@ -686,7 +748,7 @@ public class BoardController {
 			return "dwReviewBoard";
 		}
 		@GetMapping("/board/dw/detail")
-		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") int page, @RequestParam("dwNo") int dwNo, HttpSession session, Model model, HttpServletRequest request) {
+		public String dwBoardDetail(@RequestParam(value="page", defaultValue="1") int page, @RequestParam("dwNo") int dwNo, HttpSession session, Model model) {
 			
 			Member loginUser = (Member)session.getAttribute("loginUser");
 			String id = null;
@@ -701,15 +763,13 @@ public class BoardController {
 			int listCount = bService.getReplyListCount(1, dwNo, bType);
 			
 			
-			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-			ArrayList<Reply> rList = bService.selectDwReply(pi, dwNo);
+			ArrayList<Reply> rList = bService.selectDwReply(dwNo);
 			
 			if(dw != null) {
 				model.addAttribute("dw", dw);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
-				model.addAttribute("loc", request.getRequestURI());
 				//System.out.println(rList);
 				return "dwBoardDetail";
 			} else {
@@ -723,8 +783,9 @@ public class BoardController {
 			return "dwBoardWrite";
 		}
 		
-		@PostMapping("/board/free/insertDwBoard")
-		public String insertDwBoard(@RequestParam("dwType") String dwTypeStr, @ModelAttribute DwBoard dw, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
+		@PostMapping("/board/dw/insertDwBoard")
+		public String insertDwBoard(@RequestParam("dwType") String dwTypeStr, @ModelAttribute DwBoard dw, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+									HttpSession session, HttpServletRequest request) {
 			
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 			dw.setMbId(boardWriter);
@@ -795,73 +856,82 @@ public class BoardController {
 		}
 		
 		@PostMapping("/board/dw/edit")
-		public String dwBoardEdit(@RequestParam("dwType") String dwTypeStr, @ModelAttribute DwBoard dw, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
-								@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
-			
-			int dwType = Integer.parseInt(dwTypeStr);
-			System.out.println(dwType);
-			ArrayList<Attachment> list = new ArrayList<>();
-			for(int i=0; i< files.size(); i++) {
-				MultipartFile upload = files.get(i);
-				
-				if(!upload.getOriginalFilename().equals("")) {
-					String[] returnArr = saveFile(upload);
-					if(returnArr[1] != null) {
-						Attachment a = new Attachment();
-						a.setOriginalName(upload.getOriginalFilename());
-						a.setRenameName(returnArr[1]);
-						a.setAttmPath(returnArr[0]);
-						
-						list.add(a);
-					}
-				}
-			}
-			
-			ArrayList<String> delRename = new ArrayList<>();
-			ArrayList<Integer> delLevel = new ArrayList<>();
-			for(String a : deleteAttm) {
-				if(!a.equals("none")) {
-					String[] split = a.split("/");
-					delRename.add(split[0]);
-					delLevel.add(Integer.parseInt(split[1]));
-				}
-			}
-			
-			int deleteAttmResult = 0;
-			int updateBoardResult = 0;
-			boolean existBeforeAttm = true;
-			if(!delRename.isEmpty()) {
-				deleteAttmResult = bService.deleteDwAttm(delRename);
-				if(deleteAttmResult > 0) {
-					for(String rename : delRename) {
-						deleteFile(rename);
-					}
-				}
-			
-				if(delRename.size() == deleteAttm.length) {
-					existBeforeAttm = false;
-					
-				} else {
-					for(int level : delLevel) {
-						if(level == 0) {
-							bService.updateAttmLevel(dw.getDwNo());
-							break;
-						}
-					}
-				}
-			}
-			
+		public String dwBoardEdit(
+		    @RequestParam("dwType") String dwTypeStr,
+		    @ModelAttribute DwBoard dw,
+		    @RequestParam("page") int page,
+		    @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm,
+		    @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files,
+		    HttpServletRequest request,
+		    RedirectAttributes redirectAttributes) {
 
-			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+		    int dwType = Integer.parseInt(dwTypeStr);
+		    System.out.println(dwType);
 
-		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+		    ArrayList<Attachment> list = new ArrayList<>();
+
+		    // 파일이 존재하는 경우에만 파일 업로드 및 DB 처리 수행
+		    if (files != null) {
+		        for (int i = 0; i < files.size(); i++) {
+		            MultipartFile upload = files.get(i);
+
+		            if (!upload.getOriginalFilename().equals("")) {
+		                String[] returnArr = saveFile(upload);
+		                if (returnArr[1] != null) {
+		                    Attachment a = new Attachment();
+		                    a.setOriginalName(upload.getOriginalFilename());
+		                    a.setRenameName(returnArr[1]);
+		                    a.setAttmPath(returnArr[0]);
+
+		                    list.add(a);
+		                }
+		            }
+		        }
+		    }
+
+		    ArrayList<String> delRename = new ArrayList<>();
+		    ArrayList<Integer> delLevel = new ArrayList<>();
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            delRename.add(split[0]);
+		            delLevel.add(Integer.parseInt(split[1]));
+		        }
+		    }
+
+		    int deleteAttmResult = 0;
+		    int updateBoardResult = 0;
+		    boolean existBeforeAttm = true;
+
+		    if (!delRename.isEmpty()) {
+		        deleteAttmResult = bService.deleteDwAttm(delRename);
+		        if (deleteAttmResult > 0) {
+		            for (String rename : delRename) {
+		                deleteFile(rename);
+		            }
+		        }
+
+		        if (delRename.size() == deleteAttm.length) {
+		            existBeforeAttm = false;
+		        } else {
+		            for (int level : delLevel) {
+		                if (level == 0) {
+		                    bService.updateAttmLevel(dw.getDwNo());
+		                    break;
+		                }
+		            }
+		        }
+		    }
+
+		    boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none");
+		    boolean hasLevelOne = false;
 
 		    for (String a : deleteAttm) {
 		        if (!a.equals("none")) {
 		            String[] split = a.split("/");
 		            int level = Integer.parseInt(split[1]);
 		            if (level == 1) {
-		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                hasLevelOne = true;
 		                break;
 		            }
 		        }
@@ -872,36 +942,35 @@ public class BoardController {
 		        a.setAttmRefNo(dw.getDwNo());
 
 		        if (hasExistingFile) {
-		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		            a.setAttmLevel(2);
 		        } else {
 		            if (!hasLevelOne) {
-		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
-		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		                a.setAttmLevel(1);
+		                hasLevelOne = true;
 		            } else {
-		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		                a.setAttmLevel(2);
 		            }
 		        }
 		    }
 
+		    // 파일 및 DB 처리 수행
+		    updateBoardResult = bService.updateDwBoard(dw);
+		    int updateAttmResult = 0;
 
-			//System.out.println(dw.getDwNo());
-			updateBoardResult = bService.updateDwBoard(dw);
-			int updateAttmResult = 0;
-			if(!list.isEmpty())  {
-				updateAttmResult = bService.insertDwAttm(list);
-			}
-			//System.out.println(updateBoardResult);
-			//System.out.println(updateAttmResult);
-			if(updateBoardResult + updateAttmResult > 0) {				
-				redirectAttributes.addAttribute("dwNo", dw.getDwNo());
-				redirectAttributes.addAttribute("page", page);
-				
-				return "redirect:/board/dw/detail";
-				
-			} else {
-				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
-			}
+		    if (!list.isEmpty()) {
+		        updateAttmResult = bService.insertDwAttm(list);
+		    }
+
+		    if (updateBoardResult + updateAttmResult > 0) {
+		        redirectAttributes.addAttribute("dwNo", dw.getDwNo());
+		        redirectAttributes.addAttribute("page", page);
+		        return "redirect:/board/dw/detail";
+		    } else {
+		        throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+		    }
 		}
+
+
 		
 		@GetMapping("/board/dw/delete")
 		public String deleteDwBoard(@RequestParam("dwNo") int dwNo) throws BoardException {
@@ -970,7 +1039,7 @@ public class BoardController {
 		
 		@GetMapping("/board/dw/report")
 		@ResponseBody
-		public String wmBoardReport(@ModelAttribute Report rep, @RequestParam("dwNo") int dwNo) {
+		public String dwBoardReport(@ModelAttribute Report rep, @RequestParam("dwNo") int dwNo) {
 
 		    
 		    rep.setRCategory("DW");
@@ -1134,7 +1203,7 @@ public class BoardController {
 			return "wmBoardWrite";
 		}
 		
-		@PostMapping("/board/free/insertWmBoard")
+		@PostMapping("/board/wm/insertWmBoard")
 		public String insertWmBoard(@RequestParam("wmType") String wmTypeStr, @ModelAttribute WmBoard wm, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
 			
 			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -1206,73 +1275,82 @@ public class BoardController {
 		}
 		
 		@PostMapping("/board/wm/edit")
-		public String wmBoardEdit(@RequestParam("wmType") String wmTypeStr, @ModelAttribute WmBoard wm, @RequestParam("page") int page, @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm, 
-								@RequestParam("file") ArrayList<MultipartFile> files, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
-			
-			int wmType = Integer.parseInt(wmTypeStr);
-			System.out.println(wmType);
-			ArrayList<Attachment> list = new ArrayList<>();
-			for(int i=0; i< files.size(); i++) {
-				MultipartFile upload = files.get(i);
-				
-				if(!upload.getOriginalFilename().equals("")) {
-					String[] returnArr = saveFile(upload);
-					if(returnArr[1] != null) {
-						Attachment a = new Attachment();
-						a.setOriginalName(upload.getOriginalFilename());
-						a.setRenameName(returnArr[1]);
-						a.setAttmPath(returnArr[0]);
-						
-						list.add(a);
-					}
-				}
-			}
-			
-			ArrayList<String> delRename = new ArrayList<>();
-			ArrayList<Integer> delLevel = new ArrayList<>();
-			for(String a : deleteAttm) {
-				if(!a.equals("none")) {
-					String[] split = a.split("/");
-					delRename.add(split[0]);
-					delLevel.add(Integer.parseInt(split[1]));
-				}
-			}
-			
-			int deleteAttmResult = 0;
-			int updateBoardResult = 0;
-			boolean existBeforeAttm = true;
-			if(!delRename.isEmpty()) {
-				deleteAttmResult = bService.deleteWmAttm(delRename);
-				if(deleteAttmResult > 0) {
-					for(String rename : delRename) {
-						deleteFile(rename);
-					}
-				}
-			
-				if(delRename.size() == deleteAttm.length) {
-					existBeforeAttm = false;
-					
-				} else {
-					for(int level : delLevel) {
-						if(level == 0) {
-							bService.updateAttmLevel(wm.getWmNo());
-							break;
-						}
-					}
-				}
-			}
-			
+		public String wmBoardEdit(
+		    @RequestParam("wmType") String wmTypeStr,
+		    @ModelAttribute WmBoard wm,
+		    @RequestParam("page") int page,
+		    @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm,
+		    @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files,
+		    HttpServletRequest request,
+		    RedirectAttributes redirectAttributes) {
 
-			boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+		    int wmType = Integer.parseInt(wmTypeStr);
+		    System.out.println(wmType);
 
-		    boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+		    ArrayList<Attachment> list = new ArrayList<>();
+
+		    // 파일이 존재하는 경우에만 파일 업로드 및 DB 처리 수행
+		    if (files != null) {
+		        for (int i = 0; i < files.size(); i++) {
+		            MultipartFile upload = files.get(i);
+
+		            if (!upload.getOriginalFilename().equals("")) {
+		                String[] returnArr = saveFile(upload);
+		                if (returnArr[1] != null) {
+		                    Attachment a = new Attachment();
+		                    a.setOriginalName(upload.getOriginalFilename());
+		                    a.setRenameName(returnArr[1]);
+		                    a.setAttmPath(returnArr[0]);
+
+		                    list.add(a);
+		                }
+		            }
+		        }
+		    }
+
+		    ArrayList<String> delRename = new ArrayList<>();
+		    ArrayList<Integer> delLevel = new ArrayList<>();
+		    for (String a : deleteAttm) {
+		        if (!a.equals("none")) {
+		            String[] split = a.split("/");
+		            delRename.add(split[0]);
+		            delLevel.add(Integer.parseInt(split[1]));
+		        }
+		    }
+
+		    int deleteAttmResult = 0;
+		    int updateBoardResult = 0;
+		    boolean existBeforeAttm = true;
+
+		    if (!delRename.isEmpty()) {
+		        deleteAttmResult = bService.deleteWmAttm(delRename);
+		        if (deleteAttmResult > 0) {
+		            for (String rename : delRename) {
+		                deleteFile(rename);
+		            }
+		        }
+
+		        if (delRename.size() == deleteAttm.length) {
+		            existBeforeAttm = false;
+		        } else {
+		            for (int level : delLevel) {
+		                if (level == 0) {
+		                    bService.updateAttmLevel(wm.getWmNo());
+		                    break;
+		                }
+		            }
+		        }
+		    }
+
+		    boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none");
+		    boolean hasLevelOne = false;
 
 		    for (String a : deleteAttm) {
 		        if (!a.equals("none")) {
 		            String[] split = a.split("/");
 		            int level = Integer.parseInt(split[1]);
 		            if (level == 1) {
-		                hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                hasLevelOne = true;
 		                break;
 		            }
 		        }
@@ -1283,36 +1361,34 @@ public class BoardController {
 		        a.setAttmRefNo(wm.getWmNo());
 
 		        if (hasExistingFile) {
-		            a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		            a.setAttmLevel(2);
 		        } else {
 		            if (!hasLevelOne) {
-		                a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
-		                hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		                a.setAttmLevel(1);
+		                hasLevelOne = true;
 		            } else {
-		                a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		                a.setAttmLevel(2);
 		            }
 		        }
 		    }
 
+		    // 파일 및 DB 처리 수행
+		    updateBoardResult = bService.updateWmBoard(wm);
+		    int updateAttmResult = 0;
 
-			//System.out.println(wm.getWmNo());
-			updateBoardResult = bService.updateWmBoard(wm);
-			int updateAttmResult = 0;
-			if(!list.isEmpty())  {
-				updateAttmResult = bService.insertWmAttm(list);
-			}
-			//System.out.println(updateBoardResult);
-			//System.out.println(updateAttmResult);
-			if(updateBoardResult + updateAttmResult > 0) {				
-				redirectAttributes.addAttribute("wmNo", wm.getWmNo());
-				redirectAttributes.addAttribute("page", page);
-				
-				return "redirect:/board/wm/detail";
-				
-			} else {
-				throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
-			}
+		    if (!list.isEmpty()) {
+		        updateAttmResult = bService.insertWmAttm(list);
+		    }
+
+		    if (updateBoardResult + updateAttmResult > 0) {
+		        redirectAttributes.addAttribute("wmNo", wm.getWmNo());
+		        redirectAttributes.addAttribute("page", page);
+		        return "redirect:/board/wm/detail";
+		    } else {
+		        throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+		    }
 		}
+
 		
 		@GetMapping("/board/wm/delete")
 		public String deleteWmBoard(@RequestParam("wmNo") int wmNo) throws BoardException {
@@ -1360,6 +1436,530 @@ public class BoardController {
 			
 		}
 		
+		@GetMapping(value="/updateWmReply.yk")
+		@ResponseBody
+		public String updateWmReply(@ModelAttribute Reply r) {
+
+			int result = bService.updateWmReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		
+		
+		@GetMapping("/board/wm/report")
+		@ResponseBody
+		public String wmBoardReport(@ModelAttribute Report rep, @RequestParam("wmNo") int wmNo) {
+
+		    
+		    rep.setRCategory("WM");
+		    rep.setRType("B");
+		    rep.setRBoardNo(wmNo);
+		    
+		    int selectBoardReport = bService.selectBoardReport(rep);
+		    System.out.println(selectBoardReport);
+		    if (selectBoardReport >0) {
+		        // 사용자가 이미 동일한 게시물을 신고함
+		        return "existBoardReport";
+		    }
+
+		    int result = bService.BoardReport(rep); // 수정된 부분
+
+		    if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+		}
+		
+		//댓글 신고
+		@GetMapping("/insertWmReplyReport.yk")
+		@ResponseBody
+		public String insertWmReport(@ModelAttribute Report rep, HttpSession session){
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			rep.setRAccuser(id);
+			rep.setRCategory("WM");
+			int checkResult = bService.checkReplyResult(rep);
+			int result = bService.insertReplyReport(rep);
+			
+			if(checkResult > 0) {
+				return "exist";
+			}
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+		}
+
+		
+		
+		
+	
+
+//		첨부파일 게시글 조회 //
+//			@GetMapping("/board/used")
+//			public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page, 
+//										Model model,
+//										HttpServletRequest request) throws BoardException {
+//				
+//				int uListCount = bService.getUlistCount(1);
+//				
+//				PageInfo pi = Pagination.getPageInfo(page, uListCount, 10);
+//				ArrayList<UsedBoard> mList = bService.selectUsedBoardList(pi, 1);		
+//				ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
+//				
+//				if(uList != null) {
+//					model.addAttribute("pi", pi);
+//					model.addAttribute("uList", uList);
+//					model.addAttribute("aList", aList);
+//					model.addAttribute("loc", request.getRequestURI());
+//					
+//					return "usedBoard";
+//				} else {
+//					throw new BoardException("게시글 조회 실패");
+//				}
+//			}
+		
+		/*@GetMapping("/board/used/detail")
+		public String usedBoardDetail() {
+			
+			return "usedBoardDetail";
+		}
+		
+		@GetMapping("/board/used/write")
+		public String usedBoardWrite() {
+			
+			
+			return "usedBoardWrite";
+		}
+		
+		@GetMapping("/board/used/edit")
+		public String usedBoardEdit() {
+			
+			return "usedBoardEdit";
+		}*/
+		
+				
+		/////////////////////중고게시판 후기 황유경*/
+		@GetMapping("/board/usedReview")
+		public String usedReviewBoard(@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value = "searchType", required = false) String searchType,
+				@RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model, HttpServletRequest request) {
+			
+			
+			if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+				
+				int listCount = bService.getUsedRvListCount(1);
+			
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+				ArrayList<UsedBoard> list = bService.selectUsedRvBoardList(pi, 1);		
+				ArrayList<Attachment> aList = bService.selectAttmUsedRvBoardList(null);
+				
+				//System.out.println(list);
+				if(list != null) {
+					model.addAttribute("pi", pi);
+					model.addAttribute("list", list);
+					model.addAttribute("aList", aList);
+					
+				} else {
+					throw new BoardException("게시글 조회 실패");
+				}
+			} else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+	              HashMap<String, String> map = new HashMap<>();
+	            map.put("searchKeyword", searchKeyword);
+	            map.put("searchType", searchType);
+	            
+	            int listCount = bService.getListCount(1);
+	            PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+	            
+	            ArrayList<UsedBoard> searchResults = bService.searchUsedRvBoards(map);
+	            ArrayList<Attachment> aList = bService.selectAttmUsedRvBoardList(null);
+	            model.addAttribute("pi", pi);
+				model.addAttribute("list", searchResults);
+				model.addAttribute("aList", aList);	
+	           }
+			model.addAttribute("loc", request.getRequestURI());
+			
+			return "usedReviewBoard";
+		}
+		
+		
+		
+		@GetMapping("/board/usedReview/detail")
+		public String usedReviewBoardDetail(@RequestParam(value="page", defaultValue="1") int page, @RequestParam("uNo") int uNo, HttpSession session, Model model) {
+			
+			Member loginUser = (Member)session.getAttribute("loginUser");
+			String id = null;
+			if(loginUser != null) {
+				id = loginUser.getMbId();
+			}
+			UsedBoard u = bService.selectUsedRvBoard(uNo, id);
+			
+			ArrayList<Attachment> list = bService.selectAttmUsedRvBoardList(uNo); 
+			
+			System.out.println(uNo);
+			int listCount = bService.getUsedRvReplyListCount(uNo);
+			
+			
+			ArrayList<Reply> rList = bService.selectUsedRvReply(uNo);
+			
+			if(u != null) {
+				model.addAttribute("u", u);
+				model.addAttribute("page", page);
+				model.addAttribute("list", list);
+				model.addAttribute("rList", rList);
+				//System.out.println(rList);
+				return "usedReviewBoardDetail";
+			} else {
+				throw new BoardException("게시글 상세보기를 실패하였습니다.");
+			}
+			
+		}
+		
+				
+		
+		@GetMapping("/board/usedReview/write")
+		public String usedReviewBoardWrite(@ModelAttribute UsedBoard u, HttpSession session, Model model) {
+			
+			String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+			u.setMbId(boardWriter);
+			
+			ArrayList<UsedBoard> prodList = bService.selectProdList(u);
+//			System.out.println(prodList);
+			model.addAttribute("prodList", prodList);
+			
+			
+			return "usedReviewBoardWrite";
+		}
+		
+		@PostMapping("/board/used/insertUsedBoard")
+	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
+	         
+	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+	         u.setMbId(boardWriter);
+	         
+	         System.out.println(prodNo);
+	         
+	         UsedBoard selectProduct = bService.checkProdList(prodNo);
+	         
+	         System.out.println(selectProduct);
+	         selectProduct.setUTitle(uTitle);
+	         selectProduct.setUContent(uContent);
+	         selectProduct.setMbId(boardWriter);
+	         
+	         
+	         int result1 = bService.insertUsedRvBoard(selectProduct); 
+	         
+	         
+	         ArrayList<Attachment> attachments = new ArrayList<>();
+	         if (files != null) {
+	            for(int i = 0; i<files.size(); i++) {
+	               MultipartFile upload = files.get(i);
+	               if(!upload.getOriginalFilename().equals("")) {
+	                  String[] returnArr = saveFile(upload);
+	                  if(returnArr[1] != null) {
+	                     Attachment attachment = new Attachment();
+	                     attachment.setOriginalName(upload.getOriginalFilename());
+	                     attachment.setRenameName(returnArr[1]);
+	                     attachment.setAttmPath(returnArr[0]);
+	                     attachment.setAttmRefType("U");
+	                     attachment.setAttmRefNo(u.getUNo());
+	                     
+	                     attachments.add(attachment);
+	                  }
+	               }
+	            }
+	            
+	            for(int i=0; i < attachments.size(); i++) {
+	               Attachment a = attachments.get(i);
+	               if(i == 0) {
+	                  a.setAttmLevel(1);
+	               } else {
+	                  a.setAttmLevel(2);
+	               }
+	            }
+	            
+	            int result2 = bService.insertUsedRvAttm(attachments);
+	            //System.out.println(result1);
+	            //System.out.println(result2);
+	            if(result1 + result2 > 0) {
+	               return "redirect:/board/usedReview";
+	            } else {
+	               for(Attachment a : attachments) {
+	                  deleteFile(a.getRenameName());
+	               }
+	               throw new BoardException("게시글 작성을 실패하였습니다.");
+	             }
+	         } else {
+	              if (result1 > 0) {
+	                  return "redirect:/board/usedReview";
+	              } else {
+	                  throw new BoardException("게시글 작성을 실패하였습니다.");
+	              }
+	          }
+	         
+	      }
+		
+		
+		@GetMapping("/board/usedReview/editForm")
+		public String usedRvBoardEditForm(@RequestParam("uNo") int uNo, @RequestParam("page") int page, Model model) {
+			
+			UsedBoard u = bService.selectUsedRvBoard(uNo,null);
+			ArrayList<Attachment> list = bService.selectAttmUsedRvBoardList(uNo);
+			model.addAttribute("u", u);
+			model.addAttribute("page", page);
+			model.addAttribute("list", list);
+			
+			return "usedReviewBoardEdit";
+		}
+
+		
+		@PostMapping("/board/usedReview/edit")
+		public String usedReviewBoardEdit(
+		        @ModelAttribute UsedBoard u,
+		        @RequestParam("page") int page,
+		        @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm,
+		        @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files,
+		        HttpServletRequest request,
+		        RedirectAttributes redirectAttributes) {
+
+		    int updateBoardResult = 0;
+
+		    // 파일이 첨부되어 있는 경우 또는 삭제할 파일이 있는 경우
+		    if (files != null || (deleteAttm != null && deleteAttm.length > 0 && !deleteAttm[0].equals("none"))) {
+		        ArrayList<Attachment> list = new ArrayList<>();
+		        if (files != null) {
+		            // 새로운 파일이 첨부된 경우
+		            for (int i = 0; i < files.size(); i++) {
+		                MultipartFile upload = files.get(i);
+
+		                if (!upload.getOriginalFilename().equals("")) {
+		                    String[] returnArr = saveFile(upload);
+		                    if (returnArr[1] != null) {
+		                        Attachment a = new Attachment();
+		                        a.setOriginalName(upload.getOriginalFilename());
+		                        a.setRenameName(returnArr[1]);
+		                        a.setAttmPath(returnArr[0]);
+
+		                        list.add(a);
+		                    }
+		                }
+		            }
+		        }
+
+		        ArrayList<String> delRename = new ArrayList<>();
+		        ArrayList<Integer> delLevel = new ArrayList<>();
+		        for (String a : deleteAttm) {
+		            if (!a.equals("none")) {
+		                String[] split = a.split("/");
+		                delRename.add(split[0]);
+		                delLevel.add(Integer.parseInt(split[1]));
+		            }
+		        }
+
+		        int deleteAttmResult = 0;
+		        boolean existBeforeAttm = true;
+		        if (!delRename.isEmpty()) {
+		            deleteAttmResult = bService.deleteUsedRvAttm(delRename);
+		            if (deleteAttmResult > 0) {
+		                for (String rename : delRename) {
+		                    deleteFile(rename);
+		                }
+		            }
+
+		            if (delRename.size() == deleteAttm.length) {
+		                existBeforeAttm = false;
+
+		            } else {
+		                for (int level : delLevel) {
+		                    if (level == 0) {
+		                        bService.updateAttmLevel(u.getUNo());
+		                        break;
+		                    }
+		                }
+		            }
+		        }
+
+		        boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none"); // 파일이 있는지 확인하는 플래그
+
+		        boolean hasLevelOne = false; // 레벨 1이 있는지 확인하는 플래그
+
+		        for (String a : deleteAttm) {
+		            if (!a.equals("none")) {
+		                String[] split = a.split("/");
+		                int level = Integer.parseInt(split[1]);
+		                if (level == 1) {
+		                    hasLevelOne = true; // 레벨 1이 있다면 플래그 업데이트
+		                    break;
+		                }
+		            }
+		        }
+
+		        for (int i = 0; i < list.size(); i++) {
+		            Attachment a = list.get(i);
+		            a.setAttmRefNo(u.getUNo());
+
+		            if (hasExistingFile) {
+		                a.setAttmLevel(2); // 기존 파일이 있는 경우 추가되는 파일은 모두 레벨 2로 설정
+		            } else {
+		                if (!hasLevelOne) {
+		                    a.setAttmLevel(1); // 기존 파일이 없고 레벨 1이 없는 경우 추가되는 첫 번째 파일은 레벨 1로 설정
+		                    hasLevelOne = true; // 레벨 1이 없다면 플래그 업데이트
+		                } else {
+		                    a.setAttmLevel(2); // 기존 파일이 없고 레벨 1이 있는 경우 추가되는 나머지 파일은 레벨 2로 설정
+		                }
+		            }
+		        }
+
+		        // 파일 및 DB 업데이트 처리 수행
+		        updateBoardResult = bService.updateUsedRvBoard(u);
+		        int updateAttmResult = 0;
+		        if (!list.isEmpty()) {
+		            updateAttmResult = bService.insertUsedRvAttm(list);
+		        }
+		    } else {
+		        // 파일이 없는 경우에는 DB 업데이트만 수행
+		        updateBoardResult = bService.updateUsedRvBoard(u);
+		    }
+
+		    if (updateBoardResult > 0) {
+		        redirectAttributes.addAttribute("uNo", u.getUNo());
+		        redirectAttributes.addAttribute("page", page);
+
+		        return "redirect:/board/usedReview/detail";
+		    } else {
+		        throw new BoardException("게시글 수정 실패하였습니다.");
+		    }
+		}
+
+
+
+		@GetMapping("/board/usedReview/delete")
+		public String deleteUsedRvBoard(@RequestParam("uNo") int uNo) throws BoardException {
+			int result1 = bService.deleteUsedRvBoard(uNo);
+			int result2 = bService.statusNAttm(uNo);
+			//System.out.println(bNo);
+			if(result1 > 0 || result2> 0) {
+				return "redirect:/board/usedReview";
+			} else {
+				throw new BoardException("게시글 삭제 실패");
+			}
+		}
+		
+		
+		@GetMapping(value="/insertUsedRvReply.yk")
+		@ResponseBody
+		public String insertUsedRvReply(@ModelAttribute Reply r, HttpSession session) {
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			r.setMbId(id);
+			r.setBType("U");
+			int result = bService.insertUsedRvReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		@GetMapping(value="/deleteUsedRvReply.yk")
+		@ResponseBody
+		public String deleteUsedRvReply(@ModelAttribute Reply r) {
+			int result = bService.deleteUsedRvReply(r);
+			
+			//System.out.println(r);
+			// 우리 댓글테이블은 공유잖아?
+			// 그래서 댓글넘버가 프라이머리키야(고유해)
+			// 그래서 너는 1,2,3,4번을 가지고 있어 이건 도그워커 + 그 게시글에서 생성된 댓글
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		@GetMapping(value="/updateUsedRvReply.yk")
+		@ResponseBody
+		public String updateUsedRvReply(@ModelAttribute Reply r) {
+
+			int result = bService.updateUsedRvReply(r);
+			
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+			
+		}
+		
+		
+		
+		@GetMapping("/board/usedReview/report")
+		@ResponseBody
+		public String usedRvBoardReport(@ModelAttribute Report rep, @RequestParam("uNo") int uNo) {
+
+		    
+		    rep.setRCategory("U");
+		    rep.setRType("B");
+		    rep.setRBoardNo(uNo);
+		    
+		    int selectBoardReport = bService.selectBoardReport(rep);
+		    System.out.println(selectBoardReport);
+		    if (selectBoardReport >0) {
+		        // 사용자가 이미 동일한 게시물을 신고함
+		        return "existBoardReport";
+		    }
+
+		    int result = bService.BoardReport(rep); // 수정된 부분
+
+		    if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+		}
+		
+		//댓글 신고
+		@GetMapping("/insertUsedRvReplyReport.yk")
+		@ResponseBody
+		public String insertUsedRvReplyReport(@ModelAttribute Report rep, HttpSession session){
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			rep.setRAccuser(id);
+			rep.setRCategory("U");
+			int checkResult = bService.checkReplyResult(rep);
+			int result = bService.insertReplyReport(rep);
+			
+			if(checkResult > 0) {
+				return "exist";
+			}
+			if(result > 0) {
+				return "good";
+				
+			} else {
+				return "bad";
+			}
+		}
+		
+		/////////////////////////////////////////
+		
+		
+		
 		
 		
 		//<< 카드댁 형식 >>
@@ -1372,6 +1972,7 @@ public class BoardController {
 //			return "usedBoard";
 //		}
 		
+
 		// 게시글 목록 조회
 	    @GetMapping("/board/used")
 	    public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page,
@@ -1454,28 +2055,8 @@ public class BoardController {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
 			}
 		}
+		 	
 		
-		
-		 @GetMapping("/board/usedReview") public String
-		 usedReviewBoard(@RequestParam(value="page", defaultValue="1") String page,
-		 Model model) {
-		 
-		 return "usedReviewBoard"; }
-		
-		 
-		 
-		 @GetMapping("/board/usedReview/detail") public String usedReviewBoardDetail()
-		 {
-		 
-		 return "usedReviewBoardDetail"; }
-		 
-		 @GetMapping("/board/used/edit") public String usedBoardEdit() {
-		 
-		 return "usedBoardEdit"; }
-		 
-		 @GetMapping("/board/usedReview/edit") public String usedReviewBoardEdit() {
-		 
-		 return "usedReviewBoardEdit"; }
 		 
 		 @GetMapping("/board/used/write") 
 		 public String usedBoardWrite() {
@@ -1544,6 +2125,13 @@ public class BoardController {
 		 
 		 
 		 
+			 
+			@GetMapping("/board/used/edit") public String usedBoardEdit() {
+			 
+			 return "usedBoardEdit"; 
+			 }
+			 
+			
 		 
 		 
 		 
@@ -1561,12 +2149,7 @@ public class BoardController {
 		 
 		 
 		 
-		 
-		 
-		 @GetMapping("/board/usedReview/write") public String usedReviewBoardWrite() {
-		 
-		 
-		 return "usedReviewBoardWrite"; }
+		
 		
 				// 2. 실종신고 //
 		

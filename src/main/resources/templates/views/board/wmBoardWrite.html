@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			
-			<form  action="/board/free/insertWmBoard" method="POST" enctype="multipart/form-data" id="attmForm">
+			<form  action="/board/wm/insertWmBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
 					    <select class="form-select mb-1"  name="wmType">
@@ -53,6 +53,9 @@
                      	</div>
                      	<div>
 	                       	<button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
+	                     </div>
+	                     <div>
+	                       	<button type="button" onclick="clearAddress()" class="btn btn-outline-dark btn-sm">비우기</button>
 	                     </div>
                      </div>
                      
@@ -147,7 +150,13 @@
 	                document.getElementById("detailAddress").focus();
 	            }
 	        }).open();
-	    }      
+	    }  
+		
+	      function clearAddress() {
+	          // 주소 입력 필드를 비웁니다.
+	          document.getElementById('address').value = '';
+	      }
+		
 		
 		window.onload = () =>{
 			const fileArea = document.querySelector('#fileArea');
