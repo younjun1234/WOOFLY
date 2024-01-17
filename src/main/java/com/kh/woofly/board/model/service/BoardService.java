@@ -242,6 +242,10 @@ public interface BoardService {
 	int deleteLostBoardAttm(int bId);
 
 	int editLostBoard(LostBoard lb);
+	
+	int deleteLostAttm(ArrayList<String> delRename);
+
+	int updateLostBoard(LostBoard m);
 
 //	Reply selectReplyLostBoard(Integer rNo);
 
@@ -266,6 +270,8 @@ public interface BoardService {
 	int insertUsedBoard(UsedBoard u);
 
 	int insertUsedAttm(ArrayList<Attachment> attachments);
+
+	
 
 
 	

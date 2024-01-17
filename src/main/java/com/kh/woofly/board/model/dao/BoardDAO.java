@@ -198,6 +198,10 @@ public interface BoardDAO {
 	int deleteLostBoardAttm(int bId);
 
 	int editLostBoard(LostBoard lb);
+	
+	int deleteLostAttm(ArrayList<String> delRename);
+
+	int updateLostBoard(LostBoard m);
 
 //	Reply selectReplyLostBoard(Integer rNo);
 
@@ -266,6 +270,8 @@ public interface BoardDAO {
 	int deleteUsedRvReply(Reply r);
 
 	int updateUsedRvReply(Reply r);
+
+
 
 	
 

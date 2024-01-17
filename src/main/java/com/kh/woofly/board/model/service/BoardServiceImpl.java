@@ -450,6 +450,20 @@ private BoardServiceImpl boardDAO;
 	public int editLostBoard(LostBoard lb) {
 		return bDAO.editLostBoard(lb);
 	}
+	
+	@Override
+	public int deleteLostAttm(ArrayList<String> delRename) {
+		return bDAO.deleteLostAttm(delRename);
+	}
+
+
+	@Override
+	public int updateLostBoard(LostBoard m) {
+		return bDAO.updateLostBoard(m);
+	}
+
+
+
 
 //	@Override
 //	public Reply selectReplyLostBoard(Integer rNo) {

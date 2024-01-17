@@ -703,10 +703,25 @@
 	</update>
 	
 	<!--게시글 수정-->
-	<update id="editLostBoard">
+	<!--<update id="editLostBoard">
 		update missing_board
 		set m_title = #{mTitle}, m_content = #{mContent}, M_RESCUE = #{mRescue}
 		where m_no = #{mNo}
+	</update>-->
+	
+	<delete id="deleteLostAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<update id="updateLostBoard">
+		update missing_board
+		set m_title = #{mTitle}, m_content = #{mContent}, m_rescue =#{mRescue}
+		where m_no = #{ mNo }
 	</update>
 	
 	
