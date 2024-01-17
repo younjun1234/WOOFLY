@@ -500,6 +500,12 @@
 		where b.wm_status = 'Y' and b.wm_no = #{ wmNo }
 	</select>
 	
+	<update id="updateWmCount">
+		update wm_board
+		set wm_count = wm_count +1
+		where wm_no = #{wmNo}
+	</update>
+	
 	<delete id="deleteWmAttm">
 		delete from attachment
 		<where>
@@ -542,7 +548,11 @@
 		order by r.r_no desc
 	</select>
 	
-	
+	<update id="updateWmReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
 	
 	
 	
@@ -636,6 +646,170 @@
 		order by m_no
 	</select>
 	 -->
+	
+	
+	<!-- 중고게시판 -->
+	
+	
+	<!-- <insert id="insertUsedRvBoard">
+	    insert into used_board 
+	    values (ub_seq.nextval, "후기", #{uTitle}, #{uContent}, default, 
+	    		(select u_location from used_board where u_No= #{prodNo}), 
+	    		SYSDATE, default, default, 'Y', #{mbId}, 
+	    		(select product_name from used_board where u_No= #{prodNo}), 
+	    		(select product_status from used_board where u_No= #{prodNo}),
+	    		(select product_price from used_board where u_No= #{prodNo}),
+	    		(select sold_date from used_board where u_No= #{prodNo}), null)
+	</insert> 	 -->
+	
+	<insert id="insertUsedRvBoard">
+	    insert into used_board (
+	        U_NO, U_TYPE, U_TITLE, U_CONTENT, U_COUNT, U_LOCATION, U_CREATE_DATE,
+	        U_STATUS, U_WANT, U_END, MB_ID, PRODUCT_NAME, PRODUCT_STATUS,
+	        PRODUCT_PRICE, SOLD_DATE, BUYER_ID
+	    )
+	    values (
+	        ub_seq.nextval, '후기', #{uTitle}, #{uContent}, default, #{uLocation},
+	        sysdate, default, default, default, #{mbId}, #{productName},
+	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_Id from used_board where u_no = #{uNo})
+	    )
+	</insert>
+	
+	<insert id="insertUsedRvAttm">
+		insert all
+		<foreach collection="list" item="item">
+			into attachment
+			values(new_aid, #{item.originalName}, #{item.renameName},
+			SYSDATE, SYSDATE, #{item.attmPath}, default, 'U', #{item.attmRefNo}, #{item.attmLevel})
+		</foreach>
+		select * from dual
+	</insert>
+	
+	<select id="selectProdList" resultType="UsedBoard">
+		select *
+		from used_board
+		 join member using (mb_id)
+		where buyer_id= #{mbId}
+	</select>
+	
+	<select id="checkProdList" resultType="UsedBoard">
+		select *
+		from used_board
+		 join member using (mb_id)
+		where u_no= #{prodNo}
+	</select>
+	
+	
+	
+	<select id="getUsedRvListCount" resultType="_int">
+		select count(*)
+		from used_board
+		where u_status = 'Y' and u_type = '후기'
+	</select>
+
+	<select id="selectUsedRvBoardList" resultType="UsedBoard">
+	    select b.*, m.mb_nickname as "mbNickName" 
+	    from used_board b 
+	    join member m on b.mb_id = m.mb_id 
+	    where b.u_status = 'Y' and u_type = '후기'
+	    order by b.u_no desc
+	</select>
+
+
+	<select id="selectAttmUsedRvBoardList" resultType="Attachment">
+		select *
+		from attachment
+		where attm_status='Y'
+		<if test="bId != null">
+			and attm_ref_type = 'U'
+			and attm_ref_no = #{ uNo }
+		</if>
+		order by attm_id
+	</select>
+	
+	<select id="searchUsedRvBoards" parameterType="map" resultType="UsedBoard">
+       SELECT *
+       FROM used_board
+         JOIN Member using(mb_id)
+       WHERE u_status = 'Y' and u_type = '후기'
+       <choose>
+           <when test="searchType == 'mn'">
+               AND u_title LIKE '%' || #{searchKeyword} || '%' or mb_nickname LIKE '%' || #{searchKeyword} || '%'
+           </when>
+           <when test="searchType != null">
+               AND ${searchType} LIKE '%' || #{searchKeyword} || '%'
+           </when>
+       </choose>
+       ORDER BY u_no DESC
+   </select>
+	
+	<select id="selectUsedRvBoard" resultType="UsedBoard">
+		select  b.*, m.mb_nickname as "mbNickName" 
+		from used_board b
+			join member m on b.mb_id = m.mb_id 
+		where b.u_status = 'Y' and b.u_no = #{ uNo }
+	</select>	
+	
+	<update id="updateUsedRvCount">
+		update used_board
+		set u_count = u_count +1
+		where u_no = #{uNo}
+	</update>
+	
+	<select id="getUsedRvReplyListCount" resultType="_int">
+		select count(*)
+		from Reply
+		where b_type= 'U' and b_no = #{uNo} and re_d_status ='Y'
+	</select>
+	
+	<select id="selectUsedRvReply" resultType="Reply">
+		select  r.*, m.mb_nickname as "mbNickName" 
+		from reply r
+			join member m on r.mb_id = m.mb_id 
+		where r.b_no = #{uNo} and r.re_d_status = 'Y' and r.b_type = 'U'
+		order by r.r_no desc
+	</select>
+	
+	<delete id="deleteUsedRvAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<update id="updateUsedRvBoard">
+		update used_board
+		set u_title = #{uTitle}, u_content = #{uContent}
+		where u_no = #{ uNo }
+	</update>
+	
+	<update id="deleteUsedRvBoard">
+		update used_board
+		set u_status = 'N'
+		where u_no = #{ uNo }
+	</update>
+	
+	<!-- 댓글 -->
+	
+	<insert id="insertUsedRvReply">
+      insert into reply
+      values(reply_seq.nextval, #{bType}, #{bNo}, 
+            #{reContent}, SYSDATE, default, default, #{mbId})
+   </insert>
+   
+   <update id="deleteUsedRvReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo } and b_type = 'U'
+	</update>
+	
+	<update id="updateUsedRvReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
 	
 	
 	
