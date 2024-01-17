@@ -16,23 +16,23 @@
          <h1>중고게시판</h1>
          
          <!-- 판매완료, 판매중, 예약중 -->
-         <div class="card bg-dark text-white mb-2" id="salesDone" style="margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
+         <div th:if="${u.uEnd == 'Y'}" class="card bg-dark text-white mb-2" id="salesDone" style="margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
              <b>판매완료</b> 
          </div>
-        <!--  <div class="card bg-white text-dark border-black mb-2" id="onSale" style="margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
+         <div th:if="${u.uEnd == 'N'}" class="card bg-white text-dark border-black mb-2" id="onSale" style="margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
              <b>판매중</b> 
          </div>
-         <div class="card text-white mb-2" id="booking" style="background-color: #555; margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
+         <div th:if="${u.uEnd == 'R'}" class="card text-white mb-2" id="booking" style="background-color: #555; margin-left: auto; margin-top: 8px; font-size: 30px; width: 160px; height: 50px; text-align: center;  display: inline-block;">
              <b>예약중</b>  
-         </div>  -->
+         </div> 
          
       </div>
       <div class="header-container d-flex mt-5 justify-content-between">
          <div class="d-flex">
             <img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
             <div class="header-text-container">
-               <h6 style="display: inline;">작성자</h6>&nbsp;•&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">주소</h6>
-               <p>2023.10.16</p>
+               <h6 style="display: inline;" th:text="${u.mbNickName}" name="mbNickName"></h6>
+               <p>[[${u.uCreateDate}]]</p>
             </div>
          </div>
          
@@ -90,8 +90,8 @@
             <p>댓글 1개</p>
          </div>
          <hr>
-            <h3><b>강아지 유모차 팔아요</b></h3><br>
-            <p>거의 사용하지 않았던 제품입니다! 때문에 네고는 없어요ㅠㅠ</p>
+            <h3><b>[[${u.uTitle}]]</b></h3><br>
+            <p th:text="${u.uContent}"></p>
          <hr>
          <!-- 중고상품 설명 -->
             <table style="width:330px; height: 30px; border: 1px; font-size : 25px;" >
@@ -101,11 +101,23 @@
               </tr>
                <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">제품명</th>
-                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productTitle]]</td>
-              </tr>              
+                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productName}]]</td>
+              </tr>
+              <tr style="border: 1px ;">
+                  <th style="border: 1px ; height: 40px; border: 1px;">상태</th>
+                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productStatus}]]</td>
+              </tr>
               <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">가격</th>
-                  <td style="border: 1px ; height: 40px; border: 1px;" th:text="|\${u.productPrice}|"></td>
+                  <td style="border: 1px ; height: 40px; border: 1px;" th:text="|\${u.productPrice}|" onkeyup="inputNumberFormat(this)"></td>
+              </tr>
+             <tr style="border: 1px ;">
+                 <th style="border: 1px ; height: 40px; border: 1px;">거래일자</th>
+                 <td style="border: 1px ; height: 40px; border: 1px;">[[${u.soldDate}]]</td>
+              </tr>
+              <tr style="border: 1px ;">
+                  <th style="border: 1px ; height: 40px; border: 1px;">거래장소</th>
+                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.uLocation}]]</td>
               </tr>
             </table>
          <br>
