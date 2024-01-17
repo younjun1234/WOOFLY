@@ -2,6 +2,8 @@ package com.kh.woofly.board.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.dao.BoardDAO;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.board.model.vo.UsedBoard;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
@@ -26,6 +30,8 @@ public class BoardServiceImpl implements BoardService{
 
    @Autowired
    private BoardDAO bDAO;
+private BoardServiceImpl boardDAO;
+   
    
    @Override
 	public int getReplyListCount(int i, int dwNo, String bType) {
@@ -76,6 +82,7 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.insertFreeBoard(b);
 	}
 
+// 실종신고 게시판 "/board/lost" //
 	@Override
 	public int insertFreeAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertFreeAttm(attachments);
@@ -369,17 +376,18 @@ public class BoardServiceImpl implements BoardService{
 	
 
 	
-// 실종신고 게시판
+//======// 실종신고 게시판 "/board/lost" //===============================
 	@Override
 	public int getMlistCount(int i) {
 		return bDAO.mListCount(i);
 	}
 	
+	// 게시글 상세보기 "/board/lost/detail" //
 	@Override
 	public ArrayList<LostBoard> selectLostBoardList(PageInfo pi, int i) {
-		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
-		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
-		return bDAO.selectLostBoardList(i, rowBounds);
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectLostBoardList(rowBounds, i);
 	}
 
 	@Override
@@ -387,23 +395,111 @@ public class BoardServiceImpl implements BoardService{
 		return bDAO.selectAttmLostBoardList(bId);
 	}
 
-	@Override
-	public LostBoard selectLostBoard(int mNo) {
-		return bDAO.selectLostBoard(mNo);
-	}
+	
+	
+
+	// 실종 검색 //
+	
 
 	@Override
 	public int insertLostBoard(LostBoard m) {
 		return bDAO.insertLostBoard(m);
 	}
 
-
 	@Override
-	public LostBoard selectLostBoard(int bId, Object object) {
-		return bDAO.selectLostBoard(bId, object);
+	public int insertLostAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertLostAttm(attachments);
 	}
 
 	@Override
+	public ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map) {
+		return bDAO.searchLostBoards(map);
+	}
+
+	@Override
+	public LostBoard selectLostBoard(Integer mNo, String mbId) {
+		
+		LostBoard m = bDAO.selectLostBoard(mNo);
+		if(m != null) {
+			if(mbId !=null && !m.getMbId().equals(mbId)) {
+				int result = bDAO.updateLostCount(mNo);
+				if(result >0) {
+					m.setMCount(m.getMCount() + 1);
+				}
+			}
+		}
+		return m;
+	}
+
+	@Override
+	public LostBoard editLostBoard(int bId, Object object) {
+		return bDAO.editLostBoard(bId, object);
+	}
+
+	@Override
+	public int deleteLostBoard(int bId) {
+		return bDAO.deleteLostBoard(bId);
+	}
+
+	@Override
+	public int deleteLostBoardAttm(int bId) {
+		return bDAO.deleteLostBoardAttm(bId);
+	}
+
+	@Override
+	public int editLostBoard(LostBoard lb) {
+		return bDAO.editLostBoard(lb);
+	}
+	
+	@Override
+	public int deleteLostAttm(ArrayList<String> delRename) {
+		return bDAO.deleteLostAttm(delRename);
+	}
+
+
+	@Override
+	public int updateLostBoard(LostBoard m) {
+		return bDAO.updateLostBoard(m);
+	}
+
+
+
+
+//	@Override
+//	public Reply selectReplyLostBoard(Integer rNo) {
+//		// TODO Auto-generated method stub
+//		return bDAO.selectReplyLostBoard(rNo);
+//	}
+	
+	
+//======// 중고게시판 "/board/used"  //===============================
+	
+		
+	@Override
+	public int getUlistCount(int i) {
+		// TODO Auto-generated method stub
+		return bDAO.uListCount(i);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> selectUsedBoardList(PageInfo pi, int i) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getPageLimit());
+		return bDAO.selectUsedBoardList(rowBounds, i);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttmUsedBoardList(Object object) {
+		return bDAO.selectAttmUsedBoardList(object);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map) {
+		return bDAO.searchUsedBoards(map);
+	}
+
+
+
 	public ArrayList<UsedBoard> selectMyUsedBuying(PageInfo pi, HashMap<String, Object> map) {
 		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
 		RowBounds rowbounds = new RowBounds(offset, pi.getPageLimit());
@@ -428,12 +524,38 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 
+
+
+	/* 하은 중고 */
+	@Override
+	public UsedBoard selectUsedBoard(Integer uNo) {
+		return bDAO.selectUsedBoard(uNo);
+	}
+
+
+	@Override
+	public Reply selectReply(Integer rNo) {
+		return bDAO.selectReply(rNo);
+	}
+
+
+	@Override
+	public int insertUsedBoard(UsedBoard u) {
+		return bDAO.insertUsedBoard(u);
+	}
+
+
+	@Override
+	public int insertUsedAttm(ArrayList<Attachment> attachments) {
+		return bDAO.insertUsedAttm(attachments);
+	}
+
 	
 	
 	
 	
 	
-	//==========================중고게시판
+	//==========================중고게시판 황유경
 	
 	
 	@Override
@@ -554,12 +676,6 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 
-
-
-	
-
-
-	
 
 
 

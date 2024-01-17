@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,9 +45,11 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class BoardController {
 	
-//	@Autowired
-//	private BoardServiceImpl bService;
-	
+//		@Autowired
+//		private BoardService bService;
+		
+		//private final BoardService bService;
+		
 		@Autowired
 		private BoardService bService;
 		
@@ -323,7 +326,7 @@ public class BoardController {
 		// 파일 저장소 파일 저장(copy)
 		private String[] saveFile(MultipartFile upload) {
 			
-			String root = "C:\\woofly\\";
+			String root = "C:\\uploadFiles\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
@@ -357,7 +360,7 @@ public class BoardController {
 		
 		
 		private void deleteFile(String renameName) {
-			String root = "C:\\woofly\\";
+			String root = "C:\\uploadFiles\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File f = new File(savePath + "\\" + renameName);
@@ -1500,16 +1503,8 @@ public class BoardController {
 		
 		
 		
-		//<< 카드댁 형식 >>
-		// 
-		// 1. 중고게시판 //
-		
-		@GetMapping("/board/used")
-		public String usedBoardView() {
-			
-			return "usedBoard";
-		}
-		
+	
+
 //		첨부파일 게시글 조회 //
 //			@GetMapping("/board/used")
 //			public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page, 
@@ -1534,7 +1529,7 @@ public class BoardController {
 //				}
 //			}
 		
-		@GetMapping("/board/used/detail")
+		/*@GetMapping("/board/used/detail")
 		public String usedBoardDetail() {
 			
 			return "usedBoardDetail";
@@ -1551,8 +1546,10 @@ public class BoardController {
 		public String usedBoardEdit() {
 			
 			return "usedBoardEdit";
-		}
+		}*/
 		
+				
+		/////////////////////중고게시판 후기 황유경*/
 		@GetMapping("/board/usedReview")
 		public String usedReviewBoard(@RequestParam(value="page", defaultValue="1") int page, @RequestParam(value = "searchType", required = false) String searchType,
 				@RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model, HttpServletRequest request) {
@@ -1643,74 +1640,74 @@ public class BoardController {
 			return "usedReviewBoardWrite";
 		}
 		
-		@PostMapping("/board/used/insertUsedBoard")
-	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
-	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
-	         
-	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-	         u.setMbId(boardWriter);
-	         
-	         System.out.println(prodNo);
-	         
-	         UsedBoard selectProduct = bService.checkProdList(prodNo);
-	         
-	         System.out.println(selectProduct);
-	         selectProduct.setUTitle(uTitle);
-	         selectProduct.setUContent(uContent);
-	         selectProduct.setMbId(boardWriter);
-	         
-	         
-	         int result1 = bService.insertUsedRvBoard(selectProduct); 
-	         
-	         
-	         ArrayList<Attachment> attachments = new ArrayList<>();
-	         if (files != null) {
-	            for(int i = 0; i<files.size(); i++) {
-	               MultipartFile upload = files.get(i);
-	               if(!upload.getOriginalFilename().equals("")) {
-	                  String[] returnArr = saveFile(upload);
-	                  if(returnArr[1] != null) {
-	                     Attachment attachment = new Attachment();
-	                     attachment.setOriginalName(upload.getOriginalFilename());
-	                     attachment.setRenameName(returnArr[1]);
-	                     attachment.setAttmPath(returnArr[0]);
-	                     attachment.setAttmRefType("U");
-	                     attachment.setAttmRefNo(u.getUNo());
-	                     
-	                     attachments.add(attachment);
-	                  }
-	               }
-	            }
-	            
-	            for(int i=0; i < attachments.size(); i++) {
-	               Attachment a = attachments.get(i);
-	               if(i == 0) {
-	                  a.setAttmLevel(1);
-	               } else {
-	                  a.setAttmLevel(2);
-	               }
-	            }
-	            
-	            int result2 = bService.insertUsedRvAttm(attachments);
-	            //System.out.println(result1);
-	            //System.out.println(result2);
-	            if(result1 + result2 > 0) {
-	               return "redirect:/board/usedReview";
-	            } else {
-	               for(Attachment a : attachments) {
-	                  deleteFile(a.getRenameName());
-	               }
-	               throw new BoardException("게시글 작성을 실패하였습니다.");
-	             }
-	         } else {
-	              if (result1 > 0) {
-	                  return "redirect:/board/usedReview";
-	              } else {
-	                  throw new BoardException("게시글 작성을 실패하였습니다.");
-	              }
-	          }
-	         
-	      }
+//		@PostMapping("/board/used/insertUsedBoard")
+//	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+//	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
+//	         
+//	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+//	         u.setMbId(boardWriter);
+//	         
+//	         System.out.println(prodNo);
+//	         
+//	         UsedBoard selectProduct = bService.checkProdList(prodNo);
+//	         
+//	         System.out.println(selectProduct);
+//	         selectProduct.setUTitle(uTitle);
+//	         selectProduct.setUContent(uContent);
+//	         selectProduct.setMbId(boardWriter);
+//	         
+//	         
+//	         int result1 = bService.insertUsedRvBoard(selectProduct); 
+//	         
+//	         
+//	         ArrayList<Attachment> attachments = new ArrayList<>();
+//	         if (files != null) {
+//	            for(int i = 0; i<files.size(); i++) {
+//	               MultipartFile upload = files.get(i);
+//	               if(!upload.getOriginalFilename().equals("")) {
+//	                  String[] returnArr = saveFile(upload);
+//	                  if(returnArr[1] != null) {
+//	                     Attachment attachment = new Attachment();
+//	                     attachment.setOriginalName(upload.getOriginalFilename());
+//	                     attachment.setRenameName(returnArr[1]);
+//	                     attachment.setAttmPath(returnArr[0]);
+//	                     attachment.setAttmRefType("U");
+//	                     attachment.setAttmRefNo(u.getUNo());
+//	                     
+//	                     attachments.add(attachment);
+//	                  }
+//	               }
+//	            }
+//	            
+//	            for(int i=0; i < attachments.size(); i++) {
+//	               Attachment a = attachments.get(i);
+//	               if(i == 0) {
+//	                  a.setAttmLevel(1);
+//	               } else {
+//	                  a.setAttmLevel(2);
+//	               }
+//	            }
+//	            
+//	            int result2 = bService.insertUsedRvAttm(attachments);
+//	            //System.out.println(result1);
+//	            //System.out.println(result2);
+//	            if(result1 + result2 > 0) {
+//	               return "redirect:/board/usedReview";
+//	            } else {
+//	               for(Attachment a : attachments) {
+//	                  deleteFile(a.getRenameName());
+//	               }
+//	               throw new BoardException("게시글 작성을 실패하였습니다.");
+//	             }
+//	         } else {
+//	              if (result1 > 0) {
+//	                  return "redirect:/board/usedReview";
+//	              } else {
+//	                  throw new BoardException("게시글 작성을 실패하였습니다.");
+//	              }
+//	          }
+//	         
+//	      }
 		
 		
 		@GetMapping("/board/usedReview/editForm")
@@ -1959,257 +1956,570 @@ public class BoardController {
 			}
 		}
 		
+		/////////////////////////////////////////
 		
 		
 		
 		
 		
+		//<< 카드댁 형식 >>
+		// 
+		// 1. 중고게시판 //
 		
-		// 2. 실종신고 //
-		// 글 목록
-		//	첨부파일 게시글 조회 //
-		@GetMapping("/board/lost")
-		public String lostBoardView(@RequestParam(value="page", defaultValue="1") int page, 
-									Model model,
-									HttpServletRequest request) throws BoardException {
-			
-			int mListCount = bService.getMlistCount(1);
-			
-			PageInfo pi = Pagination.getPageInfo(page, mListCount, 10);
-			ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);		
-			ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
-			
-			if(mList != null) {
+//		@GetMapping("/board/used")
+//		public String usedBoardView() {
+//			
+//			return "usedBoard";
+//		}
+		
+
+		// 게시글 목록 조회
+	    @GetMapping("/board/used")
+	    public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page,
+					    			@RequestParam(value = "searchType", required = false) String searchType,
+					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+	                                Model model,
+	                                HttpServletRequest request) throws BoardException {
+	    	
+	    	if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+	        	int listCount = bService.getUlistCount(1);
+	        	
+	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
+	        	// 하은아 pi 왜 만들었어? 페이징처리 할려고()
+	        	// 너가 어떤 기능을 쓰려고 pi를 보낸거임 ㅋㅋ 이게 준비물이야
+	        	// 어디에 쓰려고?
+	        	ArrayList<UsedBoard> uList = bService.selectUsedBoardList(pi, 1); 
+	        	
+	        	System.out.println(uList);
+	        	ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
+	        	System.out.println(aList);
+	        	if(uList.isEmpty()) {
+	        		model.addAttribute("message", "게시글이 없습니다.");
+	        	} else {
+	        		model.addAttribute("pi", pi);
+	        		model.addAttribute("uList", uList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
+	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
+	        		
+	        		System.out.println("uList: " + uList.toString());
+	        		System.out.println("aList: " + aList.toString());
+	        	}
+	        } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+	        	HashMap<String, String> map = new HashMap<>();
+				map.put("searchKeyword", searchKeyword);
+				map.put("searchType", searchType);
+				int listCount = bService.getUlistCount(1); // 추가
+				System.out.println(listCount);
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
+				ArrayList<UsedBoard> searchResults = bService.searchUsedBoards(map);
+				model.addAttribute("uList", searchResults);
 				model.addAttribute("pi", pi);
-				model.addAttribute("mList", mList);
-				model.addAttribute("aList", aList);
-				model.addAttribute("loc", request.getRequestURI());
-				
-				return "lostBoard";
-			} else {
-				throw new BoardException("게시글 조회 실패");
-			}
-		}
+	        }
+	        
+	        model.addAttribute("loc", request.getRequestURI()); // 이전 정보에 대한 uri 담고 있음(나중에 뒤로가기같은거 할 때 준비하려고)
+	        
+	        return "usedBoard";
+	    }
 		
-		//	첨부파일 게시글 작성 //
-		// 글쓰기
-		@GetMapping("/board/lost/write")
-		public String lostBoardWrite() {
-			return "lostBoardWrite";
-		}
-		
-		// 첨부파일 게시글 상세보기 //
-		@GetMapping("/board/lost/detail")
-		public String lostBoardDetail(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam("mNo") int mNo, HttpSession session, Model model) throws BoardException {
-		
+//		 // 첨부파일 게시글 상세보기 //
+		@GetMapping("/board/used/detail")
+		public String usedBoardDetail(
+									  @RequestParam(name="uNo", required=false) Integer uNo, 
+									  @RequestParam(value = "page", defaultValue = "1") int page, 
+									  HttpSession session, Model model) throws BoardException {
+			
 			Member loginUser = (Member)session.getAttribute("loginUser");
-			String id = null;
+			String mbId = null;
 			if(loginUser != null) {
-				id = loginUser.getMbId();
+				mbId = loginUser.getMbId();
 			}
-			LostBoard m = bService.selectLostBoard(mNo);
-			ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
-			if(m != null) {
-				model.addAttribute("m", m);
+			
+			System.out.println(uNo);
+			
+			if(uNo == null) {
+				// mNo가 null인 경우의 처리를 여기 추가
+				throw new BoardException("게시글 번호가 없습니다.");
+			}
+			
+			
+			UsedBoard u = bService.selectUsedBoard(uNo);
+			ArrayList<Attachment> uList = bService.selectAttmUsedBoardList((Integer)uNo); 
+			
+			if(u != null) {
+//				model.addAttribute("r", r);
+				model.addAttribute("u", u);
 				model.addAttribute("page", page);
-				model.addAttribute("mList", mList);
+				model.addAttribute("uList", uList);
 				//System.out.println(m);
-				return "lostBoardDetail";
+				return "usedBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
 			}
 		}
+		 	
 		
-			
-		//	첨부파일 게시글 작성(등록) //
-		@PostMapping("/board/lost/insertLostBoard")
-		public String insertLostBoard(@ModelAttribute LostBoard m, @RequestParam("file") ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) throws BoardException {
-			String LostboardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-			m.setMbId(LostboardWriter);
-			int result = bService.insertLostBoard(m);
-			
-			if(result > 0) {
-				return "redirect:list.at";
-			} else {
-				throw new BoardException("게시글 작성을 실패하였습니다.");
-			}
-		}
+		 
+		 @GetMapping("/board/used/write") 
+		 public String usedBoardWrite() {
+			 
+			 return "usedBoardWrite"; 
+		 }
 
-		// 글 수정
-		@GetMapping("/board/lost/edit")
-		public String updateLostBoardEdit(@RequestParam("boardId") int bId,
-				 @RequestParam("page") int page,
-				 Model model) {
-			LostBoard m = bService.selectLostBoard(bId, null);
-			ArrayList<Attachment> mList = bService.selectAttmLostBoardList(bId);
-			model.addAttribute("m", m);
-			model.addAttribute("page", page);
-			model.addAttribute("mList", mList);
+			@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
+		 public String insertUsedBoard (@ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
+		 
+				
+				String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+				u.setMbId(boardWriter);
+				
+//				int dwType = Integer.parseInt(dwTypeStr);
+				int result1 = bService.insertUsedBoard(u); 
+				
+				ArrayList<Attachment> attachments = new ArrayList<>();
+				if (files != null) {
+					for(int i = 0; i<files.size(); i++) {
+						MultipartFile upload = files.get(i);
+						if(!upload.getOriginalFilename().equals("")) {
+							String[] returnArr = saveFile(upload);
+							if(returnArr[1] != null) {
+								Attachment attachment = new Attachment();
+								attachment.setOriginalName(upload.getOriginalFilename());
+								attachment.setRenameName(returnArr[1]);
+								attachment.setAttmPath(returnArr[0]);
+								attachment.setAttmRefType("U");
+								attachment.setAttmRefNo(u.getUNo());
+								
+								attachments.add(attachment);
+							}
+						}
+					}
+					
+					for(int i=0; i < attachments.size(); i++) {
+						Attachment a = attachments.get(i);
+						if(i == 0) {
+							a.setAttmLevel(1);
+						} else {
+							a.setAttmLevel(2);
+						}
+					}
+					
+					int result2 = bService.insertUsedAttm(attachments);
+					//System.out.println(result1);
+					//System.out.println(result2);
+					if(result1 + result2 > 0) {
+						return "redirect:/board/used";
+					} else {
+						for(Attachment a : attachments) {
+							deleteFile(a.getRenameName());
+						}
+						throw new BoardException("게시글 작성을 실패하였습니다.");
+				    }
+				} else {
+			        if (result1 > 0) {
+			            return "redirect:/board/used";
+			        } else {
+			            throw new BoardException("게시글 작성을 실패하였습니다.");
+			        }
+			    }
+				
+			}
+		 
+		 
+		 
+			 
+			@GetMapping("/board/used/edit") public String usedBoardEdit() {
+			 
+			 return "usedBoardEdit"; 
+			 }
+			 
 			
-			return "lostBoardEdit";
-		}
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
 		
-//		//...하는 중...//
-////		// 수정한 첨부파일 게시글을 업로드 //
-//		@PostMapping("/board/lost/updateLostBoard") // 어노테이션 사용해 연결 요청(바인딩).//(HTTP 요청에서 전달된 데이터가, 메서드의 매개변수에 자동으로 연결되어(바인딩되어), 메서드에서 활용될 수 있도록 함)
-//		   public String updateLostBoardAttm(@ModelAttribute LostBoard m,
-//		                     @RequestParam("page") int page,
-//		                     @RequestParam("deleteLostBoardAttm") String[] deleteLostBoardAttm,
-//		                     @RequestParam("file") ArrayList<MultipartFile> files,
-//		                     HttpServletRequest request, RedirectAttributes re) {
-//		      // m 객체의 lostBoardType 필드에 2라는 값을 설정
-//		    // m.setLostBoardType(2); // set다음에 오는 LostBoardType은 해당필드의 이름.(소괄호 안에는 필드에 설정할 값 담는다)
-//		      // ㄴ우린 게시판이 다 첨부파일 게시판이니까 게시판 타입 설정해줄 필요 없지않나
-//		      // 밑은 ArrayList 클래스를 이용하여 Attachment 타입의 객체를 저장하는 리스트를 생성하는 코드
-//		      ArrayList<Attachment> mList = new ArrayList<>(); // mList는 Attachment타입의 객체들을 저장하고 관리하는 동적 배열.
-//		      for(int i = 0; i < files.size(); i++) { // i의 초기값은 0; i가 파일사이즈보다 작을때; i는 1씩증가
-//		         MultipartFile LostUpload = files.get(i); // 업로드된 파일들(files) 중에서 인덱스 i에 해당하는 파일을 가져와 MultipartFile 타입의 변수 LostUpload에 할당하는 코드. 
-//		         // files는 @RequestParam("file") ArrayList<MultipartFile> files에서 전달된 파일들의 리스트.// get(i)는 리스트에서 인덱스 i에 해당하는 요소를 가져오는 메서드.
-//		         if(!LostUpload.getOriginalFilename().equals("")) {
-//		            String[] returnLostArr = saveLostFile(LostUpload);
-//		            if(returnLostArr[1] != null) {
-//		               Attachment a = new Attachment(); // a는 Attachment vo를 뜻한다.
-//		               a.setOriginalName(LostUpload.getOriginalFilename());
-//		               a.setRenameName(returnLostArr[1]);
-//		               a.setAttmPath(returnLostArr[0]);
-//		               
-//		               mList.add(a);
-//		            }//ㄴ업로드된 파일에 대한 정보가 Attachment 객체에 담겨 mList에 추가, mList는 업로드된 파일들의 정보를 담고 있는 리스트가 됨.
-//		         }
-//		      }
-//		      
-//		      ArrayList<String> delLostRename = new ArrayList<>();
-//		      ArrayList<Integer> delLostLevel = new ArrayList<>();
-//		      
-//		      for(int i = 0; i < deleteLostBoardAttm.length; i++) {
-//		         //System.out.println(deleteAttm[i]);
-//		         String Lostrename = deleteLostBoardAttm[i];      // 취소바구니에 담긴 스트링 배열
-//		         if(!Lostrename.equals("none")) {
-//		            String[] split = Lostrename.split("/");
-//		            delLostRename.add(split[0]);
-//		            delLostLevel.add(Integer.parseInt(split[1]));
-//		         }
-//		      }// delLostRename 리스트에는 삭제할 첨부 파일의 리네임된 이름이, 
-//		       // delLostLevel 리스트에는 해당 첨부 파일의 레벨이 저장.(파일에 레벨을 설정해 놓으면 파일의 중요도나 순서 표시를 할 때 용이.)
-//		      
-//		      int deleteLostAttmResult = 0;
-//		      int updateLostResult = 0;
-//		      boolean existBeforeLostAttm = true;
-//		      if(!delLostRename.isEmpty()) {
-//		    	  deleteLostAttmResult = bService.deleteLostAttm(delLostRename); // DB삭제
-//		         if(deleteLostAttmResult > 0) {
-//		            for(String rename : delLostRename) {
-//		               deleteFile(rename);   // 서버 저장소에서 삭제
-//		            }
-//		         }
-//		         
-//		         // delRename : 삭제하고자 하는 명시된 파일의 개수만 담겨있음 
-//		         // deleteAttm : 파일삭제를 명시 안해도 none값으로 들어오기 때문에
-//		         //            기존파일 총량을 알 수 있음
-//		         
-//		         if(delLostRename.size() == deleteLostAttm.length) {
-//		            //기존 파일 전부 삭제
-//		        	 existBeforeLostAttm = false;
-//		            if(mList.isEmpty()) {
-//		               m.setLostBoardType(1);
-//		            }
-//		         } else {
-//		            // 기존 파일 일부 삭제
-//		            // 썸네일레벨을 가지고 있는 파일이 있는지 확인 후 조치
-//		            for(int level : delLostLevel) {
-//		               if(level == 0) {
-//		                  bService.updateAttmLevel(m.getLostBoardId());
-//		                  break;
-//		               }
-//		            }
-//		         }
-//		      }
-//		      
-//		      for(int i = 0; i < mList.size(); i++) {
-//		         Attachment a = mList.get(i);
-//		         a.setRefBoardId(m.getLostBoardId());
-//		         
-//		         // 기존 첨부파일이 남아있을 때
-//		         if(existBeforeLostAttm) {
-//		            a.setAttmLevel(1);
-//		         } else {
-//		            // 기존 첨부파일이 남아있지 않으면
-//		            if(i == 0) {
-//		               a.setAttmLevel(0);
-//		            } else {
-//		               a.setAttmLevel(1);
-//		            }
-//		         }
-//		      }
-//		      
-//		      updateLostResult = bService.updateLostBoard(m);
-//		      int updateLostAttmResult = 0;
-//		      if(!mList.isEmpty()) {
-//		    	  updateLostAttmResult = bService.insertLostAttm(mList);
-//		      }
-//		      
-//		      if(updateLostResult + updateLostAttmResult == mList.size() + 1) {
-//		         if(delRename.size() == deleteLostAttm.length && updateLostAttmResult == 0) {
-//		            return "redirect:list.bo";
-//		         } else {
-//		            re.addAttribute("bId", m.getLostBoardId());
-//		            re.addAttribute("page", page);
-//		            return "redirect:selectAttm.at";
-//		         }
-//		      } else {
-//		         throw new BoardException("첨부파일 게시글 수정을 실패하였습니다.");
-//		      }
-//		   }
-//		
-//		
-//		
-//}
-//
-//		// 파일을 저장 경로 및 rename하여(이름 안겹치도록) 나중에 찾기 쉽게 함.
-//		
-//		public String[] saveLostFile(MultipartFile lostUpload) {
-//		      String root = "C:\\";
-//		      String savePath = root + "\\uploadLostFiles";
-//		      
-//		      File folder = new LostFile(savePath);
-//		      if(!folder.exists()) {
-//		         folder.mkdirs();
-//		      }
-//		      
-//		      // 2. 저장될 파일 rename
-//		      Date time = new Date(System.currentTimeMillis());
-//		      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-//		      int ranNum = (int)(Math.random()*100000);
-//		      
-//		      String originFileName = upload.getOriginalFilename();
-//		      String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
-//		      
-//		      // 3. rename된 파일을 저장소에 저장
-//		      String renamePath = folder + "\\" + renameFileName;
-//		      try {
-//		         upload.transferTo(new File(renamePath));
-//		      } catch (IllegalStateException e) {
-//		         e.printStackTrace();
-//		      } catch (IOException e) {
-//		         e.printStackTrace();
-//		      }
-//		      
-//		      String[] returnArr = new String[2];
-//		      returnArr[0] = savePath;   // 경로 있음
-//		      returnArr[1] = renameFileName; // renameName이 있음
-//		      
-//		      return returnArr;
-//		   }
-//		
-//		public void deleteFile(String fileName) {
-//			String root = "C:\\";
-//			String savePath = root + "\\uploadFiles";
+		
+				// 2. 실종신고 //
+		
+		// 글 목록
+		//	첨부파일 게시글 조회 //
+		// 게시글 목록 페이지로 이동할 때 필요한 데이터를 모델에 담아 뷰로 전달하는 역할
+		
+		// 게시글 목록 조회
+	    @GetMapping("/board/lost")
+	    public String lostBoardView(
+	    							@RequestParam(value="page", defaultValue="1") int page,
+					    			@RequestParam(value = "searchType", required = false) String searchType,
+					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+	                                Model model,
+	                                HttpServletRequest request) throws BoardException {
+	    	
+	    	if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+	        	int listCount = bService.getMlistCount(1);
+	        	
+	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
+	        	ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
+	        	ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
+	        	System.out.println(aList);
+	        	if(mList.isEmpty()) {
+	        		model.addAttribute("message", "게시글이 없습니다.");
+	        	} else {
+	        		model.addAttribute("pi", pi);
+	        		model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
+	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
+	        		
+	        		System.out.println("mList: " + mList.toString());
+	        		System.out.println("aList: " + aList.toString());
+	        	}
+	        } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+	        	HashMap<String, String> map = new HashMap<>();
+				map.put("searchKeyword", searchKeyword);
+				map.put("searchType", searchType);
+				int listCount = bService.getMlistCount(1); // 추가
+				PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
+				ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
+				model.addAttribute("mList", searchResults);
+				model.addAttribute("pi", pi);
+	        }
+	        
+	        model.addAttribute("loc", request.getRequestURI());
+	        
+	        return "lostBoard";
+	    }
+		
+
+//	    글작성 //
+	    @GetMapping("/board/lost/write")
+	      public String LostBoardWrite() {
+	         
+	         return "lostBoardWrite";
+	      }
+	    
+//	  글 등록//
+      @PostMapping("/board/lost/insertLostBoard")
+      public String insertLostBoard(@ModelAttribute LostBoard m, 
+    		  						@RequestParam("file") ArrayList<MultipartFile> files, 
+    		  						HttpSession session, HttpServletRequest request) throws BoardException {
+         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+         m.setMbId(boardWriter);
+         //System.out.println(boardWriter);
+         int result1 = bService.insertLostBoard(m); // 글 내용을 board 테이블에 저장
+         //System.out.println(b.getBNo());
+         
+         System.out.println(m);
+         ArrayList<Attachment> attachments = new ArrayList<>();
+         for(int i = 0; i<files.size(); i++) {
+            MultipartFile upload = files.get(i);
+            if(!upload.getOriginalFilename().equals("")) {
+               String[] returnArr = saveFile(upload);
+               if(returnArr[1] != null) {
+                  Attachment attachment = new Attachment();
+                  attachment.setOriginalName(upload.getOriginalFilename());
+                  attachment.setRenameName(returnArr[1]);
+                  attachment.setAttmPath(returnArr[0]);
+                  attachment.setAttmRefType("M");
+                  attachment.setAttmRefNo(m.getMNo());
+                  
+                  attachments.add(attachment);
+//	                  System.out.println(attachment.getAttmRefType());
+               }
+            }
+         }
+         
+         // 썸네일 첫번째 첨부파일으로 하는거
+         for(int i=0; i < attachments.size(); i++) {
+            Attachment a = attachments.get(i);
+            if(i == 0) {
+               a.setAttmLevel(1);
+            } else {
+               a.setAttmLevel(2);
+            }
+         }
+         
+         int result2 = bService.insertLostAttm(attachments);
+         System.out.println(attachments);
+         //System.out.println(result1);
+         //System.out.println(result2);
+         
+         System.out.println(attachments);
+         if(result1 + result2 > 0) {
+            return "redirect:/board/lost";
+         } else {
+            for(Attachment a : attachments) {
+               deleteFile(a.getRenameName());
+            }
+            throw new BoardException("게시글 작성을 실패하였습니다.");
+          }
+      }
+	         
+	      
+	      
+		/*
+		 * // 파일 저장소 파일 저장(copy) private String[] saveFile(MultipartFile upload) {
+		 * 
+		 * String root = "C:\\woofly\\"; String savePath = root + "\\board";
+		 * 
+		 * File folder = new File(savePath); if(!folder.exists()) { folder.mkdirs(); }
+		 * 
+		 * Date time = new Date(System.currentTimeMillis()); SimpleDateFormat sdf = new
+		 * SimpleDateFormat("yyyyMMddHHmmssSSS"); int ranNum =
+		 * (int)(Math.random()*100000);
+		 * 
+		 * String originFileName = upload.getOriginalFilename(); String renameFileName =
+		 * sdf.format(time) + ranNum +
+		 * originFileName.substring(originFileName.lastIndexOf("."));
+		 * 
+		 * String renamePath = folder + "\\" + renameFileName;
+		 * 
+		 * try { upload.transferTo(new File(renamePath)); } catch (IllegalStateException
+		 * e) { e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
+		 * 
+		 * String[] returnArr = new String[2]; returnArr[0] = savePath; returnArr[1] =
+		 * renameFileName;
+		 * 
+		 * return returnArr; }
+		 * 
+		 * 
+		 * private void deleteFile(String renameName) { String root = "C:\\woofly\\";
+		 * String savePath = root + "\\board";
+		 * 
+		 * File f = new File(savePath + "\\" + renameName); if(f.exists()) { f.delete();
+		 * } }
+		 */
+
+		
+	   // 첨부파일 게시글 상세보기 //
+			@GetMapping("/board/lost/detail")
+			public String lostBoardDetail(
+										  @RequestParam(name="mNo", required=false) Integer mNo, 
+										  @RequestParam(value = "page", defaultValue = "1") int page, 
+										  HttpSession session, Model model) throws BoardException {
+				
+				Member loginUser = (Member)session.getAttribute("loginUser");
+				String mbId = null;
+				if(loginUser != null) {
+					mbId = loginUser.getMbId();
+				}
+				
+				System.out.println(mNo);
+				
+				if(mNo == null) {
+					// mNo가 null인 경우의 처리를 여기 추가
+					throw new BoardException("게시글 번호가 없습니다.");
+				}
+				
+				LostBoard m = bService.selectLostBoard(mNo, mbId);
+				ArrayList<Attachment> aList = bService.selectAttmLostBoardList((Integer)mNo); // ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo);였음 
+				
+				if(m != null) {
+					model.addAttribute("m", m);
+					model.addAttribute("page", page);
+					model.addAttribute("aList", aList); //model.addAttribute("mList", mList);였음
+					//System.out.println(m);
+					return "lostBoardDetail";
+				} else {
+					throw new BoardException("게시글 상세보기를 실패하였습니다.");
+				}
+			}
+	      
+		
+//		// 첨부파일 게시글 상세보기 //
+//		@GetMapping("/board/lost/detail")
+//		public String lostBoardDetail(@RequestParam(name="rNo", required=false) Integer rNo,
+//									  @RequestParam(name="likeUser", required=false) Integer likeUser,
+//									  @RequestParam(name="mNo", required=false) Integer mNo, 
+//									  @RequestParam(value = "page", defaultValue = "1") int page, 
+//									  HttpSession session, Model model) throws BoardException {
+//			Reply r = bService.selectReplyLostBoard(rNo);
 //			
-//			File f = new File(savePath + "\\" + fileName);
-//			if(f.exists()) { // f가 있으면 
-//				f.delete();// 삭제
+//			Member loginUser = (Member)session.getAttribute("loginUser");
+//			String mbId = null;
+//			if(loginUser != null) {
+//				mbId = loginUser.getMbId();
+//			}
+//			
+//			System.out.println(mNo);
+//			
+//			if(mNo == null) {
+//				// mNo가 null인 경우의 처리를 여기 추가
+//				throw new BoardException("게시글 번호가 없습니다.");
+//			}
+//			
+//			LostBoard m = bService.selectLostBoard(mNo);
+//			ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo); 
+//			
+//			if(m != null) {
+//				model.addAttribute("m", m);
+//				model.addAttribute("page", page);
+//				model.addAttribute("mList", mList);
+//				//System.out.println(m);
+//				return "lostBoardDetail";
+//			} else {
+//				throw new BoardException("게시글 상세보기를 실패하였습니다.");
 //			}
 //		}
+		
+			
+		//24.01.14_ing
+		// 글 수정
+			@GetMapping("/board/lost/editForm")
+			public String lostBoardEditForm(@RequestParam("mNo") int mNo, @RequestParam("page") int page, Model model) {
+				
+				LostBoard m = bService.selectLostBoard(mNo,null);
+				//System.out.println(dw);
+				ArrayList<Attachment> list = bService.selectAttmLostBoardList(mNo);
+				model.addAttribute("m", m);
+				model.addAttribute("page", page);
+				model.addAttribute("list", list);
+				
+				return "lostBoardEdit";
+			}
+			
+			@PostMapping("/board/lost/edit")
+			public String lostBoardEdit(
+			    @ModelAttribute LostBoard m,
+			    @RequestParam("page") int page,
+			    @RequestParam(value = "deleteAttm", required = false, defaultValue = "") String[] deleteAttm,
+			    @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files,
+			    HttpServletRequest request,
+			    RedirectAttributes redirectAttributes) {
+
+			    ArrayList<Attachment> list = new ArrayList<>();
+
+			    // 파일이 존재하는 경우에만 파일 업로드 및 DB 처리 수행
+			    if (files != null) {
+			        for (int i = 0; i < files.size(); i++) {
+			            MultipartFile upload = files.get(i);
+
+			            if (!upload.getOriginalFilename().equals("")) {
+			                String[] returnArr = saveFile(upload);
+			                if (returnArr[1] != null) {
+			                    Attachment a = new Attachment();
+			                    a.setOriginalName(upload.getOriginalFilename());
+			                    a.setRenameName(returnArr[1]);
+			                    a.setAttmPath(returnArr[0]);
+
+			                    list.add(a);
+			                }
+			            }
+			        }
+			    }
+
+			    ArrayList<String> delRename = new ArrayList<>();
+			    ArrayList<Integer> delLevel = new ArrayList<>();
+			    for (String a : deleteAttm) {
+			        if (!a.equals("none")) {
+			            String[] split = a.split("/");
+			            delRename.add(split[0]);
+			            delLevel.add(Integer.parseInt(split[1]));
+			        }
+			    }
+
+			    int deleteAttmResult = 0;
+			    int updateBoardResult = 0;
+			    boolean existBeforeAttm = true;
+
+			    if (!delRename.isEmpty()) {
+			        deleteAttmResult = bService.deleteLostAttm(delRename);
+			        if (deleteAttmResult > 0) {
+			            for (String rename : delRename) {
+			                deleteFile(rename);
+			            }
+			        }
+
+			        if (delRename.size() == deleteAttm.length) {
+			            existBeforeAttm = false;
+			        } else {
+			            for (int level : delLevel) {
+			                if (level == 0) {
+			                    bService.updateAttmLevel(m.getMNo());
+			                    break;
+			                }
+			            }
+			        }
+			    }
+
+			    boolean hasExistingFile = deleteAttm.length > 0 && !deleteAttm[0].equals("none");
+			    boolean hasLevelOne = false;
+
+			    for (String a : deleteAttm) {
+			        if (!a.equals("none")) {
+			            String[] split = a.split("/");
+			            int level = Integer.parseInt(split[1]);
+			            if (level == 1) {
+			                hasLevelOne = true;
+			                break;
+			            }
+			        }
+			    }
+
+			    for (int i = 0; i < list.size(); i++) {
+			        Attachment a = list.get(i);
+			        a.setAttmRefNo(m.getMNo());
+
+			        if (hasExistingFile) {
+			            a.setAttmLevel(2);
+			        } else {
+			            if (!hasLevelOne) {
+			                a.setAttmLevel(1);
+			                hasLevelOne = true;
+			            } else {
+			                a.setAttmLevel(2);
+			            }
+			        }
+			    }
+
+			    // 파일 및 DB 처리 수행
+			    updateBoardResult = bService.updateLostBoard(m);
+			    int updateAttmResult = 0;
+
+			    if (!list.isEmpty()) {
+			        updateAttmResult = bService.insertLostAttm(list);
+			    }
+
+			    if (updateBoardResult + updateAttmResult > 0) {
+			        redirectAttributes.addAttribute("mNo", m.getMNo());
+			        redirectAttributes.addAttribute("page", page);
+			        return "redirect:/board/lost/detail";
+			    } else {
+			        throw new BoardException("첨부파일 게시글 수정 실패하였습니다.");
+			    }
+			}
+
+//		글삭제
+		@GetMapping("/board/lost/delete/{boardId}")
+		public String updateLostBoardDelete(@PathVariable("boardId") int bId,
+				 						  Model model) {
+			
+			int bResult = bService.deleteLostBoard(bId);
+			int aResult = bService.deleteLostBoardAttm(bId);
+			
+			
+			
+			return "redirect:/board/lost";
+		}
+		
+		
+		/*
+		 * @PostMapping("/editLostBoard.he") public String
+		 * updateLostBoard(@ModelAttribute LostBoard lb) {
+		 * 
+		 * int result = bService.editLostBoard(lb);
+		 * 
+		 * return "redirect:/board/lost/detail?mNo="+lb.getMNo(); }
+		 */
 		
 		
 		
