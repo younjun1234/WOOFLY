@@ -3,11 +3,10 @@
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
 
-
 	<select id="getReplyListCount" resultType="_int">
 		select count(*)
 		from Reply
-		where b_type= 'DW' and b_no = #{dwNo} and re_d_status ='Y'
+		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
 	</select>
 
 	<!-- 연준이꺼 -->
@@ -20,7 +19,8 @@
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
- 		where buyer_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -44,7 +44,8 @@
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
- 		where mb_id = #{id}
+			 join attachment on (u_no = attm_ref_no)
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -52,7 +53,7 @@
 		    	and sold_date <![CDATA[<]]> #{endDate}
 		    </if>
 	        <if test="startDate != null">
-		    	or sold_date is null
+		    	or (mb_id = #{id} and sold_date is null)
 		    </if>
 			<if test="soldDate != null">
 			    order by sold_date ${soldDate}
@@ -64,7 +65,8 @@
 			    order by u_end ${uEnd}
 			</if>
 	</select>
-
+	
+		 
 	<!-- 자유게시판 -->	
 	
 	<!-- 검색 기능 -->
@@ -810,7 +812,6 @@
 		set re_content = #{reContent}
 		where r_No = #{rNo}
 	</update>
-	
-	
+		
 	
 </mapper>

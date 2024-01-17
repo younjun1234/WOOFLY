@@ -8,14 +8,16 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
+
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
 public interface BoardService {
 	
-	int getReplyListCount(int dwNo);
+	int getReplyListCount(int i, int dwNo, String bType);
 
 //	자유게시판 "/board/free"	
 	

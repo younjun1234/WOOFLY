@@ -8,6 +8,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
+import com.kh.woofly.order.model.vo.Saved;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 
@@ -30,6 +31,8 @@ public interface OrderService {
 	int deletePoints(String id);
 
 	ArrayList<Point> selectMyPoints(String id);
+
+	ArrayList<Saved> selectMySaved(HashMap<String, Object> map);
 	
 	
 }

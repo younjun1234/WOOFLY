@@ -71,7 +71,7 @@
 			                    <img alt="..." th:src="'/image/board/' + ${ a.renameName}" class="card-img-top img-fluid">
 			                    <div class="card-body">
 			                        <h5 class="card-title">
-			                            <a th:href="@{'/image/board/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
+			                            <a th:href="@{'/image/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
 			                        </h5>
 			                    </div>
 			                </div>
@@ -81,7 +81,7 @@
 			                <div class="card">
 			                    <div class="card-body">
 			                        <h5 class="card-title">
-			                            <a th:href="@{'/image/board/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
+			                            <a th:href="@{'/image/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
 			                        </h5>
 			                    </div>
 			                </div>

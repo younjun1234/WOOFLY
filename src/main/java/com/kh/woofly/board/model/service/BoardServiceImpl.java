@@ -14,8 +14,10 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.board.model.vo.Board;
 import com.kh.woofly.board.model.vo.DwBoard;
 import com.kh.woofly.board.model.vo.LostBoard;
+
 import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.board.model.vo.WmBoard;
+
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 
@@ -26,8 +28,8 @@ public class BoardServiceImpl implements BoardService{
    private BoardDAO bDAO;
    
    @Override
-	public int getReplyListCount(int dwNo) {
-	   return bDAO.getReplyListCount(dwNo);
+	public int getReplyListCount(int i, int dwNo, String bType) {
+	   return bDAO.getReplyListCount(i, dwNo, bType);
 	}
 
    
