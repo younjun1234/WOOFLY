@@ -125,8 +125,7 @@
 							<input type="hidden" id="mbNickname" name="mbNickname" th:value="${session.loginUser?.mbNickName}">
 							<div id="replybody">
 								<div class="d-flex mt-3 border-bottom">
-									<strong>댓글 [[${#arrays.length(rList)}]]개</strong>
-									<p role="button">&nbsp;&nbsp;모두 보기</p>
+									<strong class="mb-2">댓글 [[${#arrays.length(rList)}]]개</strong>
 								</div>
 								<div class="ms-auto d-block">
 									<div class="d-flex align-items-center" th:each="r, rStat : ${rList}">

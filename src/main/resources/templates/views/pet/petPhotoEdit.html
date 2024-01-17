@@ -33,7 +33,7 @@
 					</div>
 					<br>
 					<form action="/petPhotoEdit.dw" method="POST" enctype="multipart/form-data">
-						<input type="hidden" name="abNo" value="abNo">
+						<input type="hidden" name="abNumber" th:value="${a.abNo}">
 						<div class="col-8">
 						  <p class="text-secondary">마이펫 선택</p>
 						  <select class="form-select" name="petId" style="width: 160px;" required>
@@ -44,13 +44,16 @@
 				               <div class="d-flex">
 				   			   	 <button type="button" class="btn btn-sm btn-dark" onclick="fileAdd()">파일 찾기</button>&nbsp;&nbsp; 
 							     <input type="file" id="photo" name="file" style="display: none;" accept="image/*" value="123" multiple onchange="setThumbnail(event)"/>
+     						     <input type="file" id="photo" style="display: none;" name="saveFile" accept="image/*" value="123" multiple/>
+							     
 								 <button type="button" id="deleteAll" class="btn btn-outline-dark btn-sm">전체 삭제</button>
 				   			   </div>
-				               <div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4">
+				               <div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4" id="imgCont">
 				               		<th:block th:each="a : ${aList}"> 
 							       		<img th:src="'/image/' + ${a.renameName}" class="rounded" style="width: 150px; height: 150px; border: 1px solid black;">
-							       		<button class="btn btn-sm align-items-start" style="border: none;" type="button" th:data-index="${ a.renameName }" onclick="deleteImage();">x</button>
+							       		<button class="btn btn-sm align-items-start" style="border: none;" type="button" th:data-index="${ a.renameName }" onclick="deleteImage(this);">x</button>
 							       	</th:block>	
+   									<div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4" id="preview"></div>
 						   	   </div>
 				   		</div>
 						<div class="col-8 mt-4">
@@ -83,27 +86,90 @@
 			photo.click();
 		}
 		
-		//파일 미리보기
+		const deleteImage = (target) => {
+			$.ajax({
+				url: '/deleteImage.dw',
+				data: {renameName: target.dataset.index},
+				success: data => {
+					console.log(data);
+					if (data == 'good') {
+						$('#imgCont').load(location.href + ' #imgCont > *');
+					}
+				},
+				error: data => console.log(data)
+				
+			})
+		}
+		
+		//파일 미리보기2
+		let count = 0;
 		function setThumbnail(event) {
-			const photo = document.getElementById("photo");
-	        for (var image of event.target.files) {
-	        	 var reader = new FileReader();
+		    const photo = document.getElementById("photo");
+		    
+		    const saveFile = document.getElementsByName('saveFile')[0];
+            let fileTransfer = new DataTransfer();
+        	const files = photo.files;
+        	for(let i=0; i < saveFile.files.length; i++) {
+        		fileTransfer.items.add(saveFile.files[i]);
+        	}
+            for(let i=0; i < files.length; i++) {
+            	fileTransfer.items.add(files[i]);
+            }
+            saveFile.files = fileTransfer.files;
+		    
+		    
+		    for (var image of event.target.files) {
+		        var reader = new FileReader();
+			
+		        reader.onload = function (event) {
+		        	
+		            var img = document.createElement("img");
+		            img.setAttribute("src", event.target.result);
+		            img.className = 'rounded';
+		            img.style.width = '150px';
+		            img.style.height = '150px';
+		            img.style.border = '1px grey';
+		
+		            // 썸네일을 감싸는 div 생성
+		            let thumbnailDiv = document.createElement("div");
+		            thumbnailDiv.appendChild(img);
+		            // 삭제 버튼 생성 및 이벤트 바인딩
+		            let deleteButton = document.createElement("button");
+		            
+		            deleteButton.className = 'btn btn-sm align-items-start';
+		            deleteButton.style.border = 'none';
+		            deleteButton.type = 'button';
+		            deleteButton.dataset.index = count++;
+		            deleteButton.innerHTML = 'x';
+		            thumbnailDiv.appendChild(deleteButton);
+		            
+		            deleteButton.addEventListener("click", function () {
+		            	const removeTargetId = this.dataset.index;
+		             	const files = saveFile.files;
+		                const dataTransfer = new DataTransfer();
+		                 
+						count--;		                
+		                for(let i=0; i < files.length; i++) {
+		                	if(i != removeTargetId) {
+		                    	dataTransfer.items.add(files[i]);
+		                 	}
+		                }
+		                saveFile.files = dataTransfer.files;
+		                thumbnailDiv.remove(); // 썸네일 삭제
+		    			console.log(saveFile.files);
+		    		});
+		            
+		            document.querySelector("div#preview").appendChild(thumbnailDiv);
+					console.log(saveFile.files);
+	            }
+		        reader.readAsDataURL(image);
+	            // 썸네일 div에 삭제 버튼 추가
+	
+	            // 썸네일을 미리보기 영역에 추가
+        	};
 
-	             reader.onload = function(event) {
-	               var img = document.createElement("img");
-	               img.setAttribute("src", event.target.result);
-	               img.className = 'rounded';
-	               img.style.width = '150px';
-	               img.style.height = '150px';
-	               img.style.border = '1px solid black';
-	               document.querySelector("div#preview").appendChild(img);
-	             };
+	    }
 
-	             console.log(image);
-	             reader.readAsDataURL(image);
-	            //document.querySelector("#preview").innerHTML += '<img src="'+ url +'" class="rounded me-3" alt="편집" style="width:150px; height:150px; border: 1px solid black; font-size: 1rem">'
-         	 };
-      	}
 	</script>
 </body>
 </html>

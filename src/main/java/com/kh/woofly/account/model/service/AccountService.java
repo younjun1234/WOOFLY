@@ -1,5 +1,7 @@
 package com.kh.woofly.account.model.service;
 
+import java.util.HashMap;
+
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -22,5 +24,7 @@ public interface AccountService {
 	public int checkIdEmail(Member m);
 
 	public int updatePwd(Member m);
+
+
 
 }

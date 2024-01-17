@@ -237,5 +237,20 @@ public class PetServiceImpl implements PetService{
 		return pDAO.insertBoardLike(map);
 	}
 
+	@Override
+	public ArrayList<Reply> repliesList(String id) {
+		return pDAO.repiesList(id);
+	}
+
+	@Override
+	public int deleteImage(Attachment a) {
+		return pDAO.deleteImage(a);
+	}
+
+	@Override
+	public int updatePetPhoto(Album a) {
+		return pDAO.updatePetPhoto(a);
+	}
+
 
 }

@@ -99,6 +99,12 @@ public interface PetService {
 
 	int insertBoardLike(HashMap<String, Object> map);
 
+	ArrayList<Reply> repliesList(String id);
+
+	int deleteImage(Attachment a);
+
+	int updatePetPhoto(Album a);
+
 	//int getPhotoCount(HashMap<String, String> map);
 
 }

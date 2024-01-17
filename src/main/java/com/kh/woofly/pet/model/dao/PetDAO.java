@@ -104,5 +104,11 @@ public interface PetDAO {
 
 	int insertBoardLike(HashMap<String, Object> map);
 
+	ArrayList<Reply> repiesList(String id);
+
+	int deleteImage(Attachment a);
+
+	int updatePetPhoto(Album a);
+
 
 }

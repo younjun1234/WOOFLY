@@ -37,7 +37,6 @@ import com.kh.woofly.pet.model.vo.Pet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import kotlin.reflect.jvm.internal.impl.types.model.TypeSystemOptimizationContext;
 
 @Controller
 public class PetController {
@@ -65,10 +64,11 @@ public class PetController {
           map.put("petId", petId);
 	      ArrayList<Album> aList = pService.selectMyAlbums(map);
 	      ArrayList<Pet> pList = pService.petInfoList(id);
-	       
+	      ArrayList<Reply> rList = pService.repliesList(id);
 	      if(aList != null) {
 	         model.addAttribute("pList", pList);
 	         model.addAttribute("aList", aList);
+	         model.addAttribute("rList", rList);
 	         return "petPhoto";
 	         
 	      } else {
@@ -187,17 +187,75 @@ public class PetController {
 	}
 	
 	@PostMapping("/petAdd.dw")
-	public String petAdd(@ModelAttribute Pet p, HttpSession session, @RequestParam("file") ArrayList<MultipartFile> file) {
+	public String petAdd(@ModelAttribute Pet p, HttpSession session, @RequestParam("file") MultipartFile file) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		p.setOwnerId(id);
 		
-		int result = pService.petAdd(p);
-		if(result > 0) {
-			return "redirect:/pet/petInfo";
+		if(file != null && !file.isEmpty()) {
+			String savedFileName = saveFile(file);
+			Attachment att = new Attachment();
+			att.setOriginalName(file.getOriginalFilename());
+			att.setRenameName(savedFileName);
+			att.setAttmRefType("PET");
+			att.setAttmRefNo(p.getPetId());
+			p.setPetProfile(savedFileName);
 		} else {
-			throw new PetException("마이펫 등록에 실패하였습니다.");
+			p.setPetProfile("default_petprofile.jpg");
 		}
+		int result = pService.petAdd(p);
+		
+		return "redirect:/pet/petInfo";
 	}
+	
+//	@PostMapping("/petPhotoWrite.dw")
+//	public String insertPetPhoto(@RequestParam("saveFile") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
+//		//게시판 내용 보내기
+//		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+//		a.setWriterId(id);
+//		a.setPetId(p.getPetId());
+//		
+//		System.out.println(files);
+//		
+//		//게시물 보내기
+//		int result = pService.insertPetPhoto(a);
+//		
+//		//사진들 보내기
+//		int result2 = 0;
+//
+//		if(result > 0) {
+//			if(files != null && !files.isEmpty()) {
+//				ArrayList<Attachment> attachments = new ArrayList<>();
+//				for(MultipartFile file : files) {
+//					String savedFileName = saveFile(file);
+//					Attachment att = new Attachment();
+//					att.setOriginalName(file.getOriginalFilename());
+//					att.setRenameName(savedFileName);
+//					att.setAttmRefType("AB");
+//					att.setAttmRefNo(a.getAbNo());
+//					attachments.add(att);
+//					
+//					for(int i=0; i < attachments.size(); i++) {
+//			          Attachment at = attachments.get(i);
+//			          if(i == 0) {
+//			             at.setAttmLevel(1);
+//			          } else {
+//			             at.setAttmLevel(2);
+//			          }
+//			       }
+//					result2 = pService.insertPetAlbum(att);
+//				}
+//			}
+//		} else {
+//			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+//		}
+//		
+//		if(result > 0) {
+//			System.out.println(a.getAbNo());
+//			return "redirect:/pet/petPhotoDetail/"+a.getAbNo();
+//		} else {
+//			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+//		}
+//	}
 	
 	@PostMapping("/petEditName.dw")
 	public String petEditName(Model model, @RequestParam("petName") String newPetName, @RequestParam("petId") String petId) {
@@ -558,9 +616,15 @@ public class PetController {
 	
 	@GetMapping("deleteImage.dw")
 	@ResponseBody
-	public String deleteImage() {
-		return null;
-	    }
+	public String deleteImage(@ModelAttribute Attachment a) {
+		System.out.println(a);
+		int result = pService.deleteImage(a);
+		if (result >0) {
+			return "good";
+		} else {
+			return "bad";
+		}
+    }
 	
 	@GetMapping("pet/petPhotoEdit/{abNo}")
 	public String petPhotoEditView(@PathVariable("abNo") int abNo, Model model, HttpSession session) {
@@ -582,8 +646,48 @@ public class PetController {
 	}
 	
 	@PostMapping("petPhotoEdit.dw")
-	public String petPhotoEdit(@RequestParam("file") ArrayList<MultipartFile> files) {
-		return null;
+	public String petPhotoEdit(@RequestParam("saveFile") ArrayList<MultipartFile> files, @RequestParam("abNumber") int abNo, @ModelAttribute Album a) {
+		a.setAbNo(abNo);
+		
+		//게시물 보내기
+		int result = pService.updatePetPhoto(a);
+		
+		//사진들 보내기
+		int result2 = 0;
+
+		if(result > 0) {
+			if(files != null && !files.isEmpty()) {
+				ArrayList<Attachment> attachments = new ArrayList<>();
+				for(MultipartFile file : files) {
+					String savedFileName = saveFile(file);
+					Attachment att = new Attachment();
+					att.setOriginalName(file.getOriginalFilename());
+					att.setRenameName(savedFileName);
+					att.setAttmRefType("AB");
+					att.setAttmRefNo(a.getAbNo());
+					attachments.add(att);
+					
+					for(int i=0; i < attachments.size(); i++) {
+			          Attachment at = attachments.get(i);
+			          if(i == 0) {
+			             at.setAttmLevel(1);
+			          } else {
+			             at.setAttmLevel(2);
+			          }
+			       }
+					result2 = pService.insertPetAlbum(att);
+				}
+			}
+		} else {
+			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+		}
+		
+		if(result > 0) {
+			System.out.println(a.getAbNo());
+			return "redirect:/pet/petPhotoDetail/"+a.getAbNo();
+		} else {
+			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
+		}
 	}
 	
 	//댓글
