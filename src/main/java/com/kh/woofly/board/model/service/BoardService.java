@@ -75,7 +75,7 @@ public interface BoardService {
 	
 	DwBoard selectDwBoard(int dwNo, String id);
 
-	ArrayList<Reply> selectDwReply(PageInfo pi, int dwNo);
+	ArrayList<Reply> selectDwReply(int dwNo);
 	
 	int insertDwBoard(DwBoard dw);
 	
@@ -139,6 +139,8 @@ public interface BoardService {
 
 	int deletWmReply(Reply r);
 	
+	int updateWmReply(Reply r);
+	
 	
 	
 
@@ -171,6 +173,54 @@ public interface BoardService {
 
 	ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map);
 
+	
+	
+	
+	//==========================중고게시판
+	int insertUsedRvBoard(UsedBoard selectProduct);
+
+	int insertUsedRvAttm(ArrayList<Attachment> attachments);
+
+	ArrayList<UsedBoard> selectProdList(UsedBoard u);
+
+	UsedBoard checkProdList(int prodNo);
+
+	int getUsedRvListCount(int i);
+
+	ArrayList<UsedBoard> selectUsedRvBoardList(PageInfo pi, int i);
+
+	ArrayList<Attachment> selectAttmUsedRvBoardList(Object object);
+
+	ArrayList<UsedBoard> searchUsedRvBoards(HashMap<String, String> map);
+
+	UsedBoard selectUsedRvBoard(int uNo, String id);
+
+	int getUsedRvReplyListCount(int uNo);
+
+	ArrayList<Reply> selectUsedRvReply(int uNo);
+	
+	/* 글 수정 */
+
+	int deleteUsedRvAttm(ArrayList<String> delRename);
+
+	int updateUsedRvBoard(UsedBoard u);
+	
+	/* 글 삭제 */
+
+	int deleteUsedRvBoard(int uNo);
+	
+	/* 댓글 */
+
+	int insertUsedRvReply(Reply r);
+
+	int deleteUsedRvReply(Reply r);
+
+	int updateUsedRvReply(Reply r);
+
+	
+
+
+	
 	
 
 	

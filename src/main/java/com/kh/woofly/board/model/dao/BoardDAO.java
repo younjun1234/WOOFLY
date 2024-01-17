@@ -82,7 +82,7 @@ public interface BoardDAO {
 	
 	DwBoard selectDwBoard(int dwNo);
 	
-	ArrayList<Reply> selectDwReply(int dwNo, RowBounds rowBounds);
+	ArrayList<Reply> selectDwReply(int dwNo);
 	
 	int updateDwCount(int dwNo);
 
@@ -134,7 +134,9 @@ public interface BoardDAO {
 
 	int insertWmAttm(ArrayList<Attachment> attachments);
 	
-	WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id);
+	WmBoard selectWmBoard(@Param("wmNo") int wmNo);
+	
+	int updateWmCount(int wmNo);
 	
 	int deleteWmAttm(ArrayList<String> delRename);
 
@@ -148,7 +150,7 @@ public interface BoardDAO {
 
 	ArrayList<Reply> selectWmReply(int wmNo);
 	
-	
+	int updateWmReply(Reply r);
 	
 	
 	
@@ -181,6 +183,61 @@ public interface BoardDAO {
 
 	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
 
+	
+	
+	
+	//==========================중고게시판
+	
+	int insertUsedRvBoard(UsedBoard selectProduct);
+
+	int insertUsedRvAttm(ArrayList<Attachment> attachments);
+
+	ArrayList<UsedBoard> selectProdList(UsedBoard u);
+	
+	ArrayList<Attachment> selectAttmUsedRvBoardList(Object object);
+
+	ArrayList<UsedBoard> searchUsedRvBoards(HashMap<String, String> map);
+
+	UsedBoard checkProdList(int prodNo);
+
+	int getUsedRvListCount(int i);
+
+	ArrayList<UsedBoard> selectUsedRvBoardList(int i, RowBounds rowBounds);
+
+	UsedBoard selectUsedRvBoard(int uNo);
+
+	int updateUsedRvCount(int uNo);
+
+	int getUsedRvReplyListCount(int uNo);
+
+	ArrayList<Reply> selectUsedRvReply(int uNo);
+
+	
+	/* 글 수정 */
+	int deleteUsedRvAttm(ArrayList<String> delRename);
+
+	int updateUsedRvBoard(UsedBoard u);
+	
+	/* 글 삭제 */
+
+	int deleteUsedRvBoard(int uNo);
+	
+	/* 댓글 */
+
+	int insertUsedRvReply(Reply r);
+
+	int deleteUsedRvReply(Reply r);
+
+	int updateUsedRvReply(Reply r);
+
+	
+
+	
+
+
+
+
+	
 	
 
 	
