@@ -3,13 +3,16 @@ package com.kh.woofly.member.model.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.dao.MemberDAO;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.member.model.vo.Point;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -135,6 +138,24 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int deletePayment(int paymentNo) {
 		return mDAO.deletePayment(paymentNo);
+	}
+
+	@Override
+	public int deletePoints(String id) {
+		return mDAO.deleteExpiredPoints(id);
+	}
+
+	@Override
+	public int getPointsCount(String id) {
+		return mDAO.getPointsCount(id);
+	}
+
+	@Override
+	public ArrayList<Point> selectMyPoints(PageInfo pi, String id) {
+		int offset = (pi.getCurrentPage() - 1) * pi.getPageLimit();
+		int limit = pi.getPageLimit();
+		RowBounds rowbounds = new RowBounds(offset, limit);
+		return mDAO.selectMyPoints(rowbounds, id);
 	}
 
 }

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
+
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,7 +26,7 @@ public class LostBoard {
    private String mStatus;
    private String mbId;
    private String mbNickName;
-   private int rescue;
+   private int mRescue;
    private int likeUser; // 좋아요 누른 사람
    
    private List<Attachment> attachments;

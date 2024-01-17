@@ -11,14 +11,20 @@
       	<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 			<h1>도그워커</h1>
 		</div>
+	<form id="detailForm">
 		<div class="container">
+			
+				<input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
+				<input type="hidden" id="mbId"  name="mbId" th:value="${session.loginUser?.mbId}">
+				<input type="hidden" id="mbNickname"  name="mbNickname" th:value="${session.loginUser?.mbNickName}">
+				<input type = "hidden" th:value ="${ page }" name ="page">
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6 style="display: inline;">작성자</h6>&nbsp;•&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">주소</h6>
-						<p>2023.10.16</p>
+						<h6 style="display: inline;">[[${dw.mbNickName}]]</h6>&nbsp;&nbsp;•&nbsp;&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">[[${dw.dwLocation}]]</h6>
+						<p>[[${dw.dwCreateDate}]]</p>
 					</div>
 				</div>
 				
@@ -34,157 +40,203 @@
 					<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
 					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
 					</svg>
-					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="/board/dw/edit">수정</a></li>
-					    <li><a class="dropdown-item" id ="deleteModal" >삭제</a></li><!-- th:if="${ session.loginUser }" -->
-					    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
+					<ul class="dropdown-menu"> <!--  href="/board/free/editForm" -->
+						<li><a class="dropdown-item" id="updateForm" th:if="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">수정</a></li>
+					    <li><a class="dropdown-item" id ="deleteModal"  th:if="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">삭제</a></li>
+					    <li><a class="dropdown-item" id ="reportModal" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq dw.mbId }">신고</a></li>
+					</ul> <!-- data-bs-target="#modal1" -->
 				</div>
 			</div>
 			<!-- 제목 -->
 			<div class="row">
-				<h1 class="ps-0">반려견 출입 가능 카페 알려드려요~</h1>
+				<h1 class="ps-0">[[${dw.dwTitle}]]</h1>
 			</div>
 			<!-- 내용 -->
-			<div class="row mt-3" style="min-height: 500px;">
-				종로역 1번 출구에 생겼더라구요~!
-				<div class="row">
-	              <table style="width:330px; height: 30px; border: 1px; font-size : 25px;" >
-		              <tr style="border: 1px ;">
-			              <th style="border: 1px ; height: 40px; border: 1px;">가격</th>
-			              <td style="border: 1px ; height: 40px; border: 1px;">\40000</td>
-		              </tr>
-	              </table>
-              </div>
+			<div class="row mt-3" style="min-height: 500px;" th:text="${dw.dwContent}">
+				
+				
 			</div>
+			<div class="row">
+	            	<table style="width:330px; height: 30px; border: 1px; font-size : 25px;" >
+		        		<tr style="border: 1px ;">
+			            	<th style="border: 1px ; height: 40px; border: 1px;">급여</th>
+			              	<td style="border: 1px ; height: 40px; border: 1px;" th:text="|\${dw.dwPrice}|"></td>
+		              	</tr>
+	                </table>
+              	</div>
+			<!-- 이미지 파일 삽입 -->
+			<main class="container py-5">
+			    <div class="row">
+			        <th:block th:each="a : ${list}">
+			            <!-- 이미지 파일일 때 -->
+			            <div class="mb-4" th:if="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
+			                <div class="card">
+			                    <img th:src="@{'/image/board/' + ${a.renameName}}" width="100%" height="200">
+			                    <div class="card-body">
+			                        <h5 class="card-title">
+			                            <a th:href="@{'/image/board/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
+			                        </h5>
+			                    </div>
+			                </div>
+			            </div>
+			            <!-- 이미지 파일이 아닐 때 -->
+			            <div class="mb-4" th:unless="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
+			                <div class="card">
+			                    <div class="card-body">
+			                        <h5 class="card-title">
+			                            <a th:href="@{'/image/board/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
+			                        </h5>
+			                    </div>
+			                </div>
+			            </div>
+			        </th:block>
+			    </div>
+			</main>
 			
 		</div>
-				
-		<!-- 댓글 작성 영역 -->
+		</form>
 		
-		<div class="mt-3">
-			<div class="row g-3 justify-content-center">
-				<div class="col-10">
-					<input class="form-control" type="text" placeholder="댓글 작성하기">
-				</div>
-				<div class="col-auto">
-					<button class="btn btn-dark">댓글 작성하기</button>
-				</div>
-			</div>
-		</div>
+		<!-- 댓글 입력창 -->
+                          <div class="mt-3 mb-5" th:if="${ session.loginUser != null}" >
+							<div class="row justify-content-center d-flex">
+								<div class="col-10">
+									<input class="form-control" id="replyContent" type="text" placeholder="댓글 달기...">
+								</div>
+								<div class="col-auto">
+									<button type="button" class="btn btn-sm btn-dark" id="replySubmit" style="width:70px;">댓글</button>
+								</div>
+							</div>
+						</div>		
 		
-		<!-- 댓글 조회 영역 -->
 		
-		<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-			<div class="col-1" style="line-height: 40px;">꼬미</div>
-			<div class="col-8" style="line-height: 40px;">생각보다 음료 종류도 많네요</div>
-			<div class="col-1" style="line-height: 40px;">작성일자</div>
-			<div class="col-2 d-flex align-items-center justify-content-end">
-				<div class="mx-2">53</div>
-				<div>
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-						<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					</svg>
-				</div>
-				<div class="dropdown ms-2 me-5">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					</svg>
-					<ul class="dropdown-menu">
-    				    <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		
-		<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-			<div class="col-1" style="line-height: 40px;">뽀또</div>
-			<div class="col-8" style="line-height: 40px;">주말 동안 가보기 좋은 곳이네요</div>
-			<div class="col-1" style="line-height: 40px;">작성일자</div>
-			<div class="col-2 d-flex align-items-center justify-content-end">
-				<div class="mx-2">53</div>
-				<div>
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-						<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					</svg>
-				</div>
-				<div class="dropdown ms-2 me-5">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					</svg>
-					<ul class="dropdown-menu">
-				    	<li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		
-		<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black">
-			<div class="col-1" style="line-height: 40px;">콩</div>
-			<div class="col-8" style="line-height: 40px;">오 안 가본 곳이네요~  한번 가봐야겠어요</div>
-			<div class="col-1" style="line-height: 40px;">작성일자</div>
-			<div class="col-2 d-flex align-items-center justify-content-end">
-				<div class="mx-2">53</div>
-				<div>
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-						<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-					</svg>
-				</div>
-				<div class="dropdown ms-2 me-5">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-					  	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					</svg>
-					<ul class="dropdown-menu">
-				    	<li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+		<!-- 댓글 조회 -->
+                     	<input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
+						<input type="hidden" id="mbId" name="mbId" th:value="${session.loginUser?.mbId}">
+						<input type="hidden" id="mbNickname" name="mbNickname" th:value="${session.loginUser?.mbNickName}">
+						
+						<div id="replybody">				
+		                     <div class="d-flex mt-3 border-bottom">
+		                        <strong>댓글 [[${#arrays.length(rList)}]]개</strong>
+		                        <p role="button">&nbsp;&nbsp;모두 보기</p>
+		                     </div>
+		                     
+		                     <div class="ms-auto d-block">
+		                         <div class="d-flex align-items-center" th:each="r : ${rList}">
+		                         <input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
+			                          <div class="p-2">
+			                               <!-- <img th:src="'/image/' + ${r.mbPhoto}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey"> -->
+			                          </div>
+			                          <div class="d-flex align-items-center p-2 col-9">
+			                       	   	  <p class="col-3" th:text="${r.mbNickName}"></p>
+			                        	  <input th:id="${r.rNo}+'content'" type="text" class="form-control-plaintext col-9 text-secondary" th:value="${ r.reContent }" readonly>
+			                          </div>
+			                          <div class="p-2 ms-auto d-flex align-items-center">
+			                          		<!-- <input type="hidden" th:value="${r.rNo}">
+											<div>[[${r.reLike}]]&nbsp;&nbsp;</div>
+											<svg id="heart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+											  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+											</svg>
+											<svg id="blackHeart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+											  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+											</svg>	 -->
+			                             <svg role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+			                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+			                             </svg>
+			                             <div class="dropdown mt-1">
+						                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+						                          <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+						                    </svg>
+						                    <ul class="dropdown-menu">
+					                        	<input type="hidden" th:value="${r.rNo}">
+					                        	<input type="hidden" th:value="${r.mbId}">
+						                        <li>
+						                        	<button class="dropdown-item editReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">수정</button>
+						                        </li>
+						                        <li><button class="dropdown-item deleteReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">삭제</button></li>
+						                        <li><button class="dropdown-item reportBtn" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
+						                    </ul> 
+						                </div>
+			                          </div>
+			                       </div>
+		                       </div>
+	                       </div>
+                         
 		
 		<!-- 댓글 페이지네이션 -->
-		<nav class="border-top border-black pt-5 mt-3">
+		<nav class="border-top border-black pt-5"  th:with="loc=${loc}">
 		  	<ul class="pagination justify-content-center">
 		    	<li class="page-item">
-			      	<a class="page-link" href="#">
-			        	<span aria-hidden="true">&laquo;</span>
-			      	</a>
-		    	</li>
-			    <li class="page-item"><a class="page-link active" href="#">1</a></li>
-			    <li class="page-item"><a class="page-link" href="#">2</a></li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item"><a class="page-link" href="#">4</a></li>
-			    <li class="page-item"><a class="page-link" href="#">5</a></li>
-		    	<li class="page-item">	
-			      	<a class="page-link" href="#" aria-label="Next">
-				    	<span aria-hidden="true">&raquo;</span>
-			      	</a>
-		    	</li>
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous">
+	            		<span aria-hidden="true">&laquo;</span>
+	              	</a> 
+	            </li>
+            	<li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+            		<a class="page-link" th:href="@{${loc}(page=${p})}">[[${ p }]]</a>
+            	</li> <!-- 게시글 페이지 번호 점점 커지게 하는 것 -->
+	            <li class="page-item">
+	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next">
+	            		<span aria-hidden="true">&raquo;</span>
+	            	</a>
+	            </li>
 		  	</ul>
 		</nav>
+		
 	</div>
 	<!-- 신고 영역 -->
-	<form>
-		<div class="modal fade" id="modal1" tabindex="-1">
-		  	<div class="modal-dialog modal-dialog-centered">
-		    	<div class="modal-content">
-		      		<div class="modal-header">
-		        		<h1 class="modal-title fs-5" id="modalToggleLabel1">신고</h1>
-		        		<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-		      		</div>
-		      		<div class="modal-body">
-			      		<select class="form-select mb-3">
-						  	<option disabled>신고 사유</option>
-						  	<option value="1">불법게시글</option>
-						  	<option value="2">음란물</option>
-						  	<option value="3">기타</option>
+	<form id="reportForm">
+	    <input type="hidden" th:value='${dw.mbId}' id="rAccused" name="rAccused">
+	    <input type="hidden" th:value="${session.loginUser?.mbId}" id="rAccuser" name="rAccuser">
+	    <input type="hidden" th:value='${dw.dwNo}' id="dwNo" name="dwNo">
+	    <input type="hidden" id="rContent" name="rContent"/>
+	
+	    <div class="modal fade reportReplyModal" id="modal1" tabindex="-1">
+	        <div class="modal-dialog modal-dialog-centered">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h1 class="modal-title fs-5" id="modalToggleLabel1">신고</h1>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+	                </div>
+	                <div class="modal-body content1" id="content1">
+	                    <select class="form-select mb-3" id="reportReason" name="reportReason">
+	                        <option disabled>신고 사유</option>
+	                        <option value="불법게시글">불법게시글</option>
+	                        <option value="음란물">음란물</option>
+	                        <option value="기타">기타</option>
+	                    </select>
+	                    <textarea class="form-control content2" id="content2" rows="5" style="resize: none;"></textarea>
+	                </div>
+	                <div class="modal-footer">
+	                    <button class="btn btn-primary" data-bs-dismiss="modal" id="reportSubmit">제출</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</form>
+	
+	<!-- 댓글 신고 -->
+	<form id="resetF">
+		<div class="modal fade" id="reportReplyModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">댓글 신고</h5>
+					</div>
+					<div class="modal-body">
+						<select class="form-select mb-3" id="reportType">
+							<option disabled>신고 사유</option>
+							<option value="불법게시글">불법게시글</option>
+							<option value="음란물">음란물</option>
+							<option value="기타">기타</option>
 						</select>
-		        		<textarea class="form-control" rows="5" style="resize: none;"></textarea>
-		    		</div>
-		    		<div class="modal-footer">
-		        		<button class="btn btn-primary" data-bs-toggle="modal">제출</button>
-		      		</div>
-		    	</div>
-		  	</div>
+						<textarea class="form-control" id="reportContent" rows="5" style="resize: none;"></textarea>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
+						<button type="button" class="btn btn-dark" id="reportReplySubmit">네</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</form>
 	
@@ -206,16 +258,45 @@
   		</div>
 	</div>
 	
+	<!-- 댓글 삭제 -->
+	<div class="modal fade deleteReplyModal" tabindex="-1" role="dialog" id="modalChoice2">
+		<div class="modal-dialog" role="document">
+    		<div class="modal-content rounded-3 shadow">
+      			<div class="modal-body p-4 text-center">
+        			<h3 class="mb-0">정말로 삭제하시겠습니까?</h3>
+        			<p class="mb-0">삭제 후 댓글은 복구할 수 없습니다.</p>
+      			</div>
+      			<div class="modal-footer flex-nowrap p-0">
+        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="deleteReply">
+        				<strong>네</strong>
+        			</button>
+        			<button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal">아니오</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
 	
-	<script>
+	
+	<script th:inline="javascript">
 		// 해당 페이지 nav bar 강조 넣기
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd4");
 		$(boardNav).addClass('active');
 		
 		window.onload = () =>{
+			//const loginUser = /*[[${session.loginUser}]]*/null;
 			
-			const del = document.getElementById('deleteModal')
+			//console.log(loginUser);
+			const upd = document.getElementById("updateForm");
+			const form = document.getElementById('detailForm');			
+			if(upd != null){
+				upd.addEventListener('click', ()=>{
+					form.action = '/board/dw/editForm';
+					form.submit();
+				});
+			}
+			
+			const del = document.getElementById('deleteModal');			
 			if(del != null) {
 				del.addEventListener('click', () =>{
 					$('#modalChoice').modal('show');
@@ -226,6 +307,180 @@
 				form.action = '/board/dw/delete';
 				form.submit();
 			})
+			
+			/* document.getElementById('reportReply').addEventListener('click', () =>{
+				form.action = '/board/dw/report';
+				form.submit();
+			}) */
+			
+			document.getElementById('reportModal').addEventListener('click', () => {
+		        $('#modal1').modal('show');
+		    });
+					
+			
+			// AJAX를 통한 폼 제출
+		    document.getElementById('reportSubmit').addEventListener('click', () => {
+		    	console.log(123);
+		        // 모달에서 선택한 사유 가져오기
+		        var reportReason = document.getElementById('reportReason').value;
+				console.log(reportReason);
+		        // 모달에서 입력한 내용 가져오기
+		        var reportContent = document.getElementById('content2').value;
+		        console.log(reportContent);
+		        // AJAX 요청
+		        $.ajax({
+		            url: '/board/dw/report',
+		            data: {
+		                rAccused: $('#rAccused').val(),
+		                rAccuser: $('#rAccuser').val(),
+		                dwNo: $('#dwNo').val(),
+		                rContent: reportReason + '&^' + reportContent,
+		               		                
+		            },
+		            success: function (data) {
+		                console.log(data);  
+		                if (data == 'good') {
+		                	 $('#modal1').modal('hide');
+			             } else if (data === 'existBoardReport') {
+			                 alert('이미 신고된 게시물입니다.');
+			                 // 또는 다른 사용자 인터페이스 처리 로직 추가
+			             }
+		                
+		            },
+		            error: function (data) {
+		                console.error(data);  
+		            }
+		        });
+		    });
+					
+			
+			
+			
+		  //댓글 ajax
+		      document.getElementById('replySubmit').addEventListener('click', ()=>{
+		    	  console.log(123);
+		    	  
+		    	  const dwNo = Number(document.getElementById('dwNo').value);
+		    	  const mbId = document.getElementById('mbId').value;
+		    	  const mbNickNmae = document.getElementById('mbNickname').value;
+		    	  const replyContent = document.getElementById('replyContent').value;
+		    	  
+		    	  if(replyContent !== '') {
+		    		  console.log(replyContent);
+		    		  $.ajax({
+		    			  url: '/insertDwReply.yk',
+		    			  data: {reContent:replyContent, bNo:dwNo},
+		    		 	  success: (data) =>{
+			   		 		 if(data == 'good'){
+									$("#replybody").load(location.href + " #replybody" );
+									document.getElementById('replyContent').value = '';
+									console.log(data);
+							} else {
+								console.log(data);
+							}
+		    		 	  },
+		    		 	  error: data => console.log(data)
+		    		  });
+		    	  }
+		      })
+			
+		  //댓글 수정 ajax
+		      const editReplyBtns = document.getElementsByClassName('editReplyBtn');
+		      for(const editReplyBtn of editReplyBtns) {
+		    	const rNo = editReplyBtn.parentElement.parentElement.firstElementChild.value;
+		    	const replyContent = document.getElementById(rNo+'content');
+		    	
+		    	editReplyBtn.addEventListener('click', ()=>{
+			    	$(replyContent).attr('readonly', false);
+			    	$(replyContent).removeClass('form-control-plaintext');
+		    	});
+		    	
+		    	replyContent.addEventListener('keyup', (event)=>{
+		    		if(event.key === 'Enter'){
+						$.ajax({
+							url : "/updateDwReply.yk",
+							data : {rNo:rNo, reContent:replyContent.value},
+							success: (data) =>{
+				   		 		 if(data == 'good'){
+										$("#replybody").load(location.href + " #replybody" );
+										document.getElementById('replyContent').value = '';
+										console.log(data);
+								} else {
+									console.log(data);
+								}
+		    		 	    },
+							error : (data) => console.log(data)
+						})    		  
+		      	  }
+		    	})
+		    	
+		      }
+		      
+		      //댓글 삭제 ajax
+		      const deleteReplyBtns = document.getElementsByClassName('deleteReplyBtn');
+		      
+		      for(const deleteReplyBtn of deleteReplyBtns) {
+		    	const rNo = deleteReplyBtn.parentElement.parentElement.firstElementChild.value;
+		    	
+		    	console.log(rNo);
+		    	
+		    	deleteReplyBtn.addEventListener('click', ()=>{
+					$.ajax({
+						url : "/deleteDwReply.yk",
+						data : {rNo:rNo},
+						success: (data) =>{
+			   		 		 if(data == 'good'){
+								$("#replybody").load(window.location.href + " #replybody" );
+								console.log(data);
+							} else {
+								console.log(data);
+							}
+		   		 	    },
+						error : (data) => console.log(data)
+					})    		  
+		    	})
+		    	
+		      }
+		      
+		    //댓글 신고 ajax
+		    
+		    const reportBtns = document.getElementsByClassName('reportBtn');
+	 	    const reportReplySubmit = document.getElementById('reportReplySubmit');
+	 	    
+		      let rNoSave;
+		      let mbIdSave;
+		      for(const reportBtn of reportBtns){
+		    	  reportBtn.addEventListener('click',()=>{
+		    		  rNoSave = reportBtn.parentElement.parentElement.firstElementChild.value;
+		    		  mbIdSave = reportBtn.parentElement.parentElement.children[1].value;
+					  $('#reportReplyModal').modal("show");
+		    	  })
+		      }
+		      
+		      reportReplySubmit.addEventListener('click',()=>{
+				 	const reportContent = document.getElementById('reportContent').value;
+				 	const reportType = document.getElementById('reportType').value;
+					
+					$.ajax({
+						url: "/insertDwReplyReport.yk",
+						data: {rBoardNo:rNoSave, rContent : reportType + "&^" + reportContent, rAccused : mbIdSave},
+						success : (data)=>{
+							if(data == 'good') {
+								alert("신고가 정상적으로 접수되었습니다.");
+								$('#resetF')[0].reset();
+								$('#reportReplyModal').modal("hide");
+							} else if(data == 'bad'){
+								alert("신고가 정상 접수되지 않았습니다.");
+							} else {
+								alert("해당 계정은 이미 같은 사유로 신고처리 되었습니다.");
+								$('#resetF')[0].reset();
+								$('#reportReplyModal').modal("hide");
+							}
+						},
+						error : (data)=>console.log(data)
+					})
+		      })
+		      
 		}
 		
 		

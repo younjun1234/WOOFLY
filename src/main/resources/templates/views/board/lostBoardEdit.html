@@ -29,10 +29,10 @@
 				<input type="hidden" th:value="${m.mNo}" name="mNo">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
-					    <select name="rescue" class="form-select mb-1">
-					    	<option th:selected="${m.rescue==1}" value="1">구조중</option>
-							<option th:selected="${m.rescue==2}" value="2">구조완료</option>
-						</select>
+				    <select name="mRescue" class="form-select mb-1">
+				    	<option value="1">구조중</option>
+						<option value="2">구조완료</option>
+					</select>
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>

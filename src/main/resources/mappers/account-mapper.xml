@@ -22,12 +22,36 @@
 	
 	<insert id="signUpMember" parameterType="Member">
 		INSERT INTO MEMBER
-		VALUES (#{mbId}, #{mbPwd}, #{mbName}, default, null, #{mbNickName}, #{mbEmail}, #{mbBirth}, #{mbTel}, default, default, default, default, default, null)
+		VALUES (#{mbId}, #{mbPwd}, #{mbName}, default, null, #{mbNickName}, #{mbEmail}, #{mbBirth}, #{mbTel}, default, default, default, default, default, null, default)
 	</insert>
 	
 	<insert id="signUpMemberAddr" parameterType="MemberAddress">
 		INSERT INTO MEMBER_ADDRESS
 		VALUES (address_seq.nextval, #{addr}, #{mbId}, 'Y', #{mbTel}, #{mbName}, #{postcode}, #{addrDetail})
 	</insert>
+	
+	<select id="checkNameEmail" resultType="_int">
+		select count(*)
+		from member
+		where MB_NAME = #{mbName} and MB_EMAIL = #{mbEmail}
+	</select>
+	
+	<select id="sendId" parameterType="Member">
+		select mb_id
+		from member
+		where mb_name = #{mbName} and mb_email = #{mbEmail} and mb_status = 'Y'
+	</select>	
+	
+	<select id="checkIdEmail" resultType="_int">
+		select count(*)
+		from member
+		where mb_id = #{mbId} and mb_email = #{mbEmail} and mb_status = 'Y'
+	</select>
+	
+	<update id="updatePwd">
+		update member
+		set mb_pwd = #{mbPwd}
+		where mb_id = #{mbId}
+	</update>
 	
 </mapper>

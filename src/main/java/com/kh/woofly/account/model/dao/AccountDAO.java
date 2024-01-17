@@ -20,5 +20,13 @@ public interface AccountDAO {
 	public int signUpMember(Member m);
 
 	public int signUpMemberAddr(MemberAddress ma);
+
+	public int checkNameEmail(Member m);
+
+	public Member sendId(Member info);
+
+	public int checkIdEmail(Member m);
+
+	public int updatePwd(Member m);
 	
 }

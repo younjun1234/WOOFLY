@@ -38,4 +38,24 @@ public class AccountServiceImpl implements AccountService{
 		return aDAO.signUpMemberAddr(ma);
 	}
 
+	@Override
+	public int checkNameEmail(Member m) {
+		return aDAO.checkNameEmail(m);
+	}
+
+	@Override
+	public Member sendId(Member info) {
+		return aDAO.sendId(info);
+	}
+
+	@Override
+	public int checkIdEmail(Member m) {
+		return aDAO.checkIdEmail(m);
+	}
+
+	@Override
+	public int updatePwd(Member m) {
+		return aDAO.updatePwd(m);
+	}
+
 }

@@ -47,202 +47,69 @@
 				</form>
 			</div>
 		</div>
-		
-		<!-- 게시글 -->
-		<div class="row gap-5 justify-content-center mt-3">
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>황유경</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
+		<br>
+		<!--게시글-->
+		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+           <div class="col" th:each="u : ${uList}">
+              <div class="card shadow-sm"> 
+                 <th:block th:each="a: ${aList}" th:if="${a.attmRefNo eq u.uNo}">
+                    <img th:src="@{'/image/board/' + ${a.renameName}}" width="100%" height="225" th:if="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" th:unless="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
+                       <rect width="100%" height="100%" fill="#55595c"/>
+                       <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                    </svg>
+                 </th:block> 
+                 <div class="card-body">
+                    <p class="card-text">
+						<!--<p th:text="${m.mbNickName}">작성자</p>-->
+						 <label class="bId" th:text="${u.uNo}">No. [[${ u.uNo }]]</label> | <label class="writer" th:text="${u.mbNickName}">[[${ u.mbNickName }]]</label>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+						<h6 th:text="${u.uTitle}">글제목</h6>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
 			
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/0863/8360e74209bb76ccb87369df804895c456907e9b27ad2970e0c8cfa49814.png" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/4e1a/b08b56f9e4a8995cd3f9298a1cacbd28bf09b57198aaec82f91a1f703126.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-		</div>
-		
-		<!-- 게시글 -->
-		<div class="row gap-5 justify-content-center mt-3">
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/0863/8360e74209bb76ccb87369df804895c456907e9b27ad2970e0c8cfa49814.png" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/4e1a/b08b56f9e4a8995cd3f9298a1cacbd28bf09b57198aaec82f91a1f703126.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-		</div>
-		
-		<!-- 게시글 -->
-		<div class="row gap-5 justify-content-center mt-3">
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/5efb/fd48acde4c9b97aa39e55704c0c100cc95fc22024dc80dc1a6e14801cdfd.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/0863/8360e74209bb76ccb87369df804895c456907e9b27ad2970e0c8cfa49814.png" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			<div class="card" style="width: 30%;">
-				<img src="https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/4e1a/b08b56f9e4a8995cd3f9298a1cacbd28bf09b57198aaec82f91a1f703126.jpg" class="card-img-top" alt="...">
-			  	<div class="card-body d-flex justify-content-between">
-			  		<div class="d-flex align-items-center">
-				    	<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-						<div class="header-text-container pt-3">
-							<h6>글제목</h6>
-							<p>작성자</p>
-						</div>
-			  		</div>
-					<div class="d-flex align-items-center">
-						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16" role="button">
-							<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-						</svg>
-						<div class="ms-3">53</div>
-					</div>
-			  	</div>
-			</div>
-			
-			<nav class="border-top border-black pt-5">
-		  	<ul class="pagination justify-content-center">
-		    	<li class="page-item">
-			      	<a class="page-link" href="#">
-			        	<span aria-hidden="true">&laquo;</span>
-			      	</a>
-		    	</li>
-			    <li class="page-item"><a class="page-link" href="#">1</a></li>
-			    <li class="page-item"><a class="page-link" href="#">2</a></li>
-			    <li class="page-item"><a class="page-link" href="#">3</a></li>
-			    <li class="page-item"><a class="page-link" href="#">4</a></li>
-			    <li class="page-item"><a class="page-link" href="#">5</a></li>
-		    	<li class="page-item">	
-			      	<a class="page-link" href="#" aria-label="Next">
-				    	<span aria-hidden="true">&raquo;</span>
-			      	</a>
-		    	</li>
-		  	</ul>
-		</nav>
+			<!--페이지네이션-->
+		  <nav class="center" aria-label="Standard pagination example" style="float: right;" th:with="loc=${loc}">
+             <ul class="pagination">
+				 <!-- << -->
+                <th:block th:if="${ pi.currentPage <= 1}">
+                   <li class="page-item">
+                      <a class="page-link disable" aria-label="Previous">
+                         <span aria-hidden="true">&laquo;</span>
+                      </a>
+                   </li>
+                </th:block>
+                <th:block th:unless="${ pi.currentPage <= 1}">
+                   <li class="page-item">
+                       <a class="page-link" th:href="@{${loc}(page=${pi.currentPage - 1})}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                       </a>
+                   </li>
+               </th:block>
+                	<!--[1] [2] [3]...-->
+                    <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+                        <a class="page-link" th:href="@{${loc}(page=${p})}" th:text="${p}"></a>
+                    </li>
+                   <!-- >> -->
+                   <li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
+                    <a class="page-link" aria-label="Next">
+                       <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+               <th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
+                  <li class="page-item">
+                   <a class="page-link" th:href="@{${loc}(page=${pi.currentPage + 1})}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                   </a>
+                </li>
+             </th:block>
+            </ul>
+          </nav>
+          <!--페이지네이션 끝-->
 		</div>
 		
 	</div>
@@ -254,13 +121,17 @@
 		const boardNav = document.getElementById("topAdd6");
 		$(boardNav).addClass('active');
 		
-		// 카드에 클릭 이벤트 넣어주는 부분
-		const cards = document.getElementsByClassName("card");
-		for (const card of cards) {
-			card.addEventListener('click', () => {
-				window.location.href = "/board/used/detail"
-			})
-		}
+		 // 카드에 클릭 이벤트 넣어주는 부분
+	    const cards = document.getElementsByClassName("card");
+	    for (const card of cards) {
+	        card.addEventListener('click', function() {
+	            const boardId = this.querySelector('.bId').textContent; // 카드에서 boardId 가져오기
+	            const currentPage = /*[[${pi.currentPage}]]*/1; // 실제 현재 페이지 값으로 변경하세요
+	
+	            // boardId 및 currentPage 값을 사용하여 세부 페이지로 이동
+	            window.location.href = `/board/used/detail?uNo=${boardId}&page=${currentPage}`;
+	        });
+	    }
 		
 		/* document.getElementById('searchArea').querySelector('button').addEventListener('click', function(){
 			const value = this.previousElementSibling.value; //검색할 값

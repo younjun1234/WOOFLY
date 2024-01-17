@@ -14,12 +14,12 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+//import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,11 +30,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Payment;
+import com.kh.woofly.member.model.vo.Point;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,12 +68,6 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
     }
 	
-
-	@GetMapping("/my")
-	public String profileHomeView() {
-		return "myHome";
-	}
-
 	@GetMapping("my/login-edit")
 	public String loginView(Model model) {
 		return "myLogin";
@@ -107,8 +104,51 @@ public class MemberController {
 	}
 
 	@GetMapping("my/point")
-	public String pointView() {
-		return "myPoint";
+	public String pointView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+		
+        int result = mService.deletePoints(id);
+        
+        int listCount = mService.getPointsCount(id);
+        PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
+        ArrayList<Point> pList = mService.selectMyPoints(pi, id);
+        int pointsUsable = 0;
+        int pointsExpiring = 0;
+        for (Point p : pList) {
+        	if(p.getTransactionType().equals("A")) {
+        		pointsUsable += p.getPointChange();
+        	} else {
+        		pointsUsable -= p.getPointChange();
+        	}
+        	
+            Date currentDate = new Date();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+
+            calendar.add(Calendar.MONTH, -11);
+            Date elevenMonthsBefore = calendar.getTime();
+            calendar.add(Calendar.MONTH, -1);
+            Date oneYearBefore = calendar.getTime();
+
+
+        	if(p.getTransactionDatetime().before(elevenMonthsBefore) && p.getTransactionDatetime().after(oneYearBefore)) {
+        		pointsExpiring += p.getPointChange();
+        	}
+        }
+        
+        
+        if(pList != null) {
+        	model.addAttribute("pointsUsable", pointsUsable);
+        	model.addAttribute("pointsExpiring", pointsExpiring);
+        	model.addAttribute("list", pList);
+        	model.addAttribute("pi", pi);
+        	return "myPoint";
+        } else {
+        	throw new MemberException("포인트 조회 실패");
+        }
+        
 	}
 
 	@GetMapping("my/addPayment")
@@ -139,6 +179,34 @@ public class MemberController {
 		}
 	}
 	
+	@GetMapping("addPayment.yj")
+	@ResponseBody
+	public String addCard(@RequestParam("authKey") String authKey, @RequestParam("customerKey") String customerKey) {
+		String billingKey = Base64.getEncoder().encodeToString("test_sk_kYG57Eba3G6AeDn45qa98pWDOxmA:".getBytes());
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.tosspayments.com/v1/billing/authorizations/issue"))
+				.header("Authorization", "Basic " + billingKey).header("Content-Type", "application/json")
+				.method("POST",
+						BodyPublishers
+								.ofString("{\"authKey\":\"" + authKey + "\",\"customerKey\":\"" + customerKey + "\"}"))
+				.build();
+		int result = 0;
+		try {
+			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			System.out.println(response.body());
+			HashMap<String, Object> map = new ObjectMapper().readValue(response.body(), HashMap.class);
+			System.out.println(map);
+			result = mService.addPayment(map);
+			
+		} catch (InterruptedException | IOException var7) {
+			var7.printStackTrace();
+		}
+		if(result > 0) {
+			return "good";
+		} else {
+			throw new MemberException("결제 정보 저장에 실패하였습니다.");
+		}
+	}
 	@GetMapping("updatePayment.yj")
 	public String updatePayment(@RequestParam("paymentNo") int paymentNo, HttpSession session) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -328,9 +396,7 @@ public class MemberController {
 			}
 		}
 		return "redirect:/my/profile-edit";
-		
 	}
-	
 	
 
 
@@ -354,7 +420,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\uploadFiles\\woolfy";
+			savePath = "C:\\" + "\\uploadFiles\\woofly";
 		} else if (os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 		}
@@ -382,32 +448,30 @@ public class MemberController {
 		return renameFileName;
 	}
 	
+	
 	@GetMapping("mailCheck.yj")
-	@ResponseBody
-	public String sendMail(@RequestParam("to") String to) throws Exception {
-		Random r = new Random();
-		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
-		String subject = "인증코드";
-		String content = "인증코드" + checkNum + "입니다";
-		String from = "testyounjun@gmail.com";
+	@ResponseBody public String sendMail(@RequestParam("to") String to) throws Exception { 
+		Random r = new Random(); int checkNum = r.nextInt(888888) + 111111; // 난수 생성 
+		String subject = "인증코드"; 
+		String content = "인증코드" + checkNum + "입니다"; 
+		String from = "testyounjun@gmail.com"; 
 		try {
-
-			MimeMessage mail = mailSender.createMimeMessage();
-			MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
-
+			MimeMessage mail = mailSender.createMimeMessage(); MimeMessageHelper
+			mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+		 
 			mailHelper.setFrom(from);
-
-			mailHelper.setTo(to);
-			mailHelper.setSubject(subject);
+		  
+			mailHelper.setTo(to); mailHelper.setSubject(subject);
 			mailHelper.setText(content, true);
-
-			mailSender.send(mail);
-		} catch (Exception e) {
-			e.printStackTrace();
+		 
+			mailSender.send(mail); 
+		} 
+		catch (Exception e) { 
+			e.printStackTrace(); 
 		}
-
-		return checkNum + "";
-	}
+	 
+		return checkNum + ""; }
+	 
 	
 	
 	@PostMapping("updateEmail.yj")
@@ -475,7 +539,7 @@ public class MemberController {
     public String addAddress(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
     						 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
     						 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
-    	String addr = String.format("(%s)%s %s", postcode, address, addressDetail);
+    	
     	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
     	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
     	int result = mService.addAddress(mAddress);
@@ -484,6 +548,22 @@ public class MemberController {
     	} else {
     		throw new MemberException("주소 추가에 실패하였습니다");
     	}
+    }
+    
+    @GetMapping("addCheckoutAddr.yj")
+    @ResponseBody
+    public String addCheckoutAddr(HttpSession session, @RequestParam("mbName") String mbName, @RequestParam("mbTel") String mbTel, 
+								 @RequestParam("postcode") String postcode, @RequestParam("address") String address, 
+								 @RequestParam("addressDetail") String addressDetail, @RequestParam(value="addrType", defaultValue="N") String addrType) {
+    	String mbId = ((Member)session.getAttribute("loginUser")).getMbId(); 
+    	MemberAddress mAddress = new MemberAddress(0, postcode, address, addressDetail, mbId, addrType, mbTel, mbName);
+    	int result = mService.addAddress(mAddress);
+    	if(result > 0) {
+    		return "" + mAddress.getAddrId();
+    	} else {
+    		throw new MemberException("주소 추가에 실패하였습니다");
+    	}
+    	
     }
     
     @GetMapping("checkAddrType.yj")
