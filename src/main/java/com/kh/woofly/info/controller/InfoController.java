@@ -65,7 +65,11 @@ public class InfoController {
 	
 	// 공지사항 작성페이지 이동
 	@GetMapping("/info/noticeWrite")
-	public String noticeWrite() {
+	public String noticeWrite(Model model) {
+		
+		int nNo = iService.noticeNo() + 1;
+		
+		model.addAttribute("nNo", nNo);
 		
 		return "noticeWrite";
 	}
@@ -74,73 +78,40 @@ public class InfoController {
 	@PostMapping("/info/insertNotice")
 	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles) {
 		
-//		String id = ((Member)session.getAttribute("loginUser")).getId();                  
+//		String id = ((Member)session.getAttribute("loginUser")).getId();  
 //		n.setNWriter(id);
-		
-		System.out.println(n);
-		System.out.println(noticeFiles);
 		
 		// 썸네일 리네임 과정
 		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
 		
-		if(true) {
-			for(int i = 0; i < noticeFiles.size(); i++) {
-				MultipartFile upload = noticeFiles.get(i);
+		for(int i = 0; i < noticeFiles.size(); i++) {
+			MultipartFile upload = noticeFiles.get(i);
+			
+			if(!upload.getOriginalFilename().equals("")) {
 				
-				if(!upload.getOriginalFilename().equals("")) {
+				String[] returnArr = saveFile(upload);
+				
+				if(returnArr[1] != null) {
+					NoticeAttm t = new NoticeAttm();
+					t.setOriginalName(upload.getOriginalFilename());
+					t.setRenameName(returnArr[1]);
+					t.setAttmPath(returnArr[0]);
+					t.setAttmRefNo(n.getNNo());// 공지 번호 (N_NO)
 					
-					String[] returnArr = saveFile(upload);
-					
-					if(returnArr[1] != null) {
-						NoticeAttm t = new NoticeAttm();
-						t.setOriginalName(upload.getOriginalFilename());
-						t.setRenameName(returnArr[1]);
-						t.setAttmPath(returnArr[0]);
-						t.setAttmRefNo(1);// 공지 번호 (N_NO)
-						
-						String oName = upload.getOriginalFilename();
-						// 파일 이름을 '.'을 기준으로 나누기
-				        String[] parts = oName.split("\\.");
-				        // 파일 확장자 얻기 (마지막 부분)
-				        String extension = parts[parts.length - 1];
-				        if(extension.equals("jpg") || extension.equals("png") || extension.equals("gif") || extension.equals("jpeg")) {
-				        	t.setAttmLevel(1);
-				        }else {
-				        	t.setAttmLevel(2);
-				        }
-						
-						list.add(t);
-					}
+					String oName = upload.getOriginalFilename();
+					// 파일 이름을 '.'을 기준으로 나누기
+			        String[] parts = oName.split("\\.");
+			        // 파일 확장자 얻기 (마지막 부분)
+			        String extension = parts[parts.length - 1];
+			        if(extension.equals("jpg") || extension.equals("png") || extension.equals("gif") || extension.equals("jpeg")) {
+			        	t.setAttmLevel(1);
+			        }else {
+			        	t.setAttmLevel(2);
+			        }
+					list.add(t);
 				}
 			}
 		}
-		
-		System.out.println(list);
-		
-		// 첨부파일없을떄
-		if(list.isEmpty()) {
-			System.out.println("gdgdgdgdgd");
-			for(int i = 1; i < noticeFiles.size(); i++) {
-				MultipartFile upload = noticeFiles.get(i);
-				
-				if(!upload.getOriginalFilename().equals("")) {
-					
-					String[] returnArr = saveFile(upload);
-					
-					if(returnArr[1] != null) {
-						NoticeAttm t = new NoticeAttm();
-						t.setOriginalName(upload.getOriginalFilename());
-						t.setRenameName(returnArr[1]);
-						t.setAttmPath(returnArr[0]);
-						t.setAttmRefNo(1);
-						t.setAttmLevel(2);
-						
-						list.add(t);
-					}
-				}
-			}
-		}
-		
 		
 		int result = iService.insertNotice(n);
 		
@@ -208,15 +179,42 @@ public class InfoController {
 		
 //		Member loginUser = (Member)session.getAttribute("loginUser");
 		
+		
+		
 		String id = null;
 		
 //		if(loginUser != null) {
 //			id = loginUser.getId();
 //		}
-		
+		// id 조횟수 시간나면
 		Notice n = iService.selectNotice(nNo, id);
 		
 		if(n != null) {
+			int nNum = n.getNNo();
+				
+			ArrayList<NoticeAttm> nList = iService.selectAttmNList(nNum);
+			ArrayList<NoticeAttm> iList = new ArrayList<NoticeAttm>();
+			ArrayList<NoticeAttm> aList = new ArrayList<NoticeAttm>();
+			
+			//파일이 있을때만 실행
+			if( !nList.isEmpty() ) {
+				for(int i = 0; i < nList.size(); i++) {
+					int level = nList.get(i).getAttmLevel();
+
+					if(nList.get(i).getAttmLevel() == 1) {
+						// 사진 파일 리스트
+						iList.add(nList.get(i));
+					}else if(level == 2){
+						// 사진 제외 파일 리스트
+						aList.add(nList.get(i));
+					}else {
+						System.out.println("오류");
+					}
+				}
+			}
+			
+			model.addAttribute("iList", iList);
+			model.addAttribute("aList", aList);
 			model.addAttribute("n", n);
 			model.addAttribute("page", page);
 			return "noticeDetail";

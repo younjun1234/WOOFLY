@@ -30,8 +30,8 @@
 						<div class="card">
 							<form action="/info/NoticeEdit" method="POST">
 								<div class="card-header d-flex justify-content-between" >
-									<h5>공지사항</h5>
-									<h4>[[${n.nCategory}]]</h4>
+									<h5>[[${n.nCategory}]]</h5>
+									<h4>공지사항</h4>
 									<input type="hidden" th:value="${ page }" name="page">
 									<input type="hidden" th:value="${ n.nNo }" name="nNo">
 									<div class="d-flex gap-3">
@@ -47,24 +47,30 @@
 											제목[[${ n.nTitle }]]
 										</div>
 										<div class="info">
-											<dl style="margin-left: 55%">
+											<dl style="margin-left: 65%; margin-bottom: 5px">
 												<dt>글쓴이</dt>
 					                            <dd>[[${ n.nWriter }]]</dd>
 											</dl>
-											<dl>
+											<dl style="margin-bottom: 5px">
 												<dt>작성일</dt>
 												<dd>[[${ n.nCreateDate }]]</dd>
 											</dl>
-											<dl>
-												<dt>조회</dt>
-												<dd>[[${ n.nCount }]]</dd>
-											</dl>
+											<!-- 파일 있을때만!!!!!!!!!!!!!!!!!! -->
+											<div style="display: inline-block; margin-left: 75%">
+												<span style="font-size: 15px; ">첨부 파일</span><br>
+												<div style="font-size: 12px;  " th:each="a : ${aList}">
+													<a th:href="'/image/noticeFiles/' + ${a.renameName}" th:download="${a.originalName}">[[${a.originalName}]]</a><br>
+												</div>
+											</div>
+											<br>
+											
 										</div>
 										<div class="text"> <!--글 내용-->
 											<pre style="margin-left: 40px">[[${ n.nContent }]]</pre>
 										</div>
-										<div class="text1"> <!--글 사진-->
-											<img alt="공지사진 사진있을때만">
+										<!-- 사진  있을때만!!!!!!!!!!!!!!!!!!-->
+										<div class="text1" th:each="i : ${iList}"> <!--공지 사진-->
+											<img th:src="'/image/noticeFiles/' + ${i.renameName}" alt="공지사진">
 										</div>
 									</div>
 									<div style="text-align: center; margin-top: 10px;">

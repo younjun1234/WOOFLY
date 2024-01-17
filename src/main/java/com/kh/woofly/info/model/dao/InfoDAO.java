@@ -67,6 +67,10 @@ public interface InfoDAO {
 	ArrayList<QNA> searchAllQNA(RowBounds rowBounds, Properties prop);
 
 	int insertAttm(ArrayList<NoticeAttm> list);
+
+	int noticeNo();
+
+	ArrayList<NoticeAttm> selectAttmNList(int nNum);
 	
 	
 

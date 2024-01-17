@@ -60,7 +60,7 @@
 	<!-- 공지사항  -->
 	<insert id="insertNotice">
 		insert into notice
-		values ( 10000 , #{nTitle}, #{nContent}, sysdate, sysdate, #{nCategory}, default, default, 'admin')
+		values ( 10003 , #{nTitle}, #{nContent}, sysdate, sysdate, #{nCategory}, default, default, 'admin')
 	</insert>
 	
 	<select id="selectNoticeList" resultType="Notice">
@@ -68,6 +68,18 @@
 		from notice
 		WHERE N_STATUS ='Y'
 		ORDER BY N_CREATE_DATE DESC
+	</select>
+	
+	<select id="noticeNo" resultType="_int">
+		SELECT *
+	    FROM (
+			select N_NO
+			from NOTICE
+			ORDER BY N_NO DESC
+		)
+		<![CDATA[
+	    WHERE ROWNUM <= 1
+	    ]]>
 	</select>
 	
 	<select id="selectNotice" resultType="Notice">
@@ -124,6 +136,14 @@
 			ORDER BY N_CREATE_DATE DESC
 		</if>
 	</select>
+	
+	
+	<select id="selectAttmNList" resultType="NoticeAttm">
+		select *
+		from ATTACHMENT
+		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{nNum}
+	</select>
+	
 	
 	<!-- 조회수 -->
 	<update id="updateCount">

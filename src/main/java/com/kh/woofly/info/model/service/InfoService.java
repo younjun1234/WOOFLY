@@ -63,4 +63,8 @@ public interface InfoService {
 
 	int insertAttm(ArrayList<NoticeAttm> list);
 
+	int noticeNo();
+
+	ArrayList<NoticeAttm> selectAttmNList(int nNum);
+
 }

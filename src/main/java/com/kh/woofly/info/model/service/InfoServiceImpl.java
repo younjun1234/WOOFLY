@@ -220,6 +220,18 @@ public class InfoServiceImpl implements InfoService{
 		return iDAO.insertAttm(list);
 	}
 
+	@Override
+	public int noticeNo() {
+		// TODO Auto-generated method stub
+		return iDAO.noticeNo();
+	}
+
+	@Override
+	public ArrayList<NoticeAttm> selectAttmNList(int nNum) {
+		// TODO Auto-generated method stub
+		return iDAO.selectAttmNList(nNum);
+	}
+
 
 	
 }
