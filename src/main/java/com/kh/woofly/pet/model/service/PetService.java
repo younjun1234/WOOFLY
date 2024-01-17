@@ -57,7 +57,7 @@ public interface PetService {
 
 	ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map);
 
-	ArrayList<Album> selectMyAlbums(HashMap<String, String> map);
+	ArrayList<Album> selectMyAlbums(HashMap<String, Object> map);
 
 	ArrayList<Album> petPhotoDetail(int abNo);
 
@@ -92,6 +92,12 @@ public interface PetService {
 	int insertReplyLike(HashMap<String, Object> map);
 
 	ArrayList<Participants> petContestList(HashMap<String, String> map);
+
+	int albumLike(HashMap<String, Object> map);
+
+	int deleteBoardLike(HashMap<String, Object> map);
+
+	int insertBoardLike(HashMap<String, Object> map);
 
 	//int getPhotoCount(HashMap<String, String> map);
 

@@ -37,17 +37,22 @@
 					<br>
 				</div>
 				<div th:if="${session.loginUser != null}">
-					<div class="d-flex justify-content-between mt-3 mb-3">
-						<div class = "p-2 bd-highlight">
-						  <select class="form-select" name="petName" style="width: 160px;" required>
-							  <option selected disabled>강아지 선택</option>
-						  	  <option th:each="p : ${pList}" th:value="${p.petId}" th:text="${p.petName}"></option>
-						  </select>
-					 	</div>
-						<div class="d-flex ms-auto p-2 bd-highlight">
-						    <a href="/pet/petPhotoWrite" class="btn btn-dark btn-sm">글쓰기</a>
+					<form action="/pet/petPhoto" method="get">
+						<div class="d-flex justify-content-between mt-3 mb-3">
+							<div class = "p-2 bd-highlight">
+							  <select class="form-select" name="petName" style="width: 160px;" required>
+								  <option value="" selected>강아지 선택</option>
+							  	  <option th:each="p : ${pList}" th:value="${p.petId}" th:text="${p.petName}"></option>
+							  </select>
+						 	</div>
+							<div class="p-2 bd-highlight">
+						  		<button class="btn btn-dark btn-sm">조회</button>
+						  	</div>
+							<div class="d-flex ms-auto p-2 bd-highlight">
+							    <a href="/pet/petPhotoWrite" class="btn btn-dark btn-sm">글쓰기</a>
+							</div>
 						</div>
-					</div>
+					</form>
 					<!-- 1열입니당 -->
 					<div class="mb-5">
 						<div class="d-flex flex-wrap gap-5 mt-2">

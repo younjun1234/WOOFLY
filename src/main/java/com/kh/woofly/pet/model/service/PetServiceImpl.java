@@ -131,7 +131,7 @@ public class PetServiceImpl implements PetService{
 	}
 
 	@Override
-	public ArrayList<Album> selectMyAlbums(HashMap<String, String> map) {
+	public ArrayList<Album> selectMyAlbums(HashMap<String, Object> map) {
 		return pDAO.selectMyAlbums(map);
 	}
 
@@ -220,6 +220,21 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public ArrayList<Participants> petContestList(HashMap<String, String> map) {
 		return pDAO.petContestList(map);
+	}
+
+	@Override
+	public int albumLike(HashMap<String, Object> map) {
+		return pDAO.albumLike(map);
+	}
+
+	@Override
+	public int deleteBoardLike(HashMap<String, Object> map) {
+		return pDAO.deleteBoardLike(map);
+	}
+
+	@Override
+	public int insertBoardLike(HashMap<String, Object> map) {
+		return pDAO.insertBoardLike(map);
 	}
 
 

@@ -56,36 +56,25 @@ public class PetController {
 		return "petInfo";
 	}
 
-	@GetMapping("pet/petPhoto")
-	public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
-			@RequestParam(value="petName", required=false) String petName) {
-		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		HashMap<String, String> map = new HashMap<>();
-		
-		map.put("id", id);
-		
-		if(petName == null) {
-			map.put("petName", null);
-		} else {
-			map.put("petName", petName);
-		}
-		System.out.println(map);
-		ArrayList<Album> aList = pService.selectMyAlbums(map);
-		ArrayList<Pet> pList = pService.petInfoList(id);
-		
-//		int listCount = pService.getPhotoCount(map);
-//		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-        
-		if(aList != null) {
-			model.addAttribute("pList", pList);
-			model.addAttribute("aList", aList);
-			//model.addAttribute("pi", pi);
-			return "petPhoto";
-			
-		} else {
-			throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
-		}
-	}
+	  @GetMapping("pet/petPhoto")
+	   public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
+			   @RequestParam(value="petName", required=false) Integer petId) {
+	      String id = ((Member)session.getAttribute("loginUser")).getMbId();
+	      HashMap<String, Object> map = new HashMap<>();
+	      map.put("id", id);
+          map.put("petId", petId);
+	      ArrayList<Album> aList = pService.selectMyAlbums(map);
+	      ArrayList<Pet> pList = pService.petInfoList(id);
+	       
+	      if(aList != null) {
+	         model.addAttribute("pList", pList);
+	         model.addAttribute("aList", aList);
+	         return "petPhoto";
+	         
+	      } else {
+	         throw new PetException("마이펫 사진첩 조회에 실패하였습니다.");
+	      }
+	   }
 
 	@GetMapping("pet/petDiary")
 	public String petDiaryView(HttpSession session, Model model,@RequestParam(value="page", defaultValue="1") int page,
@@ -128,13 +117,17 @@ public class PetController {
 			e.printStackTrace();
 		}
 		
+		if(petId == null) {
+			petId = null;
+		}
 		map.put("petId", petId);
+		if (petHealth == null || petHealth.equals("")) {
+			petHealth = null;
+		}
 		map.put("petHealth", petHealth);
-		
 		
 		int listCount = pService.getDiaryCount(map);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
-		
 		
 		ArrayList<Diary> list = pService.petDiaryList(pi, map);
 		ArrayList<Pet> pet = pService.petInfoList(id);
@@ -431,8 +424,11 @@ public class PetController {
 		ArrayList<Pet> pList = pService.petInfo(abNo); 
 		ArrayList<Reply> rList = pService.replyList(abNo);
 		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		
 		map.put("abNo", abNo);
 		map.put("id", id);
+		int likeCount = pService.albumLike(map);
 		ArrayList<ReplyLike> likeList = new ArrayList<>();
 		for(Reply r: rList) {
 			Reply tempR = new Reply();
@@ -443,6 +439,7 @@ public class PetController {
 		}
 		System.out.println(likeList);
 		if(aList != null) {
+			model.addAttribute("aLike", likeCount);
 			model.addAttribute("aList", aList);
 			model.addAttribute("pList", pList);
 			model.addAttribute("rList", rList);
@@ -474,6 +471,29 @@ public class PetController {
 		} else {
 			return "bad";
 					
+		}
+	}
+	
+	@GetMapping("insertDeleteBoardLike.dw")
+	@ResponseBody
+	public String insertDeleteBoardLike(@RequestParam("abNo") int abNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+		HashMap<String, Object> map = new HashMap<>();
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+		map.put("abNo", abNo);
+		map.put("id", id);
+		
+		int result = 0;
+		if (replyInDel.equals("delete")) {
+			result = pService.deleteBoardLike(map);
+		} else {
+			result = pService.insertBoardLike(map);
+		}
+			
+		if (result > 0) {
+			return "good";
+		} else {
+			return "bad";
 		}
 	}
 	

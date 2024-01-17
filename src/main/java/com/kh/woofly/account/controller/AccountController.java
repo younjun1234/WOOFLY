@@ -67,14 +67,14 @@ public class AccountController {
        return "index";
     }
     
-//	@GetMapping("/account/login")
-//	public String loginView(Model model) {
+	@GetMapping("/account/login")
+	public String loginView(Model model) {
 //		Member m = new Member();
 //		m.setMbId("younjun1234");
 //		Member loginUser = aService.login(m);
 //		model.addAttribute("loginUser", loginUser);
-//		return "login";
-//	}
+		return "login";
+	}
 	
 	@PostMapping("login.dw")
 	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
