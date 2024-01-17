@@ -68,8 +68,6 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.contestId(today);
 	}
 
-
-
 	@Override
 	public ArrayList<ContestItem> searchItem(String pSearch) {
 		
@@ -82,8 +80,6 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.getListCount(id);
 	}
 
-
-
 	@Override
 	public ArrayList<ContestItem> itemList(String id) {
 		
@@ -94,6 +90,30 @@ public class ContestServiceImpl implements ContestService {
 	public int insertAttm(ArrayList<ContestAttm> list) {
 		
 		return cDAO.insertAttm(list);
+	}
+
+	@Override
+	public String memberNick(String id) {
+		
+		return cDAO.memberNick(id);
+	}
+
+	@Override
+	public ArrayList<String> petList(String id) {
+		
+		return cDAO.petList(id);
+	}
+
+	@Override
+	public Participants thisParticipant(Integer id) {
+		// TODO Auto-generated method stub
+		return cDAO.thisParticipant(id);
+	}
+
+	@Override
+	public String petName(Integer pId) {
+		// TODO Auto-generated method stub
+		return cDAO.petName(pId);
 	}
 
 

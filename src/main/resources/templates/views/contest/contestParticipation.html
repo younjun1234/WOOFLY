@@ -17,105 +17,127 @@
    <div th:replace="~{common/top :: top}"></div>
 	<main>
 		<form action="/contest/contestEnroll" method="POST" id="contestParticipation" enctype="multipart/form-data">
-			<div class="container-fluid d-flex mx-5">
-				<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-				<div th:replace="~{common/adminNav :: adminNav}"></div>
-				
-				<div class="col-10 b-5">
-				 <div class="container mt-4">
-				  <div class="row">
-				   <div class="col-md-12 mb-4">
-				    <div class="card">
-						<div class="card-header">
-							<h4>콘테스트 참가</h4>
-						</div>
-						<div class="card-body">
-							<table class="table">
-								<tbody>
-									<tr>
-										<th  style="width: 22%">제목</th>
-										<td>
-											<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
-										</td>
-									</tr>                                                   
-									<tr>
-										<th>강아지이름</th>
-										<td>
-											<input class="form-control" type="text" aria-label="default input example" placeholder="강아지이름" name="pPet">
-										</td>
-									</tr>
-									<tr>
-										<th>내용</th>
-										<td>
-											<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
-										</td>
-									</tr>
-									<tr>
-										<th>사진</th>
-										<td>															
-									        <!-- 만약 미리보기 만들면 이 자리가 미리보기 자리고 파일 추가 버튼들은 오른쪽 div로 이동-->
-					                        <div class="album bg-light m-4" id="thumbnail">
-					                            <div class="card shadow-sm p-3">
-					                            	<!-- 썸네일 담는곳 -->
-					                                <svg class="bd-placeholder-img card-img-top" width="100%" height="300" name="thumbnailSvg"> 
-					                                    <rect width="100%" height="100%" fill="#55595c"></rect>
-					                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
-					                                </svg>
-					                            </div>
-					                        </div>
-									        <button type="button" class="btn btn-outline-dark" id="addFile">이미지 추가</button>
-					                        <div id="fileArea">
-					                            <div class="mb-3 p-1 d-flex" id="thumbnailParent">
-					                                <input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
-					                                <button type="button" class="btn btn-large" name="deleteThumbButton">
-						                        		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
-														  <path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
-														  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
-														</svg>
-						                        	</button>
-					                            </div>
-					                        </div>
-										</td>
-									</tr>
-									<tr>
-										<th>애완용품 검색
-											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
-											
-										</th>
-										<td>
-											<div id="td">
-											</div>
-											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="container text-center">
-								<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary"  id="submitContest">등록</button>
-								<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascrpt:history.back();">이전</button>
+<div class="container-fluid d-flex mx-5">
+	<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+	<div th:replace="~{common/adminNav :: adminNav}"></div>
+	
+	<div class="col-10 b-5">
+	 <div class="container mt-4">
+	  <div class="row">
+	   <div class="col-md-12 mb-4">
+	    <div class="card">
+	<div class="card-header">
+		<h4>콘테스트 참가</h4>
+	</div>
+	<div class="card-body">
+		<table class="table">
+			<tbody>
+				<tr>
+					<th  style="width: 22%">제목</th>
+					<td>
+						<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
+					</td>
+				</tr>                                                   
+				<tr>
+					<th>강아지이름</th>
+					<td>
+						<select class="form-select" name="pPet" style="width: 25%; ">
+							<option th:each="p : ${petList}" th:value="${p.PET_ID}">[[${p.PET_NAME}]]
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td>
+						<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>사진</th>
+					<td>
+					<div class="d-flex justify-content-between">
+						<div class="col-6">														
+					        <!-- 만약 미리보기 만들면 이 자리가 미리보기 자리고 파일 추가 버튼들은 오른쪽 div로 이동-->
+	                        <div class="album bg-light m-4" id="thumbnail">
+	                            <div class="card shadow-sm p-3">
+	                            	<!-- 썸네일 담는곳 -->
+	                                <svg class="bd-placeholder-img card-img-top" width="100%" height="300" name="thumbnailSvg"> 
+	                                    <rect width="100%" height="100%" fill="#55595c"></rect>
+	                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
+	                                </svg>
+	                            </div>
+	                        </div>
+                        </div>
+                        <div class="col-4">
+							<button type="button" class="btn btn-outline-dark" id="addFile">이미지 추가</button>
+							<div id="fileArea">
+								<div class="mb-3 p-1 d-flex" id="thumbnailParent">
+									<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
+									<button type="button" class="btn btn-large" name="deleteThumbButton">
+										<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+											<path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+											<path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+										</svg>
+									</button>
+								</div>
 							</div>
-						</div>	
-				    </div>
-				   </div>
-				  </div>                    
-				 </div>
-				</div>
-			</div>
+						</div>
+					</div>
+					</td>
+				</tr>
+				<tr>
+					<th>애완용품 검색
+						<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
+						
+					</th>
+					<td>
+						<div id="td" class="outside-check">
+						</div>
+						<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="container text-center">
+			<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary"  id="submitContest">등록</button>
+			<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascrpt:history.back();">이전</button>
+		</div>
+	</div>	
+	    </div>
+	   </div>
+	  </div>                    
+	 </div>
+	</div>
+</div>
 		</form> 
 		<div id="modalLayer" >
 			<div class="modalContent">
 				<button type="button" class="btn-close" aria-label="Close" id="modalLink"> </button>		
 				<br>
 				
-				
-				<span style="margin-left: 20%;">애완용품</span>
-				<div style="display: inline-block; margin-left: 40px;" >
-					<input type="text" placeholder="검색" name="search" id="searchInput">
+				<div id="title1">
+					
+					<div style="display: inline-block; margin-left: 18px;">
+						<input class="btn btn-sm btn-outline-dark" type="button"  id="allItems" value="전체상품 보기" >
+					</div>
+					<span style="margin-left: 25%;"><b>나의 구매내역</b></span>
+					
 				</div>
-				<div style="display: inline-block; margin-left: 30px;">
-					<input class="btn btn-sm btn-outline-dark" type="button"  id="pSearchButton" value="검색" >
-				</div>
 				
+				<div id="title2" style="display: none;">
+					<span style="margin-left: 42%;"><b>Woofly 상품 검색</b></span><br><br>
+					<div style="display: inline-block; margin-left: 18px;">
+						<input class="btn btn-sm btn-outline-dark" type="button"  id="myItems" value="구매내역 보기" >
+					</div>
+					<span style="margin-left: 8%;">전체 애완용품</span>
+					<div style="display: inline-block; margin-left: 40px;" >
+						<input type="text" placeholder="검색" name="search" id="allSearchInput">
+					</div>
+					<div style="display: inline-block; margin-left: 25px;">
+						<input class="btn btn-sm btn-outline-dark" type="button"  id="pSearchButton" value="검색" >
+					</div>
+				</div>
 				
 				<table class="table" style="margin-top: 20px;" id="sc1">
 					<thead>
@@ -128,7 +150,7 @@
 					</thead>
 					<tbody id="case1">
 						<tr th:each="l : ${itemList}">
-							<td scope="row" class="pNum">[[${l.orderDetailId}]]+@</td>
+							<td class="pNum">o[[${l.orderDetailId}]]</td>
 							<td><input type="image" style="height: 70px; width: 70px" ></td>
 							<td>[[${l.productName}]]</td>
 							<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
@@ -151,7 +173,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-1 shadow">
                 <div class="modal-body p-4 text-center">
-                    <h4 class="mb-1">썸네일 이미지는 최소 한장이 있어야 합니다.</h4>
+                    <h4 class="mb-1">이미지는 최소 한장이 있어야 합니다.</h4>
                     <p class="mb-1">이미지를 반드시 삽입해주세요.</p>
                 </div>
                 <div class="modal-footer flex-nowrap p-1">
@@ -186,6 +208,30 @@
 				modalLayer.fadeOut("slow");
 				modalLink.focus();
 			});		
+			
+			// 각 행에 대한 클릭 이벤트 처리
+	        $('#case1').on('click', 'tr', function (event) {
+	            // 클릭된 요소가 체크박스인 경우는 처리하지 않음
+	            if (event.target.type !== 'checkbox') {
+	                // 현재 클릭된 행에서 체크박스 찾기
+	                var checkbox = $(this).find('.checkbox');
+
+	                // 체크박스 상태 변경
+	                checkbox.prop('checked', !checkbox.prop('checked'));
+	            }
+	        });
+			
+	     // 각 행에 대한 클릭 이벤트 처리
+	        $('#case2').on('click', 'tr', function (event) {
+	            // 클릭된 요소가 체크박스인 경우는 처리하지 않음
+	            if (event.target.type !== 'checkbox') {
+	                // 현재 클릭된 행에서 체크박스 찾기
+	                var checkbox = $(this).find('.checkbox');
+
+	                // 체크박스 상태 변경
+	                checkbox.prop('checked', !checkbox.prop('checked'));
+	            }
+	        });
 		});
 	
 		
@@ -231,7 +277,7 @@
                     fileAreaCount += 1;
 
                 } else {
-                    alert("썸네일용 사진은 최대 5개까지 가능합니다.");
+                    alert("사진은 최대 5개까지 가능합니다.");
                 }
 				               
 			});
@@ -322,11 +368,50 @@
                 } 
             });
 			
-            //상품 검색
-			const searchBtn = document.getElementById('pSearchButton');
+            // 전체 상품 보는 버튼
+			const allBtn = document.getElementById('allItems');
+			// 나의 상품 검색하는 버튼
+			const mysearchBtn = document.getElementById('mySearchButton');
+			// 나의 구매내역 보는 버튼
+			const myItemBtn = document.getElementById('myItems');
+			// 전체 상품 검색하는 버튼
+			const pSearchBtn = document.getElementById('pSearchButton');
 		    
-			searchBtn.addEventListener('click', function() {
-			    var inputValue = document.getElementById("searchInput").value;
+			
+			allBtn.addEventListener('click', function() {
+				const title1 = document.getElementById("title1");
+			    const title2 = document.getElementById("title2");
+			    const case1 = document.getElementById("case1");
+			    const case2 = document.getElementById("case2");
+			    
+				// 기존 데이터 지우기
+			    case2.innerHTML = '';
+			    
+			    title1.style.display = 'none'; // 숨기기
+			    title2.style.display = 'block'; // 보이기
+			    case1.style.display = 'none'; // 숨기기
+			    case2.style.display = 'table-row-group'; // 보이기
+			});
+			
+			myItemBtn.addEventListener('click', function() {
+				var inputValue = document.getElementById("allSearchInput").value;
+				
+				const title1 = document.getElementById("title1");
+			    const title2 = document.getElementById("title2");
+			    const case1 = document.getElementById("case1");
+			    const case2 = document.getElementById("case2");
+			    
+				// 기존 데이터 지우기
+			    case2.innerHTML = '';
+				
+			    title1.style.display = 'block'; // 보이기
+			    title2.style.display = 'none'; // 숨기기
+			    case1.style.display = 'table-row-group'; // 보이기
+			    case2.style.display = 'none'; // 숨기기
+			});
+			
+			pSearchBtn.addEventListener('click', function() {
+			    var inputValue = document.getElementById("allSearchInput").value;
 			    
 			    const case1 = document.getElementById("case1");
 			    const case2 = document.getElementById("case2");
@@ -334,7 +419,6 @@
 			    // 기존 데이터 지우기
 			    case2.innerHTML = '';
 			    
-			    console.log(case1);
 			    case1.style.display = 'none'; // 숨기기
 			    case2.style.display = 'table-row-group'; // 보이기
 			    
@@ -416,52 +500,109 @@
 		                const productNum = iNumber[index].textContent;
 		                selectedItems.push(productName);
 		                selectedItemsNum.push(productNum);
-		                
 		            }
 		        }
 		    });
-		    console.log(selectedItems);
-		    console.log(selectedItemsNum);
 
 		    for (let i = 0; i < selectedItems.length; i++) {
 		        const a = selectedItems[i];
 		        const b = selectedItemsNum[i];
-		        const newDiv = document.createElement('div');
-		        const newDivNum = document.createElement('div');
+		        
+		        // 새로운 체크박스 엘리먼트 및 히든 타입 엘리먼트 생성
 		        const newCheckbox = document.createElement('input');
-		        
-		        newDivNum.style.display = 'none';
-		        
 		        newCheckbox.type = 'checkbox';
 		        newCheckbox.className = 'checkbox';
 
+		    	// 클릭 이벤트 핸들러 추가
+		        newCheckbox.addEventListener('click', function () {
+		            newCheckbox.checked = !newCheckbox.checked;
+		        });
+		        
+		        const newHiddenInput = document.createElement('input');
+		        newHiddenInput.type = 'hidden';
+		        newHiddenInput.name = 'selectedItemsNum'; // 히든 타입의 이름 설정
+		        newHiddenInput.value = b; // 히든 타입의 값 설정
+
+		        // 새로운 div 엘리먼트 생성
+		        const newDiv = document.createElement('div');
 		        newDiv.textContent = a;
-		        newDiv.prepend(newCheckbox);
 		        
-		        newDivNum.textContent = b;
-		        
+		        // 새로운 div에 체크박스와 히든 타입 추가
+		        newDiv.appendChild(newCheckbox);
+		        newDiv.appendChild(newHiddenInput);
+
+		    	// 클릭 이벤트 핸들러 추가
+		        newDiv.addEventListener('click', function () {
+		            newCheckbox.checked = !newCheckbox.checked;
+		        });
+		    	
+		        // 기존의 tdDiv에 새로운 div 추가
 		        tdDiv.appendChild(newDiv);
 		    }
 
 		    var modalLayer = $("#modalLayer");
 		    modalLayer.fadeOut("fast");
 		}
+
 		
 		document.addEventListener('DOMContentLoaded', function () {
-	        var deleteButton = document.getElementById('itemsDelete');
-	        deleteButton.addEventListener('click', function () {
-	            var checkboxes = document.querySelectorAll('#td input[type="checkbox"]');
-	            checkboxes.forEach(function (checkbox) {
-	                if (checkbox.checked) {
-	                    checkbox.parentElement.remove(); // 체크된 체크박스의 부모인 div를 제거
-	                }
-	            });
-	        });
-	    });
-		
-		// 콘테스트 참가 ( 아이템 검색 번호 들어가게 ) 
-		// 
-		
+		    var deleteButton = document.getElementById('itemsDelete');
+		    deleteButton.addEventListener('click', function () {
+		        var checkboxes = document.querySelectorAll('#td input[type="checkbox"]');
+		        checkboxes.forEach(function (checkbox) {
+		            if (checkbox.checked) {
+		                // 체크된 체크박스의 부모인 div를 찾기
+		                var parentDiv = checkbox.closest('div');
+
+		                // 체크된 체크박스와 관련된 hidden input 찾기
+		                var hiddenInput = parentDiv.querySelector('input[name="selectedItemsNum"]');
+
+		                // 모달창 안의 <td scope="row" class="pNum"> 값 찾기
+		                var modalTdValue = hiddenInput.value; 
+
+		                // 체크를 풀기 위해 체크박스의 상태 변경
+		                checkbox.checked = false;
+
+		                // 기존에 체크했던 애완용품들 중에서 해당하는 hidden input을 가진 부분 찾아 체크 해제
+		                var modalCheckboxes = document.querySelectorAll('.modalContent #case1 .checkbox');
+		                modalCheckboxes.forEach(function (modalCheckbox) {
+		                    var modalParentDiv = modalCheckbox.closest('tr');
+		                    var modalHiddenInput = modalParentDiv.querySelector('.pNum');
+
+		                    // 모달창 안의 <td scope="row" class="pNum"> 값과 hidden input 값이 같은 경우 체크 해제
+		                    if (modalHiddenInput.textContent == modalTdValue) {
+		                        modalCheckbox.checked = false;
+		                    }
+		                });
+		                
+		            	// 기존에 체크했던 애완용품들 중에서 해당하는 hidden input을 가진 부분 찾아 체크 해제
+		                var modalCheckboxes = document.querySelectorAll('.modalContent #case2 .checkbox');
+		                modalCheckboxes.forEach(function (modalCheckbox) {
+		                    var modalParentDiv = modalCheckbox.closest('tr');
+		                    var modalHiddenInput = modalParentDiv.querySelector('.pNum');
+
+		                    // 모달창 안의 <td scope="row" class="pNum"> 값과 hidden input 값이 같은 경우 체크 해제
+		                    if (modalHiddenInput.textContent == modalTdValue) {
+		                        modalCheckbox.checked = false;
+		                    }
+		                });
+
+		                // 모달창 밖에서 체크된 아이템을 지우기
+		                var outsideCheckboxes = document.querySelectorAll('.outside-check input[type="checkbox"]');
+		                outsideCheckboxes.forEach(function (outsideCheckbox) {
+		                    var outsideParentDiv = outsideCheckbox.closest('div');
+
+		                    // 모달창 안의 <td scope="row" class="pNum"> 값과 hidden input 값이 같은 경우 해당 아이템 삭제
+		                    if (outsideParentDiv.querySelector('input[name="selectedItemsNum"]').value == modalTdValue) {
+		                        outsideParentDiv.remove();
+		                    }
+		                });
+		            }
+		        });
+		    });
+		});
+
+
 		
 	</script>
 

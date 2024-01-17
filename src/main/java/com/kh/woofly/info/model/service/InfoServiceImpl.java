@@ -11,6 +11,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.info.model.dao.InfoDAO;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
 
 @Service
@@ -211,6 +212,12 @@ public class InfoServiceImpl implements InfoService{
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
 		return iDAO.searchAllQNA(rowBounds, prop);
+	}
+
+	@Override
+	public int insertAttm(ArrayList<NoticeAttm> list) {
+		
+		return iDAO.insertAttm(list);
 	}
 
 

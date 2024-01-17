@@ -245,7 +245,15 @@
 		</if>
 	</select>
 	
-	
+	<insert id="insertAttm">
+		INSERT ALL
+		<foreach collection="list" item="a">
+			INTO ATTACHMENT
+			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'N', #{a.attmRefNo} , #{a.attmLevel})
+		</foreach>
+		SELECT *
+		FROM DUAL
+	</insert>
 	
 	
 </mapper>

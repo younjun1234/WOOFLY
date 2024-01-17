@@ -48,7 +48,7 @@
 	
 	<insert id="contestEnroll">
 		insert into Participants
-		values ( 10009 , #{pTitle}, #{pPet}, #{pContent}, default, default, 1, #{contestId}, default )
+		values ( 10021, #{pTitle}, #{pPet}, #{pContent}, default, default, #{petId}, #{contestId}, #{pProduct} )
 	</insert>
 	
 	<select id="contestId" resultType="Contest">
@@ -83,10 +83,43 @@
 		INSERT ALL
 		<foreach collection="list" item="a">
 			INTO ATTACHMENT
-			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'C', 9999 , #{a.attmLevel})
+			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'C', #{a.attmRefNo} , #{a.attmLevel})
 		</foreach>
 		SELECT *
 		FROM DUAL
 	</insert>
+	
+	<select id="memberNick" resultType="String">
+		SELECT MB_NICKNAME
+	    FROM MEMBER
+	    WHERE mb_id = #{id}
+	</select>
+	
+	<select id="petList" resultType="map">
+		SELECT PET_NAME, PET_ID
+	    FROM PET
+	    WHERE OWNER_ID = #{id}
+	</select>
+	
+	<select id="petName" resultType="String">
+		SELECT PET_NAME
+	    FROM PET
+	    WHERE PET_ID = #{pId}
+	</select>
+	
+	<select id="thisParticipant" resultType="Participants">
+	    SELECT *
+	    FROM (
+	        SELECT *
+	        FROM Participants
+	        WHERE PET_ID = #{pId}
+	        ORDER BY P_NO DESC
+	    )
+	    <![CDATA[
+	    WHERE ROWNUM <= 1
+	    ]]>
+	</select>
+	
+	
 	
 </mapper>

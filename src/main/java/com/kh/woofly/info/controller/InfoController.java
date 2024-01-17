@@ -1,5 +1,9 @@
 package com.kh.woofly.info.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.woofly.common.PageInfo;
@@ -17,7 +23,9 @@ import com.kh.woofly.common.Pagination;
 import com.kh.woofly.info.model.service.InfoService;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
+import com.kh.woofly.shop.model.exception.ShopException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -64,19 +72,135 @@ public class InfoController {
 	
   // 공지사항 등록
 	@PostMapping("/info/insertNotice")
-	public String insertNotice(@ModelAttribute Notice n, HttpSession session) {
+	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles) {
 		
-//		String id = ((Member)session.getAttribute("loginUser")).getId();	
-//		n.setBoardWriter(id);
+//		String id = ((Member)session.getAttribute("loginUser")).getId();                  
+//		n.setNWriter(id);
+		
+		System.out.println(n);
+		System.out.println(noticeFiles);
+		
+		// 썸네일 리네임 과정
+		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
+		
+		if(true) {
+			for(int i = 0; i < noticeFiles.size(); i++) {
+				MultipartFile upload = noticeFiles.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					
+					String[] returnArr = saveFile(upload);
+					
+					if(returnArr[1] != null) {
+						NoticeAttm t = new NoticeAttm();
+						t.setOriginalName(upload.getOriginalFilename());
+						t.setRenameName(returnArr[1]);
+						t.setAttmPath(returnArr[0]);
+						t.setAttmRefNo(1);// 공지 번호 (N_NO)
+						
+						String oName = upload.getOriginalFilename();
+						// 파일 이름을 '.'을 기준으로 나누기
+				        String[] parts = oName.split("\\.");
+				        // 파일 확장자 얻기 (마지막 부분)
+				        String extension = parts[parts.length - 1];
+				        if(extension.equals("jpg") || extension.equals("png") || extension.equals("gif") || extension.equals("jpeg")) {
+				        	t.setAttmLevel(1);
+				        }else {
+				        	t.setAttmLevel(2);
+				        }
+						
+						list.add(t);
+					}
+				}
+			}
+		}
+		
+		System.out.println(list);
+		
+		// 첨부파일없을떄
+		if(list.isEmpty()) {
+			System.out.println("gdgdgdgdgd");
+			for(int i = 1; i < noticeFiles.size(); i++) {
+				MultipartFile upload = noticeFiles.get(i);
+				
+				if(!upload.getOriginalFilename().equals("")) {
+					
+					String[] returnArr = saveFile(upload);
+					
+					if(returnArr[1] != null) {
+						NoticeAttm t = new NoticeAttm();
+						t.setOriginalName(upload.getOriginalFilename());
+						t.setRenameName(returnArr[1]);
+						t.setAttmPath(returnArr[0]);
+						t.setAttmRefNo(1);
+						t.setAttmLevel(2);
+						
+						list.add(t);
+					}
+				}
+			}
+		}
+		
 		
 		int result = iService.insertNotice(n);
 		
-		if(result > 0) {			
+		int result2 = iService.insertAttm(list);
+		
+		if( result + result2 == list.size() + 1) {
 			return "redirect:/info/notice";
-		}else {
-			return null;
+		} else {
+			for(NoticeAttm a : list) {
+				deleteFile(a.getRenameName());
+			}
+			throw new ShopException("공지 등록 실패하였습니다.");
 		}
 	}
+	
+	private String[] saveFile(MultipartFile upload) {
+		
+		String root = "C:\\woofly\\";
+		String savePath = root + "\\noticeFiles";
+		
+		File folder = new File(savePath);
+		if(!folder.exists()) {
+			folder.mkdirs();
+		}
+		
+		Date time = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		int ranNum = (int)(Math.random()*100000);
+		
+		String originFileName = upload.getOriginalFilename();
+		String renameFileName = sdf.format(time) + ranNum + originFileName.substring(originFileName.lastIndexOf("."));
+		
+		String renamePath = folder + "\\" + renameFileName;
+		
+		try {
+			upload.transferTo(new File(renamePath));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String[] returnArr = new String[2];
+		returnArr[0] = savePath;
+		returnArr[1] = renameFileName;
+		
+		return returnArr;
+	}
+	
+	private void deleteFile(String renameName) {
+		
+		String root = "C:\\woofly\\";
+		String savePath = root + "\\noticeFiles";
+		
+		File f = new File(savePath + "\\" + renameName);
+		if(f.exists()) {
+			f.delete();
+		}
+	}
+	
 	
 	// 공지사항 상세페이지 이동
 	@GetMapping("/info/selectNotice")
@@ -470,13 +594,7 @@ public class InfoController {
 			list = iService.searchQNA(pi, prop);
 		}
 		
-		
-		
-		
-		
-		
-		
-		
+
 		
 		
 		

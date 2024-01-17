@@ -8,6 +8,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
 
 @Mapper
@@ -64,6 +65,8 @@ public interface InfoDAO {
 	ArrayList<Notice> searchAllNotice(RowBounds rowBounds, Properties prop);
 
 	ArrayList<QNA> searchAllQNA(RowBounds rowBounds, Properties prop);
+
+	int insertAttm(ArrayList<NoticeAttm> list);
 	
 	
 

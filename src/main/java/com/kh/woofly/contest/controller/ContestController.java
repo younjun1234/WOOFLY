@@ -24,6 +24,7 @@ import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 
@@ -102,13 +103,22 @@ public class ContestController {
 	public String contestParticipation(@ModelAttribute Contest c, HttpSession session, Model model,  HttpServletRequest request) {
 //		String id = ((Member)session.getAttribute("loginUser")).getId();	
 //		n.setBoardWriter(id);
+// 		비로그인 유저는 로그인 페이지로 
+
 		String id = "younjun1234";
 		
+		ArrayList<String> petList = cService.petList(id);
+		
+//		// 펫이 없으면 펫 등록으로?
+		if(petList.isEmpty()) {
+			System.out.println(petList);
+		}
 		ArrayList<ContestItem> itemList = cService.itemList(id);
 		
 		model.addAttribute("itemList", itemList);
 		
 		if(itemList != null) {
+			model.addAttribute("petList", petList);
 			model.addAttribute("list", itemList);
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
 			return "contestParticipation";
@@ -129,40 +139,93 @@ public class ContestController {
 	
 	// 콘테스트 참가
 	@PostMapping("/contest/contestEnroll")
-	public String contestEnroll(@ModelAttribute Participants p, HttpSession session, @RequestParam("thumbnailFile") ArrayList<MultipartFile> thumbFiles) {
-//		String id = ((Member)session.getAttribute("loginUser")).getId();
-//		n.setBoardWriter(id);
+	public String contestEnroll(@ModelAttribute Participants p, HttpSession session, @RequestParam("thumbnailFile") ArrayList<MultipartFile> thumbFiles, @RequestParam(value = "selectedItemsNum", defaultValue = "") ArrayList<String> itemNums) {
+//		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+//		String nickName = ((Member)session.getAttribute("loginUser")).getMbNickName();
+				
+		Integer pId = Integer.parseInt(p.getPPet());
+		p.setPetId(pId);
+		
+		String petName = cService.petName(pId);
+		p.setPPet(petName);
 		
 		LocalDate today = LocalDate.now();
 		
 		Contest c = cService.contestId(today);
+		
 		int cNo = c.getConNo();
 		
-		p.setContestId(cNo);
-		System.out.println(p);
+		String id = "younjun1234";
+		String nickName = "연준짱";
 		
+		p.setContestId(cNo);
+		p.setMbId(id);
+		p.setMbName(nickName);
+		
+		StringBuilder result = new StringBuilder();
+		
+        for (String itemNum : itemNums) {
+            // 배열의 마지막 항목이 아니라면 '+'를 추가
+            if (result.length() > 0) {
+                result.append("+");
+            }
+            // 현재 항목을 추가
+            result.append(itemNum);
+        }
+        p.setPProduct(result.toString());
+      
+//      System.out.println(p);
 		int result1 = cService.contestEnroll(p);
-		System.out.println(result1);
+		
+		Participants thisParticipant = cService.thisParticipant(pId);
+		
+		int pNo = thisParticipant.getPNo();
 		
 		// 썸네일 리네임 과정
 		ArrayList<ContestAttm> list = new ArrayList<ContestAttm>();
+		
 		for(int i = 0; i < thumbFiles.size(); i++) {
 			MultipartFile upload = thumbFiles.get(i);
+			
 			if(!upload.getOriginalFilename().equals("")) {
+				
 				String[] returnArr = saveFile(upload);
+				
 				if(returnArr[1] != null) {
 					ContestAttm t = new ContestAttm();
 					t.setOriginalName(upload.getOriginalFilename());
 					t.setRenameName(returnArr[1]);
 					t.setAttmPath(returnArr[0]);
-					t.setAttmRefNo(p.getPNo());
+					t.setAttmRefNo(pNo);// 참가자번호
 					t.setAttmLevel(1);
+					
+					list.add(t);
+					
+					break;
+				}
+			}
+		}
+		
+		for(int i = 1; i < thumbFiles.size(); i++) {
+			MultipartFile upload = thumbFiles.get(i);
+			
+			if(!upload.getOriginalFilename().equals("")) {
+				
+				String[] returnArr = saveFile(upload);
+				
+				if(returnArr[1] != null) {
+					ContestAttm t = new ContestAttm();
+					t.setOriginalName(upload.getOriginalFilename());
+					t.setRenameName(returnArr[1]);
+					t.setAttmPath(returnArr[0]);
+					t.setAttmRefNo(pNo);
+					t.setAttmLevel(2);
 					
 					list.add(t);
 				}
 			}
 		}
-
+		System.out.println();
 		int result2 = cService.insertAttm(list);
 		
 		if( result1 + result2 == list.size() + 1) {
@@ -171,7 +234,7 @@ public class ContestController {
 			for(ContestAttm a : list) {
 				deleteFile(a.getRenameName());
 			}
-			throw new ShopException("상품 등록을 실패하였습니다.");
+			throw new ShopException("콘테스트 참가 실패하였습니다.");
 		}
 		
 	}

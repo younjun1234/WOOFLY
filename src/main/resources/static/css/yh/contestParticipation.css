@@ -6,7 +6,7 @@ a{color:#000;}
 
 #modalLayer{display:none; position:relative;}
 
-#modalLayer .modalContent{width:40%; height:70%; padding:20px; border:2px solid #ccc; position:fixed; left:33%; top:18%; z-index:1; background:#fff;}
+#modalLayer .modalContent{width:40%; height:76%; padding:20px; border:2px solid #ccc; position:fixed; left:33%; top:17%; z-index:1; background:#fff;}
 
 #modalLayer .modalContent button{position:absolute; right:0; top:0; cursor:pointer;}
 

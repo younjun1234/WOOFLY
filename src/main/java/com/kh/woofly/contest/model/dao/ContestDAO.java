@@ -40,6 +40,14 @@ public interface ContestDAO {
 
 	int insertAttm(ArrayList<ContestAttm> list);
 
+	String memberNick(String id);
+
+	ArrayList<String> petList(String id);
+
+	Participants thisParticipant(Integer id);
+
+	String petName(Integer pId);
+
 
 
 
