@@ -42,30 +42,22 @@
 		select *
 		from contest
 		<![CDATA[
-		where CON_START_DATE < #{today} AND CON_END_DATE > #{today}
+		where CON_START_DATE <= #{today} AND CON_END_DATE >= #{today}
 		]]>
 	</select>
 	
 	<insert id="contestEnroll">
 		insert into Participants
-		values ( 9999 , #{pTitle}, #{pPet}, #{pContent}, default, default, 1, #{cNo}, #{pContent} )
+		values ( 10009 , #{pTitle}, #{pPet}, #{pContent}, default, default, 1, #{contestId}, default )
 	</insert>
 	
 	<select id="contestId" resultType="Contest">
-		select *
-		from contest
-		<![CDATA[
-		where CON_START_DATE < #{today} AND CON_END_DATE > #{today}
-		]]>
+		SELECT *
+    	FROM contest
+    	<![CDATA[
+   		WHERE CON_START_DATE <= #{today} AND CON_END_DATE >= #{today}
+   		]]>
 	</select>
-	
-	<select id="itemList" resultType="ContestItem">
-	    SELECT p.product_name, d.order_detail_id,  o.customer_id, d.order_id, d.product_id,p.price, p.product_status
-	    FROM ORDERS o, ORDER_DETAIL d, PRODUCT p
-	    WHERE o.CUSTOMER_ID = #{id} AND o.ORDER_ID = d.order_id AND d.product_id = p.product_id
-	    ORDER BY d.order_detail_id DESC
-	</select>
-	
 	
 	<select id="searchItem" resultType="ContestItem">
 		select *
@@ -73,5 +65,28 @@
 		WHERE PRODUCT_NAME LIKE '%${pSearch}%'
 	</select>	
 	
+	<!-- count -->
+	<select id="getListCount" resultType="_int">	
+		SELECT COUNT(*)
+		FROM ORDERS o, ORDER_DETAIL d, PRODUCT p
+		WHERE o.CUSTOMER_ID = #{id} AND o.ORDER_ID = d.order_id AND d.product_id = p.product_id
+	</select>
+	
+	<select id="itemList" resultType="ContestItem">
+		SELECT p.product_name, d.order_detail_id,  o.customer_id, d.order_id, d.product_id,p.price, p.product_status
+	    FROM ORDERS o, ORDER_DETAIL d, PRODUCT p
+	    WHERE o.CUSTOMER_ID = #{id} AND o.ORDER_ID = d.order_id AND d.product_id = p.product_id
+	    ORDER BY d.order_detail_id DESC
+	</select>
+	
+	<insert id="insertAttm">
+		INSERT ALL
+		<foreach collection="list" item="a">
+			INTO ATTACHMENT
+			VALUES (NEW_AID, #{a.originalName}, #{a.renameName}, SYSDATE, SYSDATE, #{a.attmPath}, DEFAULT, 'C', 9999 , #{a.attmLevel})
+		</foreach>
+		SELECT *
+		FROM DUAL
+	</insert>
 	
 </mapper>

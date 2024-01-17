@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.contest.model.vo.Contest;
+import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 
@@ -24,13 +26,22 @@ public interface ContestDAO {
 
 	ArrayList<Contest> updateBestContest(LocalDate today);
 
-	int contestEnroll(Participants p, int cNo);
+	int contestEnroll(Participants p);
 
 	Contest contestId(LocalDate today);
 
 	ArrayList<ContestItem> itemList(String id);
 
 	ArrayList<ContestItem> searchItem(String pSearch);
+
+	int getListCount(String id);
+
+	ArrayList<ContestItem> itemList(String id, RowBounds rowBounds);
+
+	int insertAttm(ArrayList<ContestAttm> list);
+
+
+
 
 	
 	

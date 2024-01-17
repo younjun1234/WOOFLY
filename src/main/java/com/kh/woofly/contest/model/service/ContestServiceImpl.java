@@ -3,11 +3,14 @@ package com.kh.woofly.contest.model.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.contest.model.dao.ContestDAO;
 import com.kh.woofly.contest.model.vo.Contest;
+import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 
@@ -54,9 +57,9 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public int contestEnroll(Participants p, int cNo) {
+	public int contestEnroll(Participants p) {
 		
-		return cDAO.contestEnroll(p, cNo);
+		return cDAO.contestEnroll(p);
 	}
 
 	@Override
@@ -65,6 +68,22 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.contestId(today);
 	}
 
+
+
+	@Override
+	public ArrayList<ContestItem> searchItem(String pSearch) {
+		
+		return cDAO.searchItem(pSearch);
+	}
+
+	@Override
+	public int getListCount(String id) {
+
+		return cDAO.getListCount(id);
+	}
+
+
+
 	@Override
 	public ArrayList<ContestItem> itemList(String id) {
 		
@@ -72,18 +91,13 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public ArrayList<ContestItem> searchItem(String pSearch) {
-		// TODO Auto-generated method stub
-		return cDAO.searchItem(pSearch);
+	public int insertAttm(ArrayList<ContestAttm> list) {
+		
+		return cDAO.insertAttm(list);
 	}
 
-	
 
-	
-	
-	
-	
-	
+
 	
 	
 	
