@@ -549,6 +549,7 @@ public class PetController {
 			result = pService.deleteReplyLike(map);
 		} else {
 			result = pService.insertReplyLike(map);
+			result = pService.insertReplyNotice(map);
 		}
 			
 		if (result > 0) {
@@ -573,6 +574,7 @@ public class PetController {
 			result = pService.deleteBoardLike(map);
 		} else {
 			result = pService.insertBoardLike(map);
+			result = pService.insertBoardNotice(map);
 		}
 			
 		if (result > 0) {

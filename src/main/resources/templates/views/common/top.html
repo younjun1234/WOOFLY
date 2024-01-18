@@ -57,6 +57,7 @@
 					<div th:if="${notification.notiType == 'UR'}"><img src="/image/free-icon-message-6596123.png" style="width: 50px; height: 50px;"></div>
 					<div th:if="${notification.notiType == 'SR'}"><img src="/image/free-icon-message-6596123.png" style="width: 50px; height: 50px;"></div>
 					<div th:if="${notification.notiType == 'WR'}"><img src="/image/free-icon-message-6596123.png" style="width: 50px; height: 50px;"></div>
+					<div th:if="${notification.notiType == 'AB'}"><img src="/image/free-icon-love-3670159.png" style="width: 50px; height: 50px;"></div>
 					<div th:if="${notification.notiType == 'DB'}"><img src="/image/free-icon-love-3670159.png" style="width: 50px; height: 50px;"></div>
 					<div th:if="${notification.notiType == 'FB'}"><img src="/image/free-icon-love-3670159.png" style="width: 50px; height: 50px;"></div>
 					<div th:if="${notification.notiType == 'MB'}"><img src="/image/free-icon-love-3670159.png" style="width: 50px; height: 50px;"></div>
@@ -73,6 +74,7 @@
 						<div th:if="${notification.notiType == 'SR'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 상품 리뷰 리뷰에 댓글을 달았습니다.|"></div>
 						<div th:if="${notification.notiType == 'MR'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 실종신고 게시글에 댓글을 달았습니다.|"></div>
 						<div th:if="${notification.notiType == 'L'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 게시글에 좋아요 눌렀습니다.|"></div>
+						<div th:if="${notification.notiType == 'AB'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 사진첩에 좋아요 눌렀습니다.|"></div>
 						<div th:if="${notification.notiType == 'DB'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 도그워커 게시글에 좋아요 눌렀습니다.|"></div>
 						<div th:if="${notification.notiType == 'FB'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 자유게시판 게시글에 좋아요 눌렀습니다.|"></div>
 						<div th:if="${notification.notiType == 'MB'}" th:text="|${notification.fromUser}님이 ${session.loginUser.mbNickName}의 실종신고 게시판 게시글에 좋아요 눌렀습니다.|"></div>
