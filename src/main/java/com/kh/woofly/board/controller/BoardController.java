@@ -326,7 +326,7 @@ public class BoardController {
 		// 파일 저장소 파일 저장(copy)
 		private String[] saveFile(MultipartFile upload) {
 			
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
@@ -360,7 +360,7 @@ public class BoardController {
 		
 		
 		private void deleteFile(String renameName) {
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File f = new File(savePath + "\\" + renameName);
