@@ -1,12 +1,14 @@
 package com.kh.woofly.board.model.vo;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 
 
 
@@ -24,13 +26,10 @@ public class LostBoard {
    private String mStatus;
    private String mbId;
    private String mbNickName;
+   private int mRescue;
+   private int likeUser; // 좋아요 누른 사람
    
-//   // 수정된 첨부파일 게시글 업로드
-//	public void setLostBoardType(int i) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-   
+   private List<Attachment> attachments;
 }
 
 
