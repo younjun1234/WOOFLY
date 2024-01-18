@@ -33,16 +33,48 @@
 		    </if>
 	</select>
 	
+	<!-- Mapper.xml 파일에서 -->
+	
+	<!-- 동적 쿼리 부분 -->
+	<sql id="dynamicOrderBy">
+	    <choose>
+	        <when test="sort == 'popularity'">
+	            ORDER BY COALESCE((SELECT COUNT(*) FROM SAVED WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+	        </when>
+	        <when test="sort == 'sales'">
+	            ORDER BY COALESCE((SELECT COUNT(*) FROM ORDER_DETAIL WHERE PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+	        </when>
+	        <when test="sort == 'price'">
+	            ORDER BY PRICE
+	        </when>
+	        <otherwise>
+	            <!-- 아무 정렬이 필요 없는 경우 -->
+	        </otherwise>
+	    </choose>
+	</sql>
+	
+	<!-- 원본 쿼리 -->
 	<select id="selectProducts" resultType="Product">
 	    SELECT *
 	    FROM PRODUCT
-		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
-		WHERE PRODUCT_STATUS = 'Y'
-		<if test="cNo != null">
-			AND PRODUCT_DETAIL_NO = #{cNo}
-		</if>
-	    ORDER BY PRODUCT_ID DESC
+	        LEFT JOIN PRODUCT_STOCK ON(PRODUCT.PRODUCT_ID = PRODUCT_STOCK.PRODUCT_ID)
+	    WHERE PRODUCT_STATUS = 'Y'
+	    <if test="cNo != null">
+	        AND PRODUCT_DETAIL_NO = #{cNo}
+	    </if>    
+	    <!-- 동적 쿼리 적용 -->
+	    <if test="sort != null and direction != null">
+	        <include refid="dynamicOrderBy"/>
+	        <if test="direction == 'ASC'">
+	            ASC
+	        </if>
+	        <if test="direction == 'DESC'">
+	            DESC
+	        </if>
+	    </if>
+	    <!-- 정렬이 필요 없는 경우에도 ORDER BY 부분을 제외 -->
 	</select>
+
 	
 	<!-- 상품사진 전용 -->
 	<select id="selectProductAttm" resultType="ProductAttm">
@@ -183,8 +215,13 @@
 	
 	
 	<insert id="insertReplyCount">
+		<selectKey order="AFTER" resultType="String" keyProperty="r.mbId">
+				SELECT MB_ID
+				FROM Reply
+				WHERE R_NO = #{r.rNo}
+		</selectKey>
 		INSERT INTO REPLY_LIKE
-		VALUES (RL_SEQ.NEXTVAL, #{rNo}, #{mId})
+		VALUES (RL_SEQ.NEXTVAL, #{r.rNo}, #{mId})
 	</insert>
 	
 	<update id="updateReplyCount">
@@ -229,6 +266,33 @@
 		WHERE R_NO = #{rNo}
 	</update>
 	
+	<insert id="insertStampProduct">
+		INSERT INTO SAVED
+		VALUES (SAVED_SEQ.NEXTVAL, #{pId}, #{mbId}, #{type})
+	</insert>
+	
+	
+	<select id="selectMyStampProduct" resultType="_int">
+		SELECT COUNT(*)
+		FROM SAVED
+		WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = #{productId} AND MB_ID = #{memberId}
+	</select>
+	
+	<select id="selectSavedProduct" resultType="_int">
+		SELECT COUNT(*)
+		FROM SAVED
+		WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = #{productId}
+	</select>
+	
+	<delete id="deleteStampProduct">
+		DELETE FROM SAVED
+		WHERE PRODUCT_ID = #{pId} AND MB_ID = #{mbId} AND SAVED_TYPE = #{type}
+	</delete>
+	
+	<insert id="insertNotify">
+		INSERT INTO NOTIFICATION
+		VALUES(NOTI_SEQ.NEXTVAL, #{mbId}, #{notiType}, #{notiContent}, 'N', #{fromUser}, #{refNo}, SYSDATE)
+	</insert>
 	
 	
 </mapper>

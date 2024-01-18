@@ -68,10 +68,10 @@ public class AccountController {
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
-		Member m = new Member();
-		m.setMbId("younjun1234");
-		Member loginUser = aService.login(m);
-		model.addAttribute("loginUser", loginUser);
+//		Member m = new Member();
+//		m.setMbId("younjun1234");
+//		Member loginUser = aService.login(m);
+//		model.addAttribute("loginUser", loginUser);
 		return "login";
 	}
 	

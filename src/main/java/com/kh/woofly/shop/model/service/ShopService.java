@@ -19,7 +19,7 @@ public interface ShopService {
 
 	int insertAttm(ArrayList<ProductAttm> list);
 
-	ArrayList<Product> selectProducts(PageInfo pi, Integer cNo);
+	ArrayList<Product> selectProducts(PageInfo pi, HashMap<String, Object> sortMap);
 
 	ArrayList<ProductAttm> selectProductAttm(Integer productId);
 
@@ -62,6 +62,17 @@ public interface ShopService {
 	int updateReply(Reply r);
 
 	int deleteReply(int rNo);
+
+	int insertStampProduct(HashMap<String, Object> stamp);
+
+	int selectMyStampProduct(HashMap<String, Object> stampParam);
+
+	int selectSavedProduct(int productId);
+
+	int deleteStampProduct(HashMap<String, Object> stamp);
+
+	int insertNotify(HashMap<String, Object> notifyMap);
+
 
 
 }
