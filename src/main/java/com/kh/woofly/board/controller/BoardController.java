@@ -326,7 +326,7 @@ public class BoardController {
 		// 파일 저장소 파일 저장(copy)
 		private String[] saveFile(MultipartFile upload) {
 			
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
@@ -360,7 +360,7 @@ public class BoardController {
 		
 		
 		private void deleteFile(String renameName) {
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File f = new File(savePath + "\\" + renameName);
@@ -1502,7 +1502,6 @@ public class BoardController {
 
 		
 		
-		
 	
 
 //		첨부파일 게시글 조회 //
@@ -1985,9 +1984,6 @@ public class BoardController {
 	        	int listCount = bService.getUlistCount(1);
 	        	
 	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
-	        	// 하은아 pi 왜 만들었어? 페이징처리 할려고()
-	        	// 너가 어떤 기능을 쓰려고 pi를 보낸거임 ㅋㅋ 이게 준비물이야
-	        	// 어디에 쓰려고?
 	        	ArrayList<UsedBoard> uList = bService.selectUsedBoardList(pi, 1); 
 	        	
 	        	System.out.println(uList);
@@ -2118,7 +2114,7 @@ public class BoardController {
 			            return "redirect:/board/used";
 			        } else {
 			            throw new BoardException("게시글 작성을 실패하였습니다.");
-			        }
+			        }f
 			    }
 				
 			}

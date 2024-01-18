@@ -49,7 +49,7 @@
 		</div>
 		<br>
 		<!--게시글-->
-		<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+		<!--<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
            <div class="col" th:each="u : ${uList}">
               <div class="card shadow-sm"> 
                  <th:block th:each="a: ${aList}" th:if="${a.attmRefNo eq u.uNo}">
@@ -61,16 +61,37 @@
                  </th:block> 
                  <div class="card-body">
                     <p class="card-text">
-						<!--<p th:text="${m.mbNickName}">작성자</p>-->
 						 <label class="bId" th:text="${u.uNo}">No. [[${ u.uNo }]]</label> | <label class="writer" th:text="${u.mbNickName}">[[${ u.mbNickName }]]</label>
                     </p>
                     <div class="d-flex justify-content-between align-items-center">
-						<h6 th:text="${u.uTitle}">글제목</h6>
+						<h6 th:text="${u.uTitle}">글제목</h6><h6 th:text="${u.uCount}">조회수</h6>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>-->
+        
+        <!-- 게시글 -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="cardDeck">
+           <div class="col middle" th:each="u : ${uList}">
+              <div class="card shadow-sm" style="width: 20rem;"> 
+                 <th:block th:each="a: ${aList}" th:if="${a.attmRefNo eq u.uNo}">
+                    <img th:src="'/image/board/' + ${a.renameName}" style="width: 318px; height: 318px;">
+                 </th:block> 
+                 <div class="card-body">
+                    <p class="card-text">
+						<p th:text="${u.mbNickName}">작성자</p>
+						 <label class="bId" th:text="${u.uNo}">No. [[${ u.uNo }]]</label> | <label class="writer" th:text="${u.mbNickName}">[[${ u.mbNickName }]]</label>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center" style="display: inline-block;">
+						<h6 th:text="${u.uTitle}">글제목</h6><h6 th:text="${u.uCount}">조회수</h6>
                     </div>
                  </div>
               </div>
            </div>
         </div>
+        
+        
 			
 			<!--페이지네이션-->
 		  <nav class="center" aria-label="Standard pagination example" style="float: right;" th:with="loc=${loc}">
@@ -115,29 +136,51 @@
 	</div>
 	
 	
-	<script>
+	<script th:inline="javascript">
 		// 해당 페이지 nav bar 강조 넣기
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
-		const boardNav = document.getElementById("topAdd6");
-		$(boardNav).addClass('active');
+		//const boardNav = document.getElementById("topAdd6");
+	//	$(boardNav).addClass('active');
 		
 		 // 카드에 클릭 이벤트 넣어주는 부분
-	    const cards = document.getElementsByClassName("card");
-	    for (const card of cards) {
-	        card.addEventListener('click', function() {
-	            const boardId = this.querySelector('.bId').textContent; // 카드에서 boardId 가져오기
-	            const currentPage = /*[[${pi.currentPage}]]*/1; // 실제 현재 페이지 값으로 변경하세요
+	   // const cards = document.getElementsByClassName("card");
+	  //  for (const card of cards) {
+	   //     card.addEventListener('click', function() {
+	    //        const boardId = this.querySelector('.bId').textContent; // 카드에서 boardId 가져오기
+	    //        const currentPage = /*[[${pi.currentPage}]]*/1; // 실제 현재 페이지 값으로 변경하세요
 	
 	            // boardId 및 currentPage 값을 사용하여 세부 페이지로 이동
-	            window.location.href = `/board/used/detail?uNo=${boardId}&page=${currentPage}`;
-	        });
-	    }
+	     //       window.location.href = `/board/used/detail?uNo=${boardId}&page=${currentPage}`;
+	     //   });
+	  //  }
 		
 		/* document.getElementById('searchArea').querySelector('button').addEventListener('click', function(){
 			const value = this.previousElementSibling.value; //검색할 값
 			const condition = this.previousElementSibling.previousElementSibling.value;  // 검색할 조건
 			location.href='${contextPath}/search.bo?value=' +value+ "&condition=" + condition;
 		}) */
+		
+		window.onload = () => {
+			console.log('나는 스크립트야');
+			const cardDeck = document.getElementById('cardDeck');
+			cardDeck.addEventListener('click', function(event){
+				
+				
+				const target = event.target;
+				const topCard = target.closest('.card');
+				if(topCard.classList.contains('card')){
+					const boardId = topCard.children[1].children[2].innerText
+					
+					const currentPage = /*[[${pi.currentPage}]]*/1;
+					console.log(topCard.children[1].children[2].innerText);
+					location.href = '/board/lost/detail?mNo=' + boardId + '&page=' +/*<![CDATA[*/  /*[[${pi.currentPage}]]*/1 /*]]>*/; 
+					
+					
+				}
+
+				
+			});
+		}
 	</script>
 </body>
 </html>

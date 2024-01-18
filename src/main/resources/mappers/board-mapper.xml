@@ -768,7 +768,7 @@
 		  ROW_NUMBER() OVER(PARTITION BY attm_Ref_No ORDER BY attm_id ASC) AS RNUM , u.*
 		from attachment u
 		where attm_status='Y'
-		and attm_ref_type = 'M' 
+		and attm_ref_type = 'U' 
 		<if test="bId != null">
 	        and attm_ref_no = #{bId}
 	    </if>
