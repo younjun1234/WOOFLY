@@ -28,6 +28,7 @@ public class LostBoard {
    private String mbNickName;
    private int mRescue;
    private int likeUser; // 좋아요 누른 사람
+   private int mLike;
    
    private List<Attachment> attachments;
 }

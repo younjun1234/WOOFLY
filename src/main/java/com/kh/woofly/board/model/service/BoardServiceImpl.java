@@ -24,6 +24,7 @@ import com.kh.woofly.board.model.vo.WmBoard;
 
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -134,6 +135,50 @@ private BoardServiceImpl boardDAO;
 		return bDAO.selectFreeReply(bNo);
 	}
 	
+	@Override
+	public int freeBoardLike(HashMap<String, Object> map) {
+		return bDAO.freeBoardLike(map);
+	}
+
+
+	@Override
+	public int deleteFreeBoardLike(HashMap<String, Object> map) {
+		return bDAO.deleteFreeBoardLike(map);
+	}
+
+
+	@Override
+	public int insertFreeBoardLike(HashMap<String, Object> map) {
+		return bDAO.insertFreeBoardLike(map);
+	}
+
+	@Override
+	public ReplyLike selectReplyLike(Reply tempR) {
+		return bDAO.selectReplyLike(tempR);
+	}
+
+
+	@Override
+	public int deleteBoardReplyLike(HashMap<String, Object> map) {
+		return bDAO.deleteBoardReplyLike(map);
+	}
+
+
+	@Override
+	public int insertBoardReplyLike(HashMap<String, Object> map) {
+		return bDAO.insertBoardReplyLike(map);
+	}
+	
+	@Override
+	public int insertFreeBoardNotice(HashMap<String, Object> map) {
+		return bDAO.insertFreeBoardNotice(map);
+	}
+
+	@Override
+	public int insertFreeReplyNotice(HashMap<String, Object> map) {
+		return bDAO.insertFreeReplyNotice(map);
+	}
+
 	
 
 	
@@ -266,6 +311,50 @@ private BoardServiceImpl boardDAO;
 		return bDAO.insertReplyReport(rep);
 	}
 	
+	@Override
+	public int DwBoardLike(HashMap<String, Object> map) {
+		return bDAO.DwBoardLike(map);
+	}
+
+	@Override
+	public int deleteDwBoardLike(HashMap<String, Object> map) {
+		return bDAO.deleteDwBoardLike(map);
+	}
+
+
+	@Override
+	public int insertDwBoardLike(HashMap<String, Object> map) {
+		return bDAO.insertDwBoardLike(map);
+	}
+
+
+	@Override
+	public int insertDwBoardNotice(HashMap<String, Object> map) {
+		return bDAO.insertDwBoardNotice(map);
+	}
+
+
+	@Override
+	public int insertDwReplyNotice(HashMap<String, Object> map) {
+		return bDAO.insertDwReplyNotice(map);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 //======// 산책메이트  //===============================
 	
@@ -368,7 +457,34 @@ private BoardServiceImpl boardDAO;
 		return bDAO.updateWmReply(r);
 	}
 
-	
+	@Override
+	public int WmBoardLike(HashMap<String, Object> map) {
+		return bDAO.WmBoardLike(map);
+	}
+
+
+	@Override
+	public int deleteWmBoardLike(HashMap<String, Object> map) {
+		return bDAO.deleteWmBoardLike(map);
+	}
+
+
+	@Override
+	public int insertWmBoardLike(HashMap<String, Object> map) {
+		return bDAO.insertWmBoardLike(map);
+	}
+
+
+	@Override
+	public int insertWmBoardNotice(HashMap<String, Object> map) {
+		return bDAO.insertWmBoardNotice(map);
+	}
+
+
+	@Override
+	public int insertWmReplyNotice(HashMap<String, Object> map) {
+		return bDAO.insertWmReplyNotice(map);
+	}
 	
 	
 	
@@ -494,6 +610,35 @@ private BoardServiceImpl boardDAO;
 	@Override
 	public int updateLostReply(Reply r) {
 		return bDAO.updateLostReply(r);
+	}
+	
+	@Override
+	public int LostBoardLike(HashMap<String, Object> map) {
+		return bDAO.LostBoardLike(map);
+	}
+
+
+	@Override
+	public int insertLostBoardLike(HashMap<String, Object> map) {
+		return bDAO.insertLostBoardLike(map);
+	}
+
+
+	@Override
+	public int deleteLostBoardLike(HashMap<String, Object> map) {
+		return bDAO.deleteLostBoardLike(map);
+	}
+
+
+	@Override
+	public int insertLostBoardNotice(HashMap<String, Object> map) {
+		return bDAO.insertLostBoardNotice(map);
+	}
+
+
+	@Override
+	public int insertLostReplyNotice(HashMap<String, Object> map) {
+		return bDAO.insertLostReplyNotice(map);
 	}
 
 
@@ -772,6 +917,73 @@ private BoardServiceImpl boardDAO;
 		return bDAO.updateUsedRvReply(r);
 	}
 
+
+	@Override
+	public int UsedBoardLike(HashMap<String, Object> map) {
+		return bDAO.UsedBoardLike(map);
+	}
+
+
+	@Override
+	public int insertUsedBoardLike(HashMap<String, Object> map) {
+		return bDAO.insertUsedBoardLike(map);
+	}
+
+
+	@Override
+	public int deleteUsedBoardLike(HashMap<String, Object> map) {
+		return bDAO.deleteUsedBoardLike(map);
+	}
+
+
+	@Override
+	public int insertUsedRvBoardNotice(HashMap<String, Object> map) {
+		return bDAO.insertUsedRvBoardNotice(map);
+	}
+
+
+	@Override
+	public int insertUsedRvReplyNotice(HashMap<String, Object> map) {
+		return bDAO.insertUsedRvReplyNotice(map);
+	}
+
+
+	@Override
+	public int selectUsedSaved(HashMap<String, Object> map) {
+		return bDAO.selectUsedSaved(map);
+	}
+
+
+	@Override
+	public int deleteUsedSaved(HashMap<String, Object> map) {
+		return bDAO.deleteUsedSaved(map);
+	}
+
+
+	@Override
+	public int insertUsedSaved(HashMap<String, Object> map) {
+		return bDAO.insertUsedSaved(map);
+	}
+
+
+	
+
+
+	
+
+
+	
+
+
+	
+
+	
+
+	
+
+
+
+	
 
 	
 

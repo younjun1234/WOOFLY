@@ -2,6 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.board.model.dao.BoardDAO">
+	
+	<insert id="insertUsedSaved">
+		insert into saved
+		values (saved_seq.nextval, #{productId}, #{id}, 'U')
+	</insert>
+
+	<delete id="deleteUsedSaved">
+		delete from saved
+		where product_id = #{productId} and mb_id = #{id}
+	</delete>
+	
+	<select id="selectUsedSaved" resultType="_int">
+		select count(*)
+		from saved
+		where mb_id = #{mbId} and saved_type = 'U' and product_id = #{uNo}
+	</select>
 
 	<select id="getReplyListCount" resultType="_int">
 		select count(*)
@@ -123,7 +139,7 @@
 	        select seq_b_no.nextval as bNo from dual
 	    </selectKey>
 	    insert into board 
-	    values (#{bNo}, #{bTitle}, default, SYSDATE, default, #{mbId}, #{bContent})
+	    values (#{bNo}, #{bTitle}, default, SYSDATE, default, #{mbId}, #{bContent}, default)
 	</insert>
 	
 	<update id="updateFreeCount">
@@ -196,6 +212,49 @@
 		where r.b_no = #{bNo} and r.re_d_status = 'Y' and r.b_type = 'B'
 		order by r.r_no desc
 	</select>
+	
+	<select id="freeBoardLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{bNo} and like_user = #{id}
+	</select>
+	
+	<insert id="insertFreeBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'B', #{bNo}, #{id})
+	</insert>
+	
+	<delete id="deleteFreeBoardLike">
+		delete from board_like
+		where like_ref_board = #{bNo} and like_ref_type = 'B' and like_user =#{id}
+	</delete>
+	
+	<select id="selectReplyLike" resultType="ReplyLike">
+		select *
+			from reply
+	             join reply_like on (r_no = like_ref_board)
+	      where like_ref_board = #{rNo} and like_user = #{mbId}
+	</select>
+	
+	<insert id="insertBoardReplyLike">
+		insert into reply_like
+		values (rl_seq.nextval, #{rNo}, #{id})
+	</insert>
+	
+	<delete id="deleteBoardReplyLike">
+		delete from reply_like
+		where like_ref_board = #{rNo} and like_user =#{id}
+	</delete>
+	
+	<insert id="insertFreeBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from board where b_no = #{bNo}), 'FB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertFreeReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from reply where r_no = #{rNo}), 'FR', null, 'Y', #{id}, 1, sysdate)
+	</insert>
 	
 	
 	<!--/////////// 도그워커 게시판 ////////////-->
@@ -386,6 +445,32 @@
 		values(rep_seq.nextval, #{rContent}, sysdate, 'A', #{rCategory}, #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
 	</insert>
 	
+	<select id="DwBoardLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{dwNo} and like_user = #{id}
+	</select>
+	
+	<insert id="insertDwBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'DW', #{dwNo}, #{id})
+	</insert>
+	
+	<delete id="deleteDwBoardLike">
+		delete from board_like
+		where like_ref_board = #{dwNo} and like_ref_type = 'DW' and like_user =#{id}
+	</delete>
+	
+	<insert id="insertDwBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from dw_board where dw_no = #{dwNo}), 'DB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertDwReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from reply where r_no = #{rNo}), 'DR', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
 	
 	
 	
@@ -554,7 +639,31 @@
 		where r_No = #{rNo}
 	</update>
 	
+	<select id="WmBoardLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{wmNo} and like_user = #{id}
+	</select>
 	
+	<insert id="insertWmBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'WM', #{wmNo}, #{id})
+	</insert>
+	
+	<delete id="deleteWmBoardLike">
+		delete from board_like
+		where like_ref_board = #{wmNo} and like_ref_type = 'WM' and like_user =#{id}
+	</delete>
+	
+	<insert id="insertWmBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from wm_board where wm_no = #{wmNo}), 'WB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertWmReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from reply where r_no = #{rNo}), 'WR', null, 'Y', #{id}, 1, sysdate)
+	</insert>
 	
 	
 	
@@ -645,7 +754,7 @@
            select ms_no_seq.nextval as mNo from dual
        </selectKey>
        insert into missing_board 
-       values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId}, #{mRescue})
+       values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId}, #{mRescue}, null)
    </insert>
 
 	<!--첨부파일 등록-->
@@ -767,6 +876,32 @@
 		set re_content = #{reContent}
 		where r_No = #{rNo}
 	</update>
+	 
+	<select id="LostBoardLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{mNo} and like_user = #{id}
+	</select>
+	
+	<insert id="insertLostBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'M', #{mNo}, #{id})
+	</insert>
+	
+	<delete id="deleteLostBoardLike">
+		delete from board_like
+		where like_ref_board = #{mNo} and like_ref_type = 'M' and like_user =#{id}
+	</delete>
+	
+	<insert id="insertLostBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from missing_board where m_no = #{mNo}), 'MB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertLostReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from reply where r_no = #{rNo}), 'MR', null, 'Y', #{id}, 1, sysdate)
+	</insert>
 	
 	
 	
@@ -956,7 +1091,7 @@
 		select *
 		from used_board
 		 join member using (mb_id)
-		where buyer_id= #{mbId}
+		where buyer_id= #{mbId} and u_type ='일반'
 	</select>
 	
 	<select id="checkProdList" resultType="UsedBoard">
@@ -1078,7 +1213,31 @@
 		where r_No = #{rNo}
 	</update>
 	
+	<select id="UsedBoardLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{uNo} and like_user = #{id}
+	</select>
 	
+	<insert id="insertUsedBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'U', #{uNo}, #{id})
+	</insert>
+	
+	<delete id="deleteUsedBoardLike">
+		delete from board_like
+		where like_ref_board = #{uNo} and like_ref_type = 'U' and like_user =#{id}
+	</delete>
+	
+	<insert id="insertUsedRvBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from used_board where u_no = #{uNo}), 'UB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertUsedRvReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select mb_id from reply where r_no = #{rNo}), 'UR', null, 'Y', #{id}, 1, sysdate)
+	</insert>
 	
 		
 	

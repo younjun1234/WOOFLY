@@ -87,7 +87,7 @@
 				<div th:onclick="|location.href='/board/used/detail?uNo=${buying.uNo}'|" class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="buying : ${list}">
 					<input type="hidden" th:value="${ buying.uNo }">
 					<div class="d-flex align-content-center ms-3 col-6">
-						<img class="rounded float-start my-auto" th:src="'/image/' + ${buying.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
+						<img class="rounded float-start my-auto" th:src="'/image/board/' + ${buying.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
 						<div class="ms-3" style="line-height: 100px;">[[${buying.uTitle}]]</div>
 					</div>
 					<div class='col-6 d-flex justify-content-end'>

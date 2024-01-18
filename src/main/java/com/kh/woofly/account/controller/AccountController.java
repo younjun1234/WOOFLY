@@ -64,6 +64,7 @@ public class AccountController {
     public AccountController() {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
+
     
     @GetMapping("checkLogin.dw")
     @ResponseBody
@@ -79,6 +80,7 @@ public class AccountController {
     		}
     	}
     }
+
     
 
     
