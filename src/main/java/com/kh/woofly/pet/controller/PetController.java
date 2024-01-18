@@ -57,15 +57,22 @@ public class PetController {
 
 	  @GetMapping("pet/petPhoto")
 	   public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
-			   @RequestParam(value="petName", required=false) Integer petId) {
+			   @RequestParam(value="petName", required=false) Integer petId, HttpServletRequest request) {
 	      String id = ((Member)session.getAttribute("loginUser")).getMbId();
 	      HashMap<String, Object> map = new HashMap<>();
 	      map.put("id", id);
           map.put("petId", petId);
+          
+          int listCount = pService.getListCount(1);
+          PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+          
 	      ArrayList<Album> aList = pService.selectMyAlbums(map);
 	      ArrayList<Pet> pList = pService.petInfoList(id);
 	      ArrayList<Reply> rList = pService.repliesList(id);
+	      
 	      if(aList != null) {
+	    	 model.addAttribute("pi", pi);
+	    	 model.addAttribute("loc", request.getRequestURI());
 	         model.addAttribute("pList", pList);
 	         model.addAttribute("aList", aList);
 	         model.addAttribute("rList", rList);

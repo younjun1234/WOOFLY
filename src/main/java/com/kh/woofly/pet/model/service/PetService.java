@@ -105,6 +105,8 @@ public interface PetService {
 
 	int updatePetPhoto(Album a);
 
+	int getListCount(int i);
+
 	//int getPhotoCount(HashMap<String, String> map);
 
 }

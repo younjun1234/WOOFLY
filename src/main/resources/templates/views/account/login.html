@@ -13,7 +13,7 @@
 	
 	.border-bottom input:focus {
         outline: none;
-    }
+    } 
 </style>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -42,7 +42,7 @@
 						<div class="mt-3">
 							<p>아이디</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input id="mbId" type="text" name="mbId" style="border: none; background: transparent; width:100%">
+							    <input id="mbId" type="text" name="mbId" style="border:none; background: transparent; width:100%">
 							</div>
 						</div>
 						<br>
@@ -58,6 +58,7 @@
 								  <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
 								  <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
 								</svg> --> 
+								
 							</div>
 							<div class="form-text" id="pwdCheckWarn" style="color:red;" ></div>
 						</div>
@@ -97,7 +98,7 @@
 					</div>
 					<br>
 					<div class="">
-						<a class="btn btn-outline-dark mb-3" href="https://kauth.kakao.com/oauth/authorize?client_id=15784e89dab4d4fec98748ebc5b27f8b&redirect_uri=http://localhost:8080/kakaoLogin&response_type=code" style="width:100%">카카오로 간편 로그인</a>
+						<a class="btn btn-outline-dark mb-3" href="https://kauth.kakao.com/oauth/authorize?client_id=1ca4e62a403e811b888aebec433f8494&redirect_uri=http://localhost:8080/kakaoLogin&response_type=code" style="width:100%">카카오로 간편 로그인</a>
 					</div>
 				</div>
 			</div>
@@ -176,6 +177,7 @@
 	              document.querySelector('form').submit()
 	              return true;
 	           }
+	           
 	       }
 	       
 	      /*  function checkData() {

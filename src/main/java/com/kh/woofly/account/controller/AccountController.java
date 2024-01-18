@@ -63,7 +63,6 @@ public class AccountController {
     public AccountController() {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
-	
     @GetMapping("kakaoLogin")
     public String kakaoLogin(@RequestParam(value="code", required=false) String code, Model model) {
     	System.out.println(code);
@@ -142,23 +141,32 @@ public class AccountController {
 	}
 	
 	@PostMapping("login.dw")
-	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL)
-	{
+	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL, HttpSession response) {
 		Member loginUser = aService.login(m);
-		
-		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-			model.addAttribute("loginUser", loginUser);
-//			if (loginUser.getIsAdmin().equals("N")) {
-//				//로그 추가
-//				logger.info(loginUser.getMbId());
-//				return "redirect:/";
-//			} else {
-//				return "redirect:admin.ad";
-//			}
-			return "redirect:/";
-		} else {
-			throw new AccountException("로그인을 실패하였습니다.");
-		}
+	      
+	      if(loginUser != null) {
+	         if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+	            model.addAttribute("loginUser",loginUser);
+	            
+	            if(!beforeURL.equals("http://localhost:8080/logout.dw") && !beforeURL.equals("http://localhost:8080/signUp.dw"))
+	            {
+	               return "redirect:" + beforeURL;
+	            }else {
+	               return "redirect:home.me";
+	            }
+	         }else {
+	            model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+	            model.addAttribute("searchUrl","views/account/signUp");
+	            return "redirect:/account/signUp";
+	            
+	         }
+	         
+	      }else {
+	         model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+	         model.addAttribute("searchUrl","views/account/signUp");
+	         return "redirect:/account/signUp";
+	      }
+	   }
 		
 		//beforeUrl
 //		if(loginUser != null) {
@@ -204,9 +212,6 @@ public class AccountController {
 //		      }
 //		   }
 		
-	}
-	
-	
 	@GetMapping("/idCheck.dw")
 	@ResponseBody
 	public String idCheck(@RequestParam("id") String mbId) {

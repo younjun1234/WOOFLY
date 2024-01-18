@@ -252,5 +252,10 @@ public class PetServiceImpl implements PetService{
 		return pDAO.updatePetPhoto(a);
 	}
 
+	@Override
+	public int getListCount(int i) {
+		return pDAO.getListCount(i);
+	}
+
 
 }
