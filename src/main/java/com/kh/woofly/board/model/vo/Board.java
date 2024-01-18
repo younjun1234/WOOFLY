@@ -23,4 +23,7 @@ public class Board {
 	private String mbId;
 	private String bContent;
 	private String mbNickName;
+	
+	
+	
 }

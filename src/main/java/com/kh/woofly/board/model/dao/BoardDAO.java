@@ -82,7 +82,7 @@ public interface BoardDAO {
 	
 	DwBoard selectDwBoard(int dwNo);
 	
-	ArrayList<Reply> selectDwReply(int dwNo, RowBounds rowBounds);
+	ArrayList<Reply> selectDwReply(int dwNo);
 	
 	int updateDwCount(int dwNo);
 
@@ -134,7 +134,9 @@ public interface BoardDAO {
 
 	int insertWmAttm(ArrayList<Attachment> attachments);
 	
-	WmBoard selectWmBoard(@Param("wmNo") int wmNo, @Param("id") String id);
+	WmBoard selectWmBoard(@Param("wmNo") int wmNo);
+	
+	int updateWmCount(int wmNo);
 	
 	int deleteWmAttm(ArrayList<String> delRename);
 
@@ -148,7 +150,7 @@ public interface BoardDAO {
 
 	ArrayList<Reply> selectWmReply(int wmNo);
 	
-	
+	int updateWmReply(Reply r);
 	
 	
 	
@@ -158,18 +160,6 @@ public interface BoardDAO {
 	
 
 
-	// 실종신고
-	ArrayList<LostBoard> selectLostBoardList(int i, RowBounds rowBounds);
-
-	ArrayList<Attachment> selectAttmLostBoardList(Integer bId);
-
-	LostBoard selectLostBoard(int mNo);
-
-	int mListCount(int i);
-
-	int insertLostBoard(LostBoard m);
-
-	LostBoard selectLostBoard(int bId, Object object);
 	
 	// 연준이꺼
 	
@@ -180,6 +170,112 @@ public interface BoardDAO {
 	int selectMySellingCount(String id);
 
 	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
+
+	
+
+//	실종신고게시판 "/board/lost"
+	ArrayList<LostBoard> searchLostBoards(HashMap<String, String> map);
+
+	ArrayList<LostBoard> selectLostBoardList(RowBounds rowBounds, int i);
+
+	ArrayList<Attachment> selectAttmLostBoardList(Integer bId);
+
+	int mListCount(int i);
+	
+	// 실종 검색 //
+	int insertLostBoard(LostBoard m);
+
+	int insertLostAttm(ArrayList<Attachment> attachments);
+
+	LostBoard selectLostBoard(Integer mNo);
+	
+	int updateLostCount(Integer mNo);
+
+	LostBoard editLostBoard(int bId, Object object);
+
+	int deleteLostBoard(int bId);
+
+	int deleteLostBoardAttm(int bId);
+
+	int editLostBoard(LostBoard lb);
+	
+	int deleteLostAttm(ArrayList<String> delRename);
+
+	int updateLostBoard(LostBoard m);
+
+//	Reply selectReplyLostBoard(Integer rNo);
+
+//	ArrayList<Member> selectMemberList(PageInfo pi, int i);
+	
+	
+//	중고게시판 "/board/used" 
+	int uListCount(int i);
+
+	ArrayList<UsedBoard> selectUsedBoardList(RowBounds rowBounds, int i);
+
+	ArrayList<Attachment> selectAttmUsedBoardList(Object object);
+
+	ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map);
+
+	UsedBoard selectUsedBoard(Integer uNo);
+
+	Reply selectReply(Integer rNo);
+
+	int insertUsedBoard(UsedBoard u);
+
+	int insertUsedAttm(ArrayList<Attachment> attachments);
+
+
+	
+	//==========================중고게시판
+	
+	int insertUsedRvBoard(UsedBoard selectProduct);
+
+	int insertUsedRvAttm(ArrayList<Attachment> attachments);
+
+	ArrayList<UsedBoard> selectProdList(UsedBoard u);
+	
+	ArrayList<Attachment> selectAttmUsedRvBoardList(Object object);
+
+	ArrayList<UsedBoard> searchUsedRvBoards(HashMap<String, String> map);
+
+	UsedBoard checkProdList(int prodNo);
+
+	int getUsedRvListCount(int i);
+
+	ArrayList<UsedBoard> selectUsedRvBoardList(int i, RowBounds rowBounds);
+
+	UsedBoard selectUsedRvBoard(int uNo);
+
+	int updateUsedRvCount(int uNo);
+
+	int getUsedRvReplyListCount(int uNo);
+
+	ArrayList<Reply> selectUsedRvReply(int uNo);
+
+	
+	/* 글 수정 */
+	int deleteUsedRvAttm(ArrayList<String> delRename);
+
+	int updateUsedRvBoard(UsedBoard u);
+	
+	/* 글 삭제 */
+
+	int deleteUsedRvBoard(int uNo);
+	
+	/* 댓글 */
+
+	int insertUsedRvReply(Reply r);
+
+	int deleteUsedRvReply(Reply r);
+
+	int updateUsedRvReply(Reply r);
+
+
+
+	
+
+	
 
 	
 

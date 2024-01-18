@@ -70,8 +70,8 @@
 			        <th:block th:each="a : ${list}">
 			            <!-- 이미지 파일일 때 -->
 			            <div class="mb-4" th:if="${#strings.containsIgnoreCase(a.renameName, 'jpg') or #strings.containsIgnoreCase(a.renameName, 'png')}">
-			                <div class="card">
-			                    <img th:src="@{'/image/board/' + ${a.renameName}}" width="100%" height="200">
+			                <div class="card" style="max-width: 500px;" >
+			                    <img th:src="@{'/image/board/' + ${a.renameName}}" class="card-img-top img-fluid">
 			                    <div class="card-body">
 			                        <h5 class="card-title">
 			                            <a th:href="@{'/image/board/' + ${a.renameName}}" th:download="${a.originalName}" th:text="${a.originalName}">[[${a.originalName}]]</a>
@@ -97,7 +97,7 @@
 		</form>
 		
 		<!-- 댓글 입력창 -->
-                          <div class="mt-3 mb-5" th:if="${ session.loginUser != null}" >
+                          <div class="mt-3 mb-4" th:if="${ session.loginUser != null}" >
 							<div class="row justify-content-center d-flex">
 								<div class="col-10">
 									<input class="form-control" id="replyContent" type="text" placeholder="댓글 달기...">
@@ -116,13 +116,13 @@
 						
 						<div id="replybody">				
 		                     <div class="d-flex mt-3 border-bottom">
-		                        <strong>댓글 [[${#arrays.length(rList)}]]개</strong>
-		                        <p role="button">&nbsp;&nbsp;모두 보기</p>
+		                        <strong>&nbsp;&nbsp; 댓글 [[${#arrays.length(rList)}]]개 </strong>
+		                        <br>
 		                     </div>
+		                      
 		                     
 		                     <div class="ms-auto d-block">
-		                         <div class="d-flex align-items-center" th:each="r : ${rList}">
-		                         <input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
+			                        <div class="d-flex align-items-center" th:each="r : ${rList}">
 			                          <div class="p-2">
 			                               <!-- <img th:src="'/image/' + ${r.mbPhoto}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey"> -->
 			                          </div>
@@ -131,14 +131,6 @@
 			                        	  <input th:id="${r.rNo}+'content'" type="text" class="form-control-plaintext col-9 text-secondary" th:value="${ r.reContent }" readonly>
 			                          </div>
 			                          <div class="p-2 ms-auto d-flex align-items-center">
-			                          		<!-- <input type="hidden" th:value="${r.rNo}">
-											<div>[[${r.reLike}]]&nbsp;&nbsp;</div>
-											<svg id="heart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-											  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-											</svg>
-											<svg id="blackHeart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-											  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-											</svg>	 -->
 			                             <svg role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
 			                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
 			                             </svg>
@@ -150,10 +142,10 @@
 					                        	<input type="hidden" th:value="${r.rNo}">
 					                        	<input type="hidden" th:value="${r.mbId}">
 						                        <li>
-						                        	<button class="dropdown-item editReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">수정</button>
+						                        	<button onclick="editReply(this)" class="dropdown-item editReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">수정</button>
 						                        </li>
-						                        <li><button class="dropdown-item deleteReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">삭제</button></li>
-						                        <li><button class="dropdown-item reportBtn" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
+						                        <li><button onclick="deleteReply(this)" class="dropdown-item deleteReplyBtn" th:if="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">삭제</button></li>
+						                        <li><button onclick="reportReply(this)" class="dropdown-item reportBtn" th:unless="${ session.loginUser!=null && session.loginUser.mbId eq r.mbId }">신고</button></li>
 						                    </ul> 
 						                </div>
 			                          </div>
@@ -162,24 +154,7 @@
 	                       </div>
                          
 		
-		<!-- 댓글 페이지네이션 -->
-		<nav class="border-top border-black pt-5"  th:with="loc=${loc}">
-		  	<ul class="pagination justify-content-center">
-		    	<li class="page-item">
-	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous">
-	            		<span aria-hidden="true">&laquo;</span>
-	              	</a> 
-	            </li>
-            	<li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
-            		<a class="page-link" th:href="@{${loc}(page=${p})}">[[${ p }]]</a>
-            	</li> <!-- 게시글 페이지 번호 점점 커지게 하는 것 -->
-	            <li class="page-item">
-	            	<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next">
-	            		<span aria-hidden="true">&raquo;</span>
-	            	</a>
-	            </li>
-		  	</ul>
-		</nav>
+		
 		
 	</div>
 	<!-- 신고 영역 -->
@@ -205,8 +180,9 @@
 	                    </select>
 	                    <textarea class="form-control content2" id="content2" rows="5" style="resize: none;"></textarea>
 	                </div>
-	                <div class="modal-footer">
-	                    <button class="btn btn-primary" data-bs-dismiss="modal" id="reportSubmit">제출</button>
+	                <div class="modal-footer justify-content-between">
+	                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
+						<button type="button" class="btn btn-dark" id="reportSubmit">네</button>
 	                </div>
 	            </div>
 	        </div>
@@ -233,7 +209,7 @@
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">아니오</button>
-						<button type="button" class="btn btn-dark" id="reportReplySubmit">네</button>
+						<button type="button" class="btn btn-dark" onclick="reportReplySubmit(this)">네</button>
 					</div>
 				</div>
 			</div>
@@ -278,6 +254,124 @@
 	
 	
 	<script th:inline="javascript">
+	
+		//댓글 ajax
+	    document.getElementById('replySubmit').addEventListener('click', ()=>{
+	  	  console.log(123);
+	  	  
+	  	  const dwNo = Number(document.getElementById('dwNo').value);
+	  	  const mbId = document.getElementById('mbId').value;
+	  	  const mbNickNmae = document.getElementById('mbNickname').value;
+	  	  const replyContent = document.getElementById('replyContent').value;
+	  	  
+	  	  if(replyContent !== '') {
+	  		  console.log(replyContent);
+	  		  $.ajax({
+	  			  url: '/insertDwReply.yk',
+	  			  data: {reContent:replyContent, bNo:dwNo},
+	  		 	  success: (data) =>{
+		   		 		 if(data == 'good'){
+								$("#replybody").load(location.href + " #replybody" );
+								document.getElementById('replyContent').value = '';
+								console.log(data);
+						} else {
+							console.log(data);
+						}
+	  		 	  },
+	  		 	  error: data => console.log(data)
+	  		  });
+	  	  }
+	    })
+	
+		//댓글 수정 ajax
+		 const editReply = (target) => {
+			  
+		    	const rNo = target.parentElement.parentElement.firstElementChild.value;
+		    	const replyContent = document.getElementById(rNo+'content');
+		    	
+		    	$(replyContent).attr('readonly', false);
+		    	$(replyContent).removeClass('form-control-plaintext');
+		    	
+		    	replyContent.addEventListener('keyup', (event)=>{
+		    		if(event.key === 'Enter'){
+						$.ajax({
+							url : "/updateDwReply.yk",
+							data : {rNo:rNo, reContent:replyContent.value},
+							success: (data) =>{
+				   		 		 if(data == 'good'){
+										$("#replybody").load(location.href + " #replybody > *" );
+										document.getElementById('replyContent').value = '';
+										console.log(data);
+								} else {
+									console.log(data);
+								}
+		    		 	    },
+							error : (data) => console.log(data)
+						})    		  
+		      	  }
+		    	})
+		  }
+	
+		//댓글 삭제 ajax
+		    const deleteReply = (target) => {
+		    	const rNo = target.parentElement.parentElement.firstElementChild.value;
+		    	
+		    	
+				$.ajax({
+					url : "/deleteDwReply.yk",
+					data : {rNo:rNo},
+					success: (data) =>{
+		   		 		 if(data == 'good'){
+							$("#replybody").load(window.location.href + " #replybody > *" );
+							console.log(data);
+						} else {
+							console.log(data);
+						}
+	   		 	    },
+					error : (data) => console.log(data)
+				})    		  
+		    }
+	    
+		  //댓글 신고 ajax
+		    
+		    let rNoSave;
+		    let mbIdSave;
+	 	    const reportReply = (target) => {
+		 	    const reportReplySubmit = document.getElementById('reportReplySubmit');
+	 	    	
+	   		  	rNoSave = target.parentElement.parentElement.firstElementChild.value;
+	   		  	mbIdSave = target.parentElement.parentElement.children[1].value;
+			  	$('#reportReplyModal').modal("show");
+	 	    }
+		      
+		    const reportReplySubmit = (target) => {
+			 	const reportContent = document.getElementById('reportContent').value;
+			 	const reportType = document.getElementById('reportType').value;
+				
+				$.ajax({
+					url: "/insertDwReplyReport.yk",
+					data: {rBoardNo:rNoSave, rContent : reportType + "&^" + reportContent, rAccused : mbIdSave},
+					success : (data)=>{
+						if(data == 'good') {
+							alert("신고가 정상적으로 접수되었습니다.");
+							$('#resetF')[0].reset();
+							$('#reportReplyModal').modal("hide");
+						} else if(data == 'bad'){
+							alert("신고가 정상 접수되지 않았습니다.");
+						} else {
+							alert("해당 계정은 이미 같은 사유로 신고처리 되었습니다.");
+							$('#resetF')[0].reset();
+							$('#reportReplyModal').modal("hide");
+						}
+					},
+					error : (data)=>console.log(data)
+				})
+		    }  
+		    
+	    
+	  
+	
+	
 		// 해당 페이지 nav bar 강조 넣기
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd4");
@@ -338,11 +432,14 @@
 		               		                
 		            },
 		            success: function (data) {
-		                console.log(data);  
+		            	console.log(data);  
 		                if (data == 'good') {
+		                	alert("신고가 정상적으로 접수되었습니다.");
 		                	 $('#modal1').modal('hide');
+			             } else if(data == 'bad'){
+								alert("신고가 정상 접수되지 않았습니다.");
 			             } else if (data === 'existBoardReport') {
-			                 alert('이미 신고된 게시물입니다.');
+			                 alert('해당 계정은 이미 같은 사유로 신고처리 되었습니다.');
 			                 // 또는 다른 사용자 인터페이스 처리 로직 추가
 			             }
 		                
@@ -356,130 +453,9 @@
 			
 			
 			
-		  //댓글 ajax
-		      document.getElementById('replySubmit').addEventListener('click', ()=>{
-		    	  console.log(123);
-		    	  
-		    	  const dwNo = Number(document.getElementById('dwNo').value);
-		    	  const mbId = document.getElementById('mbId').value;
-		    	  const mbNickNmae = document.getElementById('mbNickname').value;
-		    	  const replyContent = document.getElementById('replyContent').value;
-		    	  
-		    	  if(replyContent !== '') {
-		    		  console.log(replyContent);
-		    		  $.ajax({
-		    			  url: '/insertDwReply.yk',
-		    			  data: {reContent:replyContent, bNo:dwNo},
-		    		 	  success: (data) =>{
-			   		 		 if(data == 'good'){
-									$("#replybody").load(location.href + " #replybody" );
-									document.getElementById('replyContent').value = '';
-									console.log(data);
-							} else {
-								console.log(data);
-							}
-		    		 	  },
-		    		 	  error: data => console.log(data)
-		    		  });
-		    	  }
-		      })
+		  
 			
-		  //댓글 수정 ajax
-		      const editReplyBtns = document.getElementsByClassName('editReplyBtn');
-		      for(const editReplyBtn of editReplyBtns) {
-		    	const rNo = editReplyBtn.parentElement.parentElement.firstElementChild.value;
-		    	const replyContent = document.getElementById(rNo+'content');
-		    	
-		    	editReplyBtn.addEventListener('click', ()=>{
-			    	$(replyContent).attr('readonly', false);
-			    	$(replyContent).removeClass('form-control-plaintext');
-		    	});
-		    	
-		    	replyContent.addEventListener('keyup', (event)=>{
-		    		if(event.key === 'Enter'){
-						$.ajax({
-							url : "/updateDwReply.yk",
-							data : {rNo:rNo, reContent:replyContent.value},
-							success: (data) =>{
-				   		 		 if(data == 'good'){
-										$("#replybody").load(location.href + " #replybody" );
-										document.getElementById('replyContent').value = '';
-										console.log(data);
-								} else {
-									console.log(data);
-								}
-		    		 	    },
-							error : (data) => console.log(data)
-						})    		  
-		      	  }
-		    	})
-		    	
-		      }
-		      
-		      //댓글 삭제 ajax
-		      const deleteReplyBtns = document.getElementsByClassName('deleteReplyBtn');
-		      
-		      for(const deleteReplyBtn of deleteReplyBtns) {
-		    	const rNo = deleteReplyBtn.parentElement.parentElement.firstElementChild.value;
-		    	
-		    	console.log(rNo);
-		    	
-		    	deleteReplyBtn.addEventListener('click', ()=>{
-					$.ajax({
-						url : "/deleteDwReply.yk",
-						data : {rNo:rNo},
-						success: (data) =>{
-			   		 		 if(data == 'good'){
-								$("#replybody").load(window.location.href + " #replybody" );
-								console.log(data);
-							} else {
-								console.log(data);
-							}
-		   		 	    },
-						error : (data) => console.log(data)
-					})    		  
-		    	})
-		    	
-		      }
-		      
-		    //댓글 신고 ajax
-		    
-		    const reportBtns = document.getElementsByClassName('reportBtn');
-	 	    const reportReplySubmit = document.getElementById('reportReplySubmit');
-	 	    
-		      let rNoSave;
-		      let mbIdSave;
-		      for(const reportBtn of reportBtns){
-		    	  reportBtn.addEventListener('click',()=>{
-		    		  rNoSave = reportBtn.parentElement.parentElement.firstElementChild.value;
-		    		  mbIdSave = reportBtn.parentElement.parentElement.children[1].value;
-					  $('#reportReplyModal').modal("show");
-		    	  })
-		      }
-		      
-		      reportReplySubmit.addEventListener('click',()=>{
-				 	const reportContent = document.getElementById('reportContent').value;
-				 	const reportType = document.getElementById('reportType').value;
-					
-					$.ajax({
-						url: "/insertDwReplyReport.yk",
-						data: {rBoardNo:rNoSave, rContent : reportType + "&^" + reportContent, rAccused : mbIdSave},
-						success : (data)=>{
-							if(data == 'good') {
-								alert("신고가 정상적으로 접수되었습니다.");
-								$('#resetF')[0].reset();
-								$('#reportReplyModal').modal("hide");
-							} else if(data == 'bad'){
-								alert("신고가 정상 접수되지 않았습니다.");
-							} else {
-								alert("해당 계정은 이미 같은 사유로 신고처리 되었습니다.");
-								$('#resetF')[0].reset();
-								$('#reportReplyModal').modal("hide");
-							}
-						},
-						error : (data)=>console.log(data)
-					})
-		      })
+		  
 		      
 		}
 		
