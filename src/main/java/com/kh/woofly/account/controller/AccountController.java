@@ -135,7 +135,6 @@ public class AccountController {
     	
     }
     
->>>>>>> branch 'develop' of https://github.com/younjun1234/WOOFLY.git
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
