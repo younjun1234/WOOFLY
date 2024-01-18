@@ -3,6 +3,7 @@ package com.kh.woofly.account.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -63,6 +64,24 @@ public class AccountController {
     public AccountController() {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
+    
+    @GetMapping("checkLogin.dw")
+    @ResponseBody
+    public String checkLogin(@ModelAttribute Member m) {
+    	Member loginUser = aService.login(m);
+    	if (loginUser == null) {
+    		return "noId";
+    	} else {
+    		if (bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+    			return "good";
+    		} else {
+    			return "wrongPwd";
+    		}
+    	}
+    }
+    
+
+    
     @GetMapping("kakaoLogin")
     public String kakaoLogin(@RequestParam(value="code", required=false) String code, Model model) {
     	System.out.println(code);
@@ -137,6 +156,8 @@ public class AccountController {
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
+		
+		System.out.println(bcrypt.encode("1"));
 		return "login";
 	}
 	
@@ -349,8 +370,8 @@ public class AccountController {
 		info.setMbName(mbName);
 		info.setMbEmail(mbEmail);
 
-	  	Member m = aService.sendId(info);
-	  	String id = m.getMbId();
+	  	ArrayList<Member> mList = aService.sendId(info);
+	  	String id = mList.get(0).getMbId();
     
 		String title = "Woofly 아이디 정보 메일입니다.";
 		String from = "testyounjun@gmail.com";
@@ -361,8 +382,11 @@ public class AccountController {
 						"안녕하세요 Woofly를 다시 찾아주셔서 감사합니다"
 						+System.getProperty("line.separator")+
 						System.getProperty("line.separator")+
-						mbName +"님의 아이디는 " +id+ " 입니다. " 
+						mbName +"님의 이름으로 가입된 id 입니다. " 
 						+System.getProperty("line.separator");
+		for (Member m : mList) {
+			content += System.getProperty("line.separator") + m.getMbId() + System.getProperty("line.separator");
+		}
 		
 		try {
 		    MimeMessage message = mailSender.createMimeMessage();
