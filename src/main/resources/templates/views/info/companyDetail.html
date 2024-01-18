@@ -17,7 +17,13 @@
 	<main>
 		<div class="container-fluid d-flex mx-5">
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${admin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:unless="${admin == 'Y'}">
+				<div th:replace="~{common/infoNav :: infoNav}"></div>
+			</th:block>
+			
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 			 <div class="container mt-4">

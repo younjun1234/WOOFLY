@@ -66,6 +66,12 @@ public interface ContestDAO {
 
 	void contestPointList(Participants p);
 
+	ArrayList<Participants> bestParticipantstList(RowBounds rowBounds, int cNo);
+
+	ArrayList<Participants> searchParticipantstList(RowBounds rowBounds, int cNo);
+
+	ArrayList<Participants> searchBestParticipantstList(RowBounds rowBounds, int cNo, String search);
+
 
 
 

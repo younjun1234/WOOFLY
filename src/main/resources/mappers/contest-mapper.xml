@@ -136,6 +136,7 @@
         ORDER BY P_NO DESC
 	</select>
 	
+	
 	<select id="selectAttmNList" resultType="ContestAttm">
         SELECT *
         FROM ATTACHMENT
@@ -178,5 +179,29 @@
 		insert into POINT_HISTORY
 		values ( POINT_HISTORY_SEQ.NEXTVAL, 'C', 1000, sysdate, #{mbId} )
 	</insert>
+	
+	<select id="bestParticipantstList" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo}
+        ORDER BY P_COUNT DESC
+	</select>
+
+	
+	<select id="searchParticipantstList" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo}
+        ORDER BY P_NO DESC
+	</select>
+	
+	<select id="searchBestParticipantstList" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo}
+        ORDER BY P_COUNT DESC
+	</select>
+	
+	
 	
 </mapper>

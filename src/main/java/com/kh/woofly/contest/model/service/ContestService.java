@@ -57,6 +57,12 @@ public interface ContestService {
 
 	void contestPoint(Participants p);
 
+	ArrayList<Participants> bestParticipantstList(int cNo, PageInfo pi);
+
+	ArrayList<Participants> searchParticipantstList(int cNo, PageInfo pi, String search);
+
+	ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search);
+
 
 	
 	

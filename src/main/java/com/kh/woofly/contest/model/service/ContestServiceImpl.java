@@ -173,6 +173,33 @@ public class ContestServiceImpl implements ContestService {
 		cDAO.contestPointList(p);
 	}
 
+	@Override
+	public ArrayList<Participants> bestParticipantstList(int cNo, PageInfo pi) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.bestParticipantstList(rowBounds, cNo);
+	}
+
+	@Override
+	public ArrayList<Participants> searchParticipantstList(int cNo, PageInfo pi, String search) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.searchParticipantstList(rowBounds, cNo);
+	}
+
+	@Override
+	public ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.searchBestParticipantstList(rowBounds, cNo, search);
+	}
+
 
 
 	

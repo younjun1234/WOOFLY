@@ -40,11 +40,14 @@ public class ContestController {
 	@Autowired
 	private ContestService cService;
 	
-	
+	// 현재 콘테스트 최신순 리스트
 	@GetMapping("/contest/list")
 	public String contestList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
 		Member loginUser = (Member)session.getAttribute("loginUser");
+		
 		String id = null;
+		int check = 1;
+		
 		if(loginUser != null) {
 			id = loginUser.getMbId();
 		}
@@ -60,6 +63,7 @@ public class ContestController {
 		
 		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 		
+		model.addAttribute("check", check);
 		model.addAttribute("pi", pi);
 		model.addAttribute("id", id);
 		model.addAttribute("pList", participantstList);
@@ -67,6 +71,108 @@ public class ContestController {
 		model.addAttribute("loc", request.getRequestURI());
 		
 		return "contestList";
+	}
+	
+	// 현재 콘테스트 인기순
+	@GetMapping("/contest/bestList")
+	public String contestBestList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		
+		String id = null;
+		int check = 2;
+		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+		}
+		//현재 콘태스트 가져오기
+		int cNo = cService.todayContestNo();
+		
+		int listCount = cService.getListCount(cNo);
+		int currentPage = page;
+		
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 12);
+		
+		ArrayList<Participants> participantstList = cService.bestParticipantstList(cNo, pi);
+		
+		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+		
+		model.addAttribute("check", check);
+		model.addAttribute("pi", pi);
+		model.addAttribute("id", id);
+		model.addAttribute("pList", participantstList);
+		model.addAttribute("aList", cAttmList);
+		model.addAttribute("loc", request.getRequestURI());
+		
+		return "contestList";
+	}
+	
+	
+	@GetMapping("/contest/searchContestList")
+	public String searchContestList(@RequestParam(name = "options-outlined 1", defaultValue="off" ) String check1, @RequestParam(name = "options-outlined 2", defaultValue="off") String check2,
+            @RequestParam("search") String search, Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
+		// 검색 키워드
+		System.out.println(check1);
+		System.out.println(check2);
+		System.out.println(search);
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		
+		String id = null;
+		
+		int check = 0;
+		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+		}
+		//현재 콘태스트 가져오기
+		System.out.println("1111");
+		int cNo = cService.todayContestNo();
+		
+		int listCount = cService.getListCount(cNo);
+		int currentPage = page;
+		System.out.println("2222");
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 12);
+		
+		// 최신순 리스트
+		if(check1.equals("on")) {
+			System.out.println("3333");
+			check = 1;
+			ArrayList<Participants> participantstList = cService.searchParticipantstList(cNo, pi, search);
+			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+			model.addAttribute("search", search);
+			model.addAttribute("check", check);
+			model.addAttribute("pi", pi);
+			model.addAttribute("id", id);
+			model.addAttribute("pList", participantstList);
+			model.addAttribute("aList", cAttmList);
+			model.addAttribute("loc", request.getRequestURI());
+			System.out.println("4444");
+			return "contestList";
+			
+		// 베스트순 리스트
+		}else if(check2 == "on"){
+			System.out.println("5555");
+			check = 2;
+			
+			ArrayList<Participants> participantstList = cService.searchBestParticipantstList(cNo, pi, search);
+			
+			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+			
+			model.addAttribute("search", search);
+			model.addAttribute("check", check);
+			model.addAttribute("pi", pi);
+			model.addAttribute("id", id);
+			model.addAttribute("pList", participantstList);
+			model.addAttribute("aList", cAttmList);
+			model.addAttribute("loc", request.getRequestURI());
+			System.out.println("6666");
+			return "contestList";
+		} else {
+			System.out.println("7777");
+			return null;
+		}
+		
+		
 	}
 	
 	
