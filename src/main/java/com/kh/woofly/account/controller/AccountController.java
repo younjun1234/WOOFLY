@@ -54,17 +54,6 @@ public class AccountController {
     public AccountController() {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
-	
-    //자동 로그인
-//    @GetMapping("/")
-//    public String test(HttpSession session) {
-//       Member m = new Member();
-//       String id = "test";
-//       m.setMbId(id);
-//       Member loginUser = aService.login(m);
-//       session.setAttribute("loginUser", loginUser);
-//       return "index";
-//    }
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
