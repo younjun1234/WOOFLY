@@ -2114,7 +2114,7 @@ public class BoardController {
 			            return "redirect:/board/used";
 			        } else {
 			            throw new BoardException("게시글 작성을 실패하였습니다.");
-			        }f
+			        }
 			    }
 				
 			}
