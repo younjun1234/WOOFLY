@@ -116,7 +116,7 @@ public class InfoServiceImpl implements InfoService{
 		Notice n = iDAO.selectNotice(nNo);
 		if(n != null) {
 			if(id != null & !n.getNWriter().equals(id)) {
-				int result = iDAO.updateCount(id);
+				int result = iDAO.updateCount(nNo);
 				if(result > 0) {
 					n.setNContent(n.getNContent() + 1);
 				}

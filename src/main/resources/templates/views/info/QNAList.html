@@ -32,7 +32,7 @@
 						<h1>FAQ</h1>
 						<h3>자주 묻는 질문과 답변을 미리 확인해 보세요!</h3>
 						<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50">글 작성</a>
+						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50" th:if="${admin == 'Y'}">글 작성</a>
 					</div>
 					<!-- 카테고리 버튼들 -->
 					<div class="container text-center mt-3 row-cols-6 catagoryBar">
@@ -75,9 +75,9 @@
 									<input type="hidden" th:value="${ l.qId }" name="qId">
 									<label class="qId" style="display: none;">[[${ l.qId }]]</label>
 									<input type="hidden" th:value="${ pi.currentPage }" name="page">
-									<button class="btn btn-lg rounded-2 btn-outline-dark" >수정</button>
-									<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" >삭제</button>
-									<p style="display: inline-block; margin-left: 50px;" >
+									<button class="btn btn-lg rounded-2 btn-outline-dark" th:if="${admin == 'Y'}">수정</button>
+									<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" th:if="${admin == 'Y'}">삭제</button>
+									<p style="display: inline-block; margin-left: 50px;">
 										[[${ l.qContent }]]
 									</p>
 									<input type="hidden" th:value="page" name="page">

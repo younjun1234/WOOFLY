@@ -5,7 +5,7 @@
 	
 	<insert id="contestOpen">
 		insert into contest
-		values ( 10004 , #{conGen}, #{conName}, #{conStartDate}, #{conEndDate}, default)
+		values ( CONTEST_SEQ.NEXTVAL , #{conGen}, #{conName}, #{conStartDate}, #{conEndDate}, default)
 	</insert>
 	
 	<select id="contestNewList" resultType="Contest">
@@ -45,10 +45,10 @@
 		where CON_START_DATE <= #{today} AND CON_END_DATE >= #{today}
 		]]>
 	</select>
-	
+	<!-- 콘테스트 참가 -->
 	<insert id="contestEnroll">
 		insert into Participants
-		values ( 10021, #{pTitle}, #{pPet}, #{pContent}, default, default, #{petId}, #{contestId}, #{pProduct} )
+		values ( PARTICIPANTS_SEQ.NEXTVAL, #{pTitle}, #{pPet}, #{pContent}, default, default, #{petId}, #{contestId}, #{pProduct}, #{mbId} )
 	</insert>
 	
 	<select id="contestId" resultType="Contest">
@@ -68,8 +68,8 @@
 	<!-- count -->
 	<select id="getListCount" resultType="_int">	
 		SELECT COUNT(*)
-		FROM ORDERS o, ORDER_DETAIL d, PRODUCT p
-		WHERE o.CUSTOMER_ID = #{id} AND o.ORDER_ID = d.order_id AND d.product_id = p.product_id
+		FROM Participants
+		WHERE P_STATUS ='Y' AND contest_Id = #{cNo}
 	</select>
 	
 	<select id="itemList" resultType="ContestItem">
@@ -120,5 +120,63 @@
 	    ]]>
 	</select>
 	
+	<select id="todayContestNo" resultType="_int">
+		select CON_NO
+		from contest
+		<![CDATA[
+		where CON_START_DATE <= sysdate AND CON_END_DATE >= sysdate
+		]]>
+	</select>
+	
+	
+	<select id="participantstList" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo}
+        ORDER BY P_NO DESC
+	</select>
+	
+	<select id="selectAttmNList" resultType="ContestAttm">
+        SELECT *
+        FROM ATTACHMENT
+        WHERE ATTM_REF_TYPE = 'C' AND ATTM_STATUS ='Y' AND ATTM_LEVEL = '1'
+	</select>
+	
+	<select id="selectParticipants" resultType="Participants">
+		select *
+		from Participants
+		WHERE P_NO = #{ pNo }	
+	</select>
+	
+	<!-- 조회수 -->
+	<update id="updateCount">
+		UPDATE Participants
+		SET P_COUNT = P_COUNT + 1
+		WHERE P_NO = #{ pNo }
+	</update>
+	
+	<select id="selectAttmPList" resultType="ContestAttm">
+		select *
+		from ATTACHMENT
+		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{pNum}
+	</select>
+	
+	<select id="countList" resultType="_int">	
+		SELECT COUNT(*)
+		FROM Participants
+		WHERE P_STATUS ='Y' AND contest_Id = #{contestId} AND MB_ID = #{mbId}
+	</select>
+	
+	<!-- 포인트등록 -->
+	<update id="contestPoint">
+		UPDATE MEMBER
+		SET MB_POINT = MB_POINT + 1000
+		WHERE MB_ID = #{ mbId }
+	</update>
+	<!-- 포인트 기록 -->
+	<insert id="contestPointList">
+		insert into POINT_HISTORY
+		values ( POINT_HISTORY_SEQ.NEXTVAL, 'C', 1000, sysdate, #{mbId} )
+	</insert>
 	
 </mapper>

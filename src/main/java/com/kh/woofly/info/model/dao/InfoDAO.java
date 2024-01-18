@@ -46,7 +46,7 @@ public interface InfoDAO {
 
 	int updateNotice(Notice n);
 
-	int updateCount(String id);
+	int updateCount(int nNo);
 
 	ArrayList<Notice> searchNotice(RowBounds rowBounds, Properties prop);
 

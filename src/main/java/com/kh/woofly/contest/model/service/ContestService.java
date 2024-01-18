@@ -31,8 +31,6 @@ public interface ContestService {
 
 	ArrayList<ContestItem> searchItem(String pSearch);
 
-	int getListCount(String id);
-
 	int insertAttm(ArrayList<ContestAttm> list);
 
 	String memberNick(String id);
@@ -42,6 +40,22 @@ public interface ContestService {
 	Participants thisParticipant(Integer id);
 
 	String petName(Integer pId);
+
+	int todayContestNo();
+
+	ArrayList<Participants> participantstList(int cNo, PageInfo pi);
+
+	ArrayList<ContestAttm> selectAttmNList();
+
+	int getListCount(int cNo);
+
+	Participants selectParticipants(int pNo, String id);
+
+	ArrayList<ContestAttm> selectAttmPList(int pNum);
+
+	int countList(Participants p);
+
+	void contestPoint(Participants p);
 
 
 	

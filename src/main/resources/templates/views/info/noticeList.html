@@ -27,7 +27,7 @@
 				<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 					<h1>공지사항</h1>
 					<!-- 관리자만 보이도록 -->
-					<a role="button" href="/info/noticeWrite" class="btn btn-dark btn-sm h-50">글 작성</a>
+					<a role="button" href="/info/noticeWrite" class="btn btn-dark btn-sm h-50" th:if="${admin == 'Y'}">글 작성</a>
 				</div>
 				
 				<!-- 카테고리 버튼들 -->

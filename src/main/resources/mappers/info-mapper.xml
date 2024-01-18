@@ -46,7 +46,7 @@
 		<if test="type == 5">
 			SELECT COUNT(*)
 			FROM ${table}
-			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%' AND COM_CATEGORY = #{comCategory }
+			WHERE ${status} ='Y' AND ${Category} LIKE '%${search}%' AND COM_CATEGORY = #{comCategory}
 		</if>
 	</select>
 	
@@ -60,7 +60,7 @@
 	<!-- 공지사항  -->
 	<insert id="insertNotice">
 		insert into notice
-		values ( 10003 , #{nTitle}, #{nContent}, sysdate, sysdate, #{nCategory}, default, default, 'admin')
+		values ( NOTICE_SEQ.NEXTVAL , #{nTitle}, #{nContent}, sysdate, sysdate, #{nCategory}, default, default, #{nWriter})
 	</insert>
 	
 	<select id="selectNoticeList" resultType="Notice">
@@ -144,17 +144,17 @@
 		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{nNum}
 	</select>
 	
-	
 	<!-- 조회수 -->
 	<update id="updateCount">
 		UPDATE NOTICE
 		SET N_COUNT = N_COUNT + 1
 		WHERE N_NO = #{nNo}
 	</update>
+	
 	<!-- QNA(FAQ) -->
 	<insert id="insertQNA">
 		insert into QNA
-		values ( 10000 , #{qTitle}, #{qContent}, sysdate, sysdate, #{qCategory}, default, 0, 'admin')
+		values ( QNA_SEQ.NEXTVAL , #{qTitle}, #{qContent}, sysdate, sysdate, #{qCategory}, default, 0, #{qWriter} )
 	</insert>
 	
 	<select id="selectQNAList" resultType="QNA">
@@ -222,7 +222,7 @@
 	<!-- 협력업체 -->
 	<insert id="insertCompany">
 		insert into company
-		values ( 10000 , #{comName}, #{comCategory}, #{comPhone}, sysdate, #{comEmail}, default, #{comAddr})
+		values ( COMPANY_SEQ.NEXTVAL , #{comName}, #{comCategory}, #{comPhone}, sysdate, #{comEmail}, default, #{comAddr})
 	</insert>
 	
 	<select id="selectCompanyList" resultType="Company">

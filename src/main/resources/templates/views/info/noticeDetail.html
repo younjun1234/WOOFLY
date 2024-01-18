@@ -34,7 +34,7 @@
 									<h4>공지사항</h4>
 									<input type="hidden" th:value="${ page }" name="page">
 									<input type="hidden" th:value="${ n.nNo }" name="nNo">
-									<div class="d-flex gap-3">
+									<div class="d-flex gap-3" th:if="${admin == 'Y'}">
 										<button class="btn btn-outline-warning bg-warning-subtle">수정</button>
 										<button type="button" id="modalOpen" class="btn btn-outline-danger bg-danger-subtle">삭제</button>                                                
 									</div>
@@ -47,7 +47,7 @@
 											제목[[${ n.nTitle }]]
 										</div>
 										<div class="info">
-											<dl style="margin-left: 65%; margin-bottom: 5px">
+											<dl style="margin-left: 60%; margin-bottom: 5px">
 												<dt>글쓴이</dt>
 					                            <dd>[[${ n.nWriter }]]</dd>
 											</dl>

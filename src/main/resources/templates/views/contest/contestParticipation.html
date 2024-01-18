@@ -17,99 +17,99 @@
    <div th:replace="~{common/top :: top}"></div>
 	<main>
 		<form action="/contest/contestEnroll" method="POST" id="contestParticipation" enctype="multipart/form-data">
-<div class="container-fluid d-flex mx-5">
-	<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-	<div th:replace="~{common/adminNav :: adminNav}"></div>
-	
-	<div class="col-10 b-5">
-	 <div class="container mt-4">
-	  <div class="row">
-	   <div class="col-md-12 mb-4">
-	    <div class="card">
-	<div class="card-header">
-		<h4>콘테스트 참가</h4>
-	</div>
-	<div class="card-body">
-		<table class="table">
-			<tbody>
-				<tr>
-					<th  style="width: 22%">제목</th>
-					<td>
-						<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
-					</td>
-				</tr>                                                   
-				<tr>
-					<th>강아지이름</th>
-					<td>
-						<select class="form-select" name="pPet" style="width: 25%; ">
-							<option th:each="p : ${petList}" th:value="${p.PET_ID}">[[${p.PET_NAME}]]
-							</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<th>내용</th>
-					<td>
-						<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<th>사진</th>
-					<td>
-					<div class="d-flex justify-content-between">
-						<div class="col-6">														
-					        <!-- 만약 미리보기 만들면 이 자리가 미리보기 자리고 파일 추가 버튼들은 오른쪽 div로 이동-->
-	                        <div class="album bg-light m-4" id="thumbnail">
-	                            <div class="card shadow-sm p-3">
-	                            	<!-- 썸네일 담는곳 -->
-	                                <svg class="bd-placeholder-img card-img-top" width="100%" height="300" name="thumbnailSvg"> 
-	                                    <rect width="100%" height="100%" fill="#55595c"></rect>
-	                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
-	                                </svg>
-	                            </div>
-	                        </div>
-                        </div>
-                        <div class="col-4">
-							<button type="button" class="btn btn-outline-dark" id="addFile">이미지 추가</button>
-							<div id="fileArea">
-								<div class="mb-3 p-1 d-flex" id="thumbnailParent">
-									<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
-									<button type="button" class="btn btn-large" name="deleteThumbButton">
-										<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
-											<path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
-											<path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
-										</svg>
-									</button>
-								</div>
+			<div class="container-fluid d-flex mx-5">
+				<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+				
+				<div class="col-10 b-5">
+				 <div class="container mt-4">
+				  <div class="row">
+				   <div class="col-md-12 mb-4">
+				    <div class="card">
+						<div class="card-header">
+							<h4>콘테스트 참가</h4>
+						</div>
+						<div class="card-body">
+							<table class="table">
+								<tbody>
+									<tr>
+										<th  style="width: 22%">제목</th>
+										<td>
+											<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
+										</td>
+									</tr>                                                   
+									<tr>
+										<th>강아지이름</th>
+										<td>
+											<select class="form-select" name="pPet" style="width: 25%; ">
+												<option th:each="p : ${petList}" th:value="${p.PET_ID}">[[${p.PET_NAME}]]
+												</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th>내용</th>
+										<td>
+											<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<th>사진</th>
+										<td>
+										<div class="d-flex justify-content-between">
+											<div class="col-6">														
+										        <!-- 만약 미리보기 만들면 이 자리가 미리보기 자리고 파일 추가 버튼들은 오른쪽 div로 이동-->
+						                        <div class="album bg-light m-4" id="thumbnail">
+						                            <div class="card shadow-sm p-3" style="height: 320px; width: 450px; ">
+						                            	<!-- 썸네일 담는곳 -->
+						                                <svg class="bd-placeholder-img card-img-top" width="100%" height="100%" name="thumbnailSvg"> 
+						                                    <rect width="100%" height="100%" fill="#55595c"></rect>
+						                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">1</text>
+						                                </svg>
+						                            </div>
+						                        </div>
+					                        </div>
+					                        <div class="col-4">
+												<button type="button" class="btn btn-outline-dark" id="addFile">이미지 추가</button>
+												<div id="fileArea">
+													<div class="mb-3 p-1 d-flex" id="thumbnailParent">
+														<input type="file" class="form-control form-control-lg" name="thumbnailFile" accept="image/*">
+														<button type="button" class="btn btn-large" name="deleteThumbButton">
+															<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-x" viewBox="0 0 16 16">
+																<path d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+																<path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+															</svg>
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										</td>
+									</tr>
+									<tr>
+										<th>애완용품 검색
+											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
+											
+										</th>
+										<td>
+											<div id="td" class="outside-check">
+											</div>
+											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="container text-center">
+								<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary"  id="submitContest">등록</button>
+								<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascrpt:history.back();">이전</button>
 							</div>
-						</div>
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<th>애완용품 검색
-						<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
-						
-					</th>
-					<td>
-						<div id="td" class="outside-check">
-						</div>
-						<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="itemsDelete" >삭제</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="container text-center">
-			<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-primary"  id="submitContest">등록</button>
-			<button type="button" class="btn btn-lg fs-10 col-2 m-0 rounded-2 btn-outline-dark" onclick="javascrpt:history.back();">이전</button>
-		</div>
-	</div>	
-	    </div>
-	   </div>
-	  </div>                    
-	 </div>
-	</div>
-</div>
+						</div>	
+				    </div>
+				   </div>
+				  </div>                    
+				 </div>
+				</div>
+			</div>
 		</form> 
 		<div id="modalLayer" >
 			<div class="modalContent">
@@ -269,7 +269,9 @@
                     const newSvg = document.createElement('div');
                     newSvg.classList.add('card', 'shadow-sm', 'p-3');
                     newSvg.innerHTML = thumbSvgTemplate;
-
+                    newSvg.style.width = '450px'; // 너비 지정
+                    newSvg.style.height = '320px'; // 높이 지정
+                    
                     thumbDiv.append(newSvg);
 
                     divChildren = thumbDiv.querySelectorAll('div');

@@ -34,8 +34,6 @@ public interface ContestDAO {
 
 	ArrayList<ContestItem> searchItem(String pSearch);
 
-	int getListCount(String id);
-
 	ArrayList<ContestItem> itemList(String id, RowBounds rowBounds);
 
 	int insertAttm(ArrayList<ContestAttm> list);
@@ -47,6 +45,26 @@ public interface ContestDAO {
 	Participants thisParticipant(Integer id);
 
 	String petName(Integer pId);
+
+	int todayContestNo();
+
+	ArrayList<Participants> participantstList(RowBounds rowBounds, int cNo);
+
+	ArrayList<ContestAttm> selectAttmNList();
+
+	int getListCount(int cNo);
+
+	Participants selectParticipants(int pNo);
+
+	int updateCount(String id);
+
+	ArrayList<ContestAttm> selectAttmPList(int pNum);
+
+	int countList(Participants p);
+
+	void contestPoint(Participants p);
+
+	void contestPointList(Participants p);
 
 
 

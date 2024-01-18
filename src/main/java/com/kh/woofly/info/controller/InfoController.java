@@ -25,6 +25,7 @@ import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
 import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.shop.model.exception.ShopException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +41,14 @@ public class InfoController {
 	
 	//  공지사항 리스트 이동
 	@GetMapping("/info/notice")
-	public String noticeList(@RequestParam(value="value", defaultValue="") String value, @RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
+	public String noticeList(@RequestParam(value="value", defaultValue="") String value, @RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request, HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+		}
 		
 		int i = 3;
 		
@@ -57,6 +65,7 @@ public class InfoController {
 			model.addAttribute("list", list);
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
 			model.addAttribute("value", value);
+			model.addAttribute("admin", admin);
 			return "noticeList";
 		} else {
 			return null;
@@ -65,21 +74,42 @@ public class InfoController {
 	
 	// 공지사항 작성페이지 이동
 	@GetMapping("/info/noticeWrite")
-	public String noticeWrite(Model model) {
+	public String noticeWrite(Model model, HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String id = null;
+		String admin = null;
+		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+			admin = loginUser.getIsAdmin();
+		}
 		
 		int nNo = iService.noticeNo() + 1;
 		
+		model.addAttribute("admin", admin);
 		model.addAttribute("nNo", nNo);
+		model.addAttribute("id", id);
 		
 		return "noticeWrite";
 	}
 	
   // 공지사항 등록
 	@PostMapping("/info/insertNotice")
-	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles) {
+	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles, Model model) {
 		
-//		String id = ((Member)session.getAttribute("loginUser")).getId();  
-//		n.setNWriter(id);
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String id = null;
+		String admin = null;
+		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+			admin = loginUser.getIsAdmin();
+			n.setNWriter(id);
+		}
+		
+		model.addAttribute("admin", admin);
 		
 		// 썸네일 리네임 과정
 		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
@@ -175,18 +205,18 @@ public class InfoController {
 	
 	// 공지사항 상세페이지 이동
 	@GetMapping("/info/selectNotice")
-	public String selectNotice(@RequestParam("nNo") int nNo, Model model, @RequestParam("page") int page) {						
+	public String selectNotice(@RequestParam("nNo") int nNo, Model model, @RequestParam("page") int page, HttpSession session) {						
 		
-//		Member loginUser = (Member)session.getAttribute("loginUser");
-		
-		
-		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
 		String id = null;
 		
-//		if(loginUser != null) {
-//			id = loginUser.getId();
-//		}
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			id = loginUser.getMbId();
+		}
 		// id 조횟수 시간나면
+		
 		Notice n = iService.selectNotice(nNo, id);
 		
 		if(n != null) {
@@ -212,7 +242,7 @@ public class InfoController {
 					}
 				}
 			}
-			
+			model.addAttribute("admin", admin);
 			model.addAttribute("iList", iList);
 			model.addAttribute("aList", aList);
 			model.addAttribute("n", n);
@@ -225,11 +255,22 @@ public class InfoController {
 	
 	// 공지사항 수정페이지 이동
 	@PostMapping("/info/NoticeEdit")
-	public String NoticeEdit(@RequestParam("nNo") int nNo, Model model, @RequestParam("page") int page) {
+	public String NoticeEdit(@RequestParam("nNo") int nNo, Model model, @RequestParam("page") int page, HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String id = null;
+		String admin = null;
 		
 		Notice n = iService.selectNotice(nNo, null);
 		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+			admin = loginUser.getIsAdmin();
+			n.setNWriter(id);
+		}
+		
 		if(n != null) {
+			model.addAttribute("admin", admin);
 			model.addAttribute("n", n);
 			model.addAttribute("page", page);
 			
@@ -241,11 +282,19 @@ public class InfoController {
 	
 	// 공지사항 수정
 	@PostMapping("/info/updateNotice")
-	public String updateNotice(@ModelAttribute Notice n, @RequestParam("page") int page, RedirectAttributes re) {
+	public String updateNotice(@ModelAttribute Notice n, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model) {
 		
-		int result = iService.updateNotice(n);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		int result = 0;
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			result = iService.updateNotice(n);
+		}
 		
 		if(result > 0) {
+			model.addAttribute("admin", admin);
 			re.addAttribute("nNo", n.getNNo());
 			re.addAttribute("page", page);
 			return "redirect:/info/selectNotice";
@@ -256,11 +305,19 @@ public class InfoController {
 	
 	// 공지사항 삭제(상태 변경)
 	@GetMapping("/info/deleteNotice")
-	public String deleteNotice(@RequestParam("nNo") int nNo, @RequestParam("page") int page, RedirectAttributes re) {
+	public String deleteNotice(@RequestParam("nNo") int nNo, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model) {
 		
-		int result = iService.deleteNotice(nNo);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		int result = 0;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			result = iService.deleteNotice(nNo);
+		}
 		
 		if(result > 0) {
+			model.addAttribute("admin", admin);
 			re.addAttribute("page", page);
 			return "redirect:/info/notice";
 		} else {
@@ -374,10 +431,10 @@ public class InfoController {
 //  공지사항 카테고리 선택
 	@GetMapping("/info/selectCategoryNotice")
 	public String selectCategoryCompany(@RequestParam("value") String value, @RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
+		
 		String table = "notice";
 		String status = "n_status";
 		String Category = "n_category";
-		
 		
 		Properties prop = new Properties();
 		prop.setProperty("value", value);
@@ -409,17 +466,25 @@ public class InfoController {
 	
 	// QNA(FAQ) 리스트 이동
 	@GetMapping("/info/QNA")
-	public String QNAList(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
+	public String QNAList(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request, HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+		}
 		
 		int i = 2;
 		
 		int listCount = iService.getListCount(i);
 		int currentPage = page;
-		
+
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 5);
 		ArrayList<QNA> list = iService.selectQNAList(pi);
 		
 		if(list != null) {
+			model.addAttribute("admin", admin);
 			model.addAttribute("pi", pi);
 			model.addAttribute("list", list);
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
@@ -432,21 +497,41 @@ public class InfoController {
 	
 	// QNA(FAQ) 작성페이지 이동
 	@GetMapping("/info/QNAWrite")
-	public String QNAWrite() {
+	public String QNAWrite(HttpSession session, Model model) {
 		
-		return "QNAWrite";
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			
+			model.addAttribute("admin", admin);
+			
+			return "QNAWrite";
+		} else {
+			return null;
+		}
 	}
 	
 	// QNA(FAQ) 등록
 	@PostMapping("/info/insertQNA")
-	public String insertQNA(@ModelAttribute QNA q, HttpSession session) {
+	public String insertQNA(@ModelAttribute QNA q, HttpSession session, Model model) {
 		
-//		String id = ((Member)session.getAttribute("loginUser")).getId();
-//		q.setBoardWriter(id);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String id = null;
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			id = loginUser.getMbId();
+			q.setQWriter(id);
+		}
 		
 		int result = iService.insertQNA(q);
 		
 		if(result > 0) {
+			model.addAttribute("admin", admin);
+			
 			return "redirect:/info/QNA";
 		} else {
 			return null;
@@ -455,27 +540,46 @@ public class InfoController {
 	
 	// QNA(FAQ) 수정페이지 이동
 	@PostMapping("/info/QNAEdit")
-	public String noticeEdit(@RequestParam("qId") int qId, Model model, @RequestParam("page") int page) {						
+	public String noticeEdit(@RequestParam("qId") int qId, Model model, @RequestParam("page") int page, HttpSession session) {						
 
-		QNA qna = iService.selectQNA(qId);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
 		
-		if(qna != null) {
-			model.addAttribute("qna", qna);
-			model.addAttribute("page", page);
-			
-			return "QNAEdit";
-		} else {
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			QNA qna = iService.selectQNA(qId);
+			if(qna != null) {
+				model.addAttribute("qna", qna);
+				model.addAttribute("page", page);
+				model.addAttribute("admin", admin);
+				
+				return "QNAEdit";
+			} else {
+				// 수정 실패
+				return null;
+			}
+		}else {
+			// 로그인확인
 			return null;
 		}
+		
 	}	
 	
 	// QNA(FAQ) 수정
 	@PostMapping("/info/updateQNA")
-	public String updateQNA(@ModelAttribute QNA q, @RequestParam("page") int page, RedirectAttributes re) {
+	public String updateQNA(@ModelAttribute QNA q, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model) {
 		
-		int result = iService.updateQNA(q);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		int result = 0;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+			result = iService.updateQNA(q);
+		}
 		
 		if(result > 0) {
+			model.addAttribute("admin", admin);
 			re.addAttribute("page", page);
 			return "redirect:/info/QNA";
 		} else {
@@ -485,11 +589,21 @@ public class InfoController {
 	
 	// QNA(FAQ) 삭제(상태 변경)
 	@GetMapping("/info/deleteQNA")
-	public String deleteQNA(@RequestParam("qId") int qId, @RequestParam("page") int page, RedirectAttributes re) {
+	public String deleteQNA(@RequestParam("qId") int qId, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model) {
 		
-		int result = iService.deleteQNA(qId);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		int result = 0;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+	//		String id = loginUser.getMbId();
+			// 관리자중에 삭제한사람으로 업데이트?
+			result = iService.deleteQNA(qId);
+		}
 		
 		if(result > 0) {
+			model.addAttribute("admin", admin);
 			re.addAttribute("page", page);
 			return "redirect:/info/QNA";
 		} else {
@@ -592,9 +706,6 @@ public class InfoController {
 			list = iService.searchQNA(pi, prop);
 		}
 		
-
-		
-		
 		
 		if(list != null) {
 			model.addAttribute("value", value);
@@ -649,7 +760,15 @@ public class InfoController {
 	
 	// 협력업체 리스트 이동
 	@GetMapping("/info/company")
-	public String company(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request) {
+	public String company(@RequestParam(value="page", defaultValue="1") int page, Model model, HttpServletRequest request, HttpSession session) {
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+		}
+		
 		
 		int i = 1;
 		
@@ -660,6 +779,7 @@ public class InfoController {
 		ArrayList<Company> list = iService.selectCompanyList(pi);
 				
 		if(list != null) {
+			model.addAttribute("admin", admin);
 			model.addAttribute("pi", pi);
 			model.addAttribute("list", list);
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
@@ -672,39 +792,60 @@ public class InfoController {
 	
 	// 협력업체 등록 페이지
 	@GetMapping("/info/companyEnroll")
-	public String companyEnroll() {
+	public String companyEnroll(HttpSession session) {
 		
-		return "companyEnroll";
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		
+		if(loginUser != null) {
+			return "companyEnroll";
+		} else {
+			return null;
+		}
+		
 	}
 	
 	// 협력업체 등록
 	@PostMapping("/info/insertCompany")
 	public String insertCompany(@ModelAttribute Company c, @RequestParam("sample6_postcode")String postcode,@RequestParam("sample6_address")String address,
-			@RequestParam("sample6_detailAddress")String detailAddress,@RequestParam("sample6_extraAddress")String extraAddress, @RequestParam("tel1") String t1, @RequestParam("tel2") String t2, @RequestParam("tel3") String t3) {
+			@RequestParam("sample6_detailAddress")String detailAddress,@RequestParam("sample6_extraAddress")String extraAddress, @RequestParam("tel1") String t1, @RequestParam("tel2") String t2, @RequestParam("tel3") String t3, HttpSession session) {
 		
-		String subAddress = postcode +"@"+address+"@"+detailAddress+"@"+extraAddress;
-		String phone = t1+"-"+t2+"-"+t3;
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
-		c.setComAddr(subAddress);
-		c.setComPhone(phone);
-		
-		int result = iService.insertCompany(c);
-		
-		if(result > 0) {
+		if(loginUser != null) {
+			String subAddress = postcode +"@"+address+"@"+detailAddress+"@"+extraAddress;
+			String phone = t1+"-"+t2+"-"+t3;
 			
-			return "redirect:/info/company";
-		}else {
+			c.setComAddr(subAddress);
+			c.setComPhone(phone);
+			
+			int result = iService.insertCompany(c);
+			
+			if(result > 0) {
+				return "redirect:/info/company";
+			}else {
+				return null;
+			}	
+		} else{
 			return null;
-		}		
+		}
+		
 	}
 	
 	// 협력업체 상세페이지 이동
 	@GetMapping("/info/selectCompany")
-	public String selectCompany(@RequestParam("comNo") int comNo, Model model, @RequestParam("page") int page) {						
+	public String selectCompany(@RequestParam("comNo") int comNo, Model model, @RequestParam("page") int page, HttpSession session) {						
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		String admin = null;
+		
+		if(loginUser != null) {
+			admin = loginUser.getIsAdmin();
+		}
 		
 		Company c = iService.selectCompany(comNo);
 		
 		if(c != null) {
+			model.addAttribute("admin", admin);
 			model.addAttribute("c", c);
 			model.addAttribute("page", page);
 			return "companyDetail";
@@ -715,54 +856,75 @@ public class InfoController {
 	
 	// 협력업체 수정페이지 이동
 	@PostMapping("/info/CompanyEdit")
-	public String CompanyEdit(@RequestParam("comNo") int comNo, Model model, @RequestParam("page") int page) {						
+	public String CompanyEdit(@RequestParam("comNo") int comNo, Model model, @RequestParam("page") int page, HttpSession session) {						
+		
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
 		Company c = iService.selectCompany(comNo);
 		
-		if(c != null) {
-			model.addAttribute("c", c);
-			model.addAttribute("page", page);
-			
-			return "CompanyEdit";
-		} else {
+		if(loginUser != null) {
+			if(c != null) {
+				model.addAttribute("c", c);
+				model.addAttribute("page", page);
+				
+				return "CompanyEdit";
+			} else {
+				return null;
+			}
+		}else {
 			return null;
 		}
 	}	
 	
 	// 협력업체 수정
 	@PostMapping("/info/updateCompany")
-	public String updateCompany(@ModelAttribute Company c, @RequestParam("page") int page, @RequestParam("sample6_postcode")String postcode,@RequestParam("sample6_address")String address,
+	public String updateCompany(@ModelAttribute Company c, @RequestParam("page") int page, @RequestParam("sample6_postcode")String postcode,@RequestParam("sample6_address")String address, HttpSession session,
 			@RequestParam("sample6_detailAddress")String detailAddress,@RequestParam("sample6_extraAddress")String extraAddress, @RequestParam("tel1") String t1, @RequestParam("tel2") String t2, @RequestParam("tel3") String t3, RedirectAttributes re) {
 		
-		String subAddress = postcode +"@"+address+"@"+detailAddress+"@"+extraAddress;
-		String phone = t1+"-"+t2+"-"+t3;
-		c.setComAddr(subAddress);
-		c.setComPhone(phone);
 		
-		int result = iService.updateCompany(c);
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
-		if(result > 0) {
-			re.addAttribute("comNo", c.getComNo());
-			re.addAttribute("page", page);
-			return "redirect:/info/selectCompany";
-		} else {
+		if(loginUser != null) {
+			String subAddress = postcode +"@"+address+"@"+detailAddress+"@"+extraAddress;
+			String phone = t1+"-"+t2+"-"+t3;
+			c.setComAddr(subAddress);
+			c.setComPhone(phone);
+			
+			int result = iService.updateCompany(c);
+			
+			if(result > 0) {
+				re.addAttribute("comNo", c.getComNo());
+				re.addAttribute("page", page);
+				return "redirect:/info/selectCompany";
+			} else {
+				return null;
+			}
+		}else {
 			return null;
 		}
+		
 	}
 	
 	// 협력업체 삭제(상태 변경)
 	@GetMapping("/info/deleteCompany")
-	public String deleteCompany(@RequestParam("comNo") int comNo, @RequestParam("page") int page, RedirectAttributes re) {
+	public String deleteCompany(@RequestParam("comNo") int comNo, @RequestParam("page") int page, RedirectAttributes re, HttpSession session) {
 		
-		int result = iService.deleteCompany(comNo);
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		
+		if(loginUser != null) {
+			int result = iService.deleteCompany(comNo);
 			
-		if(result > 0) {
-			
-			re.addAttribute("page", page);
-			return "redirect:/info/company";
-		} else {
+			if(result > 0) {
+				re.addAttribute("page", page);
+				
+				return "redirect:/info/company";
+			} else {
+				return null;
+			}
+		}else {
 			return null;
 		}
+		
 	}
 	
 	// 협력업체 검색

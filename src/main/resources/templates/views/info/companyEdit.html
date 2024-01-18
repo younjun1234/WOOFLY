@@ -88,7 +88,7 @@
 									</tr>
 									
 									<tr>
-										<th class="tableLable"><lable>업체 주소  [[${#lists.size(#strings.arraySplit(c.comAddr, '@'))}]]  </lable></th>
+										<th class="tableLable"><lable>업체 주소</lable></th>
 										<td>
 											<input class="tableInput" type="text" placeholder="우편번호" id="sample6_postcode" name="sample6_postcode" th:value="${ #strings.arraySplit(c.comAddr, '@')[0] }"> 
 											<input type="button" id="sample6" onclick="sample6_execDaumPostcode()" class="tablebutton" value="검색"><br> 

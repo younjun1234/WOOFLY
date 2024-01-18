@@ -13,6 +13,7 @@ import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.info.model.vo.Notice;
 
 @Service
 public class ContestServiceImpl implements ContestService {
@@ -75,12 +76,6 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public int getListCount(String id) {
-
-		return cDAO.getListCount(id);
-	}
-
-	@Override
 	public ArrayList<ContestItem> itemList(String id) {
 		
 		return cDAO.itemList(id);
@@ -106,14 +101,76 @@ public class ContestServiceImpl implements ContestService {
 
 	@Override
 	public Participants thisParticipant(Integer id) {
-		// TODO Auto-generated method stub
+		 
 		return cDAO.thisParticipant(id);
 	}
 
 	@Override
 	public String petName(Integer pId) {
-		// TODO Auto-generated method stub
+		 
 		return cDAO.petName(pId);
+	}
+
+	@Override
+	public int todayContestNo() {
+		
+		return cDAO.todayContestNo();
+	}
+
+	@Override
+	public ArrayList<Participants> participantstList(int cNo, PageInfo pi) {
+		
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.participantstList(rowBounds, cNo);
+	}
+
+	@Override
+	public ArrayList<ContestAttm> selectAttmNList() {
+		
+		return cDAO.selectAttmNList();
+	}
+
+	@Override
+	public int getListCount(int cNo) {
+		
+		return cDAO.getListCount(cNo);
+	}
+
+	@Override
+	public Participants selectParticipants(int pNo, String id) {
+		Participants p = cDAO.selectParticipants(pNo);
+		
+		if(p != null && id != null) {
+			if(id != null & !p.getMbId().equals(id)) {
+				int result = cDAO.updateCount(id);
+				if(result > 0) {
+					p.setPCount(p.getPCount() + 1);
+				}
+			}
+		}
+		return p;
+	}
+
+	@Override
+	public ArrayList<ContestAttm> selectAttmPList(int pNum) {
+		
+		return cDAO.selectAttmPList(pNum);
+	}
+
+	@Override
+	public int countList(Participants p) {
+		
+		return cDAO.countList(p);
+	}
+
+	@Override
+	public void contestPoint(Participants p) {
+		
+		cDAO.contestPoint(p);
+		cDAO.contestPointList(p);
 	}
 
 
