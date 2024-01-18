@@ -32,6 +32,7 @@ import com.kh.woofly.member.model.vo.MemberAddress;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -135,15 +136,15 @@ public class AccountController {
     }
     
     //자동 로그인
-//    @GetMapping("/")
-//    public String test(HttpSession session) {
-//       Member m = new Member();
-//       String id = "test";
-//       m.setMbId(id);
-//       Member loginUser = aService.login(m);
-//       session.setAttribute("loginUser", loginUser);
-//       return "index";
-//    }
+    @GetMapping("/")
+    public String test(HttpSession session) {
+       Member m = new Member();
+       String id = "test";
+       m.setMbId(id);
+       Member loginUser = aService.login(m);
+       session.setAttribute("loginUser", loginUser);
+       return "index";
+    }
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
@@ -158,37 +159,66 @@ public class AccountController {
 	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
 		Member loginUser = aService.login(m);
 		
-//		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-//			model.addAttribute("loginUser", loginUser);
-////			if (loginUser.getIsAdmin().equals("N")) {
-////				//로그 추가
-////				logger.info(loginUser.getMbId());
-////				return "redirect:/";
-////			} else {
-////				return "redirect:admin.ad";
-////			}
-//			return "redirect:/";
-//		} else {
-//			throw new AccountException("로그인을 실패하였습니다.");
-//		}
+		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
+			model.addAttribute("loginUser", loginUser);
+//			if (loginUser.getIsAdmin().equals("N")) {
+//				//로그 추가
+//				logger.info(loginUser.getMbId());
+//				return "redirect:/";
+//			} else {
+//				return "redirect:admin.ad";
+//			}
+			return "redirect:/";
+		} else {
+			throw new AccountException("로그인을 실패하였습니다.");
+		}
 		
-		if(loginUser != null) {
-	         if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-	            model.addAttribute("loginUser",loginUser);
-	            
-	            if(!beforeURL.equals("http://localhost:8080/account/logout") && !beforeURL.equals("http://localhost:8080/signUp.dw"))
-	            {
-	               return "redirect:" + beforeURL;
-	            }else {
-	               return "redirect:/";
-	            }
-	         }else {
-	            return "redirect:signUp.dw";
-	         }
-	      }else {
-	         return "redirect:signUp.dw";
-	      }
+		//beforeUrl
+//		if(loginUser != null) {
+//	         if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
+//	            model.addAttribute("loginUser",loginUser);
+//	            
+//	            if(!beforeURL.equals("http://localhost:8080/account/logout") && !beforeURL.equals("http://localhost:8080/signUp.dw")) {
+//	               return "redirect:" + beforeURL;
+//	            }else {
+//	               return "redirect:/";
+//	            }
+//	         }else {
+//	            return "redirect:signUp.dw";
+//	         }
+//	      }else {
+//	         return "redirect:signUp.dw";
+//	      }
+//		
+//		@PostMapping("login.me")
+//		   public String loginUser(@ModelAttribute Member m , Model model, @RequestParam("beforeURL") String beforeURL) {
+//		      Member loginUser = mService.login(m);
+//		      
+//		      if(loginUser != null) {
+//		         if(bcrypt.matches(m.getMemberPwd(), loginUser.getMemberPwd())) {
+//		            model.addAttribute("loginUser",loginUser);
+//		            
+//		            if(!beforeURL.equals("http://localhost:8080/logout.me") && !beforeURL.equals("http://localhost:8080/signUp.me"))
+//		            {
+//		               return "redirect:" + beforeURL;
+//		            }else {
+//		               return "redirect:home.me";
+//		            }
+//		         }else {
+//		            model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+//		            model.addAttribute("searchUrl","views/ming/member/sign");
+//		            return "redirect:signUp.me";
+//		         }
+//		         
+//		      }else {
+//		         model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+//		         model.addAttribute("searchUrl","views/ming/member/sign");
+//		         return "redirect:signUp.me";
+//		      }
+//		   }
+		
 	}
+	
 	
 	@GetMapping("/idCheck.dw")
 	@ResponseBody

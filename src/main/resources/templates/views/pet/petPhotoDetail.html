@@ -45,9 +45,7 @@
 							<div class="ms-auto d-block">
 								<div class="d-flex align-items-center mb-1">
 									<div class="p-2">
-										<img th:each="p : ${pList}"
-											th:src="'/image/' + ${p.petProfile}"
-											style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey">
+										<img th:each="p : ${pList}" th:src="'/image/' + ${p.petProfile}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey">
 									</div>
 									<div class="p-2">
 										<strong th:each="p : ${pList}" th:text="${p.petName}"></strong>
@@ -92,23 +90,27 @@
 											<img th:src="|/image/${a.renameName}|" class="d-block h-100 w-100" alt="...">
 										</div>
 									</div>
-									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" th:if="${#arrays.length(aList) > 1}">
 										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 										<span class="visually-hidden">Previous</span>
 									</button>
-									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" th:if="${#arrays.length(aList) > 1}">
 										<span class="carousel-control-next-icon" aria-hidden="true"></span>
 										<span class="visually-hidden">Next</span>
 									</button>
 								</div>
 							</div>
 
-							<div class="d-flex mt-1 border-bottom">
+							<div class="d-flex mt-1 border-bottom" id="albumLike">
 								<div class="me-auto p-2">
-									<svg role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-			                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
-			                        </svg>
-									<strong>1004</strong>
+									<input type="hidden" th:value="${aList[0].abNo}">
+									<svg onclick="albumLike(this);" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart heart" viewBox="0 0 16 16" th:if="${aLike == 0}">
+									  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+									</svg>
+									<svg onclick="albumLike(this);" th:if="${aLike > 0}" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+									  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
+									</svg>
+									<strong>[[${aList[0].abLike}]]</strong>
 								</div>
 								<div class="p-2">
 									<p th:if="${aList.size() > 0}" th:text="${aList[0].abDate}"></p>
@@ -118,48 +120,45 @@
 								<p class=" mb-1">
 								<p th:if="${aList.size() > 0}" th:text="${aList[0].abContent}"></p>
 							</div>
-
 							<!-- 댓글 조회 -->
 							<input type="hidden" id="abNo" name="abNo" th:value="${aList[0].abNo}"> <input type="hidden" id="mbId" name="mbId" th:value="${session.loginUser?.mbId}">
 							<input type="hidden" id="mbNickname" name="mbNickname" th:value="${session.loginUser?.mbNickName}">
 							<div id="replybody">
 								<div class="d-flex mt-3 border-bottom">
-									<strong>댓글 [[${#arrays.length(rList)}]]개</strong>
-									<p role="button">&nbsp;&nbsp;모두 보기</p>
+									<strong class="mb-2">댓글 [[${#arrays.length(rList)}]]개</strong>
 								</div>
-
 								<div class="ms-auto d-block">
-									<div class="d-flex align-items-center" th:each="r : ${rList}">
+									<div class="d-flex align-items-center" th:each="r, rStat : ${rList}">
 										<div class="p-2">
 											<img th:src="'/image/' + ${r.mbPhoto}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey">
 										</div>
 										<div class="d-flex align-items-center p-2 col-9">
 											<p class="col-3 mb-0" th:text="${r.mbNickName}"></p>
-											<input th:id="${r.rNo}+'content'" type="text" class="form-control-plaintext col-9 text-secondary" th:value="${ r.reContent }" readonly>
+											<input th:id="${r.rNo}+'content'" type="text" class="form-control-plaintext col-9" th:value="${ r.reContent }" readonly onkeyup="keyevent(this);">
 										</div>
 										<div class="p-2 ms-auto d-flex align-items-center">
 											<input type="hidden" th:value="${r.rNo}">
 											<div>[[${r.reLike}]]&nbsp;&nbsp;</div>
-											<svg id="heart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+											<svg onclick="replyLike(this);" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart heart" viewBox="0 0 16 16" th:if="${lList[rStat.index] == null}">
 											  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
 											</svg>
-											<svg id="blackHeart" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+											<svg onclick="replyLike(this);" th:if="${lList[rStat.index] != null}" role="button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
 											  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314" />
 											</svg>
 											<div class="dropdown mt-1">
-												<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+												<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical blackHeart" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
 						                          	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
 						                   		</svg>
 												<ul class="dropdown-menu">
 													<input type="hidden" th:value="${r.rNo}">
 													<input type="hidden" th:value="${r.mbId}">
 													<li>
-														<button class="dropdown-item editReplyBtn">수정</button>
+														<button class="dropdown-item editReplyBtn" onclick="editReply(this);">수정</button>
 													</li>
-													<li><button class="dropdown-item deleteReplyBtn">삭제</button></li>
-													<li><button class="dropdown-item reportBtn">신고</button></li>
+													<li><button class="dropdown-item deleteReplyBtn" onclick="deleteReply(this);">삭제</button></li>
+													<li><button class="dropdown-item reportBtn" onclick="reportReply(this);">신고</button></li>
 												</ul>
-											</div>
+											
 										</div>
 									</div>
 								</div>
@@ -212,35 +211,45 @@
       $(myNav).removeClass('text-secondary');
       $(myNav).addClass('active');
       
-      //하트 아이콘
-      const heartIcon = document.getElementById('heart');
-	  const heartFillIcon = document.getElementById('blackHeart');
-	
-	  let isHeartFilled = false;
-	
-	  heartFillIcon.style.display = 'none';
-	
-	  function Heart() {
-	    if (isHeartFilled) {
-	      heartIcon.style.display = 'inline';
-	      heartFillIcon.style.display = 'none';
-	    } else {
-	      heartIcon.style.display = 'none';
-	      heartFillIcon.style.display = 'inline';
-	    }
-	
-	    isHeartFilled = !isHeartFilled;
+      //좋아요
+	  const replyLike = (target) => {
+		  let replyInDel;
+		  if ($(target).hasClass('heart')) {
+			  replyInDel = 'insert';
+		  } else {
+			  replyInDel = 'delete';
+		  }
+		  
+		  $.ajax({
+			  url: '/insertDeleteReply.dw',
+			  data: {rNo: target.parentElement.children[0].value, 'replyInDel': replyInDel},
+			  success: data => {
+				  console.log(data);
+					$("#replybody").load(location.href + " #replybody > *" );
+
+			  },
+			  error: data => console.log(data)
+		  })
 	  }
-	
-	  heartIcon.addEventListener('click', Heart);
-	  heartFillIcon.addEventListener('click', Heart);
 	  
-	  //댓글 좋아요 넘기기
-	  const heartRno = document.getElementById('heart').parentElement.firstElementChild.value;
-	  //console.log(heart);
-	  document.getElementById('heart').addEventListener('click', ()=>{
-		  console.log(heartRno);
-	  })
+	  const albumLike = (target) => {
+		  let replyInDel;
+		  if ($(target).hasClass('heart')) {
+			  replyInDel = 'insert';
+		  } else {
+			  replyInDel = 'delete';
+		  }
+		  
+		  $.ajax({
+			  url: '/insertDeleteBoardLike.dw',
+			  data: {abNo: target.parentElement.children[0].value, 'replyInDel': replyInDel},
+			  success: data => {
+				  console.log(data);
+					$("#albumLike").load(location.href + " #albumLike > *" );
+			  },
+			  error: data => console.log(data)
+		  })
+	  }
 	  
  	  //신고 버튼 모달
       const reportBtns = document.getElementsByClassName('reportBtn');
@@ -248,12 +257,10 @@
 	  
       let rNoSave;
       let mbIdSave;
-      for(const reportBtn of reportBtns){
-    	  reportBtn.addEventListener('click',()=>{
-    		  rNoSave = reportBtn.parentElement.parentElement.firstElementChild.value;
-    		  mbIdSave = reportBtn.parentElement.parentElement.children[1].value;
-			  $('#reportModal').modal("show");
-    	  })
+      const reportReply = (target) => {
+   		  rNoSave = target.parentElement.parentElement.firstElementChild.value;
+   		  mbIdSave = target.parentElement.parentElement.children[1].value;
+		  $('#reportModal').modal("show");
       }
       
       //댓글 신고 ajax
@@ -288,25 +295,24 @@
 	  	});
       
       //댓글 수정 ajax
-      const editReplyBtns = document.getElementsByClassName('editReplyBtn');
-      
-      for(const editReplyBtn of editReplyBtns) {
-    	const rNo = editReplyBtn.parentElement.parentElement.firstElementChild.value;
-    	const replyContent = document.getElementById(rNo+'content');
-    	
-    	editReplyBtn.addEventListener('click', ()=>{
+		let rNo;
+      	let replyContent;
+      	const editReply = (target) => {
+			rNo = target.parentElement.parentElement.firstElementChild.value;
+	    	replyContent = document.getElementById(rNo+'content');
 	    	$(replyContent).attr('readonly', false);
 	    	$(replyContent).removeClass('form-control-plaintext');
-    	});
-    	
-    	replyContent.addEventListener('keyup', (event)=>{
+	    	
+      	}
+      	
+      	const keyevent = (target) => {
     		if(event.key === 'Enter'){
 				$.ajax({
 					url : "/updateReply.dw",
 					data : {rNo:rNo, reContent:replyContent.value},
 					success: (data) =>{
 		   		 		 if(data == 'good'){
-								$("#replybody").load(location.href + " #replybody" );
+								$("#replybody").load(location.href + " #replybody > *" );
 								document.getElementById('replyContent').value = '';
 								console.log(data);
 						} else {
@@ -316,22 +322,18 @@
 					error : (data) => console.log(data)
 				})    		  
       	  }
-    	})
+      	}
     	
-      }
       
-      //댓글 삭제 ajax
-      const deleteReplyBtns = document.getElementsByClassName('deleteReplyBtn');
-      
-      for(const deleteReplyBtn of deleteReplyBtns) {
-    	const rNo = deleteReplyBtn.parentElement.parentElement.firstElementChild.value;
-    	deleteReplyBtn.addEventListener('click', ()=>{
+      	//댓글 삭제 ajax
+      	const deleteReply = (target) => {
+    		const rNo = target.parentElement.parentElement.firstElementChild.value;
 			$.ajax({
 				url : "/deleteReply.dw",
 				data : {rNo:rNo},
 				success: (data) =>{
 	   		 		 if(data == 'good'){
-						$("#replybody").load(window.location.href + " #replybody>div" );
+						$("#replybody").load(window.location.href + " #replybody > *" );
 						console.log(data);
 					} else {
 						console.log(data);
@@ -339,9 +341,8 @@
    		 	    },
 				error : (data) => console.log(data)
 			})    		  
-    	})
+      	}
     	
-      }
       
       /* //사진이 한 장인 경우 버튼 숨기기
       document.addEventListener('DOMContentLoaded', function () {
@@ -377,7 +378,7 @@
     			  data: {reContent:replyContent, bNo:abNo},
     		 	  success: (data) =>{
 	   		 		 if(data == 'good'){
-							$("#replybody").load(location.href + " #replybody" );
+							$("#replybody").load(location.href + " #replybody > *" );
 							document.getElementById('replyContent').value = '';
 							console.log(data);
 					} else {
