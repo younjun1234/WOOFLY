@@ -54,18 +54,45 @@ public class PetController {
 			
 		return "petInfo";
 	}
+	
+    @GetMapping("insertPhotoReport.dw")
+    @ResponseBody
+    public String insertPhotoReport(@ModelAttribute Report rt, HttpSession session) {
+    	String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		rt.setRAccuser(id);
+		rt.setRType("B");
+		int checkResult = pService.checkResult(rt);
+		int result = pService.insertReport(rt);
+		
+		if(checkResult > 0) {
+			return "exist";
+		}
+		if(result > 0) {
+			return "good";
+			
+		} else {
+			return "bad";
+		}
+    }
 
 	  @GetMapping("pet/petPhoto")
 	   public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
-			   @RequestParam(value="petName", required=false) Integer petId) {
+			   @RequestParam(value="petName", required=false) Integer petId, HttpServletRequest request) {
 	      String id = ((Member)session.getAttribute("loginUser")).getMbId();
 	      HashMap<String, Object> map = new HashMap<>();
 	      map.put("id", id);
           map.put("petId", petId);
+          
+          int listCount = pService.getListCount(1);
+          PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+          
 	      ArrayList<Album> aList = pService.selectMyAlbums(map);
 	      ArrayList<Pet> pList = pService.petInfoList(id);
 	      ArrayList<Reply> rList = pService.repliesList(id);
+	      
 	      if(aList != null) {
+	    	 model.addAttribute("pi", pi);
+	    	 model.addAttribute("loc", request.getRequestURI());
 	         model.addAttribute("pList", pList);
 	         model.addAttribute("aList", aList);
 	         model.addAttribute("rList", rList);
@@ -739,6 +766,7 @@ public class PetController {
 	public String insertReport(@ModelAttribute Report rt, HttpSession session){
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		rt.setRAccuser(id);
+		rt.setRType("R");
 		int checkResult = pService.checkResult(rt);
 		int result = pService.insertReport(rt);
 		
@@ -764,7 +792,7 @@ public class PetController {
 	}
 	
 	@PostMapping("/petDiaryWrite.dw")
-	public String petDiaryWrite(@ModelAttribute Diary d, @RequestParam("date") Date date, @RequestParam("petName") int petId, HttpSession session) {
+	public String petDiaryWrite(@ModelAttribute Diary d, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam("petName") int petId, HttpSession session) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		d.setDrDate(date);
 	    d.setWriterId(id);

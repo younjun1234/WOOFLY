@@ -42,12 +42,6 @@
 						</div>
 					</div>
 					<div>
-						<button class="btn btn-outline-dark">
-							전체
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-							  	<path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-							</svg>
-						</button>
 					</div>
 				</div>
 				<div th:onclick="|location.href='/board/used/detail?uNo=${b.uNo}'|" role="button" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px" th:each="b : ${list}">
@@ -63,6 +57,16 @@
 						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#dates.format(b.uCreateDate, 'yy/MM/dd')}]]</div>
 					</div>
 				</div>
+					<th:block th:if="${#arrays.isEmpty(list)}">
+					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+						<div class="d-flex flex-column justify-content-center align-items-center">
+							<p>구매 입찰 내역이 없습니다.</p>
+							<div>
+								<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+							</div>
+						</div>
+					</div>
+				</th:block>
 			</div>
 			<!-- 여기까지가 수정 -->
 			<!-- 여기까지가 수정 -->

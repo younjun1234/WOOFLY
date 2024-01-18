@@ -59,7 +59,18 @@
 				  		</div>
 					</div>
 				</div>
+				<th:block th:if="${#arrays.isEmpty(list)}">
+					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+						<div class="d-flex flex-column justify-content-center align-items-center">
+							<p>구매 입찰 내역이 없습니다.</p>
+							<div>
+								<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+							</div>
+						</div>
+					</div>
+				</th:block>
 			</div>
+			
 			<!-- 여기까지가 수정 -->
 			<!-- 여기까지가 수정 -->
 			<!-- 여기까지가 수정 -->

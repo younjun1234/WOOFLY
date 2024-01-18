@@ -20,6 +20,12 @@
 		VALUES (pet_seq.nextval, #{petProfile}, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, #{petIntro})
 	</insert>
 	
+	<select id="getListCount" resultType="_int">
+		select count(*)
+		from album
+		where ab_status = 'Y'
+	</select>
+	
 	<select id="petInfoList" resultType="Pet">
 		select *
 		from pet
@@ -259,7 +265,7 @@
 	
 	<insert id="insertReport" parameterType="Report">
 		insert into report
-		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
 	</insert>
 	
 	<select id="checkResult" resultType="_int">
@@ -288,7 +294,7 @@
 	
 	<delete id="deleteReplyLike">
 		delete from reply_like
-		where like_ref_board = #{rNo}
+		where like_ref_board = #{rNo} and like_user = #{id}
 	</delete>
 	
 	<insert id="insertBoardLike">
@@ -298,7 +304,7 @@
 	
 	<delete id="deleteBoardLike">
 		delete from board_like
-		where like_ref_board = #{abNo} and like_ref_type = 'AB'
+		where like_ref_board = #{abNo} and like_ref_type = 'AB' and like_user = #{id}
 	</delete>
 	
 	<select id="petContestList" resultType="Participants">
