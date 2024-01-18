@@ -86,7 +86,7 @@
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;">[[${dw.dwContent}]]</textarea>
+				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;" th:value="${dw.dwContent}">[[${dw.dwContent}]]</textarea>
 				</div>
 				<div class="mb-3">
 	               <label for="title" class="form-label">지급할 금액</label>
@@ -95,16 +95,14 @@
 				<label for="file" class="form-label">첨부파일</label><br>
 					<div th:each="a : ${ list }">
 						<h5>
-							<a th:href="@{ image/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
+							<a th:href="@{ image/board/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
 							<button type="button" class="btn btn-outline-dark btn-sm deleteAttm" th:id="|delete-${ a.renameName }/${a.attmLevel}|">유지</button>
 							<input type="hidden" name="deleteAttm" value="none">
 						</h5>
 					</div>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
-					   <div class="mb-3">
-					      <input type="file" class="form-control form-control-sm" name="file">
-					   </div>
+					  
 					</div>
 				
 				
