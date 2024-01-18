@@ -24,4 +24,5 @@ public class Album {
 	private String renameName;
 	private String petName;
 	private String petProfile;
+	private int abLike;
 }

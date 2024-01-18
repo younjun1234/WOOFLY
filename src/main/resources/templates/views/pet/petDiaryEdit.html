@@ -46,28 +46,35 @@
 					<div class="col-7">
 						<div class="d-flex justify-content-between">
 							<div class="d-flex">
-								<input type="date" name="date" id="drDate" class="form-control d-block" style="width: 150px;" required>
+								<input type="date" name="date" id="drDate" class="form-control d-block" style="width: 150px;" required th:value="${#dates.format(d.drDate, 'yyyy-MM-dd')}">
 							</div>
 							<div class = "d-flex">
-							  <select class="form-select" name="petId" style="width: 160px;" required>
+							  <select class="form-select" name="petId" style="width: 160px;" required >
 								  <option selected disabled>강아지 선택</option>
-							  	  <option th:each="p : ${pet}" th:value="${p.petId}" th:text="${p.petName}"></option>
+							  	  <option th:each="p : ${pet}" th:value="${p.petId}" th:text="${p.petName}" th:selected="${p.petId eq d.petId}"></option>
 							  </select>
 						 	 </div>
 							  <div>
-								<select class="form-select" name="petHealth" style="width:160px" required>
+								<!-- <select class="form-select" name="petHealth" style="width:160px" required th:selected="${d.petHealth}">
 									<option selected disabled>오늘의 상태</option>
 									<option value="A">😻 신나요</option>
 									<option value="B">😸 그냥 그래요</option>
 									<option value="C">😺 무기력해요</option>
 									<option value="D">😿 아파요</option>
+								</select> -->
+								<select class="form-select" name="petHealth" style="width:160px" required>
+								    <option selected disabled>오늘의 상태</option>
+								    <option value="A" th:selected="${d.petHealth == 'A'}">😻 신나요</option>
+								    <option value="B" th:selected="${d.petHealth == 'B'}">😸 그냥 그래요</option>
+								    <option value="C" th:selected="${d.petHealth == 'C'}">😺 무기력해요</option>
+								    <option value="D" th:selected="${d.petHealth == 'D'}">😿 아파요</option>
 								</select>
 							</div>
 						</div>
 					</div>
 					<br>
 					<div class="col-7">
-						<p class="text-secondary">강아지의 하루<p>
+						<p class="text-secondary">[[${d.petName}]]의 하루<p>
 						  <label for="exampleFormControlTextarea1" class="form-label"></label>
 						  <textarea style="resize:none;" th:text="${d.drContent}" class="form-control" name="drContent" id="exampleFormControlTextarea1" rows="10" placeholder="내용을 입력해주세요..."></textarea>
 					</div>

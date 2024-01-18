@@ -13,7 +13,7 @@
 input {
   border: none;
   background: transparent;
-  width: 90%;
+  width: 100%;
 }
 
 select{
@@ -60,7 +60,7 @@ select{
 						<div class="col-5">
 							<p class="text-secondary">마이펫 이름</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" name="petName" th:value="${p.petName}" required>
+								<input type="text" name="petName" th:value="${p.petName}" style="width:100%;" required>
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -74,7 +74,7 @@ select{
 						<div class="col-5 mt-4">
 							<p class="text-secondary">마이펫 소개</p>
 							<div class="border-bottom d-flex justify-content-between">
-								<input type="text" min="29" name="petIntro" th:value="${p.petIntro}">
+								<input type="text" min="29" name="petIntro" th:value="${p.petIntro}" style="width:100%;">
 								<div>
 									<button class="btn btn-outline-dark btn-sm mb-2">변경</button>
 								</div>
@@ -249,7 +249,13 @@ select{
 	      e.preventDefault();
 		  $('#deleteModal').modal("show");
 	  });
-	  
+	 
+	  //생일 넘어가기
+ 	  const now_date = Date.now();
+      const timeOff = new Date().getTimezoneOffset()*60000;
+      const today = new Date(now_date-timeOff).toISOString().split("T")[0];
+      document.getElementById("petBirth").setAttribute("max", today);
+		
 	  //마이펫 프로필 변경
 	  const profileChange = () => {
 	         const profile = document.getElementById("profile");
