@@ -265,7 +265,7 @@
 	
 	<insert id="insertReport" parameterType="Report">
 		insert into report
-		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
 	</insert>
 	
 	<select id="checkResult" resultType="_int">

@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public Member sendId(Member info) {
+	public ArrayList<Member> sendId(Member info) {
 		return aDAO.sendId(info);
 	}
 
