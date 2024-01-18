@@ -42,6 +42,7 @@
 			               <div class="d-flex">
 			   			   	 <button type="button" class="btn btn-sm btn-dark" onclick="fileAdd()">파일 찾기</button>&nbsp;&nbsp;
 						     <input type="file" id="photo" style="display: none;" name="file" accept="image/*" value="123" multiple onchange="setThumbnail(event)"/>
+						     <input type="file" id="photo" style="display: none;" name="saveFile" accept="image/*" value="123" multiple/>
 			   			   </div>
 							<div class="d-flex gap-3 flex-wrap align-items-center mt-2 mb-4" id="preview"></div>
 			   		</div>
@@ -82,7 +83,7 @@
 	     function validateForm() {
 	        const petId = document.getElementById("petId");
 	        const abContent = document.getElementsByName("abContent");
-	        const photo = document.getElementById("photo");
+	        const saveFile = document.getElementsByName("saveFile")[0];
 	        
         	if (petId.value === '강아지 선택') {
 	            alert("마이펫을 선택해주세요!");
@@ -94,7 +95,7 @@
 	            return false;
 	        }
 
-	        if (photo.files.length === 0) {
+	        if (saveFile.files.length === 0) {
 	            alert("사진을 최소 한 장 이상 첨부해주세요!");
 	            return false;
 	        }
@@ -107,10 +108,24 @@
 		let count = 0;
 		function setThumbnail(event) {
 		    const photo = document.getElementById("photo");
+		    
+		    const saveFile = document.getElementsByName('saveFile')[0];
+            let fileTransfer = new DataTransfer();
+        	const files = photo.files;
+        	for(let i=0; i < saveFile.files.length; i++) {
+        		fileTransfer.items.add(saveFile.files[i]);
+        	}
+            for(let i=0; i < files.length; i++) {
+            	fileTransfer.items.add(files[i]);
+            }
+            saveFile.files = fileTransfer.files;
+		    
+		    
 		    for (var image of event.target.files) {
 		        var reader = new FileReader();
 			
 		        reader.onload = function (event) {
+		        	
 		            var img = document.createElement("img");
 		            img.setAttribute("src", event.target.result);
 		            img.className = 'rounded';
@@ -119,10 +134,11 @@
 		            img.style.border = '1px grey';
 		
 		            // 썸네일을 감싸는 div 생성
-		            var thumbnailDiv = document.createElement("div");
+		            let thumbnailDiv = document.createElement("div");
 		            thumbnailDiv.appendChild(img);
 		            // 삭제 버튼 생성 및 이벤트 바인딩
-		            var deleteButton = document.createElement("button");
+		            let deleteButton = document.createElement("button");
+		            
 		            deleteButton.className = 'btn btn-sm align-items-start';
 		            deleteButton.style.border = 'none';
 		            deleteButton.type = 'button';
@@ -132,30 +148,36 @@
 		            
 		            deleteButton.addEventListener("click", function () {
 		            	const removeTargetId = this.dataset.index;
-		            	console.log(removeTargetId);
-		            	const files = photo.files;
+		             	const files = saveFile.files;
 		                const dataTransfer = new DataTransfer();
-		                
+		                 
+						count--;		                
 		                for(let i=0; i < files.length; i++) {
 		                	if(i != removeTargetId) {
 		                    	dataTransfer.items.add(files[i]);
-		                	}
+		                 	}
 		                }
-		                photo.files = dataTransfer.files;
+		                saveFile.files = dataTransfer.files;
 		                thumbnailDiv.remove(); // 썸네일 삭제
-                 	});
-	                
+		    			console.log(saveFile.files);
+		    		});
+		            
 		            document.querySelector("div#preview").appendChild(thumbnailDiv);
+					console.log(saveFile.files);
 	            }
 		        reader.readAsDataURL(image);
-	
-		        console.log(image);
 	            // 썸네일 div에 삭제 버튼 추가
 	
 	            // 썸네일을 미리보기 영역에 추가
         	};
 
 	    }
+		
+		
+		
+        
+		
+        
 		
 	/* 	document.getElementById('chkbtn').addEventListener('click', () => {
 			console.log(document.getElementById('photo').files);

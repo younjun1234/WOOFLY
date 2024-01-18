@@ -25,4 +25,6 @@ public class Participants {
 	
 	private String mbId;
 	private String mbName;
+	private String ownerId;
+	private int conGen;
 }
