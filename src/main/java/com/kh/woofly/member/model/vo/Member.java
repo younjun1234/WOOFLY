@@ -31,5 +31,10 @@ public class Member {
 	private String isAdmin;
 	private String isPrivate;
 	private Date nextChange;
+	private String isKakao;
+
+	// 추가한다고 했음.
+	private String isBanned;
 	
+
 }

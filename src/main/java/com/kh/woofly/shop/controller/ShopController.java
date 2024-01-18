@@ -334,7 +334,7 @@ public class ShopController {
 			}
 		}
 		
-		// true면 같은 항목이 비어있음을 나타냄
+		// true면 같은 항목이 비어있음을 나타냄 //productName
 		if(isEmpty) {
 			Properties prop = new Properties();
 			selectC.setMbId(mbId);
