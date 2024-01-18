@@ -22,7 +22,7 @@
 	
 	<insert id="signUpMember" parameterType="Member">
 		INSERT INTO MEMBER
-		VALUES (#{mbId}, #{mbPwd}, #{mbName}, default, null, #{mbNickName}, #{mbEmail}, #{mbBirth}, #{mbTel}, default, default, default, default, default, null, default)
+		VALUES (#{mbId}, #{mbPwd}, #{mbName}, #{mbPhoto}, null, #{mbNickName}, #{mbEmail}, #{mbBirth}, #{mbTel}, default, default, default, default, default, null, default, #{isKakao})
 	</insert>
 	
 	<insert id="signUpMemberAddr" parameterType="MemberAddress">

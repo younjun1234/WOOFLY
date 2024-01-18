@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Notification;
 import com.kh.woofly.member.model.vo.Payment;
 import com.kh.woofly.member.model.vo.Point;
 
@@ -68,5 +69,11 @@ public interface MemberDAO {
 	int getPointsCount(String id);
 
 	ArrayList<Point> selectMyPoints(RowBounds rowbounds, String id);
+
+	ArrayList<Notification> selectNotification(HashMap<String, String> map);
+
+	int readNotification(String id);
+
+	int deleteNotification(String notiNo);
 
 }

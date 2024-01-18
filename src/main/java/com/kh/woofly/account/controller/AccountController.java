@@ -1,6 +1,10 @@
 package com.kh.woofly.account.controller;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -22,6 +26,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.kh.woofly.account.model.exception.AccountException;
 import com.kh.woofly.account.model.service.AccountService;
+import com.kh.woofly.account.model.service.KakaoLoginService;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -44,6 +49,9 @@ public class AccountController {
 	private BCryptPasswordEncoder bcrypt;
 	
 	@Autowired
+	private KakaoLoginService kService;
+	
+	@Autowired
 	private JavaMailSender mailSender;
 	
 	private Logger logger = LoggerFactory.getLogger(AccountController.class);
@@ -55,6 +63,77 @@ public class AccountController {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
 	
+    @GetMapping("kakaoLogin")
+    public String kakaoLogin(@RequestParam(value="code", required=false) String code, Model model) {
+    	System.out.println(code);
+    	String accessToken = kService.getAccessToken(code);
+    	System.out.println("###access_Token#### : " + accessToken);
+		// 위의 access_Token 받는 걸 확인한 후에 밑에 진행
+    	
+    	// 3번
+		HashMap<String, Object> userInfo = kService.getUserInfo(accessToken);
+		System.out.println("###id#### : " + userInfo.get("id"));
+		System.out.println("###name#### : " + userInfo.get("name"));
+		System.out.println("###profileImage#### : " + userInfo.get("profileImage"));
+		System.out.println("###birthday#### : " + userInfo.get("birthday"));
+		System.out.println("###birthyear#### : " + userInfo.get("birthyear"));
+		System.out.println("###phoneNumber#### : " + userInfo.get("phoneNumber"));
+		System.out.println("###email#### : " + userInfo.get("email"));
+    			
+		try {
+			
+			
+	    	String mbId = (String)userInfo.get("id") + "kAkAo";
+	    	String name = (String)userInfo.get("name");
+	    	String profileImage = (String)userInfo.get("profileImage");
+	    	String email = (String)userInfo.get("email");
+	    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	    	Date date;
+			date = sdf.parse((String)userInfo.get("birthyear") + (String)userInfo.get("birthday"));
+			
+	    	String phoneNumber = (String)userInfo.get("phoneNumber");
+	    	String phone = "0" + phoneNumber.substring(4).replace("-", "");
+	    	
+	    	Member m;
+	    	int result = aService.idCheck(mbId);
+	    	System.out.println(mbId);
+	    	System.out.println(name);
+	    	System.out.println(profileImage);
+	    	System.out.println(date);
+	    	System.out.println(phone);
+	    	int result2;
+	    	
+	    	if (result > 0) {
+	    		
+	    		m = new Member();
+	    		m.setMbId(mbId);
+	    		
+	    	} else {
+	    		m = new Member();
+	    		m.setMbId(mbId);
+	    		m.setMbPwd(bcrypt.encode(mbId));
+	    		m.setMbName(name);
+	    		m.setMbPhoto(profileImage);
+	    		m.setMbNickName(mbId);
+	    		m.setMbBirth(date);
+	    		m.setMbTel(phone);
+	    		m.setMbEmail(email);
+	    		m.setIsKakao("Y");
+	    		result2 = aService.signUpMember(m);
+	    		
+	    	}
+	    	
+	    	m = aService.login(m);
+	    	model.addAttribute("loginUser", m);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		
+    	return "redirect:/";
+    	
+    }
+    
     //자동 로그인
 //    @GetMapping("/")
 //    public String test(HttpSession session) {
@@ -68,10 +147,10 @@ public class AccountController {
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
-		Member m = new Member();
-		m.setMbId("younjun1234");
-		Member loginUser = aService.login(m);
-		model.addAttribute("loginUser", loginUser);
+//		Member m = new Member();
+//		m.setMbId("younjun1234");
+//		Member loginUser = aService.login(m);
+//		model.addAttribute("loginUser", loginUser);
 		return "login";
 	}
 	
@@ -149,6 +228,8 @@ public class AccountController {
 		ma.setPostcode(postcode);
 		ma.setAddr(address);
 		ma.setAddrDetail(detailAddress);
+		m.setMbPhoto("default_profile.png");
+		m.setIsKakao("N");
 		
 		String encPwd = bcrypt.encode(m.getMbPwd()); //사용자가 입력한 pwd를 bcrypt를 사용하여 암호화
 		m.setMbPwd(encPwd); //암호환 pwd를 다시 멤버 객체에 담음 

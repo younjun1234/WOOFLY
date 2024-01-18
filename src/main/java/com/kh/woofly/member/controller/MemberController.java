@@ -27,20 +27,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Notification;
 import com.kh.woofly.member.model.vo.Payment;
 import com.kh.woofly.member.model.vo.Point;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -48,12 +54,12 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
+@SessionAttributes({"notifications", "notificationStatus"})
 @Controller
 public class MemberController {
 
 	@Autowired
 	private JavaMailSender mailSender;
-
 	
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
@@ -68,6 +74,49 @@ public class MemberController {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
     }
 	
+    @GetMapping("/")
+    public String home(HttpSession session, Model model) {
+    	if (session.getAttribute("loginUser") != null) {
+    		HashMap<String, String> map = new HashMap<>();  
+    		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+    		map.put("id", id);
+    		ArrayList<Notification> list = mService.selectNotification(map);
+    		boolean isAllRead = true;
+    		for(Notification noti : list) {
+    			if (noti.getIsRead().equals("N")) {
+    				isAllRead = false;
+    				break;
+    			}
+    		}
+			model.addAttribute("notificationStatus", isAllRead);
+    		model.addAttribute("notifications", list);
+    	}
+    	return "index";
+
+    }
+    
+    @GetMapping("readNotifications.yj")
+    @ResponseBody
+    public String readNotification(HttpSession session) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		int result = mService.readNotification(id);
+		
+		return "" + result;
+    }
+    
+    @GetMapping("deleteNotifications.yj")
+    @ResponseBody
+    public String deleteNotification(@RequestParam("notiNo") String notiNo) {
+    	int result = mService.deleteNotification(notiNo);
+		
+    	if (result > 0) {
+    		return "good";
+    	} else {
+    		return "bad";
+    	}
+    }
+    
+    
 	@GetMapping("my/login-edit")
 	public String loginView(Model model) {
 		return "myLogin";

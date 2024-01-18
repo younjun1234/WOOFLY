@@ -7,6 +7,7 @@ import java.util.Properties;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
+import com.kh.woofly.member.model.vo.Notification;
 import com.kh.woofly.member.model.vo.Payment;
 import com.kh.woofly.member.model.vo.Point;
 
@@ -65,5 +66,11 @@ public interface MemberService {
 	int getPointsCount(String id);
 
 	ArrayList<Point> selectMyPoints(PageInfo pi, String id);
+
+	ArrayList<Notification> selectNotification(HashMap<String, String> map);
+
+	int readNotification(String id);
+
+	int deleteNotification(String notiNo);
 
 }
