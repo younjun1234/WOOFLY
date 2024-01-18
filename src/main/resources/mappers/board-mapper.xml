@@ -65,7 +65,6 @@
 			    order by u_end ${uEnd}
 			</if>
 	</select>
-
 	<!-- 자유게시판 -->	
 	
 	<!-- 검색 기능 -->
