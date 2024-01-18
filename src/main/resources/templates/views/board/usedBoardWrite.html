@@ -58,13 +58,19 @@
          </div>
          
          <form action="/board/used/insertUsedBoard" method="POST" enctype="multipart/form-data" id="attmForm">
-            <div class="mb-3" style="width: 24%;">
-               <label for="title" class="form-label">판매 완료 여부</label>
-                   <select class="form-select mb-1" name="uEnd">
-                      <option th:value="N" value="N">판매중</option>
-                     <option th:value="R" value="R">예약중</option>
-                     <option th:value="Y" value="Y">판매완료</option>
-                  </select>
+          	<div style="display: flex;">
+	            <div class="mb-3" style="width: 24%;">
+	               <label for="title" class="form-label">판매 완료 여부</label>
+	                   <select class="form-select mb-1" name="uEnd">
+	                      <option th:value="N" value="N">판매중</option>
+	                     <option th:value="R" value="R">예약중</option>
+	                     <option th:value="Y" value="Y">판매완료</option>
+	                  </select>
+	            </div>&nbsp;
+	            <div class="mb-3" style="width: 25%; "> 
+	                 <label for="title" class="form-label">구매자 닉네임</label>
+	                 <input type="text" class="form-control" id="buyerId" name="buyerId" placeholder="">
+	            </div>
             </div>
             <div style="display: flex;">
                <div class="mb-3" style="width: 25%; "> 
@@ -76,9 +82,9 @@
                   <label for="title" class="form-label">제품 상태</label>
                    <select class="form-select mb-1" name="productStatus">
                       <option value="" disabled selected></option>
-                     <option th:value="상" value="G">상</option>
-                     <option th:value="중" value="S">중</option>
-                     <option th:value="하" value="B">하</option>
+                     <option th:value="G" value="G">상</option>
+                     <option th:value="S" value="S">중</option>
+                     <option th:value="B" value="B">하</option>
                   </select>
                 </div>
                 <div class="mb-3" style="width: 25%; margin-left: 10px;">
@@ -129,7 +135,7 @@
                         <input type="text" id="extraAddress" class="form-control" name="mbAddress4" style="border: none; background: transparent;" readonly>
                      </div>
                   </div>
-                  <br>
+                  
             
             <div class="mb-3">
                <label for="title" class="form-label">제목</label>

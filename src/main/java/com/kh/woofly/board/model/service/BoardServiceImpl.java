@@ -436,15 +436,21 @@ private BoardServiceImpl boardDAO;
 		return bDAO.editLostBoard(bId, object);
 	}
 
-	@Override
-	public int deleteLostBoard(int bId) {
-		return bDAO.deleteLostBoard(bId);
-	}
+	/*
+	 * @Override public int deleteLostBoard(int bId) { return
+	 * bDAO.deleteLostBoard(bId); }
+	 */
+	
 
-	@Override
-	public int deleteLostBoardAttm(int bId) {
-		return bDAO.deleteLostBoardAttm(bId);
-	}
+	 @Override
+	 public int deleteLostBoard(int mNo) {
+	 	return bDAO.deleteLostBoard(mNo);
+	 }
+	
+	 @Override public int deleteLostBoardAttm(int mNo) { 
+		 return bDAO.deleteLostBoardAttm(mNo); 
+	 }
+	
 
 	@Override
 	public int editLostBoard(LostBoard lb) {
@@ -460,6 +466,34 @@ private BoardServiceImpl boardDAO;
 	@Override
 	public int updateLostBoard(LostBoard m) {
 		return bDAO.updateLostBoard(m);
+	}
+	
+
+	@Override
+	public ArrayList<Reply> selectLostReply(int mNo) {
+		return bDAO.selectLostReply(mNo);
+	}
+	
+	@Override
+	public boolean hasLevelOne(int mNo) {
+		return bDAO.hasLevelOne(mNo);
+	}
+
+	@Override
+	public int insertLostReply(Reply r) {
+		return bDAO.insertLostReply(r);
+	}
+
+
+	@Override
+	public int deleteLostReply(Reply r) {
+		return bDAO.deleteLostReply(r);
+	}
+
+
+	@Override
+	public int updateLostReply(Reply r) {
+		return bDAO.updateLostReply(r);
 	}
 
 
@@ -528,8 +562,17 @@ private BoardServiceImpl boardDAO;
 
 	/* 하은 중고 */
 	@Override
-	public UsedBoard selectUsedBoard(Integer uNo) {
-		return bDAO.selectUsedBoard(uNo);
+	public UsedBoard selectUsedBoard(Integer uNo, String mbId) {
+		UsedBoard u = bDAO.selectUsedBoard(uNo);
+		if(u != null) {
+			if(mbId !=null && !u.getMbId().equals(mbId)) {
+				int result = bDAO.updateUsedCount(uNo);
+				if(result >0) {
+					u.setUCount(u.getUCount() + 1);
+				}
+			}
+		}
+		return u;
 	}
 
 
@@ -549,6 +592,60 @@ private BoardServiceImpl boardDAO;
 	public int insertUsedAttm(ArrayList<Attachment> attachments) {
 		return bDAO.insertUsedAttm(attachments);
 	}
+	
+	@Override
+	public int deleteUsedAttm(ArrayList<String> delRename) {
+		return bDAO.deleteUsedAttm(delRename);
+	}
+
+
+	@Override
+	public int updateUsedBoard(UsedBoard u) {
+		return bDAO.updateUsedBoard(u);
+	}
+
+
+	@Override
+	public boolean UsedhasLevelOne(int uNo) {
+		return bDAO.UsedhasLevelOne(uNo);
+	}
+
+	@Override
+	public int deleteUsedBoard(int uNo) {
+		return bDAO.deleteUsedBoard(uNo);
+	}
+
+
+	@Override
+	public int deleteUsedBoardAttm(int uNo) {
+		return bDAO.deleteUsedBoardAttm(uNo);
+	}
+	
+	@Override
+	public int insertUsedReply(Reply r) {
+		return bDAO.insertUsedReply(r);
+	}
+
+
+	@Override
+	public int deleteUsedReply(Reply r) {
+		return bDAO.deleteUsedReply(r);
+	}
+
+
+	@Override
+	public int updateUsedReply(Reply r) {
+		return bDAO.updateUsedReply(r);
+	}
+	
+	@Override
+	public ArrayList<Reply> selectUsedReply(int uNo) {
+		return bDAO.selectUsedReply(uNo);
+	}
+
+
+
+
 
 	
 	
@@ -674,6 +771,20 @@ private BoardServiceImpl boardDAO;
 	public int updateUsedRvReply(Reply r) {
 		return bDAO.updateUsedRvReply(r);
 	}
+
+
+	
+
+	
+
+
+	
+
+	
+
+	
+
+
 
 
 

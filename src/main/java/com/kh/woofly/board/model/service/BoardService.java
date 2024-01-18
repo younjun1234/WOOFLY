@@ -237,15 +237,31 @@ public interface BoardService {
 
 	LostBoard editLostBoard(int bId, Object object);
 
-	int deleteLostBoard(int bId);
-
-	int deleteLostBoardAttm(int bId);
+	/*
+	 * int deleteLostBoard(int bId);
+	 */
+	
+	int deleteLostBoard(int mNo);
+	
+	int deleteLostBoardAttm(int mNo);	
 
 	int editLostBoard(LostBoard lb);
 	
 	int deleteLostAttm(ArrayList<String> delRename);
 
 	int updateLostBoard(LostBoard m);
+	
+	ArrayList<Reply> selectLostReply(int mNo);
+	
+	boolean hasLevelOne(int mNo);
+	
+	int insertLostReply(Reply r);
+
+	int deleteLostReply(Reply r);
+
+	int updateLostReply(Reply r);
+	
+	
 
 //	Reply selectReplyLostBoard(Integer rNo);
 
@@ -263,13 +279,41 @@ public interface BoardService {
 
 	ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map);
 
-	UsedBoard selectUsedBoard(Integer uNo);
+	UsedBoard selectUsedBoard(Integer uNo, String mbId);
 
 	Reply selectReply(Integer rNo);
 
 	int insertUsedBoard(UsedBoard u);
 
 	int insertUsedAttm(ArrayList<Attachment> attachments);
+	
+	int deleteUsedAttm(ArrayList<String> delRename);
+
+	int updateUsedBoard(UsedBoard u);
+
+	boolean UsedhasLevelOne(int uNo);
+
+	int deleteUsedBoard(int uNo);
+
+	int deleteUsedBoardAttm(int uNo);
+
+	int insertUsedReply(Reply r);
+
+	int deleteUsedReply(Reply r);
+
+	int updateUsedReply(Reply r);
+
+	ArrayList<Reply> selectUsedReply(int uNo);
+
+	
+
+	
+
+	
+
+	
+
+	
 
 	
 
