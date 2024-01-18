@@ -135,28 +135,15 @@ public class AccountController {
     	
     }
     
-    //자동 로그인
-    @GetMapping("/")
-    public String test(HttpSession session) {
-       Member m = new Member();
-       String id = "test";
-       m.setMbId(id);
-       Member loginUser = aService.login(m);
-       session.setAttribute("loginUser", loginUser);
-       return "index";
-    }
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
-//		Member m = new Member();
-//		m.setMbId("younjun1234");
-//		Member loginUser = aService.login(m);
-//		model.addAttribute("loginUser", loginUser);
 		return "login";
 	}
 	
 	@PostMapping("login.dw")
-	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
+	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL)
+	{
 		Member loginUser = aService.login(m);
 		
 		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
