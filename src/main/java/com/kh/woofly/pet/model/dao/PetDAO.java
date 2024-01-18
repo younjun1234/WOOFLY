@@ -110,5 +110,7 @@ public interface PetDAO {
 
 	int updatePetPhoto(Album a);
 
+	int getListCount(int i);
+
 
 }

@@ -71,6 +71,29 @@
 						</div>
 					</div>
 				</div>
+				<nav th:if=${!#arrays.isEmpty(list)}>
+					<ul class="pagination pagination-sm justify-content-center mt-5">
+					 	<!-- 이전 -->
+						<li class="page-item" th:if="${ pi.currentPage > 1 }">
+							<a class="page-link" th:href="@{${loc}(page=${pi.currentPage-1})}" aria-label="Previous"> 
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+					
+						<!-- 숫자 -->
+						<li class="page-item" th:each="page : ${ #numbers.sequence(pi.startPage, pi.endPage) }">
+							<a class="page-link" th:href="@{${loc}(page=${page})}" th:text="${ page }"></a>
+						</li>
+						
+						
+						<!-- 다음 -->
+						<li class="page-item" th:if="${ pi.currentPage < pi.maxPage }">
+							<a class="page-link" th:href="@{${loc}(page=${pi.currentPage+1})}" aria-label="Next"> 
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+				  	</ul>
+				</nav>
 				<div class="d-flex justify-content-center align-items-center" style="min-height: 500px" th:if="${ #arrays.isEmpty(aList) }">
 					<div class="d-flex flex-column justify-content-center align-items-center">
 						<img src="/'image/'+${cryingdog.png}" style="width:200px;">

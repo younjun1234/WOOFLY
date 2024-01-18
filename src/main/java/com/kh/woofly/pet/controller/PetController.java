@@ -62,10 +62,15 @@ public class PetController {
 	      HashMap<String, Object> map = new HashMap<>();
 	      map.put("id", id);
           map.put("petId", petId);
+          
+          int listCount = pService.getListCount(1);
+          PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+          
 	      ArrayList<Album> aList = pService.selectMyAlbums(map);
 	      ArrayList<Pet> pList = pService.petInfoList(id);
 	      ArrayList<Reply> rList = pService.repliesList(id);
 	      if(aList != null) {
+	    	 model.addAttribute("pi", pi);
 	         model.addAttribute("pList", pList);
 	         model.addAttribute("aList", aList);
 	         model.addAttribute("rList", rList);

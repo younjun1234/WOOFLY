@@ -57,15 +57,15 @@ public class AccountController {
     }
 	
     //자동 로그인
-    @GetMapping("/")
-    public String test(HttpSession session) {
-       Member m = new Member();
-       String id = "test";
-       m.setMbId(id);
-       Member loginUser = aService.login(m);
-       session.setAttribute("loginUser", loginUser);
-       return "index";
-    }
+//    @GetMapping("/")
+//    public String test(HttpSession session) {
+//       Member m = new Member();
+//       String id = "test";
+//       m.setMbId(id);
+//       Member loginUser = aService.login(m);
+//       session.setAttribute("loginUser", loginUser);
+//       return "index";
+//    }
     
 	@GetMapping("/account/login")
 	public String loginView(Model model) {
@@ -77,22 +77,32 @@ public class AccountController {
 	}
 	
 	@PostMapping("login.dw")
-	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL) {
+	public String login(@ModelAttribute Member m, Model model, @RequestParam("beforeURL")String beforeURL, HttpSession response) {
 		Member loginUser = aService.login(m);
-		
-		if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-			model.addAttribute("loginUser", loginUser);
-//			if (loginUser.getIsAdmin().equals("N")) {
-//				//로그 추가
-//				logger.info(loginUser.getMbId());
-//				return "redirect:/";
-//			} else {
-//				return "redirect:admin.ad";
-//			}
-			return "redirect:/";
-		} else {
-			throw new AccountException("로그인을 실패하였습니다.");
-		}
+	      
+	      if(loginUser != null) {
+	         if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+	            model.addAttribute("loginUser",loginUser);
+	            
+	            if(!beforeURL.equals("http://localhost:8080/logout.dw") && !beforeURL.equals("http://localhost:8080/signUp.dw"))
+	            {
+	               return "redirect:" + beforeURL;
+	            }else {
+	               return "redirect:home.me";
+	            }
+	         }else {
+	            model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+	            model.addAttribute("searchUrl","views/account/signUp");
+	            return "redirect:/account/signUp";
+	            
+	         }
+	         
+	      }else {
+	         model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
+	         model.addAttribute("searchUrl","views/account/signUp");
+	         return "redirect:/account/signUp";
+	      }
+	   }
 		
 		//beforeUrl
 //		if(loginUser != null) {
@@ -138,9 +148,6 @@ public class AccountController {
 //		      }
 //		   }
 		
-	}
-	
-	
 	@GetMapping("/idCheck.dw")
 	@ResponseBody
 	public String idCheck(@RequestParam("id") String mbId) {
