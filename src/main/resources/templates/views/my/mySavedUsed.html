@@ -52,7 +52,7 @@
 				</div>
 				<div th:onclick="|location.href='/board/used/detail?uNo=${b.uNo}'|" role="button" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px" th:each="b : ${list}">
 					<div class="d-flex align-content-center ms-3">
-						<img th:src="'/image/' + ${b.renameName}"class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
+						<img th:src="'/image/board/' + ${b.renameName}"class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
 						<div class="ms-3" style="line-height: 50px;">
 							[[${b.uTitle}]] <br>
 							[[${b.uContent}]]

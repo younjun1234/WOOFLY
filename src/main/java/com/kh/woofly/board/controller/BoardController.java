@@ -37,6 +37,7 @@ import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,6 +53,8 @@ public class BoardController {
 		
 		@Autowired
 		private BoardService bService;
+		
+		
 		
 		// 중고 거래 내역  // 연준이꺼
 		@GetMapping("my/usedBuying")
@@ -250,11 +253,28 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmFreeBoardList((Integer)bNo); 
 			ArrayList<Reply> rList = bService.selectFreeReply(bNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("bNo", bNo);
+			map.put("id", id);
+			int likeCount = bService.freeBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
+			
 			if(b != null) {
 				model.addAttribute("b", b);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "freeBoardDetail";
 			} else {
@@ -658,8 +678,56 @@ public class BoardController {
 				return "bad";
 			}
 		}
+		
+		//보드 좋아요
+		@GetMapping("insertDeleteFreeLike.yk")
+		@ResponseBody
+		public String insertDeleteFreeBoardLike(@RequestParam("bNo") int bNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("bNo", bNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteFreeBoardLike(map);
+			} else {
+				result = bService.insertFreeBoardLike(map);
+				result = bService.insertFreeBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
 
+		@GetMapping("insertDeleteFreeReply.yk")
+		@ResponseBody
+		public String insertDeleteFreeReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
 
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertFreeReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
 
 		
 	
@@ -759,11 +827,29 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
 			ArrayList<Reply> rList = bService.selectDwReply(dwNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("dwNo", dwNo);
+			map.put("id", id);
+			int likeCount = bService.DwBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
+			
+			
 			if(dw != null) {
 				model.addAttribute("dw", dw);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "dwBoardDetail";
 			} else {
@@ -1077,6 +1163,56 @@ public class BoardController {
 				return "bad";
 			}
 		}
+		
+		//보드 좋아요
+				@GetMapping("insertDeleteDwLike.yk")
+				@ResponseBody
+				public String insertDeleteDwLike(@RequestParam("dwNo") int dwNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+					HashMap<String, Object> map = new HashMap<>();
+					String id = ((Member)session.getAttribute("loginUser")).getMbId();
+					
+					map.put("dwNo", dwNo);
+					map.put("id", id);
+					
+					int result = 0;
+					if (replyInDel.equals("delete")) {
+						result = bService.deleteDwBoardLike(map);
+					} else {
+						result = bService.insertDwBoardLike(map);
+						result = bService.insertDwBoardNotice(map);
+					}
+						
+					if (result > 0) {
+						return "good";
+					} else {
+						return "bad";
+					}
+				}
+
+				@GetMapping("insertDeleteDwReply.yk")
+				@ResponseBody
+				public String insertDeleteDwReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+					HashMap<String, Object> map = new HashMap<>();
+					String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+					map.put("rNo", rNo);
+					map.put("id", id);
+					
+					int result = 0;
+					if (replyInDel.equals("delete")) {
+						result = bService.deleteBoardReplyLike(map);
+					} else {
+						result = bService.insertBoardReplyLike(map);
+						result = bService.insertDwReplyNotice(map);
+					}
+						
+					if (result > 0) {
+						return "good";
+					} else {
+						return "bad";
+								
+					}
+				}
 
 			
 		// 3. 산책메이트 //
@@ -1178,11 +1314,27 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmWmBoardList(wmNo); 
 			ArrayList<Reply> rList = bService.selectWmReply(wmNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("wmNo", wmNo);
+			map.put("id", id);
+			int likeCount = bService.WmBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
 			if(wm != null) {
 				model.addAttribute("wm", wm);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "wmBoardDetail";
 			} else {
@@ -1494,7 +1646,56 @@ public class BoardController {
 			}
 		}
 
-		
+		//보드 좋아요
+		@GetMapping("insertDeleteWmLike.yk")
+		@ResponseBody
+		public String insertDeleteWmLike(@RequestParam("wmNo") int wmNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("wmNo", wmNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteWmBoardLike(map);
+			} else {
+				result = bService.insertWmBoardLike(map);
+				result = bService.insertWmBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
+
+		@GetMapping("insertDeleteWmReply.yk")
+		@ResponseBody
+		public String insertDeleteWmReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertWmReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
+
 		
 		
 	
@@ -1605,11 +1806,27 @@ public class BoardController {
 			
 			ArrayList<Reply> rList = bService.selectUsedRvReply(uNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("uNo", uNo);
+			map.put("id", id);
+			int likeCount = bService.UsedBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
 			if(u != null) {
 				model.addAttribute("u", u);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "usedReviewBoardDetail";
 			} else {
@@ -1950,6 +2167,58 @@ public class BoardController {
 			}
 		}
 		
+		//보드 좋아요
+		@GetMapping("insertDeleteUsedLike.yk")
+		@ResponseBody
+		public String insertDeleteUsedLike(@RequestParam("uNo") int uNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("uNo", uNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteUsedBoardLike(map);
+			} else {
+				result = bService.insertUsedBoardLike(map);
+				result = bService.insertUsedRvBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
+
+		@GetMapping("insertDeleteUsedReply.yk")
+		@ResponseBody
+		public String insertDeleteUsedReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertUsedRvReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
+		
+		
+		
 		/////////////////////////////////////////
 		
 		
@@ -2013,6 +2282,9 @@ public class BoardController {
 	        
 	        return "usedBoard";
 	    }
+	    
+	   
+	    
 		
 //		 // 첨부파일 게시글 상세보기 //
 		@GetMapping("/board/used/detail")
@@ -2031,13 +2303,28 @@ public class BoardController {
 			UsedBoard u = bService.selectUsedBoard(uNo, mbId);
 			ArrayList<Attachment> aList = bService.selectAttmUsedBoardList((Integer)uNo); 
 			ArrayList<Reply> rList = bService.selectUsedReply(uNo);
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("mbId", mbId);
+			map.put("uNo", uNo);
+			int result = bService.selectUsedSaved(map);
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(mbId);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
 			
 			if(u != null) {
+				model.addAttribute("saved", result);
 //				model.addAttribute("r", r);
 				model.addAttribute("u", u);
 				model.addAttribute("page", page);
 				model.addAttribute("aList", aList);
 				model.addAttribute("rList", rList);
+				model.addAttribute("lList", likeList);
 				//System.out.println(m);
 				return "usedBoardDetail";
 			} else {
@@ -2358,8 +2645,78 @@ public class BoardController {
 					return "bad";
 				}
 			}
-		 
-		 
+			
+			@GetMapping("insertDeleteUsedSaved.yk")
+		    @ResponseBody
+		    public String insertDeleteUsedSaved(@RequestParam("productId") int productId, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+				
+				map.put("productId", productId);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteUsedSaved(map);
+				} else {
+					result = bService.insertUsedSaved(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+				}
+			}
+			//보드 좋아요
+			@GetMapping("insertDeleteLostLike.yk")
+			@ResponseBody
+			public String insertDeleteLostLike(@RequestParam("mNo") int mNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+				
+				map.put("mNo", mNo);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteLostBoardLike(map);
+				} else {
+					result = bService.insertLostBoardLike(map);
+					result = bService.insertLostBoardNotice(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+				}
+			}
+
+			@GetMapping("insertDeleteLostReply.yk")
+			@ResponseBody
+			public String insertDeleteLostReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+				map.put("rNo", rNo);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteBoardReplyLike(map);
+				} else {
+					result = bService.insertBoardReplyLike(map);
+					result = bService.insertLostReplyNotice(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+							
+				}
+			}
 		 
 		 
 		 
@@ -2540,11 +2897,30 @@ public class BoardController {
 				ArrayList<Attachment> aList = bService.selectAttmLostBoardList((Integer)mNo); // ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo);였음 
 				ArrayList<Reply> rList = bService.selectLostReply(mNo);
 				
+				
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("mNo", mNo);
+				map.put("id", mbId);
+				int likeCount = bService.LostBoardLike(map);			
+				ArrayList<ReplyLike> likeList = new ArrayList<>();
+				
+				for(Reply r: rList) {
+					Reply tempR = new Reply();
+					tempR.setRNo(r.getRNo());
+					tempR.setMbId(mbId);
+					
+					likeList.add(bService.selectReplyLike(tempR));
+				}
+				
+				
+				
 				if(m != null) {
 					model.addAttribute("m", m);
 					model.addAttribute("page", page);
 					model.addAttribute("aList", aList); //model.addAttribute("mList", mList);였음
 					model.addAttribute("rList", rList);
+					model.addAttribute("aLike", likeCount);
+					model.addAttribute("lList", likeList);
 					//System.out.println(m);
 					return "lostBoardDetail";
 				} else {

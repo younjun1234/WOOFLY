@@ -14,6 +14,7 @@ import com.kh.woofly.board.model.vo.WmBoard;
 
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 
 public interface BoardService {
 	
@@ -52,6 +53,23 @@ public interface BoardService {
 	int updateFreeReply(Reply r);
 
 	ArrayList<Reply> selectFreeReply(int bNo);
+	
+	int freeBoardLike(HashMap<String, Object> map);
+
+	int deleteFreeBoardLike(HashMap<String, Object> map);
+
+	int insertFreeBoardLike(HashMap<String, Object> map);
+	
+	ReplyLike selectReplyLike(Reply tempR);
+	
+	int deleteBoardReplyLike(HashMap<String, Object> map);
+
+	int insertBoardReplyLike(HashMap<String, Object> map);
+	
+	int insertFreeBoardNotice(HashMap<String, Object> map);
+	
+	int insertFreeReplyNotice(HashMap<String, Object> map);
+
 	
 //======// 도그워커  //===============================
 	
@@ -101,6 +119,16 @@ public interface BoardService {
 
 	int insertReplyReport(Report rep);
 	
+	int DwBoardLike(HashMap<String, Object> map);
+	
+	int deleteDwBoardLike(HashMap<String, Object> map);
+
+	int insertDwBoardLike(HashMap<String, Object> map);
+
+	int insertDwBoardNotice(HashMap<String, Object> map);
+
+	int insertDwReplyNotice(HashMap<String, Object> map);
+	
 	
 	
 //======// 워킹메이트  //===============================
@@ -141,7 +169,15 @@ public interface BoardService {
 	
 	int updateWmReply(Reply r);
 	
-	
+	int WmBoardLike(HashMap<String, Object> map);
+
+	int deleteWmBoardLike(HashMap<String, Object> map);
+
+	int insertWmBoardLike(HashMap<String, Object> map);
+
+	int insertWmBoardNotice(HashMap<String, Object> map);
+
+	int insertWmReplyNotice(HashMap<String, Object> map);
 	
 
 
@@ -202,7 +238,15 @@ public interface BoardService {
 
 	int updateUsedRvReply(Reply r);
 
-	
+	int UsedBoardLike(HashMap<String, Object> map);
+
+	int insertUsedBoardLike(HashMap<String, Object> map);
+
+	int deleteUsedBoardLike(HashMap<String, Object> map);
+
+	int insertUsedRvBoardNotice(HashMap<String, Object> map);
+
+	int insertUsedRvReplyNotice(HashMap<String, Object> map);
 
 
 	
@@ -261,6 +305,16 @@ public interface BoardService {
 
 	int updateLostReply(Reply r);
 	
+	int LostBoardLike(HashMap<String, Object> map);
+
+	int insertLostBoardLike(HashMap<String, Object> map);
+
+	int deleteLostBoardLike(HashMap<String, Object> map);
+
+	int insertLostBoardNotice(HashMap<String, Object> map);
+
+	int insertLostReplyNotice(HashMap<String, Object> map);
+	
 	
 
 //	Reply selectReplyLostBoard(Integer rNo);
@@ -304,6 +358,33 @@ public interface BoardService {
 	int updateUsedReply(Reply r);
 
 	ArrayList<Reply> selectUsedReply(int uNo);
+
+	int selectUsedSaved(HashMap<String, Object> map);
+
+	int deleteUsedSaved(HashMap<String, Object> map);
+
+	int insertUsedSaved(HashMap<String, Object> map);
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+	
+	
 
 	
 
