@@ -35,18 +35,18 @@
 			<form  action="/board/lost/insertLostBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
-				    <select class="form-select mb-1" id="lostStatus" name="mRescue">
+				    <select class="form-select mb-1" id="lostStatus" name="mRescue" required>
 				    	<option th:value="1" value="1">구조중</option>
 						<option th:value="2" value="2">구조완료</option>
 					</select>
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label"></label><!--제목-->
-				  	<input type="text" class="form-control" id="title" name="mTitle">
+				  	<input type="text" class="form-control" id="title" name="mTitle" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label"></label><!--내용-->
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent"></textarea>
+				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent" required></textarea>
 				</div>
 				<label for="file" class="form-label"></label><br><!--첨부파일-->
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
@@ -70,6 +70,22 @@
 		const boardNav = document.getElementById("topAdd7");
 		$(boardNav).addClass('active');
 		
+		function validateForm() {
+    	    // 필수 필드 검증
+    	    var form = document.getElementById("attmForm");
+    	    var isValid = form.checkValidity();
+
+    	    if (!isValid) {
+    	        // 필수 필드 중 하나라도 비어 있다면
+    	        var requiredFields = form.querySelectorAll(':invalid');
+    	        
+    	        // 첫 번째 필수 필드로 포커스 이동
+    	        requiredFields[0].focus();
+    	    } else {
+    	        // 유효성 검사 통과 시 다음 동작 수행
+    	        form.submit(); // 또는 원하는 동작 수행
+    	    }
+    	}
 		
 		// 수업시간
 		window.onload = () =>{

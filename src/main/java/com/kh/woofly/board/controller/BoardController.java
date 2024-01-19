@@ -13,6 +13,7 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -457,7 +458,7 @@ public class BoardController {
 
 		            } else {
 		                for (int level : delLevel) {
-		                    if (level == 0) {
+		                    if (level == 1) {
 		                        bService.updateAttmLevel(b.getBNo());
 		                        break;
 		                    }
@@ -529,13 +530,13 @@ public class BoardController {
 
 		            } else {
 		                for (int level : delLevel) {
-		                    if (level == 0) {
+		                    if (level == 1) {
 		                        bService.updateAttmLevel(b.getBNo());
 		                        break;
 		                    }
 		                }
 		            }
-		        }
+		        }/////////////////////////////level 11111111111111
 
 		        // 파일 삭제만 수행
 		        updateBoardResult = bService.updateFreeBoard(b);
@@ -1851,74 +1852,74 @@ public class BoardController {
 			return "usedReviewBoardWrite";
 		}
 		
-//		@PostMapping("/board/used/insertUsedBoard")
-//	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
-//	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
-//	         
-//	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-//	         u.setMbId(boardWriter);
-//	         
-//	         System.out.println(prodNo);
-//	         
-//	         UsedBoard selectProduct = bService.checkProdList(prodNo);
-//	         
-//	         System.out.println(selectProduct);
-//	         selectProduct.setUTitle(uTitle);
-//	         selectProduct.setUContent(uContent);
-//	         selectProduct.setMbId(boardWriter);
-//	         
-//	         
-//	         int result1 = bService.insertUsedRvBoard(selectProduct); 
-//	         
-//	         
-//	         ArrayList<Attachment> attachments = new ArrayList<>();
-//	         if (files != null) {
-//	            for(int i = 0; i<files.size(); i++) {
-//	               MultipartFile upload = files.get(i);
-//	               if(!upload.getOriginalFilename().equals("")) {
-//	                  String[] returnArr = saveFile(upload);
-//	                  if(returnArr[1] != null) {
-//	                     Attachment attachment = new Attachment();
-//	                     attachment.setOriginalName(upload.getOriginalFilename());
-//	                     attachment.setRenameName(returnArr[1]);
-//	                     attachment.setAttmPath(returnArr[0]);
-//	                     attachment.setAttmRefType("U");
-//	                     attachment.setAttmRefNo(u.getUNo());
-//	                     
-//	                     attachments.add(attachment);
-//	                  }
-//	               }
-//	            }
-//	            
-//	            for(int i=0; i < attachments.size(); i++) {
-//	               Attachment a = attachments.get(i);
-//	               if(i == 0) {
-//	                  a.setAttmLevel(1);
-//	               } else {
-//	                  a.setAttmLevel(2);
-//	               }
-//	            }
-//	            
-//	            int result2 = bService.insertUsedRvAttm(attachments);
-//	            //System.out.println(result1);
-//	            //System.out.println(result2);
-//	            if(result1 + result2 > 0) {
-//	               return "redirect:/board/usedReview";
-//	            } else {
-//	               for(Attachment a : attachments) {
-//	                  deleteFile(a.getRenameName());
-//	               }
-//	               throw new BoardException("게시글 작성을 실패하였습니다.");
-//	             }
-//	         } else {
-//	              if (result1 > 0) {
-//	                  return "redirect:/board/usedReview";
-//	              } else {
-//	                  throw new BoardException("게시글 작성을 실패하였습니다.");
-//	              }
-//	          }
-//	         
-//	      }
+		@PostMapping("/board/usedReview/insertUsedRvBoard")
+	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
+	         
+	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+	         u.setMbId(boardWriter);
+	         
+	         System.out.println(prodNo);
+	         
+	         UsedBoard selectProduct = bService.checkProdList(prodNo);
+	         
+	         System.out.println(selectProduct);
+	         selectProduct.setUTitle(uTitle);
+	         selectProduct.setUContent(uContent);
+	         selectProduct.setMbId(boardWriter);
+	         
+	         
+	         int result1 = bService.insertUsedRvBoard(selectProduct); 
+	         
+	         
+	         ArrayList<Attachment> attachments = new ArrayList<>();
+	         if (files != null) {
+	            for(int i = 0; i<files.size(); i++) {
+	               MultipartFile upload = files.get(i);
+	               if(!upload.getOriginalFilename().equals("")) {
+	                  String[] returnArr = saveFile(upload);
+	                  if(returnArr[1] != null) {
+	                     Attachment attachment = new Attachment();
+	                     attachment.setOriginalName(upload.getOriginalFilename());
+	                     attachment.setRenameName(returnArr[1]);
+	                     attachment.setAttmPath(returnArr[0]);
+	                     attachment.setAttmRefType("U");
+	                     attachment.setAttmRefNo(u.getUNo());
+	                     
+	                     attachments.add(attachment);
+	                  }
+	               }
+	            }
+	            
+	            for(int i=0; i < attachments.size(); i++) {
+	               Attachment a = attachments.get(i);
+	               if(i == 0) {
+	                  a.setAttmLevel(1);
+	               } else {
+	                  a.setAttmLevel(2);
+	               }
+	            }
+	            
+	            int result2 = bService.insertUsedRvAttm(attachments);
+	            //System.out.println(result1);
+	            //System.out.println(result2);
+	            if(result1 + result2 > 0) {
+	               return "redirect:/board/usedReview";
+	            } else {
+	               for(Attachment a : attachments) {
+	                  deleteFile(a.getRenameName());
+	               }
+	               throw new BoardException("게시글 작성을 실패하였습니다.");
+	             }
+	         } else {
+	              if (result1 > 0) {
+	                  return "redirect:/board/usedReview";
+	              } else {
+	                  throw new BoardException("게시글 작성을 실패하였습니다.");
+	              }
+	          }
+	         
+	      }
 		
 		
 		@GetMapping("/board/usedReview/editForm")
@@ -2340,12 +2341,19 @@ public class BoardController {
 			 return "usedBoardWrite"; 
 		 }
 
-			@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
+		@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
 		 public String insertUsedBoard (@ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
 		 
 				
 				String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 				u.setMbId(boardWriter);
+				
+				
+				System.out.println("soldDate: " + u.getSoldDate());
+				
+				if (u.getSoldDate() == null || u.getSoldDate().toString().isEmpty()) {
+				    u.setSoldDate(null);
+				}
 				
 //				int dwType = Integer.parseInt(dwTypeStr);
 				int result1 = bService.insertUsedBoard(u); 
