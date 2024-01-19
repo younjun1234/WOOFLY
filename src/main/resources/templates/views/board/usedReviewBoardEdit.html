@@ -19,27 +19,36 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6>작성자</h6>
-						<p>2023.10.16</p>
+						<h6>[[${u.mbNickName}]]</h6>
+						<p th:text="${#dates.format(u.uCreateDate, 'yyyy-MM-dd')}"></p>
 					</div>
 				</div>
 			</div>
 			
-			<form>
+			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/usedReview/edit"  id="attmForm">
+				<input type = "hidden" th:value ="${ u.uNo }" name="uNo">
+				<input type = "hidden" th:value ="${ page }" name ="page">
+								
+				
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="">
+				  	<input type="text" class="form-control" id="title" name="uTitle" th:value="${u.uTitle}" placeholder="" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="uContent" required>[[${u.uContent}]]</textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
+					<div th:each="a : ${ list }">
+						<h5>
+							<a th:href="@{ image/ } + ${a.renameName}" th:download="${ a.originalName }">[[${a.originalName }]]</a>
+							<button type="button" class="btn btn-outline-dark btn-sm deleteAttm" th:id="|delete-${ a.renameName }/${a.attmLevel}|">유지</button>
+							<input type="hidden" name="deleteAttm" value="none">
+						</h5>
+					</div>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
-					   <div class="mb-3">
-					      <input type="file" class="form-control form-control-sm" name="file">
-					   </div>
+					  
 					</div>
 				<div class="row border-top border-black pt-3">
 					<button class="btn btn-dark">수정하기</button>
@@ -55,6 +64,23 @@
 		const boardNav = document.getElementById("topAdd6");
 		$(boardNav).addClass('active');
 		
+		function validateForm() {
+    	    // 필수 필드 검증
+    	    var form = document.getElementById("attmForm");
+    	    var isValid = form.checkValidity();
+
+    	    if (!isValid) {
+    	        // 필수 필드 중 하나라도 비어 있다면
+    	        var requiredFields = form.querySelectorAll(':invalid');
+    	        
+    	        // 첫 번째 필수 필드로 포커스 이동
+    	        requiredFields[0].focus();
+    	    } else {
+    	        // 유효성 검사 통과 시 다음 동작 수행
+    	        form.submit(); // 또는 원하는 동작 수행
+    	    }
+    	}
+		
 		window.onload = () =>{
 			const fileArea = document.querySelector('#fileArea');
 			document.getElementById('addFile').addEventListener('click', () =>{
@@ -64,6 +90,24 @@
 				
 				fileArea.append(newDiv);
 			});
+			
+			const delBtns = document.getElementsByClassName("deleteAttm");
+	         for(const btn of delBtns) {
+	        	 btn.addEventListener('click', function() {
+	        		const nextHidden = this.nextElementSibling;
+					if(this.innerText == '유지') {
+						this.style.background = 'black';
+						this.style.color = 'white';
+						this.innerText = '삭제';
+						nextHidden.value = this.id.split('-')[1];
+					} else {
+						this.style.background = 'none';
+						this.style.color = 'black';
+						this.innerText = '유지';
+						nextHidden.value = 'none';
+					}
+	        	 });
+	         }
 		}
 	</script>
 	

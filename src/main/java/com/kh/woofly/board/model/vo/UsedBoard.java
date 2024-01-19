@@ -1,6 +1,9 @@
 package com.kh.woofly.board.model.vo;
 
-import java.sql.Date;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +31,15 @@ public class UsedBoard {
 	private String productName;
 	private String productStatus;
 	private int productPrice;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date soldDate;
 	private String buyerId;
+	private String mbNickName;
+
+	private String renameName;
+
+	
+
+
 }

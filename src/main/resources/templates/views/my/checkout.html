@@ -47,17 +47,17 @@
 					</div>
 				</div>
 				<div class="d-flex justify-content-between mt-2 align-items-center">
-					<div class="d-flex gap-5 align-items-start">
-						<div class="d-flex flex-column justify-content-center">
+					<div class="d-flex align-items-start col-11">
+						<div class="d-flex flex-column justify-content-center col-3">
 							<div>받는 분</div>
 							<div>연락처</div>
 							<div>배송 주소</div>
 						</div>
 						<div class="d-flex flex-column justify-content-center col-9" id="addrView">
-							<div>[[|${#strings.substring(maList[0].mbName, 0, 1)}**|]]</div>
-							<div>[[|010-${maList[0].mbTel[3]}***-*${#strings.substring(maList[0].mbTel, 8, 11)}|]]</div>
-							<div>[[|(${maList[0].postcode})${maList[0].addr} ${maList[0].addrDetail != null ? maList[0].addrDetail : ""}]]</div>
-							<input type="hidden" id="addrViewId" th:value="${maList[0].addrId}" name="addrId">
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|${#strings.substring(maList[0].mbName, 0, 1)}**|]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|010-${maList[0].mbTel[3]}***-*${#strings.substring(maList[0].mbTel, 8, 11)}|]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|(${maList[0].postcode})${maList[0].addr} ${maList[0].addrDetail != null ? maList[0].addrDetail : ""}]]</th:block></div>
+							<th:block th:if="${!#arrays.isEmpty(maList)}"> <input type="hidden" id="addrViewId" th:value="${maList[0].addrId}" name="addrId"></th:block>
 						</div>
 					</div>
 					<div class="col-1">
@@ -315,7 +315,7 @@
 		        	<button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body" id="addrBody">
-					<div class="d-flex justify-content-between border-bottom mb-3" role="button" th:each="address: ${maList}">
+					<div class="d-flex justify-content-between border-bottom mb-3" role="button" th:each="address: ${maList}" onclick="changeAddr(this);">
 						<input type="hidden" th:value="${ address.addrId }">
 						<input type="hidden" th:value="${ address.addr }">
 						<input type="hidden" th:value="${ address.addrDetail }">
@@ -572,26 +572,23 @@
 		}
 	
 		// 주소 변경
-		const addrs = document.querySelectorAll('#addrBody > div');
-		for (const addr of addrs)  {
-			addr.addEventListener('click', function () {
-				const addrId = this.children[0].value;
-				const address = this.children[1].value;
-				const addressDetail = this.children[2].value;
-				const postcode = this.children[3].value;
-				const mbTel = this.children[4].value;
-				const mbName = this.children[5].value;
-				
-				const addrView = document.getElementById('addrView');
-				addrView.children[0].innerText = mbName.substring(0, 1) + '**';
-				addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);
-				addrView.children[2].innerText = '(' + postcode + ')' + address + addressDetail;
-				addrView.children[3].value = addrId;
-				
-				checkAddr();
-			})
+		const changeAddr = (target) => {
+			const addrId = target.children[0].value;
+			const address = target.children[1].value;
+			const addressDetail = target.children[2].value;
+			const postcode = target.children[3].value;
+			const mbTel = target.children[4].value;
+			const mbName = target.children[5].value;
 			
+			const addrView = document.getElementById('addrView');
+			addrView.children[0].innerText = mbName.substring(0, 1) + '**';
+			addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);
+			addrView.children[2].innerText = '(' + postcode + ')' + address + addressDetail;
+			addrView.children[3].value = addrId;
+			
+			checkAddr();
 		}
+			
 	
 	
 		//약관 동의
@@ -692,7 +689,7 @@
 												   'address' : address,
 												   'addressDetail' : addressDetail},
 											success: data => {
-												$('#addrBody').load(location.href);
+												$('#addrBody').load(location.href + " #addrBody > *");
 												const addrView = document.getElementById('addrView');
 												addrView.children[0].innerText = mbName.substring(0, 1) + '**';
 												addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);
@@ -737,7 +734,7 @@
 									   'addressDetail' : addressDetail},
 								success: data => {
 
-									$('#addrBody').load(location.href + " #addrBody");
+									$('#addrBody').load(location.href + " #addrBody > *");
 									const addrView = document.getElementById('addrView');
 									addrView.children[0].innerText = mbName.substring(0, 1) + '**';
 									addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);

@@ -95,12 +95,10 @@
 					</div>
 				</div>
 				
-				<div class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="selling : ${list}">
+				<div th:onclick="|location.href='/board/used/detail?uNo=${selling.uNo}'|"class="rounded d-flex justify-content-between mb-3 sold" role="button" style="border: 1px solid black; height: 100px" th:each="selling : ${list}">
 					<input type="hidden" th:value="${ selling.uNo }">
 					<div class="d-flex align-content-center ms-3 col-6">
-<!-- 						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}"> -->
-<!-- 							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;"> -->
-<!-- 						</th:block> -->
+							<img class="rounded float-start my-auto" th:src="'/image/' + ${selling.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
 							<div class="ms-3" style="line-height: 100px;">[[${selling.uTitle}]]</div>
 					</div>
 					<div class='col-6 d-flex justify-content-end'>
@@ -158,13 +156,6 @@
 		const myNav = document.getElementById("myNav2");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
-		
-		const solds = document.querySelectorAll('.sold');
-		for (const sold of solds) {
-			sold.addEventListener('click', () => {
-				window.location.href = '/my/usedBuying/' + sold.querySelector('input').value;
-			})
-		}
 		
 		//생일 넘어가기
 		const now_date = Date.now();

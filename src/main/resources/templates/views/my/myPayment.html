@@ -37,6 +37,7 @@
 						<button class="btn btn-outline-dark btn-sm" onclick="addPayment()">+새 카드 추가하기</button>
 					</div>
 				</div>
+				<div th:if="${#arrays.isEmpty(list)}" class="d-flex justify-content-center align-items-center" style="height: 500px; line-height: 500px;">카드 정보를 등록해주세요</div>
 				<div class="d-flex justify-content-between border-bottom border-black border-2 pb-5 mb-5" th:each="card : ${list}">
 					<div class="d-flex">
 						<div class="d-flex align-items-center">

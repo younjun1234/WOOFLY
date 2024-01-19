@@ -37,7 +37,7 @@
 					<div class="border-bottom d-flex justify-content-between">
 						<p>[[${session.loginUser.mbEmail}]]</p>
 						<div>
-							<button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#emailModal">변경</button>
+							<button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" th:if="${session.loginUser.isKakao == 'N'}" data-bs-target="#emailModal">변경</button>
 						</div>
 					</div>
 				</div>

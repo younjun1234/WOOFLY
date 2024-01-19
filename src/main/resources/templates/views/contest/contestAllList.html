@@ -8,170 +8,21 @@
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
-<link rel="stylesheet" href="css/contestAllList.css" /> 
 
-<style>
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif|Playfair+Display|Roboto:300,400,700');
-@import url('https://fonts.googleapis.com/earlyaccess/notosanskr.css');
-
-/* reset.css by hyejin */
-*, *:before, *:after { box-sizing: border-box; }
-body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,form,fieldset,p,button,table,th,td,input {margin:0;padding:0;}
-input, fieldset, img, iframe {border:0;}
-ul,ol {list-style-type:none;}
-a {color:inherit;text-decoration:none;outline: none;cursor:pointer; }
-a:hover, a:focus {color:inherit;text-decoration:none;}
-.hidden {display:none !important;}
-button {border:none;background:none;cursor:pointer;outline:none;}
-button:disabled, button:disabled:hover {cursor: default;}
-
-/* style */
-body { background: white; }
-
-.dimage {
-	overflow: hidden;
-	margin-left: 10px;
-}
-
-
-.adogimage {
-	float: left; 
-	padding: 20px;
-	margin: 10px;	
-	margin-left: 60px;
-	width: calc(28% - 25px); 
-	background: #fff; 
-	text-align: center;
-	
-}
-
-.dogimage {
-	float: left; 
-	margin: 10px; 
-	width: calc(25% - 20px); 
-	background: #fff; 
-	text-align: center;	
-	cursor: pointer;
-}
-
-.dog-thumbnail {
-  width: 100%;
-  height: 260px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
-.album-info {
-  padding: 10px;
-}
-
-.album-title {
-  font-family: 'Noto Sans KR', sans-serif;
-  display: inline-block;
-}
-
-.album-date {
-  font-size: 12px;
-  display: inline-block;  
-}
-
-</style>
-
-
-
+<link rel="stylesheet" type="text/css" th:href="@{/css/yh/contestAllList.css}" /> 
 
 </head>
 <body>	
-
 	<div th:replace="~{common/top :: top}"></div>
-	
-	
-	<nav class="navbar sticky-top bg-white">
-		<div class="container-fluid justify-content-end mx-5">
-			<ul class="nav bg-white">
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>고객센터</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>마이페이지</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>관심</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>알림</small></a></li>
-				<li class="nav-item"><a class="nav-link text-black" href="#"><small>로그인</small></a></li>
-			</ul>
-		</div>
-		<div class="container-fluid mx-5">
-    		<a class="navbar-brand" href="#"><img src="resources/image/woofly.png" alt="Woofly" width="100" height="60"></a>
-    		<ul class="nav">
-    			<li class="nav-item"><a class="nav-link text-black" href="#">HOME</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">SHOP</a></li>
-    			<li class="nav-item"><a class="nav-link text-black" href="#">MAP</a></li>
-    		</ul>
-		</div>
-	</nav>
-	
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			<!-- 마이프로필에 공통적으로 들어가는 왼쪽 탭형식에 네비게이션 바 -->
-			<!-- 추후에 common 파일로 이동 할 예정 -->
-			<!-- 안에 들어가있는 inline style은 추후에 수정 예정  -->
-			<div class="navbar w-20">
-				<div class="container-fluid flex-column align-items-start">
-					<a class="navbar-brand" href="#"><h2>관리자 페이지</h2></a>
-					<h4 class="mt-3">게시글 관리</h4>
-					<ul class="nav flex-column">
-					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">협력 정보 업체</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">공지사항</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">자주묻는 질문</a>
-					  	</li>
-					</ul>
-					<h4 class="mt-5">콘테스트 관리</h4>
-					<ul class="nav flex-column">
-						<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">메인 페이지</a>
-						</li>
-						<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">콘테스트 등록</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">콘테스트 수정</a>
-						</li>
-					</ul>
-					<h4 class="mt-5">회원 관리</h4>
-					<ul class="nav flex-column">
-					 	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">신고 리스트 관리</a>
-					  	</li>
-					  	<li class="nav-item">
-					    	<a class="nav-link text-secondary" style="padding-left: 0px; padding-bottom: 0px;" href="#">전체 회원 관리</a>
-					  	</li> 	
-					</ul>					
-				</div>
-			</div>
+			
+			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			
 			<!-- 마이페이지 아래만 수정해주세요 -->
-			<div class="col-10 pt-3 mb-5">
-				<div class="offcanvas offcanvas-end w-20" data-bs-backdrop="static" data-bs-scroll="true" tabindex="-1" id="offcanvas">
-					<div class="offcanvas-header">
-						<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-						<h5 class="offcanvas-title" id="offcanvasLabel">알림</h5>
-					</div>
-					<div class="offcanvas-body">
-						<div class="mb-5 d-flex flex-wrap">
-							<a class="btn btn-outline-secondary btn-sm px-3 active" href="#">전체</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">거래</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">좋아요</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">댓글</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">관리자</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">관심</a>
-							<a class="btn btn-outline-secondary btn-sm px-3" href="#">기타</a>
-						</div>                        
- 						<p>Try scrolling the rest of the page to see this option in action.</p>
-					</div>
-				</div>
+			<div class="col-10 mb-5">
 				
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
@@ -191,7 +42,6 @@ body { background: white; }
 							</div>
 							<div class="col-6 col-md-2" style="margin-top: 5px;"></div>
 							<div class="col-6 col-md-6" style="margin-top: 10px;"><h3>5기 최우수 강아지들</h3></div>
-							
 							<div class="col-sm-6 col-md-2 input-group-lg" style="margin-top: 5px;">
 								<input type="text" id="search-box" class="form-control" placeholder="검색">
 							</div>
@@ -203,7 +53,6 @@ body { background: white; }
                   	
                   	<ul class="dimage">						  					
 						<li class="adogimage">							
-							
 							<div class="album-item" style="margin-top: 15px;">								
 								<div class="dog-thumbnail" id="second" style="background-image: url('https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12')"></div>
 								<div class="album-info" style="display: inline-block; ">
@@ -215,7 +64,6 @@ body { background: white; }
 									<p class="album-date">100</p>
 								</div>
 							</div>
-							
 						</li>
 						<li class="adogimage">
 							<div class="album-item" >
@@ -245,115 +93,27 @@ body { background: white; }
 						</li>						
 					</ul>
                   	
-					<!-- 카테고리 버튼들 -->
 						
-					<ul class="dimage">		
-						<li class="dogimage">
-							<div class="album-item">							
-								<div class="dog-thumbnail" id="second" style="background-image: url('https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg');"></div>								
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지1</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>								
-							</div>
-						</li>
-						<li class="dogimage">
+					<ul class="dimage">						
+						
+						<li class="dogimage" th:each=" l : ${pList}" style="cursor: pointer;">
 							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg')"> </div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지2</p>
+								<label class="pNo" style="display: none;">[[${ l.pNo }]]</label>
+								<th:block th:each=" a : ${aList}">
+									<div class="album-cover" th:if="${l.pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'">
+									</div>
+								</th:block>
+								<div class="album-info" style="display: inline-block; ">
+									<p class="album-title">[[${l.pTitle}]]</p>
 								</div>
 								<div style="float: right; margin-top: 8px;" >
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
  									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>
-							</div>
-						</li>
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12')"></div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지3</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>
-							</div>
-						</li>
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg')"> </div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지4</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
+									<p class="album-date"> [[${l.pCount}]] </p>
 								</div>
 							</div>
 						</li>
 						
-						
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12')"></div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지1</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>
-							</div>
-						</li>
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg')"> </div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지2</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>
-							</div>
-						</li>
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg');"></div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지3</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">  4</p>
-								</div>
-							</div>
-						</li>
-						<li class="dogimage">
-							<div class="album-item">
-								<div class="dog-thumbnail" style="background-image: url('https://thumb.mt.co.kr/06/2023/08/2023081414301516852_16.jpg/dims/optimize/');"></div>
-								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지4</p>
-								</div>
-								<div style="float: right; margin-top: 8px;" >
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date"> 4</p>
-								</div>
-							</div>
-						</li>						
 					</ul>
 					
 					<nav class="border-top border-black pt-3">
@@ -380,7 +140,12 @@ body { background: white; }
 		</div>
 	</main>
 
-
+	<script th:inline="javascript">
+		window.onload = () => {
+			const anav = document.getElementById('myNav4')
+			anav.style.fontWeight = 'bold';
+		}
+	</script>
 	
 </body>
 </html>

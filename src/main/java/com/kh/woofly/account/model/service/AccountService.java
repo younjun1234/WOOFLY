@@ -1,5 +1,8 @@
 package com.kh.woofly.account.model.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -17,10 +20,12 @@ public interface AccountService {
 
 	public int checkNameEmail(Member m);
 
-	public Member sendId(Member info);
+	public ArrayList<Member> sendId(Member info);
 
 	public int checkIdEmail(Member m);
 
 	public int updatePwd(Member m);
+
+
 
 }

@@ -21,6 +21,7 @@ import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.service.OrderService;
 import com.kh.woofly.order.model.vo.Order;
 import com.kh.woofly.order.model.vo.OrderDetail;
+import com.kh.woofly.order.model.vo.Saved;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 
@@ -161,8 +162,25 @@ public class OrderController {
 	}
 	
 	@GetMapping("my/saved")
-	public String savedView() {
+	public String savedView(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("savedType", "P");
+		ArrayList<Saved> list = oService.selectMySaved(map);
+		model.addAttribute("list", list);
 		return "mySaved";
+	}
+	
+	@GetMapping("my/saved/used")
+	public String usedSaved(HttpSession session, Model model) {
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("savedType", "U");
+		ArrayList<Saved> list = oService.selectMySaved(map);
+		model.addAttribute("list", list);
+		return "mySavedUsed";
 	}
 
 }

@@ -23,12 +23,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 					.addResourceLocations("file:/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/");
 		}
 	}
-
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) { // Interceptor 등록해주는 메소드
 		// 일반계정용
 		registry.addInterceptor(new CheckLoginInterceptor())
-			.addPathPatterns("/my/**");
+			.addPathPatterns("/my/**")
+			.addPathPatterns("/pet/**");
 
 		registry.addInterceptor(new CheckAdminInterceptor()).addPathPatterns("/*.ad");
 	}
