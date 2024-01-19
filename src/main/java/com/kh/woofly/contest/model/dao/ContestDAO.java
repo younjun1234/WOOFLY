@@ -70,8 +70,8 @@ public interface ContestDAO {
 
 	ArrayList<Participants> bestParticipantstList(RowBounds rowBounds, int cNo);
 
-	ArrayList<Participants> searchParticipantstList(RowBounds rowBounds, int cNo);
 
+	
 	ArrayList<Participants> searchBestParticipantstList(RowBounds rowBounds, int cNo, String search);
 
 	ArrayList<String> cPetList(String id, int cNo);

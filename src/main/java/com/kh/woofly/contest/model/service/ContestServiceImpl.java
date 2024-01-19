@@ -185,13 +185,12 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public ArrayList<Participants> searchParticipantstList(int cNo, PageInfo pi, String search) {
-		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
-		int limit = pi.getBoardLimit();		
-		RowBounds rowBounds = new RowBounds(offset, limit);
+	public ArrayList<Participants> searchParticipantstList(Map<String, Object> map, PageInfo pi) {
 		
-		return cDAO.searchParticipantstList(rowBounds, cNo);
+		return null;
 	}
+	
+	
 
 	@Override
 	public ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search) {
@@ -213,6 +212,8 @@ public class ContestServiceImpl implements ContestService {
 		
 		return cDAO.allContestNo();
 	}
+
+	
 
 //	@Override
 //	public Date sDate() {

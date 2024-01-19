@@ -173,6 +173,12 @@ public class ContestController {
 		System.out.println("1111");
 		int cNo = cService.todayContestNo();
 		
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("search", search);
+		map.put("cNo", cNo);
+		
+		
 		int listCount = cService.getListCount(cNo);
 		int currentPage = page;
 		System.out.println("2222");
@@ -182,7 +188,10 @@ public class ContestController {
 		if(check1.equals("on")) {
 			System.out.println("3333");
 			check = 1;
-			ArrayList<Participants> participantstList = cService.searchParticipantstList(cNo, pi, search);
+			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
+			
+			System.out.println(participantstList);
+			
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
 			model.addAttribute("check", check);

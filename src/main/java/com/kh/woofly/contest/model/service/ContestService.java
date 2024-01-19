@@ -61,13 +61,15 @@ public interface ContestService {
 
 	ArrayList<Participants> bestParticipantstList(int cNo, PageInfo pi);
 
-	ArrayList<Participants> searchParticipantstList(int cNo, PageInfo pi, String search);
-
+	ArrayList<Participants> searchParticipantstList(Map<String, Object> map, PageInfo pi);
+	
 	ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search);
 
 	ArrayList<String> cPetList(Map<String, Object> map);
 
 	int allContestNo();
+
+	
 
 //	Date sDate();
 

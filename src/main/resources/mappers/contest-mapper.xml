@@ -206,7 +206,7 @@
 	<select id="searchParticipantstList" resultType="Participants">
         SELECT *
         FROM Participants
-        WHERE CONTEST_ID = #{cNo}
+        WHERE CONTEST_ID = #{cNo} AND P_TITLE LIKE '%${search}%'
         ORDER BY P_NO DESC
 	</select>
 	
