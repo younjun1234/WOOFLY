@@ -2,10 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.pet.model.dao.PetDAO">
+
+	<update id="updatePetPhoto">
+		update album
+		set ab_content = #{abContent}, pet_id = #{petId}
+		where ab_no = #{abNo}
+	</update>
+	
+	<update id="deleteImage">
+		update attachment
+		set attm_status = 'N'
+		where rename_name = #{renameName}
+	</update>
+
 	<insert id="petAdd" parameterType="Pet">
 		INSERT INTO pet
-		VALUES (pet_seq.nextval, default, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, null, #{petIntro})
+		VALUES (pet_seq.nextval, #{petProfile}, #{petName}, #{petBirth}, #{petGender}, #{petWeight}, #{petBreed}, #{petMemo}, default, #{ownerId}, #{petIntro})
 	</insert>
+	
+	<select id="getListCount" resultType="_int">
+		select count(*)
+		from album
+		where ab_status = 'Y'
+	</select>
 	
 	<select id="petInfoList" resultType="Pet">
 		select *
@@ -88,11 +107,43 @@
 		values (#{drNo}, #{drContent}, #{drDate}, default, #{writerId}, #{petId}, #{petHealth})
 	</insert>
 	
-	<select id="petDiaryList" parameterType="Diary">
+	<select id="getDiaryCount" resultType="_int">
+		select count(*)
+		from diary
+			 join pet using(pet_id)
+		where dr_status = 'Y' and writer_Id=#{id}
+			<if test="startDate != null">
+		    	and dr_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and dr_date <![CDATA[<]]> #{endDate}
+		    </if>
+		    <if test="petId != null">
+		    	and pet_id = #{petId}
+		    </if>
+		    <if test="petHealth != null">
+		    	and pet_health = #{petHealth}
+		    </if>
+		order by dr_date desc
+	</select>
+	
+	<select id="petDiaryList" resultType="Diary">
 		select *
 		from diary
 			 join pet using(pet_id)
-		where dr_status = 'Y' and writer_Id=#{writerId}
+		where dr_status = 'Y' and writer_Id=#{id}
+			<if test="startDate != null">
+		    	and dr_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and dr_date <![CDATA[<]]> #{endDate}
+		    </if>
+		    <if test="petId != null">
+		    	and pet_id = #{petId}
+		    </if>
+		    <if test='petHealth != null'>
+		    	and pet_health = #{petHealth}
+		    </if>
 		order by dr_date desc
 	</select>
 	
@@ -138,8 +189,11 @@
 		select *
 		from album
 			 join attachment on (ab_no = attm_ref_no)
-		where ab_status = 'Y' and writer_id = #{id} and attm_ref_type = 'AB' and attm_level = 1
-		order by ab_date desc
+		where ab_status = 'Y' and writer_id = #{id} and attm_ref_type = 'AB' and attm_status = 'Y' and attm_level = 1
+			<if test="petId != null">
+		    	and pet_id = #{petId}
+		    </if>
+		order by attm_level desc, ab_date desc
 	</select>
 	
 	<select id="selectMyAlbumAttm" resultType="Attachment">
@@ -154,7 +208,7 @@
 		select *
 		from album 
 		    join attachment on (ab_no = attm_ref_no)
-		where ab_no= #{abNo} and ab_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo}
+		where ab_no= #{abNo} and ab_status = 'Y' and attm_ref_type = 'AB' and attm_ref_no = #{abNo} and attm_status = 'Y'
 		order by attm_level
 	</select>
 	
@@ -175,7 +229,7 @@
 		select rename_name
 		from attachment
     		join album on (ab_no = attm_ref_no)
-    	where ab_no = #{abNo} and ab_status = 'Y' and attm_ref_type='AB'
+    	where ab_no = #{abNo} and ab_status = 'Y' and attm_ref_type='AB' and attm_status = 'Y'
 	</select>
 	
 	<update id="petPhotoDelete">
@@ -211,7 +265,7 @@
 	
 	<insert id="insertReport" parameterType="Report">
 		insert into report
-		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, 'R', #{rAccuser}, #{rAccused})
+		values(rep_seq.nextval, #{rContent}, sysdate, 'A', 'AB', #{rBoardNo}, #{rType}, #{rAccuser}, #{rAccused})
 	</insert>
 	
 	<select id="checkResult" resultType="_int">
@@ -220,4 +274,55 @@
 		where r_board_no = #{rBoardNo} and r_accuser = #{rAccuser}
 	</select>
 	
+	<select id="selectReplyLike" resultType="ReplyLike">
+		select *
+			from reply
+	             join reply_like on (r_no = like_ref_board)
+	      where like_ref_board = #{rNo} and like_user = #{mbId}
+	</select>
+	
+	<select id="albumLike" resultType="_int">
+		select count(*)
+		from board_like
+		where like_ref_board = #{abNo} and like_user = #{id}
+	</select>
+	
+	<insert id="insertReplyLike">
+		insert into reply_like
+		values (rl_seq.nextval, #{rNo}, #{id})
+	</insert>
+	
+	<delete id="deleteReplyLike">
+		delete from reply_like
+		where like_ref_board = #{rNo} and like_user = #{id}
+	</delete>
+	
+	<insert id="insertBoardLike">
+		insert into board_like
+		values (bl_seq.nextval, 'AB', #{abNo}, #{id})
+	</insert>
+	
+	<delete id="deleteBoardLike">
+		delete from board_like
+		where like_ref_board = #{abNo} and like_ref_type = 'AB' and like_user = #{id}
+	</delete>
+	
+	<select id="petContestList" resultType="Participants">
+		<!-- select *
+		from participants
+			 join attachment on (p_no = attm_ref_no)
+		where p_status = 'Y' and writer_id = #{id} and attm_ref_type = 'C' and attm_level = 1
+		order by ab_date desc -->
+		select *
+		from participants
+			join pet using (pet_id)
+			join contest on (contest_id = con_no)
+		where p_status = 'Y' and owner_id = #{id}
+	</select>
+	
+	<select id="repiesList" resultType="Reply">
+		select *
+		from reply
+		where b_type = 'AB' and MB_ID =#{id}
+	</select>
 </mapper>
