@@ -420,5 +420,11 @@ public class AdminController {
 		String result = aService.updateInfo(prop) == 0 ? "fail" : "success";
 		return result;
 	}
+	
+	@GetMapping("/infoMain")
+	public String moveToInfo() {
+		
+		return "infoMain";
+	}
 
 }

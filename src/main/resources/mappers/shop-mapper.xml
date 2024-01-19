@@ -33,9 +33,7 @@
 		    </if>
 	</select>
 	
-	<!-- Mapper.xml 파일에서 -->
-	
-	<!-- 동적 쿼리 부분 -->
+	<!-- selectProducts => choose -->
 	<sql id="dynamicOrderBy">
 	    <choose>
 	        <when test="sort == 'popularity'">
@@ -48,12 +46,10 @@
 	            ORDER BY PRICE
 	        </when>
 	        <otherwise>
-	            <!-- 아무 정렬이 필요 없는 경우 -->
 	        </otherwise>
 	    </choose>
 	</sql>
 	
-	<!-- 원본 쿼리 -->
 	<select id="selectProducts" resultType="Product">
 	    SELECT *
 	    FROM PRODUCT
@@ -62,7 +58,6 @@
 	    <if test="cNo != null">
 	        AND PRODUCT_DETAIL_NO = #{cNo}
 	    </if>    
-	    <!-- 동적 쿼리 적용 -->
 	    <if test="sort != null and direction != null">
 	        <include refid="dynamicOrderBy"/>
 	        <if test="direction == 'ASC'">
@@ -72,7 +67,6 @@
 	            DESC
 	        </if>
 	    </if>
-	    <!-- 정렬이 필요 없는 경우에도 ORDER BY 부분을 제외 -->
 	</select>
 
 	
