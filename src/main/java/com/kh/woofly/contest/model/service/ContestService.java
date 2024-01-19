@@ -1,7 +1,9 @@
 package com.kh.woofly.contest.model.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.contest.model.vo.Contest;
@@ -41,7 +43,7 @@ public interface ContestService {
 
 	String petName(Integer pId);
 
-	int todayContestNo();
+	Integer todayContestNo();
 
 	ArrayList<Participants> participantstList(int cNo, PageInfo pi);
 
@@ -62,6 +64,12 @@ public interface ContestService {
 	ArrayList<Participants> searchParticipantstList(int cNo, PageInfo pi, String search);
 
 	ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search);
+
+	ArrayList<String> cPetList(Map<String, Object> map);
+
+	int allContestNo();
+
+//	Date sDate();
 
 
 	

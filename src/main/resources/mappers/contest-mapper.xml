@@ -120,14 +120,29 @@
 	    ]]>
 	</select>
 	
-	<select id="todayContestNo" resultType="_int">
-		select CON_NO
-		from contest
-		<![CDATA[
-		where CON_START_DATE <= sysdate AND CON_END_DATE >= sysdate
-		]]>
+	
+	<select id="todayContestNo" resultType="Integer">
+	    SELECT NVL(CON_NO, 0)
+	    FROM contest
+	    <![CDATA[
+	    WHERE CON_START_DATE <= sysdate AND CON_END_DATE >= sysdate
+	    ]]>
 	</select>
 	
+	<select id="allContestNo" resultType="_int">
+	    SELECT *
+	    FROM (
+	         SELECT CON_NO
+		     FROM contest
+		     <![CDATA[
+		     WHERE CON_END_DATE <= sysdate
+		     ]]>
+		     ORDER BY CON_NO DESC
+	    )
+	    <![CDATA[
+	    WHERE ROWNUM <= 1
+	    ]]>
+	</select>
 	
 	<select id="participantstList" resultType="Participants">
         SELECT *
@@ -201,6 +216,15 @@
         WHERE CONTEST_ID = #{cNo}
         ORDER BY P_COUNT DESC
 	</select>
+	
+	<select id="cPetList" resultType="map">
+        SELECT PET_ID
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo} AND MB_ID = #{id}
+	</select>
+	
+	
+	
 	
 	
 	

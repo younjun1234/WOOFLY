@@ -6,6 +6,8 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,8 +53,20 @@ public class ContestController {
 		if(loginUser != null) {
 			id = loginUser.getMbId();
 		}
+		LocalDate today = LocalDate.now(); // 오늘 날짜 가져오기
+		
+		System.out.println(today);
+		
 		//현재 콘태스트 가져오기
-		int cNo = cService.todayContestNo();
+		Integer cNo = cService.todayContestNo();
+		
+		// 현재 진행중인 콘테스트 없을때 반환
+		if(cNo == null) {
+			
+			return "contestXList";
+		}
+		
+		System.out.println(cNo);
 		
 		int listCount = cService.getListCount(cNo);
 		int currentPage = page;
@@ -107,6 +121,37 @@ public class ContestController {
 	}
 	
 	
+	//  역대 콘테스트 인기순(최신순없음)
+	@GetMapping("/contest/allList")
+	public String contestAllList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
+		
+		
+//		//현재 콘태스트 가져오기
+//		int allCNo = cService.allContestNo();
+//		// 역대 콘테스트로 가져와야함
+//		System.out.println(allCNo);
+//		
+//		
+//		int listCount = cService.getListCount(allCNo);
+//		int currentPage = page;
+//		
+//		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
+//		
+//		ArrayList<Participants> participantstList = cService.participantstList(allCNo, pi);
+//		
+//		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+//		
+//		model.addAttribute("pi", pi);
+//		model.addAttribute("pList", participantstList);
+//		model.addAttribute("aList", cAttmList);
+//		model.addAttribute("loc", request.getRequestURI());
+		
+		return "contestAllList";
+	}
+	
+	
+	
+	// 콘테스트 검색
 	@GetMapping("/contest/searchContestList")
 	public String searchContestList(@RequestParam(name = "options-outlined 1", defaultValue="off" ) String check1, @RequestParam(name = "options-outlined 2", defaultValue="off") String check2,
             @RequestParam("search") String search, Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
@@ -237,23 +282,34 @@ public class ContestController {
 	public String contestParticipation(@ModelAttribute Contest c, HttpSession session, Model model,  HttpServletRequest request) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
-		String id = null;
-		if(loginUser != null) {
-			id = loginUser.getMbId();
-		}
+		
+		String id = loginUser.getMbId();
+		
 // 		비로그인 유저는 로그인 페이지로 
 
 		ArrayList<String> petList = cService.petList(id);
 		
-//		// 펫이 없으면 펫 등록으로?
+		int cNo = cService.todayContestNo();
+		
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("cNo", cNo);
+		 
+		ArrayList<String> cPetList = cService.cPetList(map);
+		
+//		// 펫이 없으면 펫 등록으로? ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		if(petList.isEmpty()) {
 			System.out.println(petList);
 		}
+		
+		// 나의 구매내역
 		ArrayList<ContestItem> itemList = cService.itemList(id);
 		
 		model.addAttribute("itemList", itemList);
 		
 		if(itemList != null) {
+			model.addAttribute("cPetList", cPetList);
 			model.addAttribute("petList", petList);
 			model.addAttribute("list", itemList);
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
@@ -298,8 +354,6 @@ public class ContestController {
 		p.setContestId(cNo);
 		p.setMbId(id);
 		p.setMbName(nickName);
-		System.out.println(p);
-		System.out.println("asdasdasdsadsad");
 		StringBuilder result = new StringBuilder();
 		
         for (String itemNum : itemNums) {
@@ -313,9 +367,8 @@ public class ContestController {
         }
         p.setPProduct(result.toString());
       
-        System.out.println(p);
         int countList = cService.countList(p);
-        System.out.println(countList);
+        
         if(countList == 0) {
         	cService.contestPoint(p);
         }
@@ -371,7 +424,7 @@ public class ContestController {
 				}
 			}
 		}
-		System.out.println();
+		
 		int result2 = cService.insertAttm(list);
 		
 		if( result1 + result2 == list.size() + 1) {

@@ -35,14 +35,16 @@
 									<tr>
 										<th  style="width: 22%">제목</th>
 										<td>
-											<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle">
+											<input class="form-control" type="text" aria-label="default input example" placeholder="제목" name="pTitle" id="pTitle" required="required">
 										</td>
 									</tr>                                                   
 									<tr>
 										<th>강아지이름</th>
 										<td>
-											<select class="form-select" name="pPet" style="width: 25%; ">
-												<option th:each="p : ${petList}" th:value="${p.PET_ID}">[[${p.PET_NAME}]]
+											<select id="pPet" class="form-select" name="pPet" style="width: 40%;">
+												<option value="us">-- 마이 펫을 선택해주세요 --</option>
+												<option th:each="p : ${petList}" th:value="${p.PET_ID}" >
+														[[${p.PET_NAME}]]
 												</option>
 											</select>
 										</td>
@@ -50,7 +52,7 @@
 									<tr>
 										<th>내용</th>
 										<td>
-											<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent"></textarea>
+											<textarea class="form-control" rows="6" placeholder="내용" style="resize: none;" name="pContent" required="required" id="pContent"></textarea>
 										</td>
 									</tr>
 									<tr>
@@ -87,9 +89,8 @@
 										</td>
 									</tr>
 									<tr>
-										<th>애완용품 검색
-											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 20%">검색</button><br><br>
-											
+										<th>추천애완용품 (선택사항)
+											<button type="button" class="btn btn-sm  rounded-2 btn-outline-dark" id="modalLink" style="margin-left: 1%">검색</button><br><br>
 										</th>
 										<td>
 											<div id="td" class="outside-check">
@@ -149,11 +150,16 @@
 						</tr>
 					</thead>
 					<tbody id="case1">
+						<tr th:if="${itemList.isEmpty()}">
+							<td colspan="4">구매내역이 없습니다. 추천 물품 등록을 원하면 전체상품보기 선택 후 검색을 해주세요</td>
+						</tr>	
 						<tr th:each="l : ${itemList}">
-							<td class="pNum">o[[${l.orderDetailId}]]</td>
-							<td><input type="image" style="height: 70px; width: 70px" ></td>
-							<td>[[${l.productName}]]</td>
-							<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
+							<th:block th:unless="${itemList.isEmpty()}">
+								<td class="pNum">[[${l.orderDetailId}]]</td>
+								<td><input type="image" style="height: 70px; width: 70px" ></td>
+								<td>[[${l.productName}]]</td>
+								<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
+							</th:block>
 						</tr>
 					</tbody>
 					<tbody id="case2" style="display: none;">
@@ -173,8 +179,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-1 shadow">
                 <div class="modal-body p-4 text-center">
-                    <h4 class="mb-1">이미지는 최소 한장이 있어야 합니다.</h4>
-                    <p class="mb-1">이미지를 반드시 삽입해주세요.</p>
+                    <h4 id="modalTitle" class="mb-1">이미지는 최소 한장이 있어야 합니다.</h4>
+                    <p id="modalContent" class="mb-1">이미지를 반드시 삽입해주세요.</p>
                 </div>
                 <div class="modal-footer flex-nowrap p-1">
                     <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-end" id="checkFile">
@@ -290,18 +296,47 @@
 			const form = document.getElementById('contestParticipation');
 			document.getElementById('submitContest').addEventListener('click', () =>{
 				const files = document.getElementsByName('thumbnailFile');
-
-                <!-- 썸네일 이미지와 내용 이미지 둘 다 한장은 존재해야함.-->
-
+				const pTitle = document.getElementById('pTitle');
+				const pContent = document.getElementById('pContent');
+				const pPet = document.getElementById('pPet');
+				
+				console.log(pPet.value);
+				
 				for(const f of files) {
 					if(f.value != '') {
 						filesIsEmpty = false;
 					}
 				}
 				
-				if(filesIsEmpty ) {
+				if(pTitle.value == ""){
+					var newTitle = '제목이 비어있습니다';
+			        var newContent = '제목을 반드시 삽입해주세요.';
+			        
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
 					$('#modalChoice').modal('show');
-				} else {
+				} else if(pContent.value == ""){
+					var newTitle = '내용이 비어있습니다';
+			        var newContent = '내용을 반드시 삽입해주세요.';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+					$('#modalChoice').modal('show');
+				} else if(pPet.value == "us" ) {
+					var newTitle = '강아지를 선택해주세요';
+			        var newContent = '마이펫 프로필에 등록한 강아지만 선택할 수 있습니다';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+					$('#modalChoice').modal('show');
+				} else if(filesIsEmpty){
+					var newTitle = '이미지는 최소 한장이 있어야 합니다.';
+			        var newContent = '이미지를 반드시 삽입해주세요.';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+					$('#modalChoice').modal('show');
+				} 	else {
 					form.submit();
 				}
 			});
@@ -346,7 +381,7 @@
 
                 if(target.name === 'thumbnailFile'){
                     const index = Array.from(fileArea.querySelectorAll('input[name="thumbnailFile"]')).indexOf(target);
-                    console.log("index : ", index);
+                    
                     if(target.files.length > 0) {
                         if(divChildren != null) {
                             divChildren[index].innerHTML = '';
@@ -602,12 +637,40 @@
 		            }
 		        });
 		    });
+		    
+		    var selectElement = document.querySelector('select[name="pPet"]');
+	        var options = selectElement.getElementsByTagName('option');
+	        /*<![CDATA[*/
+	        var cPetList = /*[[${cPetList}]]*/ [];
+
+	        for (var i = 0; i < options.length; i++) {
+	            var petId = options[i].value;
+
+	            for (var j = 0; j < cPetList.length; j++) {
+	                var cPet = cPetList[j];
+	                var cPetId;
+
+	                if (typeof cPet === 'object' && cPet !== null) {
+	                    cPetId = cPet.PET_ID;
+	                } else {
+	                    cPetId = cPet;
+	                }
+	                if(petId==cPetId){
+	                	options[i].disabled = true;
+	                	// 옵션 텍스트 변경 예시
+	                    options[i].text += " : 이번에 이미 참여한 강아지 입니다";
+	                    options[i].style.color='grey';
+	                }
+	            }
+	            if(!options[i].disabled){
+	            	options[i].selected = true;
+                }
+	        }
+	        /*]]>*/
+		    
 		});
 
-
-		
 	</script>
-
 	
 </body>
 </html>

@@ -1,7 +1,9 @@
 package com.kh.woofly.contest.model.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +114,7 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public int todayContestNo() {
+	public Integer todayContestNo() {
 		
 		return cDAO.todayContestNo();
 	}
@@ -199,6 +201,25 @@ public class ContestServiceImpl implements ContestService {
 		
 		return cDAO.searchBestParticipantstList(rowBounds, cNo, search);
 	}
+
+	@Override
+	public ArrayList<String> cPetList(Map<String, Object> map) {
+		
+		return cDAO.cPetList(map);
+	}
+
+	@Override
+	public int allContestNo() {
+		
+		return cDAO.allContestNo();
+	}
+
+//	@Override
+//	public Date sDate() {
+//		// TODO Auto-generated method stub
+//		return cDAO.sDate();
+//	}
+
 
 
 

@@ -1,7 +1,9 @@
 package com.kh.woofly.contest.model.dao;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
@@ -46,7 +48,7 @@ public interface ContestDAO {
 
 	String petName(Integer pId);
 
-	int todayContestNo();
+	Integer todayContestNo();
 
 	ArrayList<Participants> participantstList(RowBounds rowBounds, int cNo);
 
@@ -71,6 +73,14 @@ public interface ContestDAO {
 	ArrayList<Participants> searchParticipantstList(RowBounds rowBounds, int cNo);
 
 	ArrayList<Participants> searchBestParticipantstList(RowBounds rowBounds, int cNo, String search);
+
+	ArrayList<String> cPetList(String id, int cNo);
+
+	ArrayList<String> cPetList(Map<String, Object> map);
+
+	int allContestNo();
+
+//	Date sDate();
 
 
 
