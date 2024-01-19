@@ -18,27 +18,40 @@
 				<div class="d-flex">
 					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
-						<h6>작성자</h6>
-						<p>2023.10.16</p>
+						<h6></h6>
+						<p></p>
 					</div>
 				</div>
 			</div>
 			
-			<form>
+			<form  action="/board/usedReview/insertUsedRvBoard" method="POST" enctype="multipart/form-data" id="attmForm">
+				<div class="mb-3">
+                    <label for="buyerId" class="form-label">거래 선택</label>
+                    <select class="form-select" id="prodNo" name="prodNo">
+                    	<option value="" disabled selected>후기를 작성할 거래내역을 선택해주세요</option>
+                        <option th:each="p : ${prodList}" th:value="${p.uNo}" th:text="|${p.productName}(${p.mbNickName})|">
+                        	
+                        </option>
+                       
+                    </select>
+                </div>
+                
+                
+			
+			
+			
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" placeholder="제목을 입력하세요">
+				  	<input type="text" class="form-control" id="title" name="uTitle" placeholder="제목을 입력하세요">
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="uContent" rows="20" style="resize: none;"></textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
-					   <div class="mb-3">
-					      <input type="file" class="form-control form-control-sm" name="file">
-					   </div>
+					   
 					</div>
 				<div class="row border-top border-black pt-3">
 					<button class="btn btn-dark">등록</button>

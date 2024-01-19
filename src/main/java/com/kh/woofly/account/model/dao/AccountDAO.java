@@ -1,5 +1,7 @@
 package com.kh.woofly.account.model.dao;
 
+import java.util.ArrayList;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.woofly.member.model.vo.Member;
@@ -23,7 +25,7 @@ public interface AccountDAO {
 
 	public int checkNameEmail(Member m);
 
-	public Member sendId(Member info);
+	public ArrayList<Member> sendId(Member info);
 
 	public int checkIdEmail(Member m);
 

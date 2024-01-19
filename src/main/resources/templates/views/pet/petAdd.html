@@ -42,17 +42,17 @@
 					<h4>마이펫 정보</h4>
 					<br>
 					<div>
-						<form action="/petAdd.dw" method="post">
+						<form action="/petAdd.dw" method="post" enctype="multipart/form-data">
 							<p class="text-secondary">마이펫 프로필 사진</p>
 							<div class="justify-content-center">
 								<div class="d-flex align-items-center mt-2 mb-4"
 									style="height: 150px;">
-									<img class="mx-3" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
+									<img class="mx-3" id="profileImg" src="/image/default_petprofile.jpg" style="width: 150px; height: 150px; border-radius: 100px; border: 1px solid black; font-size: 1rem">
 								</div>
 								<div class="d-flex">
-									<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange()">프로필 추가</button> &nbsp; &nbsp; 
+									<button type="button" class="btn btn-sm btn-outline-dark" onclick="profileChange();">프로필 추가</button> &nbsp; &nbsp; 
 									<input type="file" id="profile" name="file" style="display: none;" accept="image/*" value="123">
-									<button type="button" class="btn btn-dark btn-sm">삭제</button>
+									<button type="button" class="btn btn-dark btn-sm" id="deletePetPhoto">삭제</button>
 								</div>
 							</div>
 							<br>
@@ -211,20 +211,20 @@
       //마이펫 프로필 사진 삭제
   	  const deletePetPhoto = document.getElementById("deletePetPhoto");
   	  deletePetPhoto.addEventListener('click', ()=>{
-  		  document.getElementById("deletePhotoForm").submit();
+			 document.querySelector('#profileImg').src = '/image/default_petprofile.jpg';
+
   	  })
   	  
-        //마이펫 프로필 사진 추가, 변경
+        //마이펫 프로필 사진 추가
 		const profileChange = () => {
 			const profile = document.getElementById("profile");
 			profile.click();
 		}
 		
+		//바뀐 프로필 띄워주기
 		const profile = document.getElementById('profile');
-		profile.addEventListener('change', () => {
-			if (profile.files.length > 0) {
-	 			document.getElementById("").submit();
-			}
+		profile.addEventListener('change', (event) => {
+			 document.querySelector('#profileImg').src = URL.createObjectURL(event.target.files[0]);
 		})			
 		
 		document.getElementById('exampleFormControlTextarea1').addEventListener('keyup', function(event) {

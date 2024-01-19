@@ -2,6 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.kh.woofly.member.model.dao.MemberDAO">
+	
+	<delete id="deleteNotification">
+		delete from notification
+		where noti_no = #{notiNo}
+	</delete>
+	
+	<update id="readNotification">
+		update notification
+		set is_read = 'Y'
+		where mb_id = #{id}
+	</update>
+
+	<select id="selectNotification" resultType="Notification">
+		select *
+		from notification
+		where mb_id = #{id}
+		order by sent_date desc
+	</select>
+
 	<select id="getBlackList" resultType="Member">
 		select *
 		from blacklist

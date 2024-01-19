@@ -5,7 +5,10 @@ import java.util.HashMap;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.board.model.vo.Attachment;
+import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
@@ -40,8 +43,6 @@ public interface PetService {
 
 	int petDiaryWrite(Diary d);
 
-	ArrayList<Diary> petDiaryList(String id);
-
 	Diary petDiaryDetail(int drNo);
 
 	int petDiaryEdit(Diary d);
@@ -56,7 +57,7 @@ public interface PetService {
 
 	ArrayList<Attachment> selectMyAlbumAttm(HashMap<String, Object> map);
 
-	ArrayList<Album> selectMyAlbums(HashMap<String, String> map);
+	ArrayList<Album> selectMyAlbums(HashMap<String, Object> map);
 
 	ArrayList<Album> petPhotoDetail(int abNo);
 
@@ -79,5 +80,33 @@ public interface PetService {
 	int insertReport(Report rt);
 
 	int checkResult(Report rt);
+
+	int getDiaryCount(HashMap<String, Object> map);
+
+	ArrayList<Diary> petDiaryList(PageInfo pi, HashMap<String, Object> map);
+
+	ReplyLike selectReplyLike(Reply r);
+
+	int deleteReplyLike(HashMap<String, Object> map);
+
+	int insertReplyLike(HashMap<String, Object> map);
+
+	ArrayList<Participants> petContestList(HashMap<String, String> map);
+
+	int albumLike(HashMap<String, Object> map);
+
+	int deleteBoardLike(HashMap<String, Object> map);
+
+	int insertBoardLike(HashMap<String, Object> map);
+
+	ArrayList<Reply> repliesList(String id);
+
+	int deleteImage(Attachment a);
+
+	int updatePetPhoto(Album a);
+
+	int getListCount(int i);
+
+	//int getPhotoCount(HashMap<String, String> map);
 
 }
