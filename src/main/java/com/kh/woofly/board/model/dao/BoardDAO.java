@@ -182,6 +182,11 @@ public interface BoardDAO {
 
 	int mListCount(int i);
 	
+//	lostBoardDetail 댓글 페이징
+	int getLostBoardReplyListCount(int mNo);
+
+	ArrayList<Reply> selectLostReply(RowBounds rowBounds, int mNo);
+	
 	// 실종 검색 //
 	int insertLostBoard(LostBoard m);
 
@@ -193,15 +198,31 @@ public interface BoardDAO {
 
 	LostBoard editLostBoard(int bId, Object object);
 
-	int deleteLostBoard(int bId);
-
-	int deleteLostBoardAttm(int bId);
-
+	/*
+	 * int deleteLostBoard(int bId);
+	 */ 
+	
+	int deleteLostBoard(int mNo);
+	
+	int deleteLostBoardAttm(int mNo);
+	 
 	int editLostBoard(LostBoard lb);
 	
 	int deleteLostAttm(ArrayList<String> delRename);
 
 	int updateLostBoard(LostBoard m);
+	
+	ArrayList<Reply> selectLostReply(int mNo);
+	
+	boolean hasLevelOne(int mNo);
+	
+	int insertLostReply(Reply r);
+
+	int deleteLostReply(Reply r);
+
+	int updateLostReply(Reply r);
+	
+	ArrayList<Reply> selectUsedReply(int uNo);
 
 //	Reply selectReplyLostBoard(Integer rNo);
 
@@ -218,12 +239,31 @@ public interface BoardDAO {
 	ArrayList<UsedBoard> searchUsedBoards(HashMap<String, String> map);
 
 	UsedBoard selectUsedBoard(Integer uNo);
+	
+	int updateUsedCount(Integer uNo);
 
 	Reply selectReply(Integer rNo);
 
 	int insertUsedBoard(UsedBoard u);
 
 	int insertUsedAttm(ArrayList<Attachment> attachments);
+	
+	int deleteUsedAttm(ArrayList<String> delRename);
+
+	int updateUsedBoard(UsedBoard u);
+
+	boolean UsedhasLevelOne(int uNo);
+	
+	int deleteUsedBoard(int uNo);
+
+	int deleteUsedBoardAttm(int uNo);
+	
+	int insertUsedReply(Reply r);
+
+	int deleteUsedReply(Reply r);
+
+	int updateUsedReply(Reply r);
+
 
 
 	
@@ -270,6 +310,25 @@ public interface BoardDAO {
 	int deleteUsedRvReply(Reply r);
 
 	int updateUsedRvReply(Reply r);
+
+
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	
 
 
 

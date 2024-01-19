@@ -6,7 +6,13 @@
 	<select id="getReplyListCount" resultType="_int">
 		select count(*)
 		from Reply
-		where b_type= "DW" and b_no = #{dwNo} and re_d_status ="Y"
+		where b_type= 'DW' and b_no = #{dwNo} and re_d_status ='Y'
+	</select>
+	
+	<select id="getLostBoardReplyListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM REPLY
+		WHERE B_TYPE = 'M' AND B_NO = #{mNo} AND RE_D_STATUS ='Y'
 	</select>
 
 	<!-- 연준이꺼 -->
@@ -66,7 +72,7 @@
 			</if>
 	</select>
 
-	<!-- 자유게시판 -->	
+	<!-- ////////////자유게시판////////////// -->	
 	
 	<!-- 검색 기능 -->
    <select id="searchFreeBoards" parameterType="map" resultType="Board">
@@ -390,7 +396,7 @@
 	
 	
 	
-	<!-- 산책메이트 -->
+	<!-- ///////////////산책메이트////////////////// -->
 	
 	<select id="searchWmBoards" parameterType="map" resultType="WmBoard">
        SELECT *
@@ -574,7 +580,7 @@
 	
 	
 	
-	<!-- 실종게시판 -->
+	<!-- /////////////////실종게시판/////////////////// -->
 	
 	<!-- 검색 기능 -->
 	<select id="searchLostBoards" parameterType="map" resultType="LostBoard">
@@ -664,9 +670,15 @@
 	<select id="selectLostBoard" parameterType="int" resultMap="LostBoardWithAttachmentsMap">
 	    select mb.*, m.mb_nickName
 	    from Missing_Board mb
-	    join Member m on mb.mb_id = m.mb_id
+	    	join Member m on mb.mb_id = m.mb_id
 	    where mb.m_status = 'Y' and mb.m_no = #{mNo}
 	</select>
+	
+	<update id="updateUsedCount">
+		update used_board
+		set u_count = u_count +1
+		where u_no = #{uNo}
+	</update>
 	
 	<update id="updateLostCount">
 		update missing_board
@@ -689,17 +701,17 @@
 	</resultMap>
 	
 	<!--게시글 삭제-->
-	<update id="deleteLostBoard">
+	<!-- <update id="deleteLostBoard">
 		update missing_board
 		set m_status = 'N'
 		where m_no = #{bId}
-	</update>
+	</update> -->
 	
 	<!--게시글 첨부파일 삭제-->
 	<update id="deleteLostBoardAttm">
 		update attachment
 		set attm_status = 'N'
-		where attm_ref_type = 'M' and attm_ref_no = #{bId}
+		where attm_ref_type = 'M' and attm_ref_no = #{mNo}
 	</update>
 	
 	<!--게시글 수정-->
@@ -724,16 +736,55 @@
 		where m_no = #{ mNo }
 	</update>
 	
+	<select id="selectLostReply" resultType="Reply">
+		select  r.*, m.mb_nickname as "mbNickName" 
+		from reply r
+			join member m on r.mb_id = m.mb_id 
+		where r.b_no = #{mNo} and r.re_d_status = 'Y' and r.b_type = 'M'
+		order by r.r_no desc
+	</select>
+	
+	<update id="deleteLostBoard">
+		update missing_board
+		set m_status = 'N'
+		where m_no = #{ mNo }
+	</update>
+	
+	<select id="hasLevelOne" resultType="boolean" parameterType="int">
+        SELECT COUNT(*) 
+        FROM attachment
+        WHERE attm_ref_no = #{mNo}
+          AND attm_level = 1
+    </select>
+    
+    <insert id="insertLostReply">
+      insert into reply
+      values(reply_seq.nextval, #{bType}, #{bNo}, 
+            #{reContent}, SYSDATE, default, default, #{mbId})
+   </insert>
+   
+   <update id="deleteLostReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo } and b_type = 'M'
+	</update>
+	
+	<update id="updateLostReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
 	
 	
-	<!-- 중고게시판 -->
+	
+	<!-- /////////////////////중고게시판///////////////// -->
 	
 	<!-- 검색 기능 -->
 	<select id="searchUsedBoards" parameterType="map" resultType="UsedBoard">
 	    SELECT *
 	    FROM used_board
 	      JOIN Member using(mb_id)
-	    WHERE u_status = 'Y'
+	    WHERE u_status = 'Y' and u_type = '일반'
 	    <choose>
 	        <when test="searchType == 'mn'">
 	            AND u_title LIKE '%' || #{searchKeyword} || '%' or mb_nickName LIKE '%' || #{searchKeyword} || '%'
@@ -749,7 +800,7 @@
 	<select id="uListCount" resultType="_int">
 	    select count(*)
 	    from used_board
-	    where u_status = 'Y'
+	    where u_status = 'Y' and u_type = '일반'
 	</select>
 	
 	<!-- 게시글 목록 조회 -->
@@ -757,7 +808,7 @@
 	    select *
 	    from used_board
 	    	join Member using( mb_id )
-	    where u_status = 'Y' 
+	    where u_status = 'Y' and u_type = '일반'
 	    order by u_no desc
 	</select>
 	
@@ -770,7 +821,7 @@
 		where attm_status='Y'
 		and attm_ref_type = 'U' 
 		<if test="bId != null">
-	        and attm_ref_no = #{bId}
+	        and attm_ref_no = #{uNo}
 	    </if>
 		) A
 		WHERE 1=1
@@ -788,13 +839,15 @@
 	    where u.u_status = 'Y' and u.u_no = #{uNo}
 	</select>
 	
+	
+	
 	<!--게시글 등록-->
 	<insert id="insertUsedBoard">
 	    <selectKey keyProperty="uNo" order="BEFORE" resultType="_int"> 
 	        select ub_seq.nextval as uNo from dual
 	    </selectKey>
 	    insert into used_board 
-	    values (#{uNo}, 0, #{uTitle}, #{uContent}, default, #{uLocation}, SYSDATE, default, default, default, #{mbId},#{productName},#{productStatus},#{productPrice}, #{soldDate}, #{buyerId})
+	    values (#{uNo}, '일반' , #{uTitle}, #{uContent}, default, #{uLocation}, SYSDATE, default, default, default, #{mbId},#{productName},#{productStatus},#{productPrice}, #{soldDate},(select mb_Id from member where mb_nickname =#{buyerId}))
 	</insert>	
 	
 	<!--첨부파일 등록-->
@@ -807,6 +860,66 @@
 		</foreach>
 		select * from dual
 	</insert>
+	
+	<delete id="deleteUsedAttm">
+		delete from attachment
+		<where>
+			<foreach item="item" collection="list" open="rename_name in (" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<update id="updateUsedBoard">
+		update used_board
+		set u_end=#{uEnd}, u_title = #{uTitle}, u_content = #{uContent}, u_location = #{uLocation}, product_name=#{productName}, product_status =#{productStatus}, product_price =#{productPrice}, sold_date = #{soldDate}, buyer_id = #{buyerId}
+		where u_no = #{ uNo }
+	</update>
+	
+	<select id="UsedhasLevelOne" resultType="boolean" parameterType="int">
+        SELECT COUNT(*) 
+        FROM attachment
+        WHERE attm_ref_no = #{uNo}
+          AND attm_level = 1
+    </select>
+    
+    <update id="deleteUsedBoard">
+		update used_board
+		set u_status = 'N'
+		where u_no = #{ uNo }
+	</update>
+	
+	<update id="deleteUsedBoardAttm">
+		update attachment
+		set attm_status = 'N'
+		where attm_ref_type = 'U' and attm_ref_no = #{uNo}
+	</update>
+	
+	<insert id="insertUsedReply">
+      insert into reply
+      values(reply_seq.nextval, #{bType}, #{bNo}, 
+            #{reContent}, SYSDATE, default, default, #{mbId})
+   </insert>
+   
+   <update id="deleteUsedReply">
+		update Reply
+		set re_d_status = 'N'
+		where r_no = #{ rNo } and b_type = 'U'
+	</update>
+	
+	<update id="updateUsedReply">
+		update reply
+		set re_content = #{reContent}
+		where r_No = #{rNo}
+	</update>
+	
+	<select id="selectUsedReply" resultType="Reply">
+		select  r.*, m.mb_nickname as "mbNickName" 
+		from reply r
+			join member m on r.mb_id = m.mb_id 
+		where r.b_no = #{uNo} and r.re_d_status = 'Y' and r.b_type = 'U'
+		order by r.r_no desc
+	</select>
 	
 	
 	<!-- 중고게시판 -->
@@ -971,6 +1084,9 @@
 		set re_content = #{reContent}
 		where r_No = #{rNo}
 	</update>
+	
+	
+	
 		
 	
 </mapper>

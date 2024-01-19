@@ -51,13 +51,9 @@
 		<!--게시글-->
 		<!--<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
            <div class="col" th:each="u : ${uList}">
-              <div class="card shadow-sm"> 
+              <div class="card shadow-sm" style="width: 20rem;"> 
                  <th:block th:each="a: ${aList}" th:if="${a.attmRefNo eq u.uNo}">
-                    <img th:src="@{'/image/board/' + ${a.renameName}}" width="100%" height="225" th:if="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225" th:unless="${#strings.containsIgnoreCase(a.attmPath, 'jpg') or #strings.containsIgnoreCase(a.attmPath, 'png')}">
-                       <rect width="100%" height="100%" fill="#55595c"/>
-                       <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                    </svg>
+                    <img th:src="'/image/board/' + ${a.renameName}" style="width: 318px; height: 318px;">
                  </th:block> 
                  <div class="card-body">
                     <p class="card-text">

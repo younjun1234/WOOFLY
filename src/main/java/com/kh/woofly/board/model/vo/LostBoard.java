@@ -29,6 +29,7 @@ public class LostBoard {
    private int mRescue;
    private int likeUser; // 좋아요 누른 사람
    
+   
    private List<Attachment> attachments;
 }
 
