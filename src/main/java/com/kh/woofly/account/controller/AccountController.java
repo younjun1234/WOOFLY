@@ -160,6 +160,7 @@ public class AccountController {
 	public String loginView(Model model) {
 		
 		System.out.println(bcrypt.encode("1"));
+
 		return "login";
 	}
 	
