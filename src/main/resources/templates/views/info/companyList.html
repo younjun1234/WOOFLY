@@ -19,16 +19,24 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${admin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:unless="${admin == 'Y'}">
+				<div th:replace="~{common/infoNav :: infoNav}"></div>
+			</th:block>
+			
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>협력업체</h1>
 						<!-- 관리자만 보이도록 -->
-						<th:block>
+						<th:block th:if="${admin == 'Y'}">
 							<a role="button" href="/info/companyEnroll" class="btn btn-dark btn-sm h-50">업체 등록</a>
 						</th:block>
 					</div>
+					
+					
 					<form action="/info/searchCompany">
 						<input type="hidden" th:value="${ value }" name="value" id="aaaa" >
 						<div class="row col-auto mt-3">
@@ -58,7 +66,8 @@
 							</div>
 						</div>
 					</form>
-                  
+					
+					
 					<div class="container board-list" id="board-list" style="margin-top: 10px">
 						<div name="list" class="row border-top border-secondary text-center board-liste" style="height: 80px;" th:each="l : ${list}">							
 							<label class="comNo" style="display: none;">[[${ l.comNo }]]</label>

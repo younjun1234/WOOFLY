@@ -39,10 +39,18 @@ body { background: white; }
 	width: calc(25% - 20px); 
 	background: #fff; 
 	text-align: center;	
-	cursor: pointer;
+	
 }
 
 .dog-thumbnail {
+  width: 100%;
+  height: 260px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.album-cover {
   width: 100%;
   height: 260px;
   background-repeat: no-repeat;

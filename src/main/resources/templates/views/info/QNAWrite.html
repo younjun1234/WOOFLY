@@ -21,7 +21,12 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${admin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:unless="${admin == 'Y'}">
+				<div th:replace="~{common/infoNav :: infoNav}"></div>
+			</th:block>
 			
 			<div class="col-10 mb-5">
 			 <div class="container mt-4">
@@ -77,8 +82,8 @@
     
 	<script>
 		window.onload = () => {
-			const anav = document.getElementById('myNav2')
-			anav.style.fontWeight = 'bold';
+			const aNav = document.getElementById('myNav2')
+			aNav.style.fontWeight = 'bold';
 		}
 	</script>
 </body>
