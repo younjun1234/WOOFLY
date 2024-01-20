@@ -2,7 +2,6 @@ package com.kh.woofly.member.model.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;

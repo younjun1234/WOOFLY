@@ -129,19 +129,13 @@
 	    ]]>
 	</select>
 	
-	<select id="allContestNo" resultType="_int">
-	    SELECT *
-	    FROM (
-	         SELECT CON_NO
-		     FROM contest
-		     <![CDATA[
-		     WHERE CON_END_DATE <= sysdate
-		     ]]>
-		     ORDER BY CON_NO DESC
-	    )
-	    <![CDATA[
-	    WHERE ROWNUM <= 1
-	    ]]>
+	<select id="allContestNo" resultType="Integer">
+         SELECT CON_NO
+	     FROM contest
+	     <![CDATA[
+	     WHERE CON_END_DATE <= sysdate
+	     ]]>
+	     ORDER BY CON_NO DESC
 	</select>
 	
 	<select id="participantstList" resultType="Participants">
@@ -151,6 +145,25 @@
         ORDER BY P_NO DESC
 	</select>
 	
+	<select id="allTimeBestList" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{generationNo}
+        ORDER BY P_COUNT DESC
+	</select>
+	
+	<select id="best3Dog" resultType="Participants">
+	    SELECT *
+	    FROM (
+	        SELECT *
+	        FROM Participants
+	        WHERE CONTEST_ID = #{generationNo}
+	        ORDER BY P_COUNT DESC
+	    )
+	    <![CDATA[
+	    WHERE ROWNUM <= 3
+	    ]]>
+	</select>
 	
 	<select id="selectAttmNList" resultType="ContestAttm">
         SELECT *

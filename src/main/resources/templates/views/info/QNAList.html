@@ -24,10 +24,10 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<th:block th:if="${admin == 'Y'}">
+			<th:block th:if="${session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/adminNav :: adminNav}"></div>
 			</th:block>
-			<th:block th:unless="${admin == 'Y'}">
+			<th:block th:unless="${session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
 			</th:block>
 			
@@ -37,7 +37,7 @@
 						<h1>FAQ</h1>
 						<h3>자주 묻는 질문과 답변을 미리 확인해 보세요!</h3>
 						<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50" th:if="${admin == 'Y'}">글 작성</a>
+						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50" th:if="${session.loginUser.isAdmin == 'Y'}">글 작성</a>
 					</div>
 					<!-- 카테고리 버튼들 -->
 					<div class="container text-center mt-3 row-cols-6 catagoryBar">

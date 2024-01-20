@@ -208,9 +208,24 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public int allContestNo() {
+	public ArrayList<Integer> allContestNo() {
 		
 		return cDAO.allContestNo();
+	}
+
+	@Override
+	public ArrayList<Participants> allTimeBestList(int generationNo, PageInfo pi) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.allTimeBestList(rowBounds, generationNo);
+	}
+
+	@Override
+	public ArrayList<Participants> best3Dog(int generationNo) {
+		// TODO Auto-generated method stub
+		return cDAO.best3Dog(generationNo);
 	}
 
 	

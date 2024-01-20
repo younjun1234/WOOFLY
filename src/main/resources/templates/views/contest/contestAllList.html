@@ -26,12 +26,14 @@
 				
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
-						<h1>역대 콘테스트</h1>		
+						<h1>역대 콘테스트[[${allCNo}]]</h1>		
 					</div>
 					
 					<form>					                     
 						<div class="row g-0 text-center" style="margin-top: 10px;">
 							<div class="col-6 col-md-1" style="margin-top: 7px;">
+							
+							
 								<select class="form-select form-select-lg mb-3" aria-label="Large select example" style="margin-left: 20px;">
 									<option value="5">5기</option>
 									<option value="4">4기</option>
@@ -39,6 +41,8 @@
 									<option value="2">2기</option>
 									<option value="1">1기</option>
 								</select>
+								
+								
 							</div>
 							<div class="col-6 col-md-2" style="margin-top: 5px;"></div>
 							<div class="col-6 col-md-6" style="margin-top: 10px;"><h3>5기 최우수 강아지들</h3></div>
@@ -51,43 +55,60 @@
 						</div>
 					</form>
                   	
-                  	<ul class="dimage">						  					
-						<li class="adogimage">							
-							<div class="album-item" style="margin-top: 15px;">								
-								<div class="dog-thumbnail" id="second" style="background-image: url('https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12')"></div>
+                  	<ul class="dimage" style="margin-left: 1%">	
+                  	
+						<li class="adogimage" style="cursor: pointer;">							
+							<div class="album-item" style="margin-top: 17px; ">
+								<label class="pNo" style="display: none;">[[${ best3Dog[1].pNo }]]</label>			
+								<th:block th:each=" a : ${aList}">	
+									<div class="album-cover" th:if="${best3Dog[1].pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'"></div>	
+							<!--  	<div class="dog-thumbnail" id="second" style="background-image: url('https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12')"></div> -->
+								</th:block>
 								<div class="album-info" style="display: inline-block; ">
-									<p class="album-title">강아지1</p>
+									<p class="album-title">[[${best3Dog[1].pTitle}]]</p>
 								</div>
 								<div style="float: right; margin-top: 8px;" >
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
  									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">100</p>
+									<p class="album-date"> [[${best3Dog[1].pCount}]]</p>
 								</div>
 							</div>
 						</li>
-						<li class="adogimage">
+						
+						
+						<li class="adogimage" style="cursor: pointer;">
 							<div class="album-item" >
-								<div class="dog-thumbnail" style="background-image: url('https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg')"> </div>
+								<label class="pNo" style="display: none;">[[${ best3Dog[0].pNo }]]</label>
+								<th:block th:each=" a : ${aList}">
+									<div class="album-cover" th:if="${best3Dog[0].pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'">
+									</div>
+								</th:block>
 								<div class="album-info" style="display: inline-block; ">
-									<p class="album-title">강아지2</p>
+									<p class="album-title">[[${best3Dog[0].pTitle}]]</p>
 								</div>
 								<div style="float: right; margin-top: 8px;" >
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
  									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">150</p>
+									<p class="album-date">[[${best3Dog[0].pCount}]]</p>
 								</div>
 							</div>
 						</li>
-						<li class="adogimage">
-							<div class="album-item" style="margin-top: 20px;">
-								<div class="dog-thumbnail" style="background-image: url('https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg');"></div>
+						
+						
+						<li class="adogimage" style="cursor: pointer;">
+							<div class="album-item" style="margin-top: 23px;">
+								<label class="pNo" style="display: none;">[[${ best3Dog[2].pNo }]]</label>
+								<th:block th:each=" a : ${aList}">
+									<div class="album-cover" th:if="${best3Dog[2].pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'">
+									</div>
+								</th:block>	
 								<div class="album-info"style="display: inline-block; ">
-									<p class="album-title">강아지3</p>
+									<p class="album-title">[[${best3Dog[2].pTitle}]]</p>
 								</div>
 								<div style="float: right; margin-top: 8px;" >
 									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
  									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg>
-									<p class="album-date">50</p>
+									<p class="album-date"> [[${best3Dog[2].pCount}]] </p>
 								</div>
 							</div>
 						</li>						
@@ -116,25 +137,7 @@
 						
 					</ul>
 					
-					<nav class="border-top border-black pt-3">
-						<ul class="pagination justify-content-center">
-							<li class="page-item">
-								<a class="page-link" href="#">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
-							</li>
-							<li class="page-item"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item"><a class="page-link" href="#">4</a></li>
-							<li class="page-item"><a class="page-link" href="#">5</a></li>
-							<li class="page-item">	
-								<a class="page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
+					<div th:replace="~{contest/pageNav :: pageNav}"></div>
 				</div>	
 			</div>
 		</div>

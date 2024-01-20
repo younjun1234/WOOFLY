@@ -67,7 +67,12 @@ public interface ContestService {
 
 	ArrayList<String> cPetList(Map<String, Object> map);
 
-	int allContestNo();
+	ArrayList<Integer> allContestNo();
+
+	ArrayList<Participants> allTimeBestList(int generationNo, PageInfo pi);
+
+	ArrayList<Participants> best3Dog(int generationNo);
+
 
 	
 
