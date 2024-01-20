@@ -1842,7 +1842,7 @@ public class BoardController {
 								attachment.setRenameName(returnArr[1]);
 								attachment.setAttmPath(returnArr[0]);
 								attachment.setAttmRefType("U");
-								attachment.setAttmRefNo(u.getUNo());
+								attachment.setAttmRefNo(selectProduct.getUNo());
 								
 								attachments.add(attachment);
 							}
