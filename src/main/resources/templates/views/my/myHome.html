@@ -108,6 +108,16 @@
 						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#numbers.formatInteger(u.productPrice, 3, 'COMMA')}]]원</div>
 					</div>
 				</div>
+				<th:block th:if="${#arrays.isEmpty(uList)}">
+					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+						<div class="d-flex flex-column justify-content-center align-items-center">
+							<p>판매 내역이 없습니다.</p>
+							<div>
+								<button class="btn btn-outline-dark" onclick="location.href='/board/used'">SHOP 바로가기</button>
+							</div>
+						</div>
+					</div>
+				</th:block>
 			</div>
 			<!-- 네 번재 박스 -->
 			<div class="mb-5">
@@ -129,7 +139,7 @@
 				<th:block th:if="${#arrays.isEmpty(sList)}">
 					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
 						<div class="d-flex flex-column justify-content-center align-items-center">
-							<p>구매 입찰 내역이 없습니다.</p>
+							<p>등록된 관심 상품이 없습니다.</p>
 							<div>
 								<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
 							</div>
