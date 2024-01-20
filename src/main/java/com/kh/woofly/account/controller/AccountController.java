@@ -66,19 +66,24 @@ public class AccountController {
     }
 
     
+    //isBanned 적용 후
     @GetMapping("checkLogin.dw")
     @ResponseBody
     public String checkLogin(@ModelAttribute Member m) {
-    	Member loginUser = aService.login(m);
-    	if (loginUser == null) {
-    		return "noId";
-    	} else {
-    		if (bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
-    			return "good";
-    		} else {
-    			return "wrongPwd";
-    		}
-    	}
+       Member loginUser = aService.login(m);
+       System.out.println(m);
+       System.out.println(loginUser);
+       if (loginUser == null) {
+          return "noId";
+       } else {
+          if (loginUser.getIsBanned().equals("Y")) {
+             return "banned";
+          } else if (bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
+             return "good";
+          } else {
+             return "wrongPwd";
+          }
+       }
     }
 
     
@@ -160,6 +165,7 @@ public class AccountController {
 	public String loginView(Model model) {
 		
 		System.out.println(bcrypt.encode("1"));
+
 		return "login";
 	}
 	

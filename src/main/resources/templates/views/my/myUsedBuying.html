@@ -88,7 +88,7 @@
 					<input type="hidden" th:value="${ buying.uNo }">
 					<div class="d-flex align-content-center ms-3 col-6">
 						<img class="rounded float-start my-auto" th:src="'/image/board/' + ${buying.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">[[${buying.uTitle}]]</div>
+						<div class="ms-3 text-truncate" style="line-height: 100px;">[[${buying.uTitle}]]</div>
 					</div>
 					<div class='col-6 d-flex justify-content-end'>
 						<div class="me-5 col-4 text-center" style="width: 100px; line-height: 100px;">[[|${#numbers.formatInteger(buying.productPrice, 3, 'COMMA')} 원|]]</div>

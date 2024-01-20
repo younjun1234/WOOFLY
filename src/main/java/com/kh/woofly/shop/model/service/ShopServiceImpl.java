@@ -38,12 +38,12 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Product> selectProducts(PageInfo pi, Integer cNo) {
+	public ArrayList<Product> selectProducts(PageInfo pi, HashMap<String, Object> sortMap) {
 		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
 		int limit = pi.getBoardLimit();
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		return sDAO.selectProducts(rowBounds, cNo);
+		return sDAO.selectProducts(rowBounds, sortMap);
 	}
 
 	@Override
@@ -170,6 +170,41 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public int deleteReply(int rNo) {
 		return sDAO.deleteReply(rNo);
+	}
+
+	@Override
+	public int insertStampProduct(HashMap<String, Object> stamp) {
+		return sDAO.insertStampProduct(stamp);
+	}
+
+	@Override
+	public int selectMyStampProduct(HashMap<String, Object> stampParam) {
+		return sDAO.selectMyStampProduct(stampParam);
+	}
+
+	@Override
+	public int selectSavedProduct(int productId) {
+		return sDAO.selectSavedProduct(productId);
+	}
+
+	@Override
+	public int deleteStampProduct(HashMap<String, Object> stamp) {
+		return sDAO.deleteStampProduct(stamp);
+	}
+
+	@Override
+	public int insertNotify(HashMap<String, Object> notifyMap) {
+		return sDAO.insertNotify(notifyMap);
+	}
+
+	@Override
+	public ArrayList<Product> recentlyProductFive() {
+		return sDAO.recentlyProductFive();
+	}
+
+	@Override
+	public ArrayList<Product> popularityProductFive() {
+		return sDAO.popularityProductFive();
 	}
 
 }

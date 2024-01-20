@@ -6,6 +6,7 @@ import java.util.Properties;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
 
 public interface InfoService {
@@ -59,5 +60,11 @@ public interface InfoService {
 	ArrayList<Notice> searchAllNotice(PageInfo pi, Properties prop);
 
 	ArrayList<QNA> searchAllQNA(PageInfo pi, Properties prop);
+
+	int insertAttm(ArrayList<NoticeAttm> list);
+
+	int noticeNo();
+
+	ArrayList<NoticeAttm> selectAttmNList(int nNum);
 
 }

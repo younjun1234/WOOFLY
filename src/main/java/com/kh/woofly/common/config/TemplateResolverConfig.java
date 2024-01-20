@@ -107,6 +107,7 @@ public class TemplateResolverConfig {
 		return info;
 	}
 	
+	@Bean
 	public ClassLoaderTemplateResolver adminResolver() {
 		ClassLoaderTemplateResolver admin = new ClassLoaderTemplateResolver();
 		admin.setPrefix("templates/views/admin/");

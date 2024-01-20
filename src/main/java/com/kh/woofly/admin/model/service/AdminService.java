@@ -2,6 +2,7 @@ package com.kh.woofly.admin.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
@@ -33,6 +34,26 @@ public interface AdminService {
 	ArrayList<MemberAddress> selectAllAddress();
 
 	int getMembersCount(String mbId);
+
+	int updateKickOutMembers(String mbId);
+
+	int updateInfo(Properties prop);
+
+	int selectMonthlyEarnings();
+
+	int selectAnnualEarnings();
+
+	HashMap<String, Object> selectContestRatio();
+
+	int selectCompanyCount();
+
+	ArrayList<HashMap<String, Object>> selectMonthlyList();
+
+	HashMap<String, Object> selectBoardsCount();
+
+	ArrayList<HashMap<String, Object>> selectReportBoardCount();
+
+	int insertNotify(HashMap<String, Object> notifyMap);
 	
 
 }
