@@ -11,6 +11,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.info.model.dao.InfoDAO;
 import com.kh.woofly.info.model.vo.Company;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.info.model.vo.NoticeAttm;
 import com.kh.woofly.info.model.vo.QNA;
 
 @Service
@@ -115,7 +116,7 @@ public class InfoServiceImpl implements InfoService{
 		Notice n = iDAO.selectNotice(nNo);
 		if(n != null) {
 			if(id != null & !n.getNWriter().equals(id)) {
-				int result = iDAO.updateCount(id);
+				int result = iDAO.updateCount(nNo);
 				if(result > 0) {
 					n.setNContent(n.getNContent() + 1);
 				}
@@ -211,6 +212,24 @@ public class InfoServiceImpl implements InfoService{
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
 		return iDAO.searchAllQNA(rowBounds, prop);
+	}
+
+	@Override
+	public int insertAttm(ArrayList<NoticeAttm> list) {
+		
+		return iDAO.insertAttm(list);
+	}
+
+	@Override
+	public int noticeNo() {
+		// TODO Auto-generated method stub
+		return iDAO.noticeNo();
+	}
+
+	@Override
+	public ArrayList<NoticeAttm> selectAttmNList(int nNum) {
+		// TODO Auto-generated method stub
+		return iDAO.selectAttmNList(nNum);
 	}
 
 

@@ -33,16 +33,42 @@
 		    </if>
 	</select>
 	
+	<!-- selectProducts => choose -->
+	<sql id="dynamicOrderBy">
+	    <choose>
+	        <when test="sort == 'popularity'">
+	            ORDER BY COALESCE((SELECT COUNT(*) FROM SAVED WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+	        </when>
+	        <when test="sort == 'sales'">
+	            ORDER BY COALESCE((SELECT COUNT(*) FROM ORDER_DETAIL WHERE PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+	        </when>
+	        <when test="sort == 'price'">
+	            ORDER BY PRICE
+	        </when>
+	        <otherwise>
+	        </otherwise>
+	    </choose>
+	</sql>
+	
 	<select id="selectProducts" resultType="Product">
 	    SELECT *
 	    FROM PRODUCT
-		    LEFT JOIN PRODUCT_STOCK USING(PRODUCT_ID)
-		WHERE PRODUCT_STATUS = 'Y'
-		<if test="cNo != null">
-			AND PRODUCT_DETAIL_NO = #{cNo}
-		</if>
-	    ORDER BY PRODUCT_ID DESC
+	        LEFT JOIN PRODUCT_STOCK ON(PRODUCT.PRODUCT_ID = PRODUCT_STOCK.PRODUCT_ID)
+	    WHERE PRODUCT_STATUS = 'Y'
+	    <if test="cNo != null">
+	        AND PRODUCT_DETAIL_NO = #{cNo}
+	    </if>    
+	    <if test="sort != null and direction != null">
+	        <include refid="dynamicOrderBy"/>
+	        <if test="direction == 'ASC'">
+	            ASC
+	        </if>
+	        <if test="direction == 'DESC'">
+	            DESC
+	        </if>
+	    </if>
 	</select>
+
 	
 	<!-- 상품사진 전용 -->
 	<select id="selectProductAttm" resultType="ProductAttm">
@@ -183,8 +209,13 @@
 	
 	
 	<insert id="insertReplyCount">
+		<selectKey order="AFTER" resultType="String" keyProperty="r.mbId">
+				SELECT MB_ID
+				FROM Reply
+				WHERE R_NO = #{r.rNo}
+		</selectKey>
 		INSERT INTO REPLY_LIKE
-		VALUES (RL_SEQ.NEXTVAL, #{rNo}, #{mId})
+		VALUES (RL_SEQ.NEXTVAL, #{r.rNo}, #{mId})
 	</insert>
 	
 	<update id="updateReplyCount">
@@ -229,6 +260,50 @@
 		WHERE R_NO = #{rNo}
 	</update>
 	
+	<insert id="insertStampProduct">
+		INSERT INTO SAVED
+		VALUES (SAVED_SEQ.NEXTVAL, #{pId}, #{mbId}, #{type})
+	</insert>
+	
+	
+	<select id="selectMyStampProduct" resultType="_int">
+		SELECT COUNT(*)
+		FROM SAVED
+		WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = #{productId} AND MB_ID = #{memberId}
+	</select>
+	
+	<select id="selectSavedProduct" resultType="_int">
+		SELECT COUNT(*)
+		FROM SAVED
+		WHERE SAVED_TYPE = 'P' AND PRODUCT_ID = #{productId}
+	</select>
+	
+	<delete id="deleteStampProduct">
+		DELETE FROM SAVED
+		WHERE PRODUCT_ID = #{pId} AND MB_ID = #{mbId} AND SAVED_TYPE = #{type}
+	</delete>
+	
+	<insert id="insertNotify">
+		INSERT INTO NOTIFICATION
+		VALUES(NOTI_SEQ.NEXTVAL, #{mbId}, #{notiType}, #{notiContent}, 'N', #{fromUser}, #{refNo}, SYSDATE)
+	</insert>
+	
+	<select id="recentlyProductFive" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_STATUS = 'Y'
+		ORDER BY PRODUCT_CREATE_DATE DESC
+		FETCH FIRST 5 ROWS ONLY
+	</select>
+	
+	<select id="popularityProductFive" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+			LEFT JOIN PRODUCT_STOCK ON(PRODUCT.PRODUCT_ID = PRODUCT_STOCK.PRODUCT_ID)
+		WHERE PRODUCT_STATUS = 'Y'
+		ORDER BY COALESCE((SELECT COUNT(*) FROM ORDER_DETAIL WHERE PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+		FETCH FIRST 5 ROWS ONLY
+	</select>
 	
 	
 </mapper>

@@ -22,7 +22,7 @@ public interface ShopDAO {
 
 	int insertAttm(ArrayList<ProductAttm> list);
 
-	ArrayList<Product> selectProducts(RowBounds rowBounds, Integer cNumber);
+	ArrayList<Product> selectProducts(RowBounds rowBounds, HashMap<String, Object> sortMap);
 
 	ArrayList<ProductAttm> selectProductAttm(Integer productId);
 
@@ -69,5 +69,19 @@ public interface ShopDAO {
 	int updateReply(Reply r);
 
 	int deleteReply(int rNo);
+
+	int insertStampProduct(HashMap<String, Object> stamp);
+
+	int selectMyStampProduct(HashMap<String, Object> stampParam);
+
+	int selectSavedProduct(int productId);
+
+	int deleteStampProduct(HashMap<String, Object> stamp);
+
+	int insertNotify(HashMap<String, Object> notifyMap);
+
+	ArrayList<Product> recentlyProductFive();
+
+	ArrayList<Product> popularityProductFive();
 
 }

@@ -325,18 +325,18 @@
 			
 			if(stopBtn){
 				$('confirm').modal('hide');
-				location.href="/admin/stopUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+				location.href="/admin/stopUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo + "&reason=" + reason;
 			}
 			
 			
 			if(warningBtn) {
 				$('confirm').modal('hide');
-				location.href="/admin/warningUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+				location.href="/admin/warningUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo + "&reason=" + reason;
 			}
 			
 			if(returnBtn) {
 				$('confirm').modal('hide');
-				location.href="/admin/returnReport.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+				location.href="/admin/returnReport.ad?rAccused=" + r.raccused + "&rNo=" + rNo + "&reason=" + reason + "&rAccuser=" + r.raccuser;
 			}
 		});
 	}

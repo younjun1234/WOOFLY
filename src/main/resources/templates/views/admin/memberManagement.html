@@ -20,6 +20,16 @@
       height: 25px;
       margin-top: 25px;
   }
+  
+  .vibration{animation: vibration 0.1s infinite;}
+  @keyframes vibration{
+  	from {
+  		transform: rotate(1deg);
+  	}
+  	to{
+  		transform: rotate(-1deg);
+  	}
+  }
 </style>
 </head>
 <body>
@@ -98,14 +108,14 @@
           
                   <form action="/admin/memberManagement.ad">
                       <div class="row col-auto mt-3">
-                            <label for="search-box" class="form-label">회원 검색</label>
+                            <label for="search-box" class="form-label">회원 아이디 검색</label>
                       </div>
                       <div class="row g-0 text-center">
                           <div class="col-sm-6 col-md-10 input-group-lg">
                             <input type="text" id="searchBox" class="form-control" placeholder="검색" name="mbId">
                           </div>
                           <div class="col-6 col-md-2">
-                              <button type="button" class="btn btn-outline-dark btn-lg" id="searchBtn">검색</button>
+                              <button type="submit" class="btn btn-outline-dark btn-lg" id="searchBtn">검색</button>
                           </div>
                         </div>
                   </form>
@@ -187,11 +197,11 @@
                    </tr>
                    <tr>
                        <td>닉네임</td>
-                       <td></td>
+                       <td class="nickName"></td>
                    </tr>
                    <tr>
                        <td>이메일</td>
-                       <td></td>
+                       <td class="email"></td>
                    </tr>
                    <tr>
                        <td>생년월일</td>
@@ -207,7 +217,7 @@
                    </tr>
                    <tr>
                        <td>관리자 여부</td>
-                       <td>N</td>
+                       <td class="isAdmin">N</td>
                    </tr>
                    <tr>
                        <td>활동 상태</td>
@@ -252,29 +262,24 @@
         </div>
     </div>
 
-	<script th:inline="javascript">
-		
-		// 해당 페이지 nav bar 강조 넣기
-		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ..
+<script th:inline="javascript">
 		
 		// 각 게시물 별로 클릭 이벤트 넣는 부분
 		// ** 모달 창에 클릭 시 해당 객체의 정보 innerText 해버리기
     window.onload = () =>{
     	
     	const mList = /*[[${mList}]]*/null;
-    	console.log(mList);
     	const modal = document.getElementById('memberModal');
 		const modalTrs = modal.querySelector('tbody');
 		
 		const confirmModal = document.getElementById('confirm');
     	
 		let mem;
-		
+		let tr;
 		$('#board-list').on('click', '.boardLists', function(event) {
         	const target = event.target;
-        	const tr = target.closest('.boardLists');
+        	tr = target.closest('.boardLists');
         	const trMbId = tr.children[0].innerText;
-        	
         	
         	for(const m of mList) {
         		if(m.mbId == trMbId){
@@ -296,6 +301,201 @@
         	$('#memberModal').modal('show');
 		})
       
+		
+		let beforeData;
+		modalTrs.addEventListener('dblclick', function(event) {
+			const target = event.target;
+			const nickName = target.classList.contains('nickName');
+			const email = target.classList.contains('email');
+			const isAdmin = target.classList.contains('isAdmin');
+			
+			// 수정 하려다가 다른 곳 누르면 되돌리기 로직
+			let tds = modalTrs.querySelectorAll('td');
+			for(let i = 0; i < tds.length; i++){
+				if(tds[i].children[0] != undefined && tds[i].children[0].value != undefined) {
+					if(tds[i].classList.contains('email')){
+						tds[i].innerHTML = tds[i].children[0].value + '@' + tds[i].children[1].value;
+					} else {
+						tds[i].innerHTML = tds[i].children[0].value;
+					}
+				}
+			}
+			
+			
+			// 변경 이벤트
+			if(nickName) {
+				beforData = target.innerText;
+				target.innerHTML = '<input type="text" value="' + target.innerText +'" size="12" class="updateData"><span id="nickNameChecked">❓</span>';
+			}
+			
+			if(email) {
+				beforData = target.innerText;
+				const domain = target.innerText.split('@')[1];
+				let selected = '<select class="updateData">\
+								<option>naver.com</option>\
+								<option>gmail.com</option>\
+								<option>nate.com</option>\
+								<option>hanmail.net</option>\
+							</select>';
+				if(domain == 'gmail.com'){
+					selected = '<select class="updateData">\
+						<option>naver.com</option>\
+						<option selected>gmail.com</option>\
+						<option>nate.com</option>\
+						<option>hanmail.net</option>\
+					</select>';
+				} else if(domain == 'nate.com'){
+					selected = '<select class="updateData">\
+						<option>naver.com</option>\
+						<option>gmail.com</option>\
+						<option selected>nate.com</option>\
+						<option>hanmail.net</option>\
+					</select>';
+				} else if(domain == 'hanmail.net'){
+					selected = '<select class="updateData">\
+						<option>naver.com</option>\
+						<option>gmail.com</option>\
+						<option>nate.com</option>\
+						<option selected>hanmail.net</option>\
+					</select>';
+				} else if(domain == 'naver.com'){
+					selected = '<select class="updateData">\
+						<option selected>naver.com</option>\
+						<option>gmail.com</option>\
+						<option>nate.com</option>\
+						<option>hanmail.net</option>\
+					</select>'
+				}
+				target.innerHTML = '<input type="text" class="updateData" value="' + target.innerText.split('@')[0] + '" size="5">@' + selected;
+			}
+			
+			if(isAdmin) {
+				beforData = target.innerText;
+				let checked = null;
+				if(beforeData == 'Y'){
+					checked = '<input type="radio" name="isAdmin" value="Y" class="updateData" checked> Y\
+								<input type="radio" name="isAdmin" value="N" class="updateData"> N';
+				} else {
+					checked = '<input type="radio" name="isAdmin" value="Y" class="updateData"> Y\
+								<input type="radio" name="isAdmin" value="N" class="updateData" checked> N';
+				}
+				target.innerHTML = checked;
+			}
+			
+			const updateDatas = document.getElementsByClassName('updateData');
+			for(const upData of updateDatas){
+				upData.addEventListener('keyup', function(event){
+					if(event.key =='Enter'){
+						let targetId = modalTrs.children[2].children[1].innerText;
+						let datas = '';
+						if(nickName) {
+							let imot = document.getElementById('nickNameChecked');
+							datas = event.target.value;
+							$.ajax({
+								url: '/nicknameCheck.yj',
+								data: {nickname:datas},
+								success: data => {
+									if(data == 'good') {
+										imot.innerText = '✔';
+										$.ajax({
+											url:'/admin/updateInfo.ad',
+											data: {column: 'nickName', datas:datas, mbId:targetId},
+											success: data =>{
+												if(data == 'success'){
+													mem.mbNickName = datas;
+													tr.children[2].innerText = datas;
+													event.target.parentElement.innerText = datas; 
+												} else {
+													alert('수정에 실패하여 페이지가 새로고침 됩니다.');
+													location.reload();
+												}
+											},
+											error: data => {
+												console.log(data);
+											}
+										})
+									} else if(data == 'bad'){
+										imot.innerText ='❌';
+										event.target.classList.add('vibration');
+										setTimeout(() => {
+											event.target.classList.remove('vibration');
+										}, 400);
+									} else {
+										imot.innerText = '❗';
+										alert("관리자의 닉네임과 같을 수 없습니다.");
+									}
+										
+								},
+								error: data => {
+									console.log(data);
+								}
+							})
+						}
+						if(isAdmin) {
+							for(let i = 0; i < updateDatas.length; i++) {
+								if(updateDatas[i].checked){
+									datas = updateDatas[i].value;
+									break;
+								}
+							}
+							
+							$.ajax({
+								url:'/admin/updateInfo.ad',
+								data: {column: 'isAdmin', datas:datas, mbId:targetId},
+								success: data =>{
+									if(data == 'success'){
+										mem.isAdmin = datas;
+										event.target.parentElement.innerText = datas; 
+									} else {
+										alert('수정에 실패하여 페이지가 새로고침 됩니다.');
+										location.reload();
+									}
+								},
+								error: data => {
+									console.log(data);
+								}
+							})
+							
+						}
+						if(email) {
+							for(let i = 0; i < updateDatas.length; i++){
+								if(i == 0){
+									datas = updateDatas[i].value;
+								} else {
+									datas += '@' + updateDatas[i].value;
+								}
+							}
+							
+							$.ajax({
+								url:'/admin/updateInfo.ad',
+								data: {column: 'email', datas:datas, mbId:targetId},
+								success: data =>{
+									if(data == 'success'){
+										mem.mbEmail = datas;
+										event.target.parentElement.innerText = datas; 
+									} else {
+										alert('수정에 실패하여 페이지가 새로고침 됩니다.');
+										location.reload();
+									}
+								},
+								error: data => {
+									console.log(data);
+								}
+							})
+						}
+						const upTarget = event.target;
+					}
+				});
+			}
+			
+			if(!isAdmin && !nickName && !email) {
+				alert('수정할 수 없는 항목입니다.');
+			}
+			
+		});
+
+		
+		
 		const btns = document.getElementById('btns').querySelectorAll('button');
 		for(const btn of btns) {
 			btn.addEventListener('click', (event) => {
@@ -314,7 +514,6 @@
 					}
 					
 					const modalBody = confirmModal.querySelectorAll('.modal-body');
-					console.log(modalBody);
 					
 					modalBody[0].innerHTML = "<span>정말로 " + mem.mbName + "님을 <" + reason + "> 사유로 정지하시겠습니까? </span>";
 					modalBody[1].innerHTML = "<div class='stopBtn'><input type='hidden' value='" + mem.mbId + "'> </div>";
@@ -324,17 +523,15 @@
 				}
 				
 				if(kickOutBtn) {
-					console.log(target);
 					if(reason.trim() == '') {
 						alert('사유를 반드시 작성해주세요.');
 						return;
 					}
 					
 					const modalBody = confirmModal.querySelectorAll('.modal-body');
-					console.log(modalBody);
 					
 					modalBody[0].innerHTML = "<span>정말로 " + mem.mbName + "님을 <" + reason + "> 사유로 탈퇴시키겠습니까? </span>";
-					modalBody[1].innerHTML = "<div class='stopBtn'><input type='hidden' value='" + mem.mbId + "'> </div>";
+					modalBody[1].innerHTML = "<div class='kickOutBtn'><input type='hidden' value='" + mem.mbId + "'> </div>";
 					
 					$('#confirm').modal('show');
 				}
@@ -349,41 +546,35 @@
 		document.getElementById('submitForm').addEventListener('click', function(){
 			const modalBody = confirmModal.querySelectorAll('.modal-body');
 			const target = modalBody[1].querySelector('div');
-			console.log(target);
+			// 타겟 아이디
+			const mbId = target.children[0].value;
+			
 			const inputField = modal.querySelector('textarea');
 			
 			// 사유
 			const reason = inputField.value;
 			
 			const stopBtn = target.classList.contains('stopBtn');
-			const warningBtn = target.classList.contains('warningBtn');
-			const returnBtn = target.classList.contains('returnBtn');
+			const kickOutBtn = target.classList.contains('kickOutBtn');
 			
 			if(reason.trim() == '') {
 				alert('사유를 반드시 작성해주세요.');
 				return;
 			}
-			
 			// 사유 저장할 곳 생기거나 로직 생기면 사유도 보내도록 해야함
 			
 			if(stopBtn){
 				$('confirm').modal('hide');
-				location.href="/admin/stopUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+				$('#memberModal').modal('hide');
+				location.href="/admin/membersStop.ad?mbId=" + mbId + "&reason=" + reason;
 			}
 			
-			
-			if(warningBtn) {
+			if(kickOutBtn) {
 				$('confirm').modal('hide');
-				location.href="/admin/warningUser.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
+				$('#memberModal').modal('hide');
+				location.href="/admin/kickOutMembers.ad?mbId=" + mbId + "&reason=" + reason;
 			}
-			
-			if(returnBtn) {
-				$('confirm').modal('hide');
-				location.href="/admin/returnReport.ad?rAccused=" + r.raccused + "&rNo=" + rNo;
-			}
-			
 		});
-	
     }
 		
 		

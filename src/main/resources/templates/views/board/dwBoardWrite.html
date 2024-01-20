@@ -27,7 +27,7 @@
 			<form  action="/board/dw/insertDwBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">게시판 선택</label>
-					    <select class="form-select mb-1"  name="dwType">
+					    <select class="form-select mb-1"  name="dwType" required>
 					    	<option value="" disabled selected></option>
 							<option th:value="0" value="0">도그워커게시판</option>
 							<option th:value="1" value="1">도그워커후기</option>
@@ -49,7 +49,7 @@
                      <label for="postcode">주소</label>
                      <div class="border-bottom d-flex pb-2 justify-content-between">
                      	<div class="col-10 ps-0">
-                        	<input type="text" id="address" class="form-control" name="dwLocation" style="border: none; background: transparent;" readonly placeholder="우편 번호 검색후 자동 입력됩니다">
+                        	<input type="text" id="address" class="form-control" name="dwLocation" style="border: none; background: transparent;" readonly placeholder="우편 번호 검색후 자동 입력됩니다" required>
                      	</div>
                      	<div>
 	                       	<button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
@@ -76,16 +76,16 @@
                   
                   
 				<div class="mb-3">
-					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" name="dwTitle" placeholder="제목을 입력하세요">
+					<label for="title" class="form-label" >제목</label>
+				  	<input type="text" class="form-control" id="title" name="dwTitle" placeholder="제목을 입력하세요" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="dwContent" rows="20" style="resize: none;" required></textarea>
 				</div>
 				<div class="mb-3">
 	               <label for="title" class="form-label">지급할 금액</label>
-	                 <input style="width: 20%" type="text" class="form-control" name="dwPrice" id="productPrice" onkeyup="inputNumberFormat(this)" placeholder="금액 입력">
+	                 <input style="width: 20%" type="text" class="form-control" name="dwPrice" id="productPrice" onkeyup="inputNumberFormat(this)" placeholder="금액 입력" required>
 	            </div>	              
 
 				
@@ -179,7 +179,22 @@
 	          document.getElementById('address').value = '';
 	      }
 		 
-		 
+	      function validateForm() {
+	    	    // 필수 필드 검증
+	    	    var form = document.getElementById("attmForm");
+	    	    var isValid = form.checkValidity();
+
+	    	    if (!isValid) {
+	    	        // 필수 필드 중 하나라도 비어 있다면
+	    	        var requiredFields = form.querySelectorAll(':invalid');
+	    	        
+	    	        // 첫 번째 필수 필드로 포커스 이동
+	    	        requiredFields[0].focus();
+	    	    } else {
+	    	        // 유효성 검사 통과 시 다음 동작 수행
+	    	        form.submit(); // 또는 원하는 동작 수행
+	    	    }
+	    	}
 		
 		window.onload = () =>{
 			const fileArea = document.querySelector('#fileArea');

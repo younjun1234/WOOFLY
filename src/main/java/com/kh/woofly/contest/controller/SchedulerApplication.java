@@ -26,7 +26,7 @@ public class SchedulerApplication{
 	 	cService.updateContestStatus(today);
     }
 	
-
+	
 	
 	
 	

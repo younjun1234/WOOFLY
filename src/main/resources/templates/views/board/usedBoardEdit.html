@@ -56,47 +56,53 @@
 				</div>
 			</div>
 			
-			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/used/edit">
+			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/used/edit"  id="attmForm">
 				<input type="hidden" th:value="${u.uNo}" name="uNo">
 				<input type = "hidden" th:value ="${ page }" name ="page">
 				
 				<div style="display: flex;">
 	            <div class="mb-3" style="width: 24%;">
 	               <label for="title" class="form-label">판매 완료 여부</label>
-	                   <select class="form-select mb-1" name="uEnd">
+	                   <select class="form-select mb-1" name="uEnd" required>
 	                      <option th:value="N" value="N" th:selected="${u.uEnd == 'N'}">판매중</option>
 	                     <option th:value="R" value="R" th:selected="${u.uEnd == 'R'}">예약중</option>
 	                     <option th:value="Y" value="Y" th:selected="${u.uEnd == 'Y'}">판매완료</option>
 	                  </select>
 	            </div>&nbsp;
-	            <div class="mb-3" style="width: 25%; "> 
+            </div>
+            <p style="color: red;">※ 구매자 닉네임과 거래 일자는 판매 완료가 된 후 작성해주시기 바랍니다.</p> 
+                       
+            <div style="display: flex;">
+            	<div class="mb-3" style="width: 25%; "> 
 	                 <label for="title" class="form-label">구매자 닉네임</label>
 	                 <input type="text" class="form-control" id="buyerId" name="buyerId" th:value="buyerId" placeholder="">
 	            </div>
+	            <div class="mb-3" style="width: 25%; margin-left: 10px;">
+				   	<label for="title" class="form-label">거래 일자</label>				    	
+					<input type="date" name="soldDate" th:value="${#dates.format(u.soldDate, 'yyyy-MM-dd')}" placeholder="날짜를 선택해주세요">
+				</div>
             </div>
+	            
 				<div style="display: flex;">
 					<div class="mb-3" style="width: 25%; "> 
 						<label for="title" class="form-label">제품명</label>
-					  	<input type="text" class="form-control" id="productName" name="productName" th:value="${u.productName}" placeholder="">
+					  	<input type="text" class="form-control" id="productName" name="productName" th:value="${u.productName}" placeholder="" required>
 					</div>
 					
 					<div class="mb-3" style="width: 25%; margin-left: 10px;">
-						<label for="title" class="form-label">제품 상태</label>
+						<label for="title" class="form-label" required>제품 상태</label>
 					    <select class="form-select mb-1" name="productStatus">
 					    	<option value="" disabled selected></option>
-							<option th:value="G" value="G" th:selected="${u.uStatus == 'G'}">상</option>
-							<option th:value="S" value="S" th:selected="${u.uStatus == 'S'}">중</option>
-							<option th:value="B" value="B" th:selected="${u.uStatus == 'B'}">하</option>
+							<option th:value="G" value="G" th:selected="${u.productStatus eq 'G'}">상</option>
+							<option th:value="S" value="S" th:selected="${u.productStatus eq 'S'}">중</option>
+							<option th:value="B" value="B" th:selected="${u.productStatus eq 'B'}">하</option>
 						</select>
 				    </div>
 				    <div class="mb-3" style="width: 25%; margin-left: 10px;">
 						<label for="title" class="form-label">상품 가격</label>
-					  	<input type="text" class="form-control" id="productPrice" name="productPrice" th:value="${u.productPrice}" placeholder="">
+					  	<input type="text" class="form-control" id="productPrice" name="productPrice" th:value="${u.productPrice}" placeholder="" required>
 					</div>
-				    <div class="mb-3" style="width: 25%; margin-left: 10px;">
-				    	<label for="title" class="form-label">거래 일자</label>				    	
-						<input type="date" name="soldDate" th:value="${u.soldDate}" placeholder="날짜를 선택해주세요">
-					</div>
+				    
 				</div>
 				
 				<div class="mb-2"  style="display: none;">
@@ -114,7 +120,7 @@
                      <label for="postcode">거래 희망 장소</label>
                      <div class="border-bottom d-flex pb-2 justify-content-between">
                         <div class="col-10 ps-0">
-                           <input type="text" id="address" class="form-control" name="uLocation" th:value="${u.uLocation}" style="border: none; background: transparent;" readonly placeholder="우편 번호 검색후 자동 입력됩니다">
+                           <input type="text" id="address" class="form-control" name="uLocation" th:value="${u.uLocation}" style="border: none; background: transparent;" readonly placeholder="우편 번호 검색후 자동 입력됩니다" required>
                         </div>
                         <div>
                              <button type="button" onclick="execDaumPostcode()" class="btn btn-outline-dark btn-sm">검색</button>
@@ -142,11 +148,11 @@
 				
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" name="uTitle" th:value="${u.uTitle}" placeholder="">
+				  	<input type="text" class="form-control" id="title" name="uTitle" th:value="${u.uTitle}" placeholder="" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20"name="uContent" th:value="${u.uContent}" style="resize: none;">[[${u.uContent}]]</textarea>
+				  	<textarea class="form-control" id="content" rows="20"name="uContent" th:value="${u.uContent}" style="resize: none;" required>[[${u.uContent}]]</textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
 					<div th:each="a : ${ list }">
@@ -228,6 +234,23 @@
 	          // 주소 입력 필드를 비웁니다.
 	          document.getElementById('address').value = '';
 	      }
+	      
+	      function validateForm() {
+	    	    // 필수 필드 검증
+	    	    var form = document.getElementById("attmForm");
+	    	    var isValid = form.checkValidity();
+
+	    	    if (!isValid) {
+	    	        // 필수 필드 중 하나라도 비어 있다면
+	    	        var requiredFields = form.querySelectorAll(':invalid');
+	    	        
+	    	        // 첫 번째 필수 필드로 포커스 이동
+	    	        requiredFields[0].focus();
+	    	    } else {
+	    	        // 유효성 검사 통과 시 다음 동작 수행
+	    	        form.submit(); // 또는 원하는 동작 수행
+	    	    }
+	    	}
 		
 		
 		window.onload = () =>{

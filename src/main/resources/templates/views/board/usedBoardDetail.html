@@ -41,7 +41,7 @@
             <img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
             <div class="header-text-container">
                <h6 style="display: inline;" th:text="${u.mbNickName}" name="mbNickName"></h6>
-               <p>[[${u.uCreateDate}]]</p>
+               <p th:text="${#dates.format(u.uCreateDate, 'yyyy-MM-dd')}"></p>
             </div>
          </div>
          
@@ -121,10 +121,6 @@
               <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">가격</th>
                   <td style="border: 1px ; height: 40px; border: 1px;" th:text="|\${u.productPrice}|" onkeyup="inputNumberFormat(this)"></td>
-              </tr>
-             <tr style="border: 1px ;">
-                 <th style="border: 1px ; height: 40px; border: 1px;">거래일자</th>
-                 <td style="border: 1px ; height: 40px; border: 1px;">[[${u.soldDate}]]</td>
               </tr>
               <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">거래장소</th>

@@ -20,8 +20,7 @@
     }
 
 	.sumDiv {
-		width: 20%;
-		height: 20%;
+		height: 80%;
 	}
 
     .product-image {
@@ -30,7 +29,7 @@
      }
 
     .img-thumbnail {
-         height: 500px;
+         height: 800px;
          width: auto;
     }
 
@@ -105,15 +104,17 @@
     <main>
         <div class="container">
             <div class="d-flex justify-content-center">
-                <div class="row justify-content-center">
+                <div class="row">
                 	<th:block th:each="t, i: ${tList}">
-	                    <div class="mb-2"  th:if="${i.index == 0}">
+	                    <div class="col"  th:if="${i.index == 0}">
 	                        <img class="product-image img-thumbnail rounded mx-auto d-block" th:src="'/image/shopFiles/' + ${ t.renameName }" alt="상품이름" width="80%">
 	                    </div>
-	                    <div class="sumDiv" th:unless="${i.index == 0}">
+	                </th:block>
+                    <div class="row" >
+	                    <div class="sumDiv col" th:each="t, i: ${tList}" th:if="${i.index > 0}">
 	                        <img class="product-image m-1 p-1" th:src="'/image/shopFiles/' + ${ t.renameName }" width="20%">
 	                    </div>
-                    </th:block>
+                    </div>
                 </div>
                 
                 <!-- 버튼 따라서 action 변경 -->
@@ -130,8 +131,13 @@
 	                            	<button type="button" class="btn btn-outline-dark btn-sm p-1 m-1" id="editBtn">Edit</button>
 	                            </p>
 	                        </div>
-	                        <div>	<!-- 리뷰 테이블 만들고 추가하기 + shopMain에서도 리뷰 보이기 -->
-	                            <p class="fs-4">리뷰 : 3건 / 추천 : 4건</p>
+	                        <div id="stampImgParent">
+	                            <p class="fs-4">
+	                            	<span class="reviewWord">리뷰 : [[${rList.size}]]건</span> /
+	                            	<span class="stampWord">찜하기 : [[${savedCount}]]건 </span>
+	                            	<span class="stampImg isFill" th:unless="${stampCount == 0}">❤</span>
+	                            	<span class="stampImg isEmpty" th:if="${stampCount == 0}">🤍</span>
+	                            </p>
 	                        </div>
 	                        <div>
 	                            <p class="fs-4">가격 : [[${#numbers.formatInteger(p.price, 3, 'COMMA')}]]원</p>
@@ -188,7 +194,7 @@
 	                    </ul>
 	                    <div class="p-2 col product_btns" aria-label="Large button group">
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="buyBtn">구매하기</button>
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="">찜하기</button>
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="stampBtn">찜하기</button>
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="putBtn">장바구니에 담기</button>
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="goToReply">리뷰 보기</button>
 	                    </div>
@@ -397,9 +403,9 @@
 		/*<![CDATA[*/
 		const p = /*[[${p}]]*/1;
 		const loginUser = /*[[${session.loginUser}]]*/1;
+		let savedCount = /*[[${savedCount}]]*/1; 
+		let reviewCount = /*[[${rList.size}]]*/1;
 		/*]]>*/
-		
-		console.log(loginUser);
 		
         window.addEventListener('scroll', function () {
             var scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -507,6 +513,64 @@
 		});
 		
 		
+		document.getElementById('stampBtn').addEventListener('click', () => {
+			const sip = document.getElementById('stampImgParent');
+			const stampWord = sip.children[0].children[1];
+			const stampImg = sip.children[0].children[2];
+			if(loginUser != null){
+				if(stampImg.classList.contains('isEmpty')) {
+					$.ajax({
+						url: "/shop/insertStampProduct",
+						data: {mbId:loginUser.mbId, pId:p.productId, type:'P'},
+						success: data => {
+							console.log(data);
+							if(data == 'success'){
+								savedCount = savedCount + 1
+								stampWord.innerText = '찜하기 : ' + savedCount + '건';
+								stampImg.innerText = '❤';
+								stampImg.classList.remove('isEmpty');
+								stampImg.classList.add('isFill');
+							} else {
+								alert("알수 없는 오류가 발생하여 페이지를 새로고침합니다.");
+								location.reload();
+							}
+						},
+						error: data => {
+							console.log(data);
+						}
+					});	
+				}
+				
+				if(stampImg.classList.contains('isFill')){
+					$.ajax({
+						url: "/shop/deleteStampProduct",
+						data: {mbId:loginUser.mbId, pId:p.productId, type: 'P'},
+						success: data => {
+							console.log(data);
+							if(data == 'success'){
+								savedCount = savedCount - 1
+								stampWord.innerText = '찜하기 : ' + savedCount + '건';
+								stampImg.innerText = '🤍';
+								stampImg.classList.remove('isFill');
+								stampImg.classList.add('isEmpty');
+							} else {
+								alert("알수 없는 오류가 발생하여 페이지를 새로고침합니다.");
+								location.reload();
+							}
+						},
+						error: data => {
+							console.log(data);
+						}
+					})
+				}
+					
+			} else {
+				alert("로그인 후 이용해주세요.");
+			}
+		});
+		
+		
+		
 		function colorNameMath(color) {
         	var match = ntc.name(color);
         	const colorName = match[1];
@@ -541,7 +605,7 @@
         const insertBtn = document.getElementById('insertReply');
         
 		const topReply = document.getElementById('replyContents');
-		
+		const reviewWord = document.getElementsByClassName('reviewWord')[0];
         /*<![CDATA[*/
 		$(document).on('click', '#insertReply', function() {
 			// 로그인 유저 다루는 로직 짜기
@@ -551,13 +615,12 @@
 			const boardNo = p.productId;
 			const loginUserId = /*[[${ session.loginUser?.mbId}]]*/id;
 			
-			
 			textarea.value = '';
 			
 			if(replyContent != '' && loginUserId != null) {
 				$.ajax({
 					url: '/shop/insertReply',
-					data: {reContent:replyContent, bNo:boardNo, mbId:loginUserId },
+					data: {reContent:replyContent, bNo:boardNo, mbId:loginUserId},
 					success: data => {
 						topReply.innerHTML = '';
 						for(const r of data.rList){
@@ -609,7 +672,11 @@
 								`;
 							
 							topReply.innerHTML += newReply;
+							
 						}
+						reviewCount = reviewCount + 1;
+						reviewWord.innerText = '리뷰 : ' + reviewCount + '건';
+						
 					},
 					error : data => {
 						console.log(data);
@@ -723,14 +790,6 @@
         		
         		$('#confirm').modal('show');
         	}
-        	
-        	
-        	//if(isOut){ // 흠..
-        	//	const menu = dropEnd.parentElement.children[1];
-        	//	if(menu.classList.contains('show')){
-        	//		menu.classList.toggle('show');
-        	//	}
-        	//}
         	
         })
         
