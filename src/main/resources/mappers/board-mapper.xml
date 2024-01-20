@@ -29,14 +29,14 @@
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where buyer_id = #{id}
+		where buyer_id = #{id} and u_type = '일반'
 	</select>
 	
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -54,14 +54,14 @@
 	<select id="selectMySellingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where mb_id = #{id}
+		where mb_id = #{id} and u_type = '일반'
 	</select>
 	
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>

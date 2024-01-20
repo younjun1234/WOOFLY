@@ -115,9 +115,14 @@
 				<br>
 				<div class="d-flex justify-content-between align-items-center rounded border border-black p-2" role="button" id="selectedPayment">
 					<div class="ms-2">
-						<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey"> 
-						<div>[[${pList[0].cardCompany}]]</div>
-						<div>****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</div>
+							<th:block th:if="${!#arrays.isEmpty(pList)}">
+								<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey">
+							</th:block>
+							<th:block th:if="${#arrays.isEmpty(pList)}">
+								<input type="hidden" name="billingKey">
+							 </th:block>
+							<div><th:block th:if="${!#arrays.isEmpty(pList)}">[[${pList[0].cardCompany}]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(pList)}">****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</th:block></div>
 					</div>
 					<div class="me-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
@@ -429,6 +434,17 @@
 	</div>
 	
 	<script  th:inline="javascript">
+		
+		window.onload = () => {
+			/*<![CDATA[*/
+			const pList = /*[[${pList}]]*/null;
+			/*]]>*/
+			
+			if (pList == null || pList.length == 0) {
+				alert('결제 정보를 먼저 등록해주세요.');
+				window.location.href = '/my/payment'; 
+			}
+		}
 	
 		const selectedPayment = document.querySelector('#selectedPayment');
 		selectedPayment.addEventListener('click', () => {
