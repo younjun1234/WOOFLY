@@ -26,7 +26,7 @@
 				
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
-						<h1>역대 콘테스트[[${allCNo}]]</h1>		
+						<h1>역대 콘테스트</h1>		
 					</div>
 					
 					<form>					                     
@@ -35,11 +35,7 @@
 							
 							
 								<select class="form-select form-select-lg mb-3" aria-label="Large select example" style="margin-left: 20px;">
-									<option value="5">5기</option>
-									<option value="4">4기</option>
-									<option value="3">3기</option>
-									<option value="2">2기</option>
-									<option value="1">1기</option>
+									<option th:each=" n : ${allCNo}"  th:value="${n}"> [[${n}]]기 </option>
 								</select>
 								
 								
