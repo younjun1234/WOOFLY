@@ -69,6 +69,8 @@ public interface ContestService {
 
 	int allContestNo();
 
+	ArrayList<Participants> topFiveBest(int cNo);
+
 	
 
 //	Date sDate();

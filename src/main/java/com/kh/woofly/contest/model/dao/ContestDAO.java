@@ -80,6 +80,8 @@ public interface ContestDAO {
 
 	int allContestNo();
 
+	ArrayList<Participants> topFiveBest(int cNo);
+
 //	Date sDate();
 
 

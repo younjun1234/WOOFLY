@@ -288,5 +288,22 @@
 		VALUES(NOTI_SEQ.NEXTVAL, #{mbId}, #{notiType}, #{notiContent}, 'N', #{fromUser}, #{refNo}, SYSDATE)
 	</insert>
 	
+	<select id="recentlyProductFive" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_STATUS = 'Y'
+		ORDER BY PRODUCT_CREATE_DATE DESC
+		FETCH FIRST 5 ROWS ONLY
+	</select>
+	
+	<select id="popularityProductFive" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+			LEFT JOIN PRODUCT_STOCK ON(PRODUCT.PRODUCT_ID = PRODUCT_STOCK.PRODUCT_ID)
+		WHERE PRODUCT_STATUS = 'Y'
+		ORDER BY COALESCE((SELECT COUNT(*) FROM ORDER_DETAIL WHERE PRODUCT_ID = PRODUCT.PRODUCT_ID), 1)
+		FETCH FIRST 5 ROWS ONLY
+	</select>
+	
 	
 </mapper>

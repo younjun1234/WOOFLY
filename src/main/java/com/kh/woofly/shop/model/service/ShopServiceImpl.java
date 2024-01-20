@@ -197,4 +197,14 @@ public class ShopServiceImpl implements ShopService {
 		return sDAO.insertNotify(notifyMap);
 	}
 
+	@Override
+	public ArrayList<Product> recentlyProductFive() {
+		return sDAO.recentlyProductFive();
+	}
+
+	@Override
+	public ArrayList<Product> popularityProductFive() {
+		return sDAO.popularityProductFive();
+	}
+
 }
