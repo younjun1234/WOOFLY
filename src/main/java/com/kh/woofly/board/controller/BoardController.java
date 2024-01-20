@@ -13,6 +13,7 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,7 @@ import com.kh.woofly.board.model.vo.WmBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
+import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,6 +54,8 @@ public class BoardController {
 		
 		@Autowired
 		private BoardService bService;
+		
+		
 		
 		// 중고 거래 내역  // 연준이꺼
 		@GetMapping("my/usedBuying")
@@ -250,11 +254,28 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmFreeBoardList((Integer)bNo); 
 			ArrayList<Reply> rList = bService.selectFreeReply(bNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("bNo", bNo);
+			map.put("id", id);
+			int likeCount = bService.freeBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
+			
 			if(b != null) {
 				model.addAttribute("b", b);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "freeBoardDetail";
 			} else {
@@ -326,7 +347,7 @@ public class BoardController {
 		// 파일 저장소 파일 저장(copy)
 		private String[] saveFile(MultipartFile upload) {
 			
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File folder = new File(savePath);
@@ -360,7 +381,7 @@ public class BoardController {
 		
 		
 		private void deleteFile(String renameName) {
-			String root = "C:\\uploadFiles\\woofly\\";
+			String root = "C:\\woofly\\";
 			String savePath = root + "\\board";
 			
 			File f = new File(savePath + "\\" + renameName);
@@ -437,7 +458,7 @@ public class BoardController {
 
 		            } else {
 		                for (int level : delLevel) {
-		                    if (level == 0) {
+		                    if (level == 1) {
 		                        bService.updateAttmLevel(b.getBNo());
 		                        break;
 		                    }
@@ -509,13 +530,13 @@ public class BoardController {
 
 		            } else {
 		                for (int level : delLevel) {
-		                    if (level == 0) {
+		                    if (level == 1) {
 		                        bService.updateAttmLevel(b.getBNo());
 		                        break;
 		                    }
 		                }
 		            }
-		        }
+		        }/////////////////////////////level 11111111111111
 
 		        // 파일 삭제만 수행
 		        updateBoardResult = bService.updateFreeBoard(b);
@@ -658,8 +679,56 @@ public class BoardController {
 				return "bad";
 			}
 		}
+		
+		//보드 좋아요
+		@GetMapping("insertDeleteFreeLike.yk")
+		@ResponseBody
+		public String insertDeleteFreeBoardLike(@RequestParam("bNo") int bNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("bNo", bNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteFreeBoardLike(map);
+			} else {
+				result = bService.insertFreeBoardLike(map);
+				result = bService.insertFreeBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
 
+		@GetMapping("insertDeleteFreeReply.yk")
+		@ResponseBody
+		public String insertDeleteFreeReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
 
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertFreeReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
 
 		
 	
@@ -759,11 +828,29 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmDwBoardList(dwNo); 
 			ArrayList<Reply> rList = bService.selectDwReply(dwNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("dwNo", dwNo);
+			map.put("id", id);
+			int likeCount = bService.DwBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
+			
+			
 			if(dw != null) {
 				model.addAttribute("dw", dw);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "dwBoardDetail";
 			} else {
@@ -1077,6 +1164,56 @@ public class BoardController {
 				return "bad";
 			}
 		}
+		
+		//보드 좋아요
+				@GetMapping("insertDeleteDwLike.yk")
+				@ResponseBody
+				public String insertDeleteDwLike(@RequestParam("dwNo") int dwNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+					HashMap<String, Object> map = new HashMap<>();
+					String id = ((Member)session.getAttribute("loginUser")).getMbId();
+					
+					map.put("dwNo", dwNo);
+					map.put("id", id);
+					
+					int result = 0;
+					if (replyInDel.equals("delete")) {
+						result = bService.deleteDwBoardLike(map);
+					} else {
+						result = bService.insertDwBoardLike(map);
+						result = bService.insertDwBoardNotice(map);
+					}
+						
+					if (result > 0) {
+						return "good";
+					} else {
+						return "bad";
+					}
+				}
+
+				@GetMapping("insertDeleteDwReply.yk")
+				@ResponseBody
+				public String insertDeleteDwReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+					HashMap<String, Object> map = new HashMap<>();
+					String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+					map.put("rNo", rNo);
+					map.put("id", id);
+					
+					int result = 0;
+					if (replyInDel.equals("delete")) {
+						result = bService.deleteBoardReplyLike(map);
+					} else {
+						result = bService.insertBoardReplyLike(map);
+						result = bService.insertDwReplyNotice(map);
+					}
+						
+					if (result > 0) {
+						return "good";
+					} else {
+						return "bad";
+								
+					}
+				}
 
 			
 		// 3. 산책메이트 //
@@ -1178,11 +1315,27 @@ public class BoardController {
 			ArrayList<Attachment> list = bService.selectAttmWmBoardList(wmNo); 
 			ArrayList<Reply> rList = bService.selectWmReply(wmNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("wmNo", wmNo);
+			map.put("id", id);
+			int likeCount = bService.WmBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
 			if(wm != null) {
 				model.addAttribute("wm", wm);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "wmBoardDetail";
 			} else {
@@ -1494,7 +1647,56 @@ public class BoardController {
 			}
 		}
 
-		
+		//보드 좋아요
+		@GetMapping("insertDeleteWmLike.yk")
+		@ResponseBody
+		public String insertDeleteWmLike(@RequestParam("wmNo") int wmNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("wmNo", wmNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteWmBoardLike(map);
+			} else {
+				result = bService.insertWmBoardLike(map);
+				result = bService.insertWmBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
+
+		@GetMapping("insertDeleteWmReply.yk")
+		@ResponseBody
+		public String insertDeleteWmReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertWmReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
+
 		
 		
 	
@@ -1605,11 +1807,27 @@ public class BoardController {
 			
 			ArrayList<Reply> rList = bService.selectUsedRvReply(uNo);
 			
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("uNo", uNo);
+			map.put("id", id);
+			int likeCount = bService.UsedBoardLike(map);			
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(id);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
+			
 			if(u != null) {
 				model.addAttribute("u", u);
 				model.addAttribute("page", page);
 				model.addAttribute("list", list);
 				model.addAttribute("rList", rList);
+				model.addAttribute("aLike", likeCount);
+				model.addAttribute("lList", likeList);
 				//System.out.println(rList);
 				return "usedReviewBoardDetail";
 			} else {
@@ -1634,74 +1852,74 @@ public class BoardController {
 			return "usedReviewBoardWrite";
 		}
 		
-//		@PostMapping("/board/used/insertUsedBoard")
-//	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
-//	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
-//	         
-//	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
-//	         u.setMbId(boardWriter);
-//	         
-//	         System.out.println(prodNo);
-//	         
-//	         UsedBoard selectProduct = bService.checkProdList(prodNo);
-//	         
-//	         System.out.println(selectProduct);
-//	         selectProduct.setUTitle(uTitle);
-//	         selectProduct.setUContent(uContent);
-//	         selectProduct.setMbId(boardWriter);
-//	         
-//	         
-//	         int result1 = bService.insertUsedRvBoard(selectProduct); 
-//	         
-//	         
-//	         ArrayList<Attachment> attachments = new ArrayList<>();
-//	         if (files != null) {
-//	            for(int i = 0; i<files.size(); i++) {
-//	               MultipartFile upload = files.get(i);
-//	               if(!upload.getOriginalFilename().equals("")) {
-//	                  String[] returnArr = saveFile(upload);
-//	                  if(returnArr[1] != null) {
-//	                     Attachment attachment = new Attachment();
-//	                     attachment.setOriginalName(upload.getOriginalFilename());
-//	                     attachment.setRenameName(returnArr[1]);
-//	                     attachment.setAttmPath(returnArr[0]);
-//	                     attachment.setAttmRefType("U");
-//	                     attachment.setAttmRefNo(u.getUNo());
-//	                     
-//	                     attachments.add(attachment);
-//	                  }
-//	               }
-//	            }
-//	            
-//	            for(int i=0; i < attachments.size(); i++) {
-//	               Attachment a = attachments.get(i);
-//	               if(i == 0) {
-//	                  a.setAttmLevel(1);
-//	               } else {
-//	                  a.setAttmLevel(2);
-//	               }
-//	            }
-//	            
-//	            int result2 = bService.insertUsedRvAttm(attachments);
-//	            //System.out.println(result1);
-//	            //System.out.println(result2);
-//	            if(result1 + result2 > 0) {
-//	               return "redirect:/board/usedReview";
-//	            } else {
-//	               for(Attachment a : attachments) {
-//	                  deleteFile(a.getRenameName());
-//	               }
-//	               throw new BoardException("게시글 작성을 실패하였습니다.");
-//	             }
-//	         } else {
-//	              if (result1 > 0) {
-//	                  return "redirect:/board/usedReview";
-//	              } else {
-//	                  throw new BoardException("게시글 작성을 실패하였습니다.");
-//	              }
-//	          }
-//	         
-//	      }
+		@PostMapping("/board/usedReview/insertUsedRvBoard")
+	      public String insertUsedRvBoard(@RequestParam("prodNo") int prodNo, @ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+	                           HttpSession session, HttpServletRequest request, Model model,  @RequestParam("uTitle") String uTitle, @RequestParam("uContent") String uContent) {
+	         
+	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
+	         u.setMbId(boardWriter);
+	         
+	         System.out.println(prodNo);
+	         
+	         UsedBoard selectProduct = bService.checkProdList(prodNo);
+	         
+	         System.out.println(selectProduct);
+	         selectProduct.setUTitle(uTitle);
+	         selectProduct.setUContent(uContent);
+	         selectProduct.setMbId(boardWriter);
+	         
+	         
+	         int result1 = bService.insertUsedRvBoard(selectProduct); 
+	         
+	         
+	         ArrayList<Attachment> attachments = new ArrayList<>();
+	         if (files != null) {
+	            for(int i = 0; i<files.size(); i++) {
+	               MultipartFile upload = files.get(i);
+	               if(!upload.getOriginalFilename().equals("")) {
+	                  String[] returnArr = saveFile(upload);
+	                  if(returnArr[1] != null) {
+	                     Attachment attachment = new Attachment();
+	                     attachment.setOriginalName(upload.getOriginalFilename());
+	                     attachment.setRenameName(returnArr[1]);
+	                     attachment.setAttmPath(returnArr[0]);
+	                     attachment.setAttmRefType("U");
+	                     attachment.setAttmRefNo(u.getUNo());
+	                     
+	                     attachments.add(attachment);
+	                  }
+	               }
+	            }
+	            
+	            for(int i=0; i < attachments.size(); i++) {
+	               Attachment a = attachments.get(i);
+	               if(i == 0) {
+	                  a.setAttmLevel(1);
+	               } else {
+	                  a.setAttmLevel(2);
+	               }
+	            }
+	            
+	            int result2 = bService.insertUsedRvAttm(attachments);
+	            //System.out.println(result1);
+	            //System.out.println(result2);
+	            if(result1 + result2 > 0) {
+	               return "redirect:/board/usedReview";
+	            } else {
+	               for(Attachment a : attachments) {
+	                  deleteFile(a.getRenameName());
+	               }
+	               throw new BoardException("게시글 작성을 실패하였습니다.");
+	             }
+	         } else {
+	              if (result1 > 0) {
+	                  return "redirect:/board/usedReview";
+	              } else {
+	                  throw new BoardException("게시글 작성을 실패하였습니다.");
+	              }
+	          }
+	         
+	      }
 		
 		
 		@GetMapping("/board/usedReview/editForm")
@@ -1950,6 +2168,58 @@ public class BoardController {
 			}
 		}
 		
+		//보드 좋아요
+		@GetMapping("insertDeleteUsedLike.yk")
+		@ResponseBody
+		public String insertDeleteUsedLike(@RequestParam("uNo") int uNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+			
+			map.put("uNo", uNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteUsedBoardLike(map);
+			} else {
+				result = bService.insertUsedBoardLike(map);
+				result = bService.insertUsedRvBoardNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+			}
+		}
+
+		@GetMapping("insertDeleteUsedReply.yk")
+		@ResponseBody
+		public String insertDeleteUsedReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+			HashMap<String, Object> map = new HashMap<>();
+			String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+			map.put("rNo", rNo);
+			map.put("id", id);
+			
+			int result = 0;
+			if (replyInDel.equals("delete")) {
+				result = bService.deleteBoardReplyLike(map);
+			} else {
+				result = bService.insertBoardReplyLike(map);
+				result = bService.insertUsedRvReplyNotice(map);
+			}
+				
+			if (result > 0) {
+				return "good";
+			} else {
+				return "bad";
+						
+			}
+		}
+		
+		
+		
 		/////////////////////////////////////////
 		
 		
@@ -2013,6 +2283,9 @@ public class BoardController {
 	        
 	        return "usedBoard";
 	    }
+	    
+	   
+	    
 		
 //		 // 첨부파일 게시글 상세보기 //
 		@GetMapping("/board/used/detail")
@@ -2031,13 +2304,28 @@ public class BoardController {
 			UsedBoard u = bService.selectUsedBoard(uNo, mbId);
 			ArrayList<Attachment> aList = bService.selectAttmUsedBoardList((Integer)uNo); 
 			ArrayList<Reply> rList = bService.selectUsedReply(uNo);
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("mbId", mbId);
+			map.put("uNo", uNo);
+			int result = bService.selectUsedSaved(map);
+			ArrayList<ReplyLike> likeList = new ArrayList<>();
+			
+			for(Reply r: rList) {
+				Reply tempR = new Reply();
+				tempR.setRNo(r.getRNo());
+				tempR.setMbId(mbId);
+				
+				likeList.add(bService.selectReplyLike(tempR));
+			}
 			
 			if(u != null) {
+				model.addAttribute("saved", result);
 //				model.addAttribute("r", r);
 				model.addAttribute("u", u);
 				model.addAttribute("page", page);
 				model.addAttribute("aList", aList);
 				model.addAttribute("rList", rList);
+				model.addAttribute("lList", likeList);
 				//System.out.println(m);
 				return "usedBoardDetail";
 			} else {
@@ -2053,12 +2341,19 @@ public class BoardController {
 			 return "usedBoardWrite"; 
 		 }
 
-			@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
+		@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
 		 public String insertUsedBoard (@ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
 		 
 				
 				String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 				u.setMbId(boardWriter);
+				
+				
+				System.out.println("soldDate: " + u.getSoldDate());
+				
+				if (u.getSoldDate() == null || u.getSoldDate().toString().isEmpty()) {
+				    u.setSoldDate(null);
+				}
 				
 //				int dwType = Integer.parseInt(dwTypeStr);
 				int result1 = bService.insertUsedBoard(u); 
@@ -2358,8 +2653,78 @@ public class BoardController {
 					return "bad";
 				}
 			}
-		 
-		 
+			
+			@GetMapping("insertDeleteUsedSaved.yk")
+		    @ResponseBody
+		    public String insertDeleteUsedSaved(@RequestParam("productId") int productId, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+				
+				map.put("productId", productId);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteUsedSaved(map);
+				} else {
+					result = bService.insertUsedSaved(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+				}
+			}
+			//보드 좋아요
+			@GetMapping("insertDeleteLostLike.yk")
+			@ResponseBody
+			public String insertDeleteLostLike(@RequestParam("mNo") int mNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+				
+				map.put("mNo", mNo);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteLostBoardLike(map);
+				} else {
+					result = bService.insertLostBoardLike(map);
+					result = bService.insertLostBoardNotice(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+				}
+			}
+
+			@GetMapping("insertDeleteLostReply.yk")
+			@ResponseBody
+			public String insertDeleteLostReply(@RequestParam("rNo") int rNo, @RequestParam("replyInDel") String replyInDel, HttpSession session) {
+				HashMap<String, Object> map = new HashMap<>();
+				String id = ((Member)session.getAttribute("loginUser")).getMbId();
+
+				map.put("rNo", rNo);
+				map.put("id", id);
+				
+				int result = 0;
+				if (replyInDel.equals("delete")) {
+					result = bService.deleteBoardReplyLike(map);
+				} else {
+					result = bService.insertBoardReplyLike(map);
+					result = bService.insertLostReplyNotice(map);
+				}
+					
+				if (result > 0) {
+					return "good";
+				} else {
+					return "bad";
+							
+				}
+			}
 		 
 		 
 		 
@@ -2540,11 +2905,30 @@ public class BoardController {
 				ArrayList<Attachment> aList = bService.selectAttmLostBoardList((Integer)mNo); // ArrayList<Attachment> mList = bService.selectAttmLostBoardList((Integer)mNo);였음 
 				ArrayList<Reply> rList = bService.selectLostReply(mNo);
 				
+				
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("mNo", mNo);
+				map.put("id", mbId);
+				int likeCount = bService.LostBoardLike(map);			
+				ArrayList<ReplyLike> likeList = new ArrayList<>();
+				
+				for(Reply r: rList) {
+					Reply tempR = new Reply();
+					tempR.setRNo(r.getRNo());
+					tempR.setMbId(mbId);
+					
+					likeList.add(bService.selectReplyLike(tempR));
+				}
+				
+				
+				
 				if(m != null) {
 					model.addAttribute("m", m);
 					model.addAttribute("page", page);
 					model.addAttribute("aList", aList); //model.addAttribute("mList", mList);였음
 					model.addAttribute("rList", rList);
+					model.addAttribute("aLike", likeCount);
+					model.addAttribute("lList", likeList);
 					//System.out.println(m);
 					return "lostBoardDetail";
 				} else {

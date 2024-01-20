@@ -22,7 +22,10 @@
 <body>
 	<!-- top navigation bar -->
 	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
-	<div th:replace="~{common/top :: top}"></div>
+	
+	<div class="alert alert-danger" id="liveAlertPlaceholder" style="z-index: 9999; display:none; position: fixed; top: 10%; left: 50%; transform: translate(-50%, 0);"></div>
+	<div th:replace="~{common/top :: top}">
+	</div>
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="d-flex justify-content-center mx-5">
@@ -113,8 +116,6 @@
 		</div>
 	</main>
 	
-	<div class="alert alert-danger" id="liveAlertPlaceholder" style="display:none; position: fixed; top: 10%; left: 45%;"></div>
-	
 	<script>
 		const myNav = document.getElementById("myNav4");
 		$(myNav).removeClass('text-secondary');
@@ -138,10 +139,14 @@
 					console.log(data);
 					if (data == 'good') {
 						document.querySelector('form').submit();
-					} else if(data == 'noId'){
+					} else if(data == 'noId') {
 						liveAlertPlaceholder.style.display = 'block';
 						liveAlertPlaceholder.innerText = '존재 하지 않는 아이디 입니다.';
 						alertTimeOut();
+					} else if(data == 'banned'){
+		                  liveAlertPlaceholder.style.display = 'block';
+		                  liveAlertPlaceholder.innerText = '정지된 계정입니다. 관리자에게 문의해주세요.';
+		                  alertTimeOut();
 					} else {
 						liveAlertPlaceholder.style.display = 'block';
 						liveAlertPlaceholder.innerText = '틀린 비밀번호 입니다.';

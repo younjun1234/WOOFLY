@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,15 +46,21 @@ public class ShopController {
 
 	@GetMapping("/shopMain")
 	public String movoToShopMain(Model model, @RequestParam(value = "page", defaultValue="1")int page,
+								@RequestParam(value="sort", required=false) String sort,
+								@RequestParam(value="direction", required=false) String direction,
 								HttpServletRequest request) {
 		// 쇼핑 상품리스트 전체 가져와서 뿌리기
 		// 상품리스트, 상품에 따른 썸네일 가져오고, 상품의 카테고리 가져오고 // 페이징처리(무한스크롤)
 		// 가져올 페이지, 한 페이지에 표현될 상품 개수			// 나중에 무한스크롤 완성시키자...
+		HashMap<String, Object> sortMap = new HashMap<>();
+		sortMap.put("sort", sort);			// 검색 기준
+		sortMap.put("direction", direction); // 정렬 기준
+		sortMap.put("cNo", null);
 		int listCount = sService.getProductCount("P");
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 12);
 		
 		
-		ArrayList<Product> pList = sService.selectProducts(pi, null);
+		ArrayList<Product> pList = sService.selectProducts(pi, sortMap);
 		
 		// topCategory용 - 선택된 카테고리! 자체를 선별 null 보내면 전체 카테고리 1개씩
 		ArrayList<ProductCategory> sList = sService.selectedCategory(null);
@@ -64,7 +71,6 @@ public class ShopController {
 		// 썸네일의 첫번째만 가져오기....
 		ArrayList<ProductAttm> aList = sService.selectProductAttm(null);
 		
-		
 		model.addAttribute("pi", pi);
 		model.addAttribute("pList", pList);
 		model.addAttribute("cList", cList);
@@ -72,6 +78,8 @@ public class ShopController {
 		model.addAttribute("bList", bList);
 		model.addAttribute("sList", sList);
 		model.addAttribute("loc", request.getRequestURI());
+		model.addAttribute("sort", sort);
+		model.addAttribute("direction", direction);
 		
 		
 		return "shopMain";
@@ -200,14 +208,20 @@ public class ShopController {
 	@GetMapping("/shop/selectDetail")
 	public String selectDetailCategory(@RequestParam("productDetailNo") int cNo,
 										@RequestParam(value="page", defaultValue="1") int page,
+										@RequestParam(value="sort", required=false) String sort,
+										@RequestParam(value="direction", required=false) String direction,
 										HttpServletRequest request,
 										Model model) {
 		
 		// 받아 온 카테고리에 해당하는 상품으로 교체
-		
+		HashMap<String, Object> sortMap = new HashMap<>();
+		sortMap.put("sort", sort);			// 검색 기준
+		sortMap.put("direction", direction); // 정렬 기준
+		sortMap.put("cNo", cNo);
+
 		int listCount = sService.getDetailCount(cNo);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 12);
-		ArrayList<Product> pList = sService.selectProducts(pi, cNo);
+		ArrayList<Product> pList = sService.selectProducts(pi, sortMap);
 		
 		// topCategory용 - 선택된 카테고리! 자체를 선별 null 보내면 전체 카테고리 1개씩
 		ArrayList<ProductCategory> sList = sService.selectedCategory(cNo);
@@ -226,6 +240,9 @@ public class ShopController {
 			model.addAttribute("bList", bList);
 			model.addAttribute("sList", sList);
 			model.addAttribute("loc", request.getRequestURI());
+			model.addAttribute("isDetail", cNo);
+			model.addAttribute("sort", sort);
+			model.addAttribute("direction", direction);
 			
 			return "shopMain";
 		} else {
@@ -240,6 +257,7 @@ public class ShopController {
 										HttpSession session) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
+		String memberId = null;
 		
 		Product p = sService.selectDetailProduct(productId);
 		ArrayList<ProductAttm> aList = sService.selectProductAttm(productId);
@@ -247,6 +265,17 @@ public class ShopController {
 		r.setBType("P");
 		r.setBNo(productId);
 		ArrayList<Reply> rList = sService.selectReply(r);
+		
+		int savedCount = sService.selectSavedProduct(productId);
+		
+		if(loginUser != null) {
+			memberId = loginUser.getMbId();
+		}
+		
+		HashMap<String, Object> stampParam = new HashMap<>();
+		stampParam.put("memberId", memberId);
+		stampParam.put("productId", productId);
+		int stampCount = sService.selectMyStampProduct(stampParam);
 		
 		ArrayList<Integer> rNos = new ArrayList<>();
 		ArrayList<ReplyLike> likes = null;
@@ -268,9 +297,6 @@ public class ShopController {
 			}
 		}
 		
-		
-		System.out.println(rList);
-		
 		String[] colors = null;
 		if(!p.getColor().equals("N")) {
 			colors = p.getColor().split(",");
@@ -287,7 +313,6 @@ public class ShopController {
 			}
 		}
 		
-		System.out.println(likes);
 		model.addAttribute("page", page);
 		model.addAttribute("p", p);
 		model.addAttribute("tList", tList);
@@ -297,6 +322,8 @@ public class ShopController {
 		model.addAttribute("c", c);
 		model.addAttribute("colors", colors);
 		model.addAttribute("likes", likes);
+		model.addAttribute("stampCount", stampCount);
+		model.addAttribute("savedCount", savedCount);
 		
 		return "shopDetail";
 	}
@@ -410,6 +437,17 @@ public class ShopController {
 		responseData.put("rList", rList);
 		responseData.put("likes", likes);
 		
+		if(result > 0) {
+			HashMap<String, Object> notifyMap = new HashMap<>();
+			notifyMap.put("mbId", "admin");	// 타겟
+			notifyMap.put("notiType", "SR");
+			notifyMap.put("notiContent", "해당 상품에 리뷰가 달렸습니다. / " + r.getReContent());
+			notifyMap.put("fromUser", r.getMbId());		// 보내는 사람
+			notifyMap.put("refNo", r.getBNo());
+			
+			int notify = sService.insertNotify(notifyMap);
+		}
+		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 		
 		try {
@@ -457,11 +495,6 @@ public class ShopController {
 								@RequestParam("deleteAttm") String[] deleteAttm,
 								RedirectAttributes re,
 								@RequestParam("page") int page) {
-		
-		System.out.println(p);	// p.productDetailNo 확인
-		System.out.println(thumbFiles);	// null		추가된
-		System.out.println(contentFiles); // null	추가된
-		System.out.println(deleteAttm);	// 주소값
 		
 		if(p.getColor() == null) {
 			p.setColor("N");
@@ -511,7 +544,6 @@ public class ShopController {
 				}
 			}
 		}
-		
 		
 		// 삭제하기로 선택된 원본 리네임 String[], 유지하기로 한 비교값은 "none"
 		ArrayList<String> delRename = new ArrayList<>();
@@ -576,16 +608,27 @@ public class ShopController {
 	
 	@GetMapping(value="/shop/insertReplyCount")
 	public void insertReplyCount(@RequestParam("mId") String mId,
-									@RequestParam("rNo") int rNo,
+									@ModelAttribute Reply r,
 									HttpServletResponse response) {
 		
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("mId", mId);
-		map.put("rNo", rNo);
+		map.put("r", r);
 		
 		int result = sService.insertReplyCount(map);
-		
 		String out = result != 0 ? "success" : "fail";
+		
+		if(result > 0) {
+			// mbId="rNo.mbId",notiType= rl noti_content is_read ="N" from_user = "mId", REF_NO = "rNo" Sysdate
+			HashMap<String, Object> notifyMap = new HashMap<>();
+			notifyMap.put("mbId", r.getMbId());
+			notifyMap.put("notiType", "RL");
+			notifyMap.put("notiContent", "회원님의 댓글에 좋아요!!");
+			notifyMap.put("fromUser", mId);
+			notifyMap.put("refNo", r.getRNo());
+			
+			int notify = sService.insertNotify(notifyMap);
+		}
 		
 		Gson gson = new GsonBuilder().create();
 		
@@ -663,6 +706,40 @@ public class ShopController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@GetMapping(value="/shop/insertStampProduct")
+	@ResponseBody
+	public String insertStampProduct(@RequestParam("mbId") String mbId,
+									@RequestParam("pId") int pId,
+									@RequestParam("type") String type) {
+		
+		HashMap<String, Object> stamp = new HashMap<>();
+		stamp.put("mbId", mbId);
+		stamp.put("pId", pId);
+		stamp.put("type", type);
+		
+		int result = sService.insertStampProduct(stamp);
+		String out = result == 0 ? "fail" : "success";
+		
+		return out;
+	}
+	
+	@GetMapping("/shop/deleteStampProduct")
+	@ResponseBody
+	public String deleteStampProduct(@RequestParam("mbId") String mbId,
+									@RequestParam("pId") int pId,
+									@RequestParam("type") String type) {
+		
+		HashMap<String, Object> stamp = new HashMap<>();
+		stamp.put("mbId", mbId);
+		stamp.put("pId", pId);
+		stamp.put("type", type);
+		
+		int result = sService.deleteStampProduct(stamp);
+		String out = result == 0 ? "fail" : "success";
+		
+		return out;
 	}
 	
 	
