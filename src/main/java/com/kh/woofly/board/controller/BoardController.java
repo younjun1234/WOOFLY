@@ -1701,48 +1701,6 @@ public class BoardController {
 		
 	
 
-//		첨부파일 게시글 조회 //
-//			@GetMapping("/board/used")
-//			public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page, 
-//										Model model,
-//										HttpServletRequest request) throws BoardException {
-//				
-//				int uListCount = bService.getUlistCount(1);
-//				
-//				PageInfo pi = Pagination.getPageInfo(page, uListCount, 10);
-//				ArrayList<UsedBoard> mList = bService.selectUsedBoardList(pi, 1);		
-//				ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
-//				
-//				if(uList != null) {
-//					model.addAttribute("pi", pi);
-//					model.addAttribute("uList", uList);
-//					model.addAttribute("aList", aList);
-//					model.addAttribute("loc", request.getRequestURI());
-//					
-//					return "usedBoard";
-//				} else {
-//					throw new BoardException("게시글 조회 실패");
-//				}
-//			}
-		
-		/*@GetMapping("/board/used/detail")
-		public String usedBoardDetail() {
-			
-			return "usedBoardDetail";
-		}
-		
-		@GetMapping("/board/used/write")
-		public String usedBoardWrite() {
-			
-			
-			return "usedBoardWrite";
-		}
-		
-		@GetMapping("/board/used/edit")
-		public String usedBoardEdit() {
-			
-			return "usedBoardEdit";
-		}*/
 		
 				
 		/////////////////////중고게시판 후기 황유경*/
@@ -1801,7 +1759,7 @@ public class BoardController {
 			
 			ArrayList<Attachment> list = bService.selectAttmUsedRvBoardList(uNo); 
 			
-			System.out.println(uNo);
+//			System.out.println(uNo);
 			int listCount = bService.getUsedRvReplyListCount(uNo);
 			
 			
@@ -1859,67 +1817,68 @@ public class BoardController {
 	         String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
 	         u.setMbId(boardWriter);
 	         
-	         System.out.println(prodNo);
+//	         System.out.println(prodNo);
 	         
 	         UsedBoard selectProduct = bService.checkProdList(prodNo);
 	         
-	         System.out.println(selectProduct);
+//	         System.out.println(selectProduct);
 	         selectProduct.setUTitle(uTitle);
 	         selectProduct.setUContent(uContent);
 	         selectProduct.setMbId(boardWriter);
 	         
 	         
 	         int result1 = bService.insertUsedRvBoard(selectProduct); 
-	         
+	         System.out.println(selectProduct);
 	         
 	         ArrayList<Attachment> attachments = new ArrayList<>();
-	         if (files != null) {
-	            for(int i = 0; i<files.size(); i++) {
-	               MultipartFile upload = files.get(i);
-	               if(!upload.getOriginalFilename().equals("")) {
-	                  String[] returnArr = saveFile(upload);
-	                  if(returnArr[1] != null) {
-	                     Attachment attachment = new Attachment();
-	                     attachment.setOriginalName(upload.getOriginalFilename());
-	                     attachment.setRenameName(returnArr[1]);
-	                     attachment.setAttmPath(returnArr[0]);
-	                     attachment.setAttmRefType("U");
-	                     attachment.setAttmRefNo(u.getUNo());
-	                     
-	                     attachments.add(attachment);
-	                  }
-	               }
-	            }
-	            
-	            for(int i=0; i < attachments.size(); i++) {
-	               Attachment a = attachments.get(i);
-	               if(i == 0) {
-	                  a.setAttmLevel(1);
-	               } else {
-	                  a.setAttmLevel(2);
-	               }
-	            }
-	            
-	            int result2 = bService.insertUsedRvAttm(attachments);
-	            //System.out.println(result1);
-	            //System.out.println(result2);
-	            if(result1 + result2 > 0) {
-	               return "redirect:/board/usedReview";
-	            } else {
-	               for(Attachment a : attachments) {
-	                  deleteFile(a.getRenameName());
-	               }
-	               throw new BoardException("게시글 작성을 실패하였습니다.");
-	             }
-	         } else {
-	              if (result1 > 0) {
-	                  return "redirect:/board/usedReview";
-	              } else {
-	                  throw new BoardException("게시글 작성을 실패하였습니다.");
-	              }
-	          }
-	         
-	      }
+				if (files != null) {
+					for(int i = 0; i<files.size(); i++) {
+						MultipartFile upload = files.get(i);
+						if(!upload.getOriginalFilename().equals("")) {
+							String[] returnArr = saveFile(upload);
+							if(returnArr[1] != null) {
+								Attachment attachment = new Attachment();
+								attachment.setOriginalName(upload.getOriginalFilename());
+								attachment.setRenameName(returnArr[1]);
+								attachment.setAttmPath(returnArr[0]);
+								attachment.setAttmRefType("U");
+								attachment.setAttmRefNo(u.getUNo());
+								
+								attachments.add(attachment);
+							}
+						}
+					}
+					
+					for(int i=0; i < attachments.size(); i++) {
+						Attachment a = attachments.get(i);
+						if(i == 0) {
+							a.setAttmLevel(1);
+						} else {
+							a.setAttmLevel(2);
+						}
+					}
+					System.out.println(attachments);
+					int result2 = bService.insertUsedRvAttm(attachments);
+					//System.out.println(result1);
+					//System.out.println(result2);
+					if(result1 + result2 > 0) {
+						return "redirect:/board/usedReview";
+					} else {
+						for(Attachment a : attachments) {
+							deleteFile(a.getRenameName());
+						}
+						throw new BoardException("게시글 작성을 실패하였습니다.");
+				    }
+				} else {
+			        if (result1 > 0) {
+			            return "redirect:/board/usedReview";
+			        } else {
+			            throw new BoardException("게시글 작성을 실패하였습니다.");
+			        }
+			    }
+				
+			}
+	        
 		
 		
 		@GetMapping("/board/usedReview/editForm")
@@ -2854,38 +2813,7 @@ public class BoardController {
 	         
 	      
 	      
-		/*
-		 * // 파일 저장소 파일 저장(copy) private String[] saveFile(MultipartFile upload) {
-		 * 
-		 * String root = "C:\\woofly\\"; String savePath = root + "\\board";
-		 * 
-		 * File folder = new File(savePath); if(!folder.exists()) { folder.mkdirs(); }
-		 * 
-		 * Date time = new Date(System.currentTimeMillis()); SimpleDateFormat sdf = new
-		 * SimpleDateFormat("yyyyMMddHHmmssSSS"); int ranNum =
-		 * (int)(Math.random()*100000);
-		 * 
-		 * String originFileName = upload.getOriginalFilename(); String renameFileName =
-		 * sdf.format(time) + ranNum +
-		 * originFileName.substring(originFileName.lastIndexOf("."));
-		 * 
-		 * String renamePath = folder + "\\" + renameFileName;
-		 * 
-		 * try { upload.transferTo(new File(renamePath)); } catch (IllegalStateException
-		 * e) { e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-		 * 
-		 * String[] returnArr = new String[2]; returnArr[0] = savePath; returnArr[1] =
-		 * renameFileName;
-		 * 
-		 * return returnArr; }
-		 * 
-		 * 
-		 * private void deleteFile(String renameName) { String root = "C:\\woofly\\";
-		 * String savePath = root + "\\board";
-		 * 
-		 * File f = new File(savePath + "\\" + renameName); if(f.exists()) { f.delete();
-		 * } }
-		 */
+	
 
 		
 	   // 첨부파일 게시글 상세보기 //
@@ -3237,6 +3165,50 @@ public class BoardController {
 			}
 		}
 		
+		
+
+//		첨부파일 게시글 조회 //
+//			@GetMapping("/board/used")
+//			public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page, 
+//										Model model,
+//										HttpServletRequest request) throws BoardException {
+//				
+//				int uListCount = bService.getUlistCount(1);
+//				
+//				PageInfo pi = Pagination.getPageInfo(page, uListCount, 10);
+//				ArrayList<UsedBoard> mList = bService.selectUsedBoardList(pi, 1);		
+//				ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
+//				
+//				if(uList != null) {
+//					model.addAttribute("pi", pi);
+//					model.addAttribute("uList", uList);
+//					model.addAttribute("aList", aList);
+//					model.addAttribute("loc", request.getRequestURI());
+//					
+//					return "usedBoard";
+//				} else {
+//					throw new BoardException("게시글 조회 실패");
+//				}
+//			}
+		
+		/*@GetMapping("/board/used/detail")
+		public String usedBoardDetail() {
+			
+			return "usedBoardDetail";
+		}
+		
+		@GetMapping("/board/used/write")
+		public String usedBoardWrite() {
+			
+			
+			return "usedBoardWrite";
+		}
+		
+		@GetMapping("/board/used/edit")
+		public String usedBoardEdit() {
+			
+			return "usedBoardEdit";
+		}*/
 		
 }
     

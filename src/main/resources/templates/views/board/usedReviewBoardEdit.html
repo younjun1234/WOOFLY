@@ -28,7 +28,12 @@
 			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/usedReview/edit"  id="attmForm">
 				<input type = "hidden" th:value ="${ u.uNo }" name="uNo">
 				<input type = "hidden" th:value ="${ page }" name ="page">
-								
+					
+					
+				<div class="mb-3">
+					<th:block th:value="|${u.buyerId}님께서 판매하신 ${u.productName}에 대한 거래 후기입니다.|">  </th:block>
+                    
+                </div>			
 				
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
