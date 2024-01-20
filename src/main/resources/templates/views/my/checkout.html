@@ -434,6 +434,17 @@
 	</div>
 	
 	<script  th:inline="javascript">
+		
+		window.onload = () => {
+			/*<![CDATA[*/
+			const pList = /*[[${pList}]]*/null;
+			/*]]>*/
+			
+			if (pList == null || pList.length == 0) {
+				alert('결제 정보를 먼저 등록해주세요.');
+				window.location.href = '/my/payment'; 
+			}
+		}
 	
 		const selectedPayment = document.querySelector('#selectedPayment');
 		selectedPayment.addEventListener('click', () => {
