@@ -52,7 +52,7 @@
 				</div>
 				<div class="d-flex justify-content-between mb-3 gap-5 flex-wrap">
 					<div class="card" style="width: 20%;" th:each="s: ${list}" th:onclick="|location.href='/shop/productDetail?pId=${s.productId}&page=1'|" role="button">
-				  		<img th:src="'/image/' + ${s.renameName}" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+				  		<img th:src="'/image/shopFiles/' + ${s.renameName}" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
 				  		<div class="card-body">
 				    		<p class="card-text">[[${s.productName}]]</p>
 				    		<p class="card-text">[[${#numbers.formatInteger(s.price, 3, 'COMMA')}]]원</p>

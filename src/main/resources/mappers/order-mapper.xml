@@ -51,6 +51,18 @@
 		select count(*)
 		from orders
 		where customer_id = #{id}
+			<if test="startDate != null">
+		    	and order_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and order_date <![CDATA[<]]> #{endDate}
+		    </if>
+		<if test="orderDate != null">
+		    order by order_date ${orderDate}
+		</if>
+		<if test="price != null">
+		    order by total ${price}
+		</if>
 	</select>
 	
 	<select id="selectOrder" resultType="Order">
@@ -67,9 +79,11 @@
 	</select>
 	
 	<select id="selectOrderProductsAttm" resultType="ProductAttm">
-		select *
-		from attachment
-		where attm_ref_type = 'P' and attm_ref_no = #{productId} 
+		select * from (
+			select *
+			from attachment
+			where attm_ref_type = 'P' and attm_ref_no = #{productId}  and attm_level = 1
+		) where rownum = 1
 	</select>
 	
 	<select id="selectOrderAttm" resultType="ProductAttm">

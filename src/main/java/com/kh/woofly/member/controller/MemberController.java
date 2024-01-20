@@ -168,6 +168,7 @@ public class MemberController {
 	public String addressView(HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		ArrayList<MemberAddress> list = mService.selectMyAddress(id);
+		System.out.println(list);
 		if(list != null) {
 			model.addAttribute("list", list);
 		}

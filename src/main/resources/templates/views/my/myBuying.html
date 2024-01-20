@@ -88,7 +88,7 @@
 					<input type="hidden" th:value="${ buying.orderId }">
 					<div class="d-flex align-content-center ms-3 col-6">
 						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}">
-							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
+							<img class="rounded float-start my-auto" th:src="'/image/shopFiles/' + ${attm.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
 						</th:block>
 						<th:block th:each="product, productStat : ${pList}" th:if="${productStat.index == buyingStat.index}">
 							<div class="ms-3" style="line-height: 100px;">[[${product.productName}]]<span th:if="${buying.productCount > 1}"> 외 [[${buying.productCount - 1}]]개의 상품</span></div>

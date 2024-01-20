@@ -398,7 +398,7 @@ public class AccountController {
                 "안녕하세요 Woofly를 다시 찾아주셔서 감사합니다"
                 +System.getProperty("line.separator")+
                 System.getProperty("line.separator")+
-                "회원님의 임시 비밀번호는 " +randomPwd+ " 입니다. " 
+                "회원님의 임시 비밀번호는 " +randomPwd+ "입니다. " 
                 +System.getProperty("line.separator");
         
         String newRandomPwd = bcrypt.encode(randomPwd);
