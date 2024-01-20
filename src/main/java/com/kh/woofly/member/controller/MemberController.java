@@ -485,7 +485,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\uploadFiles\\woolfy";
+			savePath = "C:\\woolfy";
 		} else if(os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
 		}
@@ -501,7 +501,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\" + "\\uploadFiles\\woofly";
+			savePath = "C:\\woofly";
 		} else if (os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 		}
