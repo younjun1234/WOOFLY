@@ -48,7 +48,7 @@
 					</svg>
 					<ul class="dropdown-menu"> <!--  href="/board/free/editForm" -->
 						<li><a class="dropdown-item" id="updateForm" th:if="${ session.loginUser!=null && session.loginUser.mbId eq wm.mbId }">수정</a></li>
-					    <li><a class="dropdown-item" id="updateForm" th:if="${ session.loginUser!=null && session.loginUser.mbId eq wm.mbId }">삭제</a></li>
+					    <li><a class="dropdown-item" id="deleteModal" th:if="${ session.loginUser!=null && session.loginUser.mbId eq wm.mbId }">삭제</a></li>
 					    <li><a class="dropdown-item" id ="reportModal" th:if="${ session.loginUser!=null && session.loginUser.mbId ne wm.mbId }">신고</a></li>
 					</ul> 
 				</div>
@@ -451,12 +451,14 @@
 			
 			const del = document.getElementById('deleteModal')
 			if(del != null) {
+				console.log(123);
 				del.addEventListener('click', () =>{
 					$('#modalChoice').modal('show');
 				})
 			}
 			
 			document.getElementById('delete').addEventListener('click', () =>{
+				console.log(123);
 				form.action = '/board/wm/delete';
 				form.submit();
 			})
