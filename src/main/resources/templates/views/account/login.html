@@ -98,7 +98,7 @@
 					</div>
 					<br>
 					<div>
-						<a class="btn btn-outline-dark mb-3" href="https://kauth.kakao.com/oauth/authorize?client_id=1ca4e62a403e811b888aebec433f8494&redirect_uri=http://localhost:8080/kakaoLogin&response_type=code" style="width:100%">카카오로 간편 로그인</a>
+						<a class="btn btn-outline-dark mb-3" href="https://kauth.kakao.com/oauth/authorize?client_id=1ca4e62a403e811b888aebec433f8494&redirect_uri=http://192.168.20.217:8080/kakaoLogin&response_type=code" style="width:100%">카카오로 간편 로그인</a>
 					</div>
 				</div>
 			</div>
@@ -163,19 +163,6 @@
 			e.preventDefault();
 			$('#signUpModal').modal("show");
 		});
-		
-		/* function togglePassword() {
-		    var passwordField = document.getElementById("mbPwd");
-		    var passwordButton = document.querySelector("button");
-
-		    if (passwordField.type === "password") {
-		      passwordField.type = "text";
-		      passwordButton.textContent = "Hide Password";
-		    } else {
-		      passwordField.type = "password";
-		      passwordButton.textContent = "Show Password";
-		    }
-		  } */
 		
 	     $(document).ready(function(){
 	        $('#showPwd').on('click', function(){

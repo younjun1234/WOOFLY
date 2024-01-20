@@ -171,7 +171,7 @@
 			select ab_seq.nextval from dual
 		</selectKey>
 		insert into album
-		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId})
+		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId}, 0)
 	</insert>
 	
 	<insert id="insertPetAlbum" parameterType="Attachment">
