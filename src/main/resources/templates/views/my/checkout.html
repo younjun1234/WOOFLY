@@ -115,9 +115,11 @@
 				<br>
 				<div class="d-flex justify-content-between align-items-center rounded border border-black p-2" role="button" id="selectedPayment">
 					<div class="ms-2">
-						<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey"> 
-						<div>[[${pList[0].cardCompany}]]</div>
-						<div>****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</div>
+						<th:block th:if="${#arrays.isEmpty(pList)}">
+							<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey"> 
+							<div>[[${pList[0].cardCompany}]]</div>
+							<div>****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</div>
+						</th:block>
 					</div>
 					<div class="me-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
