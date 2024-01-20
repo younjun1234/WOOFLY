@@ -213,6 +213,11 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.allContestNo();
 	}
 
+	@Override
+	public ArrayList<Participants> topFiveBest(int cNo) {
+		return cDAO.topFiveBest(cNo);
+	}
+
 	
 
 //	@Override

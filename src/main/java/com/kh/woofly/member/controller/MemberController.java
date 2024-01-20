@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.contest.model.service.ContestService;
+import com.kh.woofly.contest.model.vo.ContestAttm;
+import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
@@ -43,10 +43,12 @@ import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Notification;
 import com.kh.woofly.member.model.vo.Payment;
 import com.kh.woofly.member.model.vo.Point;
+import com.kh.woofly.shop.model.service.ShopService;
+import com.kh.woofly.shop.model.vo.Product;
+import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -66,6 +68,12 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService mService;
+	
+	@Autowired
+	private ContestService cService;
+	
+	@Autowired
+	private ShopService sService;
 	
 	final DefaultMessageService messageService;
 
@@ -91,6 +99,30 @@ public class MemberController {
 			model.addAttribute("notificationStatus", isAllRead);
     		model.addAttribute("notifications", list);
     	}
+    	
+    	int cNo = cService.todayContestNo();
+    	
+    	ArrayList<Participants> participantsList = cService.topFiveBest(cNo);
+    	ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+    	
+    	ArrayList<Product> recentlyProducts = sService.recentlyProductFive();
+    	ArrayList<Product> popularityProducts = sService.popularityProductFive();
+    	ArrayList<ProductAttm> pAttmList = sService.selectProductAttm(null);
+    	
+    	System.out.println(pAttmList);
+    	System.out.println(recentlyProducts);
+    	System.out.println(popularityProducts);
+    	System.out.println(cAttmList);
+    	System.out.println(cNo);
+    	System.out.println(participantsList);
+    	
+    	model.addAttribute("pAttmList", pAttmList);
+    	model.addAttribute("popularityProducts", popularityProducts);
+    	model.addAttribute("recentlyProducts", recentlyProducts);
+    	model.addAttribute("cAttmList", cAttmList);
+    	model.addAttribute("participantsList", participantsList);
+    	
+    	
     	return "index";
 
     }
