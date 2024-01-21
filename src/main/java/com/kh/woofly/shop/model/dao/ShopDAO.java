@@ -80,4 +80,8 @@ public interface ShopDAO {
 
 	int insertNotify(HashMap<String, Object> notifyMap);
 
+	ArrayList<Product> recentlyProductFive();
+
+	ArrayList<Product> popularityProductFive();
+
 }

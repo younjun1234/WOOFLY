@@ -161,10 +161,13 @@ public class ShopController {
 	}
 	
 	private String[] saveFile(MultipartFile upload) {
-		
-		String root = "C:\\woofly\\";
-		String savePath = root + "\\shopFiles";
-		
+		String os = System.getProperty("os.name").toLowerCase();
+		String savePath = null;
+		if (os.contains("win")) {
+			savePath = "C:\\woofly\\shopFiles";
+		} else if (os.contains("mac")) {
+			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
+		}
 		File folder = new File(savePath);
 		if(!folder.exists()) {
 			folder.mkdirs();

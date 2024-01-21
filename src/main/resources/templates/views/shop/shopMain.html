@@ -58,7 +58,9 @@
 				<div class="col-10 mb-5 pt-3 me-4">
 					<div class="d-flex justify-content-between border-bottom border-black border-2 pb-3 mb-3">
 						<h3 class="col-10">쇼핑몰</h3>
-						<button class="btn btn-outline-dark" id="productWrite">등록</button>
+						<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+							<button class="btn btn-outline-dark" id="productWrite">등록</button>
+						</th:block>
 					</div>
 					
 					<div class="d-flex mb-4 justify-content-between">
@@ -216,12 +218,16 @@
 		const categoryAll = /*[[${cList}]]*/0;	
 		const pList = /*[[${pList}]]*/null;
 		const isDetail = /*[[${isDetail}]]*/null;
+		const admin =/*[[${session.loginUser}]]*/null;
 		/*]]>*/
 		window.onload = () => {
-			const write = document.getElementById('productWrite');
-			write.addEventListener('click', () =>{
-				location.href='/shop/shopWrite';
-			});
+			if(admin.isAdmin == 'Y') {
+				
+	            const write = document.getElementById('productWrite');
+	            write.addEventListener('click', () =>{
+	               location.href='/shop/shopWrite';
+	            });
+	         }
 			
 			const products = document.querySelectorAll('.products');
 			for(product of products) {

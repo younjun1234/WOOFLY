@@ -171,7 +171,7 @@
 			select ab_seq.nextval from dual
 		</selectKey>
 		insert into album
-		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId})
+		values (#{abNo}, #{abContent}, sysdate, default, #{writerId}, #{petId}, 0)
 	</insert>
 	
 	<insert id="insertPetAlbum" parameterType="Attachment">
@@ -306,6 +306,16 @@
 		delete from board_like
 		where like_ref_board = #{abNo} and like_ref_type = 'AB' and like_user = #{id}
 	</delete>
+	
+	<insert id="insertReplyNotice">
+		insert into notification
+		values (noti_seq.nextval, (select writer_id from album where ab_no = #{abNo}), 'RL', null, 'Y', #{id}, 1, sysdate)
+	</insert>
+	
+	<insert id="insertBoardNotice">
+		insert into notification
+		values (noti_seq.nextval, (select writer_id from album where ab_no = #{abNo}), 'AB', null, 'Y', #{id}, 1, sysdate)
+	</insert>
 	
 	<select id="petContestList" resultType="Participants">
 		<!-- select *

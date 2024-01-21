@@ -31,7 +31,7 @@ public interface OrderDAO {
 
 	Product selectMostExpensive(Order order);
 
-	int getBuyingCount(String id);
+	int getBuyingCount(HashMap<String, Object> id);
 
 	int deletePoints(String id);
 

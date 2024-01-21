@@ -104,8 +104,8 @@
 		        	/*<![CDATA[*/
 		        	customerKey: /*[[${session.loginUser.mbId}]]*/null, 
 		        	/*]]>*/
-		        	successUrl: 'http://localhost:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
-		        	failUrl: 'http://localhost:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
+		        	successUrl: 'http://192.168.20.217:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
+		        	failUrl: 'http://192.168.20.217:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
 		      	})
 				.catch(function (error) {
 		        	if (error.code === 'USER_CANCEL') {

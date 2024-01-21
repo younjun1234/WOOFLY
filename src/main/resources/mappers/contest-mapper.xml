@@ -201,6 +201,17 @@
         WHERE CONTEST_ID = #{cNo}
         ORDER BY P_COUNT DESC
 	</select>
+	
+	
+	<select id="topFiveBest" resultType="Participants">
+        SELECT *
+        FROM Participants
+        WHERE CONTEST_ID = #{cNo}
+        ORDER BY P_COUNT DESC
+        FETCH FIRST 5 ROWS ONLY
+	</select>
+	
+	
 
 	
 	<select id="searchParticipantstList" resultType="Participants">
