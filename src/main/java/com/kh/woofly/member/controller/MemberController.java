@@ -78,8 +78,7 @@ public class MemberController {
 	final DefaultMessageService messageService;
 
     public MemberController() {
-        // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
+        this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
 	
     @GetMapping("/")
@@ -580,7 +579,7 @@ public class MemberController {
 		
         Message message = new Message();
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
-        message.setFrom("01054942469");
+        message.setFrom("01064954499");
         message.setTo(to);
         message.setText(content);
 
@@ -596,6 +595,7 @@ public class MemberController {
     public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
 		Member loginUser = ((Member)session.getAttribute("loginUser"));
 		
+		loginUser.setMbTel(phone);
 		int result = mService.updatePhone(loginUser);
 		if(result > 0) {
 			return "redirect:/my/login-edit";

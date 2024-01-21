@@ -53,7 +53,7 @@
 					<div class="my-auto">
 						<button class="btn btn-sm btn-outline-dark paymentStatus" th:if="${ card.paymentType == 'N' }" data-bs-toggle="modal" data-bs-target="#updatePaymentModal">기본 결제</button>
 						<input type="hidden" th:value="${card.paymentNo}">
-						<button class="btn btn-sm btn-outline-dark paymentDelete">삭제</button>
+						<button class="btn btn-sm btn-outline-dark paymentDelete" th:if="${ card.paymentType != 'Y'}">삭제</button>
 					</div>
 				</div>
 			</div>
@@ -104,8 +104,8 @@
 		        	/*<![CDATA[*/
 		        	customerKey: /*[[${session.loginUser.mbId}]]*/null, 
 		        	/*]]>*/
-		        	successUrl: 'http://192.168.20.217:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
-		        	failUrl: 'http://192.168.20.217:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
+		        	successUrl: 'http://localhost:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
+		        	failUrl: 'http://localhost:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
 		      	})
 				.catch(function (error) {
 		        	if (error.code === 'USER_CANCEL') {
@@ -130,6 +130,7 @@
 		for(const deletePayment of deletePayments) {
 			deletePayment.addEventListener('click', () => {
 				const paymentNo = deletePayment.previousElementSibling.value;
+				console.log(deletePayment);
 				window.location.href = '/deletePayment.yj?paymentNo=' + paymentNo;
 			})
 		}
