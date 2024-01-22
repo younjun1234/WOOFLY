@@ -1133,7 +1133,7 @@
        </choose>
        ORDER BY u_no DESC
    </select>
-	
+   
 	<select id="selectUsedRvBoard" resultType="UsedBoard">
 		select  b.*, m.mb_nickname as "mbNickName" 
 		from used_board b

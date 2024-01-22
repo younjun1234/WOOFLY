@@ -121,10 +121,9 @@
 	    for (const card of cards) {
 	        card.addEventListener('click', function() {
 	            const boardId = this.querySelector('.bId').textContent; // 카드에서 boardId 가져오기
-	            const currentPage = /*[[${pi.currentPage}]]*/1; // 실제 현재 페이지 값으로 변경하세요
-	
-	            // boardId 및 currentPage 값을 사용하여 세부 페이지로 이동
-	            window.location.href = `/board/used/detail?uNo=${boardId}&page=${currentPage}`;
+	            
+		            // boardId 및 currentPage 값을 사용하여 세부 페이지로 이동
+	            window.location.href = `/board/used/detail?uNo=${boardId}`;
 	        });
 	    }
 		
