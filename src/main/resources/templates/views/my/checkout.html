@@ -26,7 +26,7 @@
 			<div class="mb-2 w-50 bg-white mx-auto">
 				<div class="d-flex align-content-center mx-4" style="height: 140px" th:each="cart, cartStat: ${cList}" th:classappend="${!cartStat.last} ? 'border-bottom'">
 					<th:block th:each="attm : ${paList}" th:if="${attm.attmRefNo == cart.productId}">
-						<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px;">
+						<img class="rounded float-start my-auto" th:src="'/image/shopFiles/' + ${attm.renameName}" style="width: 80px; height: 80px;">
 					</th:block>
 					<div class="d-flex flex-column justify-content-center">
 						<input type="hidden" name="cartId" th:value="${cart.cartId}">
@@ -86,7 +86,7 @@
 				[[${#numbers.formatInteger(session.loginUser.mbPoint, 3, 'COMMA')}]]P
 				<div class="d-flex align-items-center mt-2">
 					<div class="col-10">
-						<input type="number" class="form-control" th:disabled="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
+						<input type="number" class="form-control" th:readonly="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
 					</div>
 					&nbsp;&nbsp;&nbsp;
 					<div>

@@ -234,56 +234,6 @@ public class PetController {
 		return "redirect:/pet/petInfo";
 	}
 	
-//	@PostMapping("/petPhotoWrite.dw")
-//	public String insertPetPhoto(@RequestParam("saveFile") ArrayList<MultipartFile> files, HttpSession session, @ModelAttribute Album a, @ModelAttribute Pet p) {
-//		//게시판 내용 보내기
-//		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-//		a.setWriterId(id);
-//		a.setPetId(p.getPetId());
-//		
-//		System.out.println(files);
-//		
-//		//게시물 보내기
-//		int result = pService.insertPetPhoto(a);
-//		
-//		//사진들 보내기
-//		int result2 = 0;
-//
-//		if(result > 0) {
-//			if(files != null && !files.isEmpty()) {
-//				ArrayList<Attachment> attachments = new ArrayList<>();
-//				for(MultipartFile file : files) {
-//					String savedFileName = saveFile(file);
-//					Attachment att = new Attachment();
-//					att.setOriginalName(file.getOriginalFilename());
-//					att.setRenameName(savedFileName);
-//					att.setAttmRefType("AB");
-//					att.setAttmRefNo(a.getAbNo());
-//					attachments.add(att);
-//					
-//					for(int i=0; i < attachments.size(); i++) {
-//			          Attachment at = attachments.get(i);
-//			          if(i == 0) {
-//			             at.setAttmLevel(1);
-//			          } else {
-//			             at.setAttmLevel(2);
-//			          }
-//			       }
-//					result2 = pService.insertPetAlbum(att);
-//				}
-//			}
-//		} else {
-//			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
-//		}
-//		
-//		if(result > 0) {
-//			System.out.println(a.getAbNo());
-//			return "redirect:/pet/petPhotoDetail/"+a.getAbNo();
-//		} else {
-//			throw new PetException("마이펫 사진첩 등록에 실패하였습니다.");
-//		}
-//	}
-	
 	@PostMapping("/petEditName.dw")
 	public String petEditName(Model model, @RequestParam("petName") String newPetName, @RequestParam("petId") String petId) {
 		
@@ -429,7 +379,7 @@ public class PetController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\" + "\\uploadFiles\\woofly";
+			savePath = "C:\\" + "\\woofly";
 		} else if (os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 		}
@@ -461,7 +411,7 @@ public class PetController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\" + "\\uploadFiles\\woofly";
+			savePath = "C:\\" + "\\woofly";
 		} else if(os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
 		}
@@ -549,6 +499,7 @@ public class PetController {
 			result = pService.deleteReplyLike(map);
 		} else {
 			result = pService.insertReplyLike(map);
+			result = pService.insertReplyNotice(map);
 		}
 			
 		if (result > 0) {
@@ -573,6 +524,7 @@ public class PetController {
 			result = pService.deleteBoardLike(map);
 		} else {
 			result = pService.insertBoardLike(map);
+			result = pService.insertBoardNotice(map);
 		}
 			
 		if (result > 0) {
@@ -845,7 +797,6 @@ public class PetController {
 	@PostMapping("/petDiaryEdit.dw")
 	public String petDiaryEdit(@ModelAttribute Diary d, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 		d.setDrDate(date);
-		System.out.println(date);
 		int result = pService.petDiaryEdit(d);
 		int drNo = d.getDrNo();
 		
@@ -870,7 +821,6 @@ public class PetController {
 	@GetMapping("pet/petPhotoDelete/{abNo}")
 	public String petPhotoDelete(@PathVariable("abNo") int abNo) {
 		int result = pService.petPhotoDelete(abNo);
-		System.out.println(abNo);
 		
 		if(result > 0) {
 			return "redirect:/pet/petPhoto";	

@@ -27,7 +27,7 @@ public interface OrderService {
 
 	Product selectMostExpensive(Order order);
 
-	int getBuyingCount(String id);
+	int getBuyingCount(HashMap<String, Object> map);
 
 	int deletePoints(String id);
 
