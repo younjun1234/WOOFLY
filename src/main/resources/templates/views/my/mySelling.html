@@ -99,7 +99,7 @@
 					<input type="hidden" th:value="${ selling.uNo }">
 					<div class="d-flex align-content-center ms-3 col-6">
 							<img class="rounded float-start my-auto" th:src="'/image/board/' + ${selling.renameName}" style="width: 80px; height: 80px; border: 1px solid black;">
-							<div class="ms-3" style="line-height: 100px;">[[${selling.uTitle}]]</div>
+							<div class="ms-3 text-truncate" style="line-height: 100px;">[[${selling.uTitle}]]</div>
 					</div>
 					<div class='col-6 d-flex justify-content-end'>
 						<div class="me-4 pe-4 col-3 text-center" style="width: 100px; line-height: 100px;">[[${#dates.format(selling.soldDate, 'yy/MM/dd')}]]</div>
