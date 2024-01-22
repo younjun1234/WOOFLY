@@ -58,16 +58,20 @@
 				<!-- 중고상품 설명 -->
 	            <table style="width:330px; height: 30px; border: 1px; font-size : 20px;" >
 	            	<tr style="border: 1px ;">
-	                  <th style="border: 1px ; height: 40px; border: 1px;">거래 상품</th>
-	                  <td style="border: 1px ; height: 40px; border: 1px;"></td>
+	                  <th style="border: 1px ; height: 40px; border: 1px;">거래 상품(제품명)</th>
+	                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productName}]]</td>
 	              </tr>
 	              <tr style="border: 1px ;">
-	                  <th style="border: 1px ; height: 40px; border: 1px;">제품명</th>
-	                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productName}]]</td>
+	                  <th style="border: 1px ; height: 40px; border: 1px;">판매자</th>
+	                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.buyerId}]]</td>
 	              </tr>
 	              <tr style="border: 1px ;">
 	                  <th style="border: 1px ; height: 40px; border: 1px;">상태</th>
-	                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productName}]]</td>
+	                  <td style="border: 1px ; height: 40px; border: 1px;">
+							<p th:if="${u.productStatus == 'G'}">상</p>
+					        <p th:if="${u.productStatus == 'S'}">중</p>
+					        <p th:if="${u.productStatus == 'B'}">하</p>
+					  </td>
 	              </tr>
 	              <tr style="border: 1px ;">
 	                  <th style="border: 1px ; height: 40px; border: 1px;">가격</th>

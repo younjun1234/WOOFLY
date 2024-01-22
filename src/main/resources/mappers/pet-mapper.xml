@@ -318,16 +318,20 @@
 	</insert>
 	
 	<select id="petContestList" resultType="Participants">
-		<!-- select *
+		select *
 		from participants
 			 join attachment on (p_no = attm_ref_no)
-		where p_status = 'Y' and writer_id = #{id} and attm_ref_type = 'C' and attm_level = 1
-		order by ab_date desc -->
-		select *
+			 join contest on (contest_id = con_no)
+		where p_status = 'Y' and mb_id = #{id} and attm_ref_type = 'C' and attm_level = 1
+		<if test="petId != null">
+	    	and pet_id = #{petId}
+	    </if>
+		order by contest_id desc
+		<!-- select *
 		from participants
 			join pet using (pet_id)
 			join contest on (contest_id = con_no)
-		where p_status = 'Y' and owner_id = #{id}
+		where p_status = 'Y' and owner_id = #{id} -->
 	</select>
 	
 	<select id="repiesList" resultType="Reply">

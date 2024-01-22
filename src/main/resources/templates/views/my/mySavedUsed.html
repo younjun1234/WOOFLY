@@ -45,15 +45,15 @@
 					</div>
 				</div>
 				<div th:onclick="|location.href='/board/used/detail?uNo=${b.uNo}'|" role="button" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px" th:each="b : ${list}">
-					<div class="d-flex align-content-center ms-3">
+					<div class="d-flex align-content-center ms-3 col-9">
 						<img th:src="'/image/board/' + ${b.renameName}"class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3 text-truncate" style="line-height: 50px;">
+						<div class="ms-3" style="line-height: 50px; text-overflow: ellipsis;">
 							[[${b.uTitle}]] <br>
-							[[${b.uContent}]]
+							<div class="text-truncate">[[${b.uContent}]]</div>
 						</div>		
 					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">[[${b.mbNickName}]]</div>
+					<div class="d-flex col-3">
+						<div class="me-3 text-truncate" style="width: 100px; line-height: 100px;">[[${b.mbNickName}]]</div>
 						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#dates.format(b.uCreateDate, 'yy/MM/dd')}]]</div>
 					</div>
 				</div>

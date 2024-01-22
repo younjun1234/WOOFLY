@@ -218,7 +218,7 @@ public class PetServiceImpl implements PetService{
 	}
 
 	@Override
-	public ArrayList<Participants> petContestList(HashMap<String, String> map) {
+	public ArrayList<Participants> petContestList(HashMap<String, Object> map) {
 		return pDAO.petContestList(map);
 	}
 

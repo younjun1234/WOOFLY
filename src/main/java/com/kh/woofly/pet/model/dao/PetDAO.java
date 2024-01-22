@@ -96,7 +96,7 @@ public interface PetDAO {
 
 	int insertReplyLike(HashMap<String, Object> map);
 
-	ArrayList<Participants> petContestList(HashMap<String, String> map);
+	ArrayList<Participants> petContestList(HashMap<String, Object> map);
 
 	int albumLike(HashMap<String, Object> map);
 
@@ -115,6 +115,4 @@ public interface PetDAO {
 	int insertReplyNotice(HashMap<String, Object> map);
 
 	int insertBoardNotice(HashMap<String, Object> map);
-
-
 }

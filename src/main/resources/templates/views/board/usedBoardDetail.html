@@ -116,7 +116,11 @@
               </tr>
               <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">상태</th>
-                  <td style="border: 1px ; height: 40px; border: 1px;">[[${u.productStatus}]]</td>
+                  <td style="border: 1px ; height: 40px; border: 1px;">
+						<p th:if="${u.productStatus == 'G'}">상</p>
+				        <p th:if="${u.productStatus == 'S'}">중</p>
+				        <p th:if="${u.productStatus == 'B'}">하</p>
+				  </td>
               </tr>
               <tr style="border: 1px ;">
                   <th style="border: 1px ; height: 40px; border: 1px;">가격</th>

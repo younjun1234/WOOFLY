@@ -91,7 +91,7 @@ public interface PetService {
 
 	int insertReplyLike(HashMap<String, Object> map);
 
-	ArrayList<Participants> petContestList(HashMap<String, String> map);
+	ArrayList<Participants> petContestList(HashMap<String, Object> map);
 
 	int albumLike(HashMap<String, Object> map);
 
