@@ -98,7 +98,7 @@
 	<select id="petList" resultType="map">
 		SELECT PET_NAME, PET_ID
 	    FROM PET
-	    WHERE OWNER_ID = #{id}
+	    WHERE OWNER_ID = #{id} AND PET_STATUS = 'Y'
 	</select>
 	
 	<select id="petName" resultType="String">
@@ -119,7 +119,6 @@
 	    WHERE ROWNUM <= 1
 	    ]]>
 	</select>
-	
 	
 	<select id="todayContestNo" resultType="Integer">
 	    SELECT NVL(CON_NO, 0)
@@ -168,7 +167,7 @@
 	<select id="selectAttmNList" resultType="ContestAttm">
         SELECT *
         FROM ATTACHMENT
-        WHERE ATTM_REF_TYPE = 'C' AND ATTM_STATUS ='Y' AND ATTM_LEVEL = '1'
+        WHERE ATTM_REF_TYPE = 'C'  AND ATTM_STATUS ='Y' AND ATTM_LEVEL = '1'
 	</select>
 	
 	<select id="selectParticipants" resultType="Participants">
@@ -187,7 +186,7 @@
 	<select id="selectAttmPList" resultType="ContestAttm">
 		select *
 		from ATTACHMENT
-		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{pNum}
+		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{pNum} AND ATTM_REF_TYPE = 'C'
 	</select>
 	
 	<select id="countList" resultType="_int">	
@@ -209,36 +208,50 @@
 	</insert>
 	
 	<select id="bestParticipantstList" resultType="Participants">
-        SELECT *
-        FROM Participants
-        WHERE CONTEST_ID = #{cNo}
-        ORDER BY P_COUNT DESC
+		SELECT *
+		FROM Participants
+		WHERE CONTEST_ID = #{cNo}
+		ORDER BY P_COUNT DESC
 	</select>
-
 	
 	<select id="searchParticipantstList" resultType="Participants">
-        SELECT *
-        FROM Participants
-        WHERE CONTEST_ID = #{cNo} AND P_TITLE LIKE '%${search}%'
-        ORDER BY P_NO DESC
+		SELECT *
+		FROM Participants
+		WHERE CONTEST_ID = #{cNo}  AND ( P_TITLE LIKE '%${search}%'  OR  P_PET LIKE '%${search}%' )
+		ORDER BY P_NO DESC
 	</select>
 	
 	<select id="searchBestParticipantstList" resultType="Participants">
         SELECT *
         FROM Participants
-        WHERE CONTEST_ID = #{cNo}
+        WHERE CONTEST_ID = #{cNo}  AND ( P_TITLE LIKE '%${search}%'  OR  P_PET LIKE '%${search}%' )
         ORDER BY P_COUNT DESC
 	</select>
 	
 	<select id="cPetList" resultType="map">
         SELECT PET_ID
         FROM Participants
-        WHERE CONTEST_ID = #{cNo} AND MB_ID = #{id}
+        WHERE CONTEST_ID = #{cNo}  AND MB_ID = #{id}
 	</select>
 	
+	<insert id="bestDogVote">
+		insert into BOARD_LIKE
+		values ( BL_SEQ.NEXTVAL , 'C', #{pNo}, #{id} )
+	</insert>
 	
+	<update id="bestDogCountUpdate">
+		UPDATE Participants
+		SET P_COUNT = P_COUNT + 1
+		WHERE P_NO = #{pNo}
+	</update>
 	
-	
-	
+	<select id="voteCheck" resultType="Integer">
+        SELECT count(*)
+        FROM BOARD_LIKE
+        WHERE LIKE_REF_TYPE = 'C' AND LIKE_REF_BOARD = #{pNo} AND LIKE_USER = #{id}
+	</select>
 	
 </mapper>
+
+
+

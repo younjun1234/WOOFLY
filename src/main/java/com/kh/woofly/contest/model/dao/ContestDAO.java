@@ -70,8 +70,6 @@ public interface ContestDAO {
 
 	ArrayList<Participants> bestParticipantstList(RowBounds rowBounds, int cNo);
 	
-	ArrayList<Participants> searchBestParticipantstList(RowBounds rowBounds, int cNo, String search);
-
 	ArrayList<String> cPetList(String id, int cNo);
 
 	ArrayList<String> cPetList(Map<String, Object> map);
@@ -81,6 +79,16 @@ public interface ContestDAO {
 	ArrayList<Participants> allTimeBestList(RowBounds rowBounds, int generationNo);
 
 	ArrayList<Participants> best3Dog(int generationNo);
+
+	ArrayList<Participants> searchParticipantstList(Map<String, Object> map);
+
+	ArrayList<Participants> searchBestParticipantstList(Map<String, Object> map);
+
+	int bestDogVote(Map<String, Object> map);
+
+	int bestDogCountUpdate(int pNo);
+
+	Integer  voteCheck(Map<String, Object> map);
 
 //	Date sDate();
 

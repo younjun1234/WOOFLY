@@ -36,7 +36,12 @@
 					
 					<div class="slider-2">    
 						<div class="side-btns">
-					        <div><span><i class="fas fa-caret-left"> </i></span></div>
+					        <div><span><i class="fas fa-caret-left"> pNo :  [[${  pNo  }]]</i></span></div>
+					        <div><span><i class="fas fa-caret-left"> voteCheck :  [[${  voteCheck  }]]   0 중복없음</i></span></div>
+					        <div><span><i class="fas fa-caret-left"> mList :  [[${  mList  }]] 메인 이미지</i></span></div>
+					        <div><span><i class="fas fa-caret-left"> aList :  [[${  aList  }]] 서브 이미지</i></span></div>
+					          <div><span><i class="fas fa-caret-left"> p :  [[${  p  }]]  내 정보 </i></span></div>
+					           <div><span><i class="fas fa-caret-left"> page :  [[${  page  }]] 페이지</i></span></div>
 					        <div><span><i class="fas fa-caret-right"> </i></span></div>
 					    </div>
 					    
@@ -46,6 +51,15 @@
 					        <div style="background-image:url(https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg);"></div>
 					        <div style="background-image:url(https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg);"></div>
 					    </div>
+					    
+					    
+					    <form action="/contest/bestDogVote">
+					    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
+						    <input type="hidden" name="pNo" th:value="${pNo}">
+						    <button type="submit" class="btn btn-outline-dark btn-lg">투표</button>
+					    </form>
+					    
+					    
 					    
 					    <div class="page-nav">
 					        <div class="active"></div>
