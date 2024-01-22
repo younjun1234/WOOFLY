@@ -734,7 +734,7 @@
 		<if test="bId == null">
 		AND RNUM = 1
 		   </if>
-		order by attm_id DESC
+		order by attm_id ASC
 	</select>
 	    
 	    <!--select *
@@ -755,7 +755,7 @@
            select ms_no_seq.nextval as mNo from dual
        </selectKey>
        insert into missing_board 
-       values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId}, #{mRescue}, null)
+       values (#{mNo}, #{mTitle}, #{mContent},default, SYSDATE, default, #{mbId}, #{mRescue}, 0)
    </insert>
 
 	<!--첨부파일 등록-->
@@ -957,7 +957,7 @@
 		<if test="bId == null">
 		AND RNUM = 1
 		   </if>
-		order by attm_id DESC
+		order by attm_id ASC
 	</select>
 	
 	<!-- 특정 게시글 조회 -->
@@ -1054,33 +1054,6 @@
 	<!-- 중고게시판 -->
 	
 	
-	<!-- <insert id="insertUsedRvBoard">
-	    insert into used_board 
-	    values (ub_seq.nextval, "후기", #{uTitle}, #{uContent}, default, 
-	    		(select u_location from used_board where u_No= #{prodNo}), 
-	    		SYSDATE, default, default, 'Y', #{mbId}, 
-	    		(select product_name from used_board where u_No= #{prodNo}), 
-	    		(select product_status from used_board where u_No= #{prodNo}),
-	    		(select product_price from used_board where u_No= #{prodNo}),
-	    		(select sold_date from used_board where u_No= #{prodNo}), null)
-	</insert> 	 -->
-<!-- 	
-	<insert id="insertUsedRvBoard">
-		<selectKey keyProperty="uNo" order="BEFORE" resultType="_int"> 
-	        select ub_seq.nextval as uNo from dual
-	    </selectKey>
-	    insert into used_board (
-	        U_NO, U_TYPE, U_TITLE, U_CONTENT, U_COUNT, U_LOCATION, U_CREATE_DATE,
-	        U_STATUS, U_WANT, U_END, MB_ID, PRODUCT_NAME, PRODUCT_STATUS,
-	        PRODUCT_PRICE, SOLD_DATE, BUYER_ID
-	    )
-	    values (
-	        #{uNo}, '후기', #{uTitle}, #{uContent}, default, #{uLocation},
-	        sysdate, default, default, default, #{mbId}, #{productName},
-	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_id from used_board where u_no = #{uNo})
-	    )
-	</insert> -->
-	
 	<insert id="insertUsedRvBoard">
 		<selectKey keyProperty="uNo" order="BEFORE" resultType="_int"> 
 	        select ub_seq.nextval as uNo from dual
@@ -1092,7 +1065,6 @@
 	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_id from used_board where u_no = #{uNo})
 	    )
 	</insert>
-	
 		
 	<insert id="insertUsedRvAttm">
 		insert all
@@ -1161,7 +1133,7 @@
        </choose>
        ORDER BY u_no DESC
    </select>
-	
+   
 	<select id="selectUsedRvBoard" resultType="UsedBoard">
 		select  b.*, m.mb_nickname as "mbNickName" 
 		from used_board b

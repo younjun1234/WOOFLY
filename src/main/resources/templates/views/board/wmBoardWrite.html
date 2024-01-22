@@ -84,7 +84,7 @@
 				  	<textarea class="form-control" id="content" name="wmContent" rows="20" style="resize: none;" required></textarea>
 				</div>
 				<label for="file" class="form-label">첨부파일</label><br>
-				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
+				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile" >파일추가</button> <br><br>
 					<div id="fileArea">
 					   
 					</div>
@@ -98,6 +98,24 @@
 	</div>
 	
 	<script>
+	
+		  // 문서가 로드되면 실행되는 함수를 정의합니다.
+	    document.addEventListener('DOMContentLoaded', function() {
+	      // 폼 요소를 선택하고 onsubmit 이벤트 핸들러를 추가합니다.
+	      document.getElementById('attmForm').onsubmit = function() {
+	        // 파일 인풋 요소를 선택합니다.
+	        var fileInput = document.querySelector('input[type="file"]');
+	        
+	        // 파일 인풋에 파일이 없는 경우
+	        if (!fileInput.value) {
+	          // 경고창을 표시합니다.
+	          alert('사진을 첨부하세요');
+	          // 기본 이벤트(폼 제출)를 중단합니다.
+	          return false;
+	        }
+	      };
+	    });
+
 		// 해당 페이지 nav bar 강조 넣기
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd5");
