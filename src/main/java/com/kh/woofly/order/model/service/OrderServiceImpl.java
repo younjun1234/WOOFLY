@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.dao.OrderDAO;
@@ -64,7 +65,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public int getBuyingCount(String id) {
+	public int getBuyingCount(HashMap<String, Object> id) {
 		return oDAO.getBuyingCount(id);
 	}
 
@@ -81,6 +82,16 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public ArrayList<Saved> selectMySaved(HashMap<String, Object> map) {
 		return oDAO.selectMySaved(map);
+	}
+
+	@Override
+	public ArrayList<UsedBoard> selectMySelling(HashMap<String, Object> map) {
+		return oDAO.selectMySelling(map);
+	}
+
+	@Override
+	public ArrayList<Saved> selectMySavedHome(HashMap<String, Object> map) {
+		return oDAO.selectMySavedHome(map);
 	}
 
 }

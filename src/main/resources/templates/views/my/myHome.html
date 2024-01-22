@@ -67,7 +67,7 @@
 					<input type="hidden" th:value="${ buying.orderId }">
 					<div class="d-flex align-content-center ms-3">
 						<th:block th:each="attm, attmStat: ${paList}" th:if="${attmStat.index == buyingStat.index}">
-							<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px;">
+							<img class="rounded float-start my-auto" th:src="'/image/shopFiles/' + ${attm.renameName}" style="width: 80px; height: 80px;">
 						</th:block>
 						<th:block th:each="product, productStat : ${pList}" th:if="${productStat.index == buyingStat.index}">
 							<div class="ms-3" style="line-height: 100px;">[[${product.productName}]]<span th:if="${buying.productCount > 1}"> 외 [[${buying.productCount - 1}]]개의 상품</span></div>
@@ -98,44 +98,26 @@
 						<button class="btn btn-dark btn-sm" onclick="location.href='/my/selling'">더보기</button>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
+				<div role="button" th:onclick="|location.href='/board/used/detail?uNo=${u.uNo}'|" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px" th:each="u : ${uList}">
 					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
+						<img th:src="|/image/board/${u.renameName}|"class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
+						<div class="ms-3 text-truncate" style="line-height: 100px;">[[${u.uTitle}]]</div>			
 					</div>
 					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#dates.format(u.soldDate, 'yy/MM/dd')}]]</div>
+						<div class="me-3" style="width: 100px; line-height: 100px;">[[${#numbers.formatInteger(u.productPrice, 3, 'COMMA')}]]원</div>
 					</div>
 				</div>
-				<div class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
-					</div>
-				</div>
-				<div class="rounded d-flex justify-content-between" style="border: 1px solid black; height: 100px">
-					<div class="d-flex align-content-center ms-3">
-						<img class="rounded float-start my-auto" style="width: 80px; height: 80px; border: 1px solid black;">
-						<div class="ms-3" style="line-height: 100px;">상품 정보</div>			
-					</div>
-					<div class="d-flex">
-						<div class="me-3" style="width: 100px; line-height: 100px;">도착날짜</div>
-						<div class="me-3" style="width: 100px; line-height: 100px;">배송완료</div>
-					</div>
-				</div>
-				<div class="d-flex justify-content-center align-items-center" style="min-height: 200px" th:if="${ #arrays.isEmpty(oList) }">
-					<div class="d-flex flex-column justify-content-center align-items-center">
-						<p>구매 입찰 내역이 없습니다.</p>
-						<div>
-							<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+				<th:block th:if="${#arrays.isEmpty(uList)}">
+					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+						<div class="d-flex flex-column justify-content-center align-items-center">
+							<p>판매 내역이 없습니다.</p>
+							<div>
+								<button class="btn btn-outline-dark" onclick="location.href='/board/used'">SHOP 바로가기</button>
+							</div>
 						</div>
 					</div>
-				</div>
+				</th:block>
 			</div>
 			<!-- 네 번재 박스 -->
 			<div class="mb-5">
@@ -145,50 +127,25 @@
 						<button class="btn btn-dark btn-sm" onclick="location.href='/my/saved'">더보기</button>
 					</div>
 				</div>
-				<div class="d-flex gap-5 flex-wrap">
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
+				<div class="d-flex justify-content-between mb-3 gap-5 flex-wrap">
+					<div class="card" style="width: 20%;" th:each="s: ${sList}" th:onclick="|location.href='/shop/productDetail?pId=${s.productId}&page=1'|" role="button">
+				  		<img th:src="'/image/shopFiles/' + ${s.renameName}" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
 				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-				  		</div>
-					</div>
-					<div class="card" style="width: 220px;">
-				  		<img src="image/dog1.jpg" class="card-img-top mx-auto mt-3" alt="..." style="width: 200px; height: 200px;">
-				  		<div class="card-body">
-				    		<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+				    		<p class="card-text">[[${s.productName}]]</p>
+				    		<p class="card-text">[[${#numbers.formatInteger(s.price, 3, 'COMMA')}]]원</p>
 				  		</div>
 					</div>
 				</div>
+				<th:block th:if="${#arrays.isEmpty(sList)}">
+					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px">
+						<div class="d-flex flex-column justify-content-center align-items-center">
+							<p>등록된 관심 상품이 없습니다.</p>
+							<div>
+								<button class="btn btn-outline-dark" onclick="location.href='/'">SHOP 바로가기</button>
+							</div>
+						</div>
+					</div>
+				</th:block>
 			</div>
 		<!-- 여기까지가 수정 -->
 		<!-- 여기까지가 수정 -->

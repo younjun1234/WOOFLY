@@ -33,7 +33,7 @@
 				<div class="d-flex justify-content-between pb-3 mb-3 border-bottom" th:each="detail: ${details}">
 					<div class="d-flex gap-3 align-items-center">
 						<th:block th:each="attm : ${paList}" th:if="${attm.attmRefNo == detail.productId}">
-							<img class="rounded border" alt="" th:src="'/image/' + ${attm.renameName}" style="width: 120px; height: 120px">
+							<img class="rounded border" alt="" th:src="'/image/shopFiles/' + ${attm.renameName}" style="width: 120px; height: 120px">
 						</th:block>						
 						<div>
 							<p class="mb-1">상품 번호 <strong>[[${detail.productId}]]</strong></p>
@@ -42,7 +42,7 @@
 						</div>
 					</div>
 					<div class="d-flex align-items-center">
-						<button class="btn btn-outline-dark" th:onclick="|location.href='/shop/productDetail?pId=${detail.productId}'|">상품 상세</button>
+						<button class="btn btn-outline-dark" th:onclick="|location.href='/shop/productDetail?pId=${detail.productId}&page=1'|">상품 상세</button>
 					</div>
 				</div>
 				<div class="border border-start-0 border-end-0 border-2 bg-danger-subtle mb-5">

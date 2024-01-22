@@ -257,5 +257,15 @@ public class PetServiceImpl implements PetService{
 		return pDAO.getListCount(i);
 	}
 
+	@Override
+	public int insertReplyNotice(HashMap<String, Object> map) {
+		return pDAO.insertReplyNotice(map);
+	}
+
+	@Override
+	public int insertBoardNotice(HashMap<String, Object> map) {
+		return pDAO.insertBoardNotice(map);
+	}
+
 
 }

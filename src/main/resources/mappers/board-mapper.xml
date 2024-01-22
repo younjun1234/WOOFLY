@@ -29,14 +29,14 @@
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where buyer_id = #{id}
+		where buyer_id = #{id} and u_type = '일반'
 	</select>
 	
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -54,14 +54,14 @@
 	<select id="selectMySellingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where mb_id = #{id}
+		where mb_id = #{id} and u_type = '일반'
 	</select>
 	
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -1064,20 +1064,36 @@
 	    		(select product_price from used_board where u_No= #{prodNo}),
 	    		(select sold_date from used_board where u_No= #{prodNo}), null)
 	</insert> 	 -->
-	
+<!-- 	
 	<insert id="insertUsedRvBoard">
+		<selectKey keyProperty="uNo" order="BEFORE" resultType="_int"> 
+	        select ub_seq.nextval as uNo from dual
+	    </selectKey>
 	    insert into used_board (
 	        U_NO, U_TYPE, U_TITLE, U_CONTENT, U_COUNT, U_LOCATION, U_CREATE_DATE,
 	        U_STATUS, U_WANT, U_END, MB_ID, PRODUCT_NAME, PRODUCT_STATUS,
 	        PRODUCT_PRICE, SOLD_DATE, BUYER_ID
 	    )
 	    values (
-	        ub_seq.nextval, '후기', #{uTitle}, #{uContent}, default, #{uLocation},
+	        #{uNo}, '후기', #{uTitle}, #{uContent}, default, #{uLocation},
 	        sysdate, default, default, default, #{mbId}, #{productName},
-	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_Id from used_board where u_no = #{uNo})
+	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_id from used_board where u_no = #{uNo})
+	    )
+	</insert> -->
+	
+	<insert id="insertUsedRvBoard">
+		<selectKey keyProperty="uNo" order="BEFORE" resultType="_int"> 
+	        select ub_seq.nextval as uNo from dual
+	    </selectKey>
+	    insert into used_board 
+	    values (
+	        #{uNo}, '후기', #{uTitle}, #{uContent}, default, #{uLocation},
+	        sysdate, default, default, default, #{mbId}, #{productName},
+	        #{productStatus}, #{productPrice}, #{soldDate}, (select mb_id from used_board where u_no = #{uNo})
 	    )
 	</insert>
 	
+		
 	<insert id="insertUsedRvAttm">
 		insert all
 		<foreach collection="list" item="item">
@@ -1087,7 +1103,7 @@
 		</foreach>
 		select * from dual
 	</insert>
-	
+		
 	<select id="selectProdList" resultType="UsedBoard">
 		select *
 		from used_board

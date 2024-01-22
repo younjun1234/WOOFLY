@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.member.model.vo.Point;
 import com.kh.woofly.order.model.vo.Order;
@@ -26,13 +27,17 @@ public interface OrderService {
 
 	Product selectMostExpensive(Order order);
 
-	int getBuyingCount(String id);
+	int getBuyingCount(HashMap<String, Object> map);
 
 	int deletePoints(String id);
 
 	ArrayList<Point> selectMyPoints(String id);
 
 	ArrayList<Saved> selectMySaved(HashMap<String, Object> map);
+
+	ArrayList<UsedBoard> selectMySelling(HashMap<String, Object> map);
+
+	ArrayList<Saved> selectMySavedHome(HashMap<String, Object> map);
 	
 	
 }
