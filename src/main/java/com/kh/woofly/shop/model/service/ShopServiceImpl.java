@@ -11,6 +11,7 @@ import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.dao.ShopDAO;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -205,6 +206,11 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ArrayList<Product> popularityProductFive() {
 		return sDAO.popularityProductFive();
+	}
+
+	@Override
+	public int selectMyOrders(HashMap<String, Object> orderConfirm) {
+		return sDAO.selectMyOrder(orderConfirm);
 	}
 
 }

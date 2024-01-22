@@ -305,5 +305,12 @@
 		FETCH FIRST 5 ROWS ONLY
 	</select>
 	
+	<select id="selectMyOrder" resultType="_int">
+		SELECT count(*)
+		FROM ORDERS
+    		LEFT JOIN ORDER_DETAIL USING(ORDER_ID)
+		WHERE CUSTOMER_ID = #{mbId} AND PRODUCT_ID = #{pId}
+	</select>
+	
 	
 </mapper>
