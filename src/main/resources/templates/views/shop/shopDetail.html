@@ -499,7 +499,7 @@
 						success: data => {
 							if(data == 'success') {
 								/*<![CDATA[*/
-								alert(/*[[${p.productName}]]*/'name' + "  " + quantity.value + "개가 장바구니에 추가되었습니다.");
+								alert(p.productName + " 상품 " + quantity.value + "개가 장바구니에 추가되었습니다.");
 								/*]]>*/
 							} else {
 								aleet("장바구니 추가에 실패하여 페이지가 새로고침됩니다.");
@@ -529,6 +529,7 @@
 						success: data => {
 							console.log(data);
 							if(data == 'success'){
+								alert(p.productName + " 상품을 찜 목록에 추가하셨습니다.");
 								savedCount = savedCount + 1
 								stampWord.innerText = '찜하기 : ' + savedCount + '건';
 								stampImg.innerText = '❤';
@@ -552,6 +553,7 @@
 						success: data => {
 							console.log(data);
 							if(data == 'success'){
+								alert(p.productName + " 상품을 찜 목록에서 제거하셨습니다.");
 								savedCount = savedCount - 1
 								stampWord.innerText = '찜하기 : ' + savedCount + '건';
 								stampImg.innerText = '🤍';
