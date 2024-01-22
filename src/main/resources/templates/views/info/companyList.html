@@ -17,7 +17,6 @@
     <div th:replace="~{common/top :: top}"></div>
 	<main>
 		<div class="container-fluid d-flex mx-5">
-			
 			<th:block th:if="${session.loginUser == null or session.loginUser.isAdmin == 'N'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
 			</th:block>
