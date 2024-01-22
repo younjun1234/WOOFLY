@@ -63,12 +63,11 @@
 			
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
-				
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>콘테스트</h1>
 						<!-- 회원만 보이도록 -->
-						<a role="button" href="#" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
+						<a role="button" href="/contest/contestParticipation" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
 					</div>
 					
 					<div class="abcd">
@@ -101,7 +100,7 @@
 					    </form>
 						    </div>
 						</div>
-					
+						
 						<div class="image-gallery">
 							<th:block th:each="m : ${mList}">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
@@ -140,14 +139,7 @@
 					        <div style="background-image:url(https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg);"></div>
 					    </div>
 					    
-					    <form action="/contest/bestDogVote" id="bestDogVote">
-					    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
-						    <input type="hidden" name="pNo" th:value="${pNo}" id="pNo">
-						    <input type="hidden" name="page" th:value="${page}" id="page">
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="heart">추천</button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="duplication">추천(중복) 안눌리게?</button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="nologin">추천(비회원) 이건 로그인으로?</button>
-					    </form>
+					    
 					    
 					     <th:block th:each=" m : ${mList}">
 						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${m.renameName} + ');'  " alt="콘테스트 사진" style="width: 100px; height: 100px">
