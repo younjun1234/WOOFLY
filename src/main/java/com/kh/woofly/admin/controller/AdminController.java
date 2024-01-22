@@ -22,6 +22,7 @@ import com.kh.woofly.admin.model.service.AdminService;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -156,6 +157,11 @@ public class AdminController {
 	    	}
 	    }
 	    
+	    // 오늘 날짜 기준으로 endDate가 이후인 콘테스트 가져오기
+	    ArrayList<Contest> contestList = aService.selectAfterContest();
+	    
+	    System.out.println(contestList);
+	    
 	    model.addAttribute("admin", admin);
 		model.addAttribute("monthlyEarnings", monthlyEarnings);
 		model.addAttribute("percents", percents);
@@ -166,6 +172,7 @@ public class AdminController {
 		model.addAttribute("monthlyList", monthlyList);
 		model.addAttribute("boardsReport", boardsReport);
 		model.addAttribute("reportPercents", reportPercents);
+		model.addAttribute("contestList", contestList);
 		
 		return "adminMain";
 	}
@@ -182,7 +189,6 @@ public class AdminController {
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
 		
 		ArrayList<Report> rList = aService.selectReportList(pi, searchId);
-		
 		// 랭킹 리스트 나중에 일자 별 검색으로 바꿀 때는 검색할 N 숫자 보내면 됨
 		ArrayList<HashMap<String, Object>> rkList = aService.selectReportRank();
 		for(int i = 0; i < rkList.size(); i ++) {

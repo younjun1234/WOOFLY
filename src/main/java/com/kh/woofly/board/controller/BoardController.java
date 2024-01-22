@@ -785,6 +785,7 @@ public class BoardController {
 			
 				int listCount = bService.getDwRvListCount(1);
 			
+				
 				PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
 				ArrayList<DwBoard> list = bService.selectDwRvBoardList(pi, 1);		
 				ArrayList<Attachment> aList = bService.selectAttmDwRvBoardList(null);
@@ -1223,6 +1224,7 @@ public class BoardController {
 				@RequestParam(value = "searchKeyword", required = false) String searchKeyword, Model model, HttpServletRequest request) {
 			
 			if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+				
 				int listCount = bService.getWmListCount(1);
 				
 				PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
@@ -1803,7 +1805,6 @@ public class BoardController {
 			u.setMbId(boardWriter);
 			
 			ArrayList<UsedBoard> prodList = bService.selectProdList(u);
-//			System.out.println(prodList);
 			model.addAttribute("prodList", prodList);
 			
 			
@@ -1842,7 +1843,7 @@ public class BoardController {
 								attachment.setRenameName(returnArr[1]);
 								attachment.setAttmPath(returnArr[0]);
 								attachment.setAttmRefType("U");
-								attachment.setAttmRefNo(u.getUNo());
+								attachment.setAttmRefNo(selectProduct.getUNo());
 								
 								attachments.add(attachment);
 							}

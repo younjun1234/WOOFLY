@@ -28,6 +28,7 @@ import com.kh.woofly.common.Pagination;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.exception.ShopException;
 import com.kh.woofly.shop.model.service.ShopService;
 import com.kh.woofly.shop.model.vo.Product;
@@ -316,6 +317,19 @@ public class ShopController {
 			}
 		}
 		
+		int oListCount = 0;
+		String isBought = "N";
+
+		if(loginUser != null) {
+			HashMap<String, Object> orderConfirm = new HashMap<>();
+			orderConfirm.put("mbId", loginUser.getMbId());
+			orderConfirm.put("pId", productId);
+			oListCount = sService.selectMyOrders(orderConfirm);
+			if(oListCount > 0) {
+				isBought = "Y";
+			}
+		}
+		model.addAttribute("isBought", isBought);
 		model.addAttribute("page", page);
 		model.addAttribute("p", p);
 		model.addAttribute("tList", tList);
@@ -367,6 +381,8 @@ public class ShopController {
 		// true면 같은 항목이 비어있음을 나타냄 //productName
 		if(isEmpty) {
 			Properties prop = new Properties();
+			System.out.println(pSize);
+			System.out.println(color);
 			selectC.setMbId(mbId);
 			selectC.setPSize(pSize);
 			selectC.setColor(color);
