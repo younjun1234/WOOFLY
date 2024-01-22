@@ -232,6 +232,12 @@ public class InfoServiceImpl implements InfoService{
 		return iDAO.selectAttmNList(nNum);
 	}
 
+	@Override
+	public int deleteAttm(String string) {
+		// TODO Auto-generated method stub
+		return iDAO.deleteAttm(string);
+	}
+
 
 	
 }

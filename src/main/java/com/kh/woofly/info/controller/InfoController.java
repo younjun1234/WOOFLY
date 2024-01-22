@@ -114,6 +114,7 @@ public class InfoController {
 		// 썸네일 리네임 과정
 		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
 		
+		
 		for(int i = 0; i < noticeFiles.size(); i++) {
 			MultipartFile upload = noticeFiles.get(i);
 			
@@ -144,8 +145,11 @@ public class InfoController {
 		}
 		
 		int result = iService.insertNotice(n);
-		
-		int result2 = iService.insertAttm(list);
+		int result2 = 0;
+		System.out.println("111111111111111111111111111111111111111"+list);
+		if(!list.isEmpty()) {
+			result2 = iService.insertAttm(list);
+		}
 		
 		if( result + result2 == list.size() + 1) {
 			return "redirect:/info/notice";
@@ -255,13 +259,17 @@ public class InfoController {
 	
 	// 공지사항 수정페이지 이동
 	@PostMapping("/info/NoticeEdit")
-	public String NoticeEdit(@RequestParam("nNo") int nNo, Model model, @RequestParam("page") int page, HttpSession session) {
+	public String NoticeEdit(@RequestParam("nNo") int nNum, Model model, @RequestParam("page") int page, HttpSession session) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		String id = null;
 		String admin = null;
 		
-		Notice n = iService.selectNotice(nNo, null);
+		Notice n = iService.selectNotice(nNum, null);
+		
+		
+		
+		ArrayList<NoticeAttm> aList = iService.selectAttmNList(nNum);
 		
 		if(loginUser != null) {
 			id = loginUser.getMbId();
@@ -270,6 +278,7 @@ public class InfoController {
 		}
 		
 		if(n != null) {
+			model.addAttribute("aList", aList);
 			model.addAttribute("admin", admin);
 			model.addAttribute("n", n);
 			model.addAttribute("page", page);
@@ -282,10 +291,79 @@ public class InfoController {
 	
 	// 공지사항 수정
 	@PostMapping("/info/updateNotice")
-	public String updateNotice(@ModelAttribute Notice n, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model) {
+	public String updateNotice(@ModelAttribute Notice n, @RequestParam("page") int page, RedirectAttributes re, HttpSession session, Model model,
+											 @RequestParam(value="checkbox", required=false) String[] checkbox,
+											@RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		String admin = null;
+		
+		// noticeFiles 정제하기 - saveFIles
+		
+		System.out.println(noticeFiles);
+		
+		// 썸네일 리네임 과정
+		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
+		
+		
+		for(int i = 0; i < noticeFiles.size(); i++) {
+			MultipartFile upload = noticeFiles.get(i);
+			
+			if(!upload.getOriginalFilename().equals("")) {
+				
+				String[] returnArr = saveFile(upload);
+				
+				if(returnArr[1] != null) {
+					NoticeAttm t = new NoticeAttm();
+					t.setOriginalName(upload.getOriginalFilename());
+					t.setRenameName(returnArr[1]);
+					t.setAttmPath(returnArr[0]);
+					t.setAttmRefNo(n.getNNo());// 공지 번호 (N_NO)
+					
+					String oName = upload.getOriginalFilename();
+					// 파일 이름을 '.'을 기준으로 나누기
+			        String[] parts = oName.split("\\.");
+			        // 파일 확장자 얻기 (마지막 부분)
+			        String extension = parts[parts.length - 1];
+			        if(extension.equals("jpg") || extension.equals("png") || extension.equals("gif") || extension.equals("jpeg")) {
+			        	t.setAttmLevel(1);
+			        }else {
+			        	t.setAttmLevel(2);
+			        }
+					list.add(t);
+				}
+			}
+		}
+		System.out.println(list);
+		int result3 = 0;
+		int result2 = 0;
+		
+		if(!list.isEmpty()) {
+			result2 = iService.insertAttm(list);
+		}
+		
+		if(checkbox != null) {
+			for(int i = 0; i < checkbox.length; i++) {
+				System.out.println(checkbox[i]);
+				// 체크된 리스트 날려버리기
+				// 이 때 DB랑 어디? deleteFiles 메소드로 보내서 지우기
+				deleteFile(checkbox[i]);
+				
+				result3 = iService.deleteAttm(checkbox[i]);
+			}
+		}
+		
+		
+		
+//		if(checkbox.contains(",")) {
+//			// 여러가지니까 스플릿을해야해
+//			String[] checkboxes = checkbox.split(",");
+//			System.out.println(checkboxes + "1111");
+//		}
+		
+		
+		
+		
 		
 		int result = 0;
 		if(loginUser != null) {

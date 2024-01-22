@@ -85,7 +85,7 @@
 	<select id="selectNotice" resultType="Notice">
 		select *
 		from NOTICE
-		WHERE N_NO = #{ nNo }	
+		WHERE N_NO = #{ nNum }	
 	</select>
 	
 	<update id="deleteNotice">
@@ -275,5 +275,9 @@
 		FROM DUAL
 	</insert>
 	
-	
+	<update id="deleteAttm">
+		UPDATE ATTACHMENT
+		SET ATTM_STATUS = 'N'
+		WHERE ATTM_REF_TYPE = 'N' AND RENAME_NAME = #{string}
+	</update>
 </mapper>

@@ -67,4 +67,6 @@ public interface InfoService {
 
 	ArrayList<NoticeAttm> selectAttmNList(int nNum);
 
+	int deleteAttm(String string);
+
 }
