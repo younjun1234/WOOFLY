@@ -90,6 +90,11 @@ public interface ContestDAO {
 
 	Integer  voteCheck(Map<String, Object> map);
 
+	Integer wOProductList(String aa);
+
+	ContestAttm productAttm(Integer outO);
+
+
 //	Date sDate();
 
 

@@ -241,6 +241,21 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.voteCheck(map);
 	}
 
+	@Override
+	public Integer wOProductList(String aa) {
+		// TODO Auto-generated method stub
+		return cDAO.wOProductList(aa);
+	}
+
+	@Override
+	public ContestAttm productAttm(Integer outO) {
+		// TODO Auto-generated method stub
+		return cDAO.productAttm(outO);
+	}
+
+
+
+
 
 //	@Override
 //	public Date sDate() {

@@ -251,6 +251,25 @@
         WHERE LIKE_REF_TYPE = 'C' AND LIKE_REF_BOARD = #{pNo} AND LIKE_USER = #{id}
 	</select>
 	
+	<select id="wOProductList" resultType="_int">
+	    SELECT PRODUCT_ID
+	    FROM ORDER_DETAIL
+	    WHERE ORDER_DETAIL_ID = #{aa}
+	</select>
+	
+	<select id="productAttm" resultType="ContestAttm">
+		SELECT *
+	    FROM (
+	        SELECT *
+	        FROM ATTACHMENT
+	        WHERE ATTM_STATUS = 'Y' AND ATTM_REF_TYPE = 'P' AND ATTM_REF_NO = #{outO} AND ATTM_LEVEL = 1
+	        ORDER BY ATTM_ID DESC
+	    )
+	    <![CDATA[
+	    WHERE ROWNUM <= 1
+	    ]]>
+	</select>
+	
 </mapper>
 
 

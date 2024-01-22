@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +30,6 @@ import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.member.model.vo.Member;
-import com.kh.woofly.shop.model.exception.ShopException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -206,7 +207,7 @@ public class ContestController {
 			model.addAttribute("loc", request.getRequestURI());
 			return "contestList";
 		} else {
-			return null;
+			throw new ContestException("콘테스트 검색을 실패하였습니다");
 		}
 	}
 	
@@ -233,7 +234,7 @@ public class ContestController {
 		
 		ArrayList<Participants> searchListCount = cService.searchParticipantstList(map, null);
 		
-		System.out.println(searchListCount.size());
+//		System.out.println(searchListCount.size());
 		
 		int listCount = searchListCount.size();
 		int currentPage = page;
@@ -281,7 +282,7 @@ public class ContestController {
 		if(result > 0) {
 			return "redirect:/contest/edit";
 		}else {
-			return null;
+			throw new ContestException("콘테스트 개최를 실패하였습니다");
 		}
 	}
 	
@@ -292,10 +293,15 @@ public class ContestController {
 		Contest c = cService.contestNewList();
 		ArrayList<Contest> contestList = cService.contestList();
 		
-		model.addAttribute("c", c);
-		model.addAttribute("contestList", contestList);
+		if(contestList != null) {
+			model.addAttribute("c", c);
+			model.addAttribute("contestList", contestList);
+			
+			return "contestEdit";
+		}else {
+			throw new ContestException("콘테스트 수정페이지 이동을 실패하였습니다");
+		}
 		
-		return "contestEdit";
 	}
 	
 	// 콘테스트 수정
@@ -311,7 +317,7 @@ public class ContestController {
 			model.addAttribute("contestList", contestList);
 			return "contestEdit";
 		}else {
-			return null;
+			throw new ContestException("콘테스트 수정을 실패하였습니다");
 		}
 	}
 	
@@ -337,7 +343,7 @@ public class ContestController {
 		
 		// 펫이 없으면 펫 등록으로 
 		if(petList.isEmpty()) {
-			System.out.println(petList);
+	//		System.out.println(petList);
 		}
 		
 		// 나의 구매내역 
@@ -363,7 +369,12 @@ public class ContestController {
 		
 		ArrayList<ContestItem> list = cService.searchItem(pSearch);
 		
-		return list;
+		if(list != null) {
+			return list;
+		}else {
+			throw new ContestException("콘테스트 참가에 실패하였습니다");
+		}
+		
 	}
 	
 	// 콘테스트 참가
@@ -508,7 +519,7 @@ public class ContestController {
 	
 	// 콘테스트 상세페이지 이동
 	@GetMapping("/contest/selectContest")
-	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam("page") int page, HttpSession session) {					
+	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam(value="page", defaultValue="1") int page, HttpSession session) {					
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		String id = null;
@@ -523,28 +534,61 @@ public class ContestController {
 		
 		Integer  voteCheck = cService.voteCheck(map);
 		
+		if( voteCheck > 0 ) {
+			voteCheck = 1;
+		}
+		
+		
 		// id 조횟수 시간나면 ㄱ
 		Participants p = cService.selectParticipants(pNo, id);
 		
+        // 참가자가 가지고 있는 상품 사진 리스트 ( 중복 상품 제외 )
+        ArrayList<ContestAttm> productList = new ArrayList<ContestAttm>();
+        
+        // 주문번호
+		ArrayList<String> withO = new ArrayList<>();
+		// 물품번호
+        ArrayList<Integer> withoutO = new ArrayList<>();
+		
 		if(p.getPProduct() != null) {
-			System.out.println(p.getPProduct());
+	//		System.out.println(p.getPProduct());
 			// 콘테스트 아이템
 			String[] parts = p.getPProduct().split("\\+");
-			// 주문번호
-			ArrayList<String> withO = new ArrayList<>();
-			// 물품번호
-	        ArrayList<String> withoutO = new ArrayList<>();
 	        
 	        // 분리된 각 부분을 검사하여 withO 또는 withoutO에 추가
 	        for (String part : parts) {
 	            if (part.startsWith("o")) {
 	                withO.add(part.substring(1)); // 'o'를 제외하고 추가
 	            } else {
-	                withoutO.add(part);
+	                withoutO.add(Integer.parseInt(part));
 	            }
 	        }
-	        System.out.println(withO);
-	        System.out.println(withoutO);
+	//        System.out.println(withO);
+	        ArrayList<Integer> wOs = new ArrayList<>();
+	        for(String wO : withO) {
+//	        	System.out.println(Integer.parseInt(wO));
+	        	Integer wO2 = cService.wOProductList(wO);
+	        	 wOs.add(wO2);
+	        }
+	        
+//	        System.out.println(wOs);
+	        
+	        // withoutO에 중복 없이 추가
+	        Set<Integer> withoutOSet = new HashSet<>(withoutO);
+	        withoutOSet.addAll(wOs);
+
+	        // 중복이 제거된 리스트 얻기
+	        withoutO.clear();
+	        withoutO.addAll(withoutOSet);
+	        
+	        // 결과 출력
+	        for(Integer outO : withoutO) {
+//	        	System.out.println(outO);
+	        	
+	        	ContestAttm productAttm = cService.productAttm(outO);
+	        	
+	        	productList.add(productAttm);
+	        }
 		}
 		
 		if(p != null) {
@@ -570,7 +614,11 @@ public class ContestController {
 					}
 				}
 			}
-			model.addAttribute("voteCheck", voteCheck);
+			
+			model.addAttribute("withoutO", withoutO);
+			model.addAttribute("productList", productList);
+			model.addAttribute("pList", pList);
+			model.addAttribute("voteCheck", (int)voteCheck);
 			model.addAttribute("pNo", pNo);
 			model.addAttribute("mList", mList);
 			model.addAttribute("aList", aList);
@@ -578,7 +626,7 @@ public class ContestController {
 			model.addAttribute("page", page);
 			return "contestDetail";
 		} else {
-			throw new ContestException("콘테스트 참가에 실패하였습니다");
+			throw new ContestException("콘테스트를 불러올 수 없습니다.");
 		}
 	}	
 	
@@ -603,21 +651,24 @@ public class ContestController {
 			Integer  voteCheck = cService.voteCheck(map);
 			
 			if(voteCheck == 0) {
-				int result = cService.bestDogVote(map);
+				int result1 = cService.bestDogVote(map);
 				
-				if( result == 1) {
-					
+				if( result1 == 1) {
 					int result2 = cService.bestDogCountUpdate(pNo);
 					
 					return "contestDetail";
 				} else {
-					return null;
+					throw new ContestException("콘테스트 투표 실패하였습니다");
 				}
 			} else {
-				return null;
+				throw new ContestException("콘테스트 투표 실패하였습니다");
 			}
 			
 		}
+		
+		
+		
+		
 	
 }
 

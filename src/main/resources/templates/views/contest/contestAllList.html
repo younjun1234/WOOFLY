@@ -141,6 +141,16 @@
 		window.onload = () => {
 			const anav = document.getElementById('myNav4')
 			anav.style.fontWeight = 'bold';
+			
+			const classes = document.getElementsByClassName('dogimage');
+			for(const c of classes) {
+				c.addEventListener('click', function() {
+					const pNo = this.querySelector('.pNo').innerText;
+					/*<![CDATA[*/
+			        location.href = '/contest/selectContest?pNo=' + pNo + "&page=" + /*[[${pi.currentPage}]]*/123;
+			        /*]]>*/
+				})
+			}
 		}
 	</script>
 	
