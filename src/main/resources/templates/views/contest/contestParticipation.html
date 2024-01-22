@@ -155,7 +155,7 @@
 						</tr>	
 						<tr th:each="l : ${itemList}">
 							<th:block th:unless="${itemList.isEmpty()}">
-								<td class="pNum">[[${l.orderDetailId}]]</td>
+								<td class="pNum">o[[${l.orderDetailId}]]</td>
 								<td><input type="image" style="height: 70px; width: 70px" ></td>
 								<td>[[${l.productName}]]</td>
 								<td><input type="checkbox" style="width: 20px; height: 20px;" class="checkbox"></td>
@@ -294,6 +294,7 @@
 
             // 제출 이벤트
 			const form = document.getElementById('contestParticipation');
+            
 			document.getElementById('submitContest').addEventListener('click', () =>{
 				const files = document.getElementsByName('thumbnailFile');
 				const pTitle = document.getElementById('pTitle');

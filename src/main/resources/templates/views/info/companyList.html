@@ -19,10 +19,10 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<th:block th:if="${admin == 'Y'}">
+			<th:block th:if="${session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/adminNav :: adminNav}"></div>
 			</th:block>
-			<th:block th:unless="${admin == 'Y'}">
+			<th:block th:unless="${session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
 			</th:block>
 			
@@ -31,7 +31,7 @@
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>협력업체</h1>
 						<!-- 관리자만 보이도록 -->
-						<th:block th:if="${admin == 'Y'}">
+						<th:block th:if="${session.loginUser.isAdmin == 'Y'}">
 							<a role="button" href="/info/companyEnroll" class="btn btn-dark btn-sm h-50">업체 등록</a>
 						</th:block>
 					</div>

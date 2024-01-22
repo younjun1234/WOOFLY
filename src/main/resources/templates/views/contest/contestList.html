@@ -30,7 +30,6 @@
 						<a role="button" href="/contest/contestParticipation" class="btn btn-dark btn-sm h-50" th:if="${id != null}">콘테스트 참가</a>
 					</div>
 					
-					
 					<form action="/contest/searchContestList">
 						<div class="row g-0 text-center" style="margin-top: 10px;">
 							<div class="col-6 col-md-2" style="margin-top: 5px; ">
@@ -49,15 +48,13 @@
 						</div>
 					</form>			
 					
-					
-					
 					<ul class="dimage">						
 						
 						<li class="dogimage" th:each=" l : ${pList}" style="cursor: pointer;">
 							<div class="album-item">
 								<label class="pNo" style="display: none;">[[${ l.pNo }]]</label>
 								<th:block th:each=" a : ${aList}">
-									<div class="album-cover" th:if="${l.pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'">
+									<div class="album-cover" th:if="${l.pNo} == ${a.attmRefNo}  " th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');'  " alt="콘테스트 사진">
 									</div>
 								</th:block>
 								<div class="album-info" style="display: inline-block; ">
