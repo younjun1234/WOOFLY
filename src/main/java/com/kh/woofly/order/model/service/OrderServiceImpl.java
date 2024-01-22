@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public int getBuyingCount(String id) {
+	public int getBuyingCount(HashMap<String, Object> id) {
 		return oDAO.getBuyingCount(id);
 	}
 

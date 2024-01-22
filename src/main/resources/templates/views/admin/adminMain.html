@@ -456,7 +456,20 @@
                         </div>
 						<!-- 우측 하단 -->
                         <div class="col-lg-6 mb-4">
-                            콘테스트 리스트
+                             <table class="table row border-bottom" id="contestList">
+                            	<tr >
+                            		<th>기수</th>
+                            		<th>이름(컨셉)</th>
+                            		<th>시작 날짜</th>
+                            		<th>종료 날짜</th>
+                            	</tr>
+                            	<tr th:each="con: ${contestList}" th:class="${#calendars.createNow().after(con.conStartDate) and #calendars.createNow().before(con.conEndDate)} ? 'current' : ''">
+                            		<td>[[${con.conGen}]]</td>
+                            		<td>[[${con.conName}]]</td>
+                            		<td>[[${con.conStartDate}]]</td>
+                            		<td>[[${con.conEndDate}]]</td>
+                            	</tr>
+                            </table>
 
                         </div>
                     </div>

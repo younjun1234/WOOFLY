@@ -175,6 +175,12 @@
 		VALUES(NOTI_SEQ.NEXTVAL, #{mbId}, #{notiType}, #{notiContent}, 'N', #{fromUser}, #{refNo}, SYSDATE)
 	</insert>
 	
+	<select id="selectAfterContest" resultType="Contest">
+		SELECT *
+		FROM CONTEST
+		WHERE CON_END_DATE >= SYSDATE
+		ORDER BY CON_NO
+	</select>
 	
 </mapper>
 

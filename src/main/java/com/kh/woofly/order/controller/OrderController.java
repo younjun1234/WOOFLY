@@ -128,7 +128,7 @@ public class OrderController {
 			e.printStackTrace();
 		}
 		
-		int listCount = oService.getBuyingCount(id);
+		int listCount = oService.getBuyingCount(map);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 

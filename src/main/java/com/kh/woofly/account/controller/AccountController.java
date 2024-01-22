@@ -64,9 +64,7 @@ public class AccountController {
     public AccountController() {
         this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
-
-    
-    //isBanned 적용 후
+ 
     @GetMapping("checkLogin.dw")
     @ResponseBody
     public String checkLogin(@ModelAttribute Member m) {
@@ -196,51 +194,6 @@ public class AccountController {
 	         return "redirect:/account/signUp";
 	      }
 	   }
-		
-		//beforeUrl
-//		if(loginUser != null) {
-//	         if(bcrypt.matches(m.getMbPwd().trim(), loginUser.getMbPwd())) {
-//	            model.addAttribute("loginUser",loginUser);
-//	            
-//	            if(!beforeURL.equals("http://localhost:8080/account/logout") && !beforeURL.equals("http://localhost:8080/signUp.dw")) {
-//	               return "redirect:" + beforeURL;
-//	            }else {
-//	               return "redirect:/";
-//	            }
-//	         }else {
-//	            return "redirect:signUp.dw";
-//	         }
-//	      }else {
-//	         return "redirect:signUp.dw";
-//	      }
-//		
-//		@PostMapping("login.me")
-//		   public String loginUser(@ModelAttribute Member m , Model model, @RequestParam("beforeURL") String beforeURL) {
-//		      Member loginUser = mService.login(m);
-//		      
-//		      if(loginUser != null) {
-//		         if(bcrypt.matches(m.getMemberPwd(), loginUser.getMemberPwd())) {
-//		            model.addAttribute("loginUser",loginUser);
-//		            
-//		            if(!beforeURL.equals("http://localhost:8080/logout.me") && !beforeURL.equals("http://localhost:8080/signUp.me"))
-//		            {
-//		               return "redirect:" + beforeURL;
-//		            }else {
-//		               return "redirect:home.me";
-//		            }
-//		         }else {
-//		            model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
-//		            model.addAttribute("searchUrl","views/ming/member/sign");
-//		            return "redirect:signUp.me";
-//		         }
-//		         
-//		      }else {
-//		         model.addAttribute("msg", "로그인에 실패하였습니다.\n아이디와 비밀번호를 다시 확인해주세요.");
-//		         model.addAttribute("searchUrl","views/ming/member/sign");
-//		         return "redirect:signUp.me";
-//		      }
-//		   }
-		
 	@GetMapping("/idCheck.dw")
 	@ResponseBody
 	public String idCheck(@RequestParam("id") String mbId) {
@@ -445,7 +398,7 @@ public class AccountController {
                 "안녕하세요 Woofly를 다시 찾아주셔서 감사합니다"
                 +System.getProperty("line.separator")+
                 System.getProperty("line.separator")+
-                "회원님의 임시 비밀번호는 " +randomPwd+ " 입니다. " 
+                "회원님의 임시 비밀번호는 " +randomPwd+ "입니다. " 
                 +System.getProperty("line.separator");
         
         String newRandomPwd = bcrypt.encode(randomPwd);

@@ -136,7 +136,7 @@
 						<p>공개/비공개</p>
 						<div>
 							<div class="form-check form-switch">
-							  	<input class="form-check-input" th:checked="${ isPrivate == 'Y'}" type="checkbox" role="switch" id="switchBtn">
+							  	<input class="form-check-input" th:checked="${ session.loginUser.isPrivate == 'Y'}" type="checkbox" role="switch" id="switchBtn">
 							</div>
 						</div>
 					</div>
@@ -161,7 +161,6 @@
 							<div class="d-flex justify-content-center" th:if="${ #arrays.isEmpty(list) }" >
 								<p>차단한 프로필이 없습니다</p>
 							</div>
-							[[${list}]]
 							<form class="d-flex justify-content-between" action="/removeBlock.yj" method="POST" th:each="blockedEntity : ${ list }">
 								<input type="hidden" name="blockedEntity" th:value="${ blockedEntity.mbId }">
 								<h4>[[${ blockedEntity.mbNickName }]]</h4>

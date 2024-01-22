@@ -41,7 +41,7 @@
 	<main>
 		<div class="container-fluid d-flex mx-5">
 			<div class="navbar w-20 ">
-				<div class="container-fluid flex-column align-items-start">
+				<div class="container-fluid flex-column align-items-start mb-auto">
 					<a class="navbar-brand" href="/shopMain"><h2>쇼핑몰 카테고리</h2></a>
 					<th:block th:each="b : ${bList}">
 						<h4 class="mt-5" th:text="${b.productCategory}"></h4>
@@ -218,12 +218,16 @@
 		const categoryAll = /*[[${cList}]]*/0;	
 		const pList = /*[[${pList}]]*/null;
 		const isDetail = /*[[${isDetail}]]*/null;
+		const admin =/*[[${session.loginUser}]]*/null;
+
 		/*]]>*/
 		window.onload = () => {
-			const write = document.getElementById('productWrite');
-			write.addEventListener('click', () =>{
-				location.href='/shop/shopWrite';
-			});
+			if(admin != null && admin.isAdmin == 'Y') {
+				const write = document.getElementById('productWrite');
+				write.addEventListener('click', () =>{
+					location.href='/shop/shopWrite';
+				});
+			}
 			
 			const products = document.querySelectorAll('.products');
 			for(product of products) {
