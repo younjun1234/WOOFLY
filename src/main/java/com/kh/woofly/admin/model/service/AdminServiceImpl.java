@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.admin.model.dao.AdminDAO;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -138,6 +139,11 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public int insertNotify(HashMap<String, Object> notifyMap) {
 		return aDAO.insertNotify(notifyMap);
+	}
+
+	@Override
+	public ArrayList<Contest> selectAfterContest() {
+		return aDAO.selectAfterContest();
 	}
 
 }
