@@ -221,7 +221,7 @@
 		const admin =/*[[${session.loginUser}]]*/null;
 		/*]]>*/
 		window.onload = () => {
-			if(admin.isAdmin == 'Y') {
+			if(admin !=null && admin.isAdmin == 'Y') {
 				
 	            const write = document.getElementById('productWrite');
 	            write.addEventListener('click', () =>{

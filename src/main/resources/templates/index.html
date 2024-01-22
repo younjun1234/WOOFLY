@@ -4,15 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+
+	@font-face{
+	font-family:'DNFBitBitv2';
+	font-style:normal;font-weight:400;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
+	
+	* {
+	font-family: 'DNFBitBitv2';
+	font-weight: lighter;
+	}
+	
+	.carousel-item {
+		position: relative;
+		width: 100%;
+		height: 750px;
+		overflow: hiddden;
+	}
 	
 	.carousel-item > img {
-		height: 480px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 750px;
 	}
 	
 	.topActive {
 		color: black !important;
 		font-weight: 700 !important;
 	}
+	
 	
 </style>
 <title>WOOFLY</title>
@@ -21,19 +42,20 @@
 
 </head>
 <body>
+	
 	<!-- top navigation bar -->
 	<!-- 모든 페이지에 공통으로 들어가는 navigation bar -->
 	<!-- 추후에 common folder로 이동 -->
 	<div th:replace="~{common/topAdd :: topAdd}"></div>
 	<!-- 메인페이지에 광고 사진 등등일 들어가는 carousel 영역 -->
 	<header>
-		<div id="carousel" class="carousel slide" data-bs-ride="carousel" style="height: 480px;">
+		<div id="carousel" class="carousel slide" data-bs-ride="carousel" style="width:100%;">
 		  	<div class="carousel-indicators">
 			    <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"></button>
 			    <button type="button" data-bs-target="#carousel" data-bs-slide-to="1"></button>
 			    <button type="button" data-bs-target="#carousel" data-bs-slide-to="2"></button>
 		  	</div>
-  			<div class="carousel-inner bg-black text-center" style="height: 480px;">
+  			<div class="carousel-inner bg-black text-center" style="width:100%;">
 			    <div class="carousel-item active">
 			      	<img src="https://pethroom.com/web/upload/images/1F_playroom_web.gif" >
 			    </div>

@@ -190,7 +190,7 @@ public class ContestController {
 			check = 1;
 			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
 			
-			System.out.println(participantstList);
+			//System.out.println(participantstList);
 			
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
