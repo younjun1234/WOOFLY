@@ -11,6 +11,7 @@ import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.dao.ShopDAO;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
@@ -38,12 +39,12 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Product> selectProducts(PageInfo pi, Integer cNo) {
+	public ArrayList<Product> selectProducts(PageInfo pi, HashMap<String, Object> sortMap) {
 		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
 		int limit = pi.getBoardLimit();
 		
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		return sDAO.selectProducts(rowBounds, cNo);
+		return sDAO.selectProducts(rowBounds, sortMap);
 	}
 
 	@Override
@@ -170,6 +171,46 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public int deleteReply(int rNo) {
 		return sDAO.deleteReply(rNo);
+	}
+
+	@Override
+	public int insertStampProduct(HashMap<String, Object> stamp) {
+		return sDAO.insertStampProduct(stamp);
+	}
+
+	@Override
+	public int selectMyStampProduct(HashMap<String, Object> stampParam) {
+		return sDAO.selectMyStampProduct(stampParam);
+	}
+
+	@Override
+	public int selectSavedProduct(int productId) {
+		return sDAO.selectSavedProduct(productId);
+	}
+
+	@Override
+	public int deleteStampProduct(HashMap<String, Object> stamp) {
+		return sDAO.deleteStampProduct(stamp);
+	}
+
+	@Override
+	public int insertNotify(HashMap<String, Object> notifyMap) {
+		return sDAO.insertNotify(notifyMap);
+	}
+
+	@Override
+	public ArrayList<Product> recentlyProductFive() {
+		return sDAO.recentlyProductFive();
+	}
+
+	@Override
+	public ArrayList<Product> popularityProductFive() {
+		return sDAO.popularityProductFive();
+	}
+
+	@Override
+	public int selectMyOrders(HashMap<String, Object> orderConfirm) {
+		return sDAO.selectMyOrder(orderConfirm);
 	}
 
 }

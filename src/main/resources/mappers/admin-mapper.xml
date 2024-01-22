@@ -105,6 +105,83 @@
 		</if>
 	</select>
 	
+	<update id="updateKickOutMembers">
+		UPDATE MEMBER
+		SET MB_STATUS = 'N'
+		WHERE MB_ID = #{mbId}
+	</update>
+	
+	<update id="updateInfo">
+		UPDATE MEMBER
+		SET ${column} = #{datas}
+		WHERE MB_ID = #{mbId}
+	</update>
+	
+	<select id="selectMonthlyEarnings" resultType="_int">
+		SELECT SUM(TOTAL)
+		FROM ORDERS
+		WHERE TRUNC(ORDER_DATE, 'MONTH') = TRUNC(SYSDATE, 'MONTH')
+	</select>
+	
+	<select id="selectAnnualEarnings" resultType="_int">
+		SELECT SUM(TOTAL)
+		FROM ORDERS
+		WHERE TRUNC(ORDER_DATE, 'YEAR') = TRUNC(SYSDATE, 'YEAR')
+	</select>
+	
+	<select id="selectContestRatio" resultType="map">
+		SELECT
+	        (SELECT COUNT(P_NO) FROM PARTICIPANTS) AS TOTAL_PARTICIPANTS,
+	        (SELECT COUNT(P_NO) FROM PARTICIPANTS WHERE INSTR(UPPER(P_PRODUCT), 'O') > 0) AS PARTICIPANTS_WITH_O_PRODUCT
+	    FROM DUAL
+	</select>
+	
+	<select id="selectCompanyCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM COMPANY
+		WHERE COM_STATUS = 'Y'
+	</select>
+	
+	<select id="selectMonthlyList" resultType="map">
+		 SELECT
+		    TO_CHAR(ORDER_DATE, 'YYYY-MM') AS MONTH,
+		    NVL(SUM(TOTAL), 0) AS TOTAL_SUM
+		FROM ORDERS
+		WHERE ORDER_DATE >= ADD_MONTHS(TRUNC(SYSDATE, 'MONTH'), -5)
+		GROUP BY TO_CHAR(ORDER_DATE, 'YYYY-MM')
+		HAVING TO_DATE(MAX(TO_CHAR(ORDER_DATE, 'YYYY-MM')), 'YYYY-MM')<![CDATA[ < ]]>ADD_MONTHS(TRUNC(SYSDATE, 'MONTH'), 1)
+		ORDER BY TO_CHAR(ORDER_DATE, 'YYYY-MM')
+	</select>
+	
+	<select id="selectBoardsCount" resultType="map">
+	    SELECT
+		    (SELECT SUM(M_COUNT) FROM MISSING_BOARD WHERE EXTRACT(YEAR FROM M_CREATE_DATE) = EXTRACT(YEAR FROM SYSDATE)) AS M_COUNT,
+		    (SELECT SUM(DW_COUNT) FROM DW_BOARD WHERE EXTRACT(YEAR FROM DW_CREATE_DATE) = EXTRACT(YEAR FROM SYSDATE)) AS DW_COUNT,
+		    (SELECT SUM(B_COUNT) FROM BOARD WHERE EXTRACT(YEAR FROM B_CREATE_DATE) = EXTRACT(YEAR FROM SYSDATE)) AS B_COUNT,
+		    (SELECT SUM(U_COUNT) FROM USED_BOARD WHERE EXTRACT(YEAR FROM U_CREATE_DATE) = EXTRACT(YEAR FROM SYSDATE)) AS U_COUNT,
+		    (SELECT SUM(WM_COUNT) FROM WM_BOARD WHERE EXTRACT(YEAR FROM WM_CREATE_DATE) = EXTRACT(YEAR FROM SYSDATE)) AS WM_COUNT
+		FROM DUAL
+	</select>
+	
+	<select id="selectReportBoardCount" resultType="map">
+		SELECT R_CATEGORY, COUNT(*) AS TOTAL_COUNT
+		FROM REPORT
+		WHERE EXTRACT(YEAR FROM R_DATE) = EXTRACT(YEAR FROM SYSDATE)
+		GROUP BY R_CATEGORY
+	</select>
+	
+	<insert id="insertNotify">
+		INSERT INTO NOTIFICATION
+		VALUES(NOTI_SEQ.NEXTVAL, #{mbId}, #{notiType}, #{notiContent}, 'N', #{fromUser}, #{refNo}, SYSDATE)
+	</insert>
+	
+	<select id="selectAfterContest" resultType="Contest">
+		SELECT *
+		FROM CONTEST
+		WHERE CON_END_DATE >= SYSDATE
+		ORDER BY CON_NO
+	</select>
+	
 </mapper>
 
 

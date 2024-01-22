@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.kh.woofly.order.model.dao.OrderDAO">
+	
+	
+	<select id="selectMySavedHome" resultType="Saved">
+		select * from (
+			select *
+	 		from saved
+	 			 join attachment on (attm_ref_no = product_id)
+  			 	 join product using (product_id)
+		 	where attm_ref_type = 'P' and saved.mb_id = #{id} and attm_level = 1
+		<![CDATA[
+		) where rownum <= 5
+		]]>
+		
+	</select>
+	
+	<select id="selectMySelling" resultType="UsedBoard">
+		select * from (
+			select * from used_board
+				join attachment on (u_no = attm_ref_no)
+			where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+			order by sold_date desc)
+		<![CDATA[
+		 where rownum <= 5
+		]]>
+	</select>
 
 	<select id="selectMyBuying" resultType="Order">
 		
@@ -26,6 +51,18 @@
 		select count(*)
 		from orders
 		where customer_id = #{id}
+			<if test="startDate != null">
+		    	and order_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and order_date <![CDATA[<]]> #{endDate}
+		    </if>
+		<if test="orderDate != null">
+		    order by order_date ${orderDate}
+		</if>
+		<if test="price != null">
+		    order by total ${price}
+		</if>
 	</select>
 	
 	<select id="selectOrder" resultType="Order">
@@ -42,9 +79,11 @@
 	</select>
 	
 	<select id="selectOrderProductsAttm" resultType="ProductAttm">
-		select *
-		from attachment
-		where attm_ref_type = 'P' and attm_ref_no = #{productId} 
+		select * from (
+			select *
+			from attachment
+			where attm_ref_type = 'P' and attm_ref_no = #{productId}  and attm_level = 1
+		) where rownum = 1
 	</select>
 	
 	<select id="selectOrderAttm" resultType="ProductAttm">

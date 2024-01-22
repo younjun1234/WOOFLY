@@ -154,13 +154,13 @@ public interface BoardDAO {
 	
 	int getWmListCount(int i);
 
-	ArrayList<WmBoard> selectWmBoardList(PageInfo pi, int i);
+	ArrayList<WmBoard> selectWmBoardList(int i, RowBounds rowBounds);
 
 	ArrayList<Attachment> selectAttmWmBoardList(Object object);
 
 	int getWmRvListCount(int i);
 
-	ArrayList<WmBoard> selectWmRvBoardList(PageInfo pi, int i);
+	ArrayList<WmBoard> selectWmRvBoardList(int i, RowBounds rowBounds);
 
 	ArrayList<Attachment> selectAttmWmRvBoardList(Object object);
 
@@ -374,6 +374,10 @@ public interface BoardDAO {
 	int deleteUsedSaved(HashMap<String, Object> map);
 
 	int insertUsedSaved(HashMap<String, Object> map);
+
+	
+
+	
 
 	
 

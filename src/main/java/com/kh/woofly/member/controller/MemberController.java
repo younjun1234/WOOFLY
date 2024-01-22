@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.contest.model.service.ContestService;
+import com.kh.woofly.contest.model.vo.ContestAttm;
+import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.member.model.exception.MemberException;
 import com.kh.woofly.member.model.service.MemberService;
 import com.kh.woofly.member.model.vo.Member;
@@ -43,10 +43,12 @@ import com.kh.woofly.member.model.vo.MemberAddress;
 import com.kh.woofly.member.model.vo.Notification;
 import com.kh.woofly.member.model.vo.Payment;
 import com.kh.woofly.member.model.vo.Point;
+import com.kh.woofly.shop.model.service.ShopService;
+import com.kh.woofly.shop.model.vo.Product;
+import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -67,11 +69,16 @@ public class MemberController {
 	@Autowired
 	private MemberService mService;
 	
+	@Autowired
+	private ContestService cService;
+	
+	@Autowired
+	private ShopService sService;
+	
 	final DefaultMessageService messageService;
 
     public MemberController() {
-        // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSAUDYNMRNRELV4", "JMAD14KLARBEVCVYXX1KHMZBYHJCHP3G", "https://api.coolsms.co.kr");
+        this.messageService = NurigoApp.INSTANCE.initialize("NCS8XEQOM4HOQA2T", "SXJCPAE5YMVCBQSKAJ4T48AYDSNHWKAU", "https://api.coolsms.co.kr");
     }
 	
     @GetMapping("/")
@@ -91,6 +98,30 @@ public class MemberController {
 			model.addAttribute("notificationStatus", isAllRead);
     		model.addAttribute("notifications", list);
     	}
+    	
+    	int cNo = cService.todayContestNo();
+    	
+    	ArrayList<Participants> participantsList = cService.topFiveBest(cNo);
+    	ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+    	
+    	ArrayList<Product> recentlyProducts = sService.recentlyProductFive();
+    	ArrayList<Product> popularityProducts = sService.popularityProductFive();
+    	ArrayList<ProductAttm> pAttmList = sService.selectProductAttm(null);
+    	
+    	System.out.println(pAttmList);
+    	System.out.println(recentlyProducts);
+    	System.out.println(popularityProducts);
+    	System.out.println(cAttmList);
+    	System.out.println(cNo);
+    	System.out.println(participantsList);
+    	
+    	model.addAttribute("pAttmList", pAttmList);
+    	model.addAttribute("popularityProducts", popularityProducts);
+    	model.addAttribute("recentlyProducts", recentlyProducts);
+    	model.addAttribute("cAttmList", cAttmList);
+    	model.addAttribute("participantsList", participantsList);
+    	
+    	
     	return "index";
 
     }
@@ -136,6 +167,7 @@ public class MemberController {
 	public String addressView(HttpSession session, Model model) {
 		String id = ((Member)session.getAttribute("loginUser")).getMbId();
 		ArrayList<MemberAddress> list = mService.selectMyAddress(id);
+		System.out.println(list);
 		if(list != null) {
 			model.addAttribute("list", list);
 		}
@@ -453,7 +485,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\uploadFiles\\woolfy";
+			savePath = "C:\\woolfy";
 		} else if(os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly/";
 		}
@@ -469,7 +501,7 @@ public class MemberController {
 		String os = System.getProperty("os.name").toLowerCase();
 		String savePath = null;
 		if (os.contains("win")) {
-			savePath = "C:\\" + "\\uploadFiles\\woofly";
+			savePath = "C:\\woofly";
 		} else if (os.contains("mac")) {
 			savePath = "/Users/younjun/Desktop/WorkStation/uploadFiles/woofly";
 		}
@@ -547,7 +579,7 @@ public class MemberController {
 		
         Message message = new Message();
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
-        message.setFrom("01054942469");
+        message.setFrom("01064954499");
         message.setTo(to);
         message.setText(content);
 
@@ -563,6 +595,7 @@ public class MemberController {
     public String updatePhone(@RequestParam("phone") String phone, HttpSession session) {
 		Member loginUser = ((Member)session.getAttribute("loginUser"));
 		
+		loginUser.setMbTel(phone);
 		int result = mService.updatePhone(loginUser);
 		if(result > 0) {
 			return "redirect:/my/login-edit";

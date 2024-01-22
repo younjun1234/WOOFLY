@@ -20,8 +20,7 @@
     }
 
 	.sumDiv {
-		width: 20%;
-		height: 20%;
+		height: 80%;
 	}
 
     .product-image {
@@ -30,7 +29,7 @@
      }
 
     .img-thumbnail {
-         height: 500px;
+         height: 800px;
          width: auto;
     }
 
@@ -105,15 +104,17 @@
     <main>
         <div class="container">
             <div class="d-flex justify-content-center">
-                <div class="row justify-content-center">
+                <div class="row">
                 	<th:block th:each="t, i: ${tList}">
-	                    <div class="mb-2"  th:if="${i.index == 0}">
+	                    <div class="col"  th:if="${i.index == 0}">
 	                        <img class="product-image img-thumbnail rounded mx-auto d-block" th:src="'/image/shopFiles/' + ${ t.renameName }" alt="상품이름" width="80%">
 	                    </div>
-	                    <div class="sumDiv" th:unless="${i.index == 0}">
+	                </th:block>
+                    <div class="row" >
+	                    <div class="sumDiv col" th:each="t, i: ${tList}" th:if="${i.index > 0}">
 	                        <img class="product-image m-1 p-1" th:src="'/image/shopFiles/' + ${ t.renameName }" width="20%">
 	                    </div>
-                    </th:block>
+                    </div>
                 </div>
                 
                 <!-- 버튼 따라서 action 변경 -->
@@ -130,8 +131,13 @@
 	                            	<button type="button" class="btn btn-outline-dark btn-sm p-1 m-1" id="editBtn">Edit</button>
 	                            </p>
 	                        </div>
-	                        <div>	<!-- 리뷰 테이블 만들고 추가하기 + shopMain에서도 리뷰 보이기 -->
-	                            <p class="fs-4">리뷰 : 3건 / 추천 : 4건</p>
+	                        <div id="stampImgParent">
+	                            <p class="fs-4">
+	                            	<span class="reviewWord">리뷰 : [[${rList.size}]]건</span> /
+	                            	<span class="stampWord">찜하기 : [[${savedCount}]]건 </span>
+	                            	<span class="stampImg isFill" th:unless="${stampCount == 0}">❤</span>
+	                            	<span class="stampImg isEmpty" th:if="${stampCount == 0}">🤍</span>
+	                            </p>
 	                        </div>
 	                        <div>
 	                            <p class="fs-4">가격 : [[${#numbers.formatInteger(p.price, 3, 'COMMA')}]]원</p>
@@ -188,7 +194,7 @@
 	                    </ul>
 	                    <div class="p-2 col product_btns" aria-label="Large button group">
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="buyBtn">구매하기</button>
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="">찜하기</button>
+	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="stampBtn">찜하기</button>
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="putBtn">장바구니에 담기</button>
 	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="goToReply">리뷰 보기</button>
 	                    </div>
@@ -351,7 +357,7 @@
 			                            </svg>
 		                            </button>
 		                            <ul class="drop-menu">
-		                                <li><button class="drop-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+		                                <li><button class="drop-item" data-bs-toggle="modal" data-bs-target="#modal1">목차</button></li>
 		                                <th:block th:if="${ session.loginUser != null && session.loginUser.mbId == r.mbId}">
 			                                <li><button class="drop-item replyUpdate" type="button">수정</button></li>
 			                                <li><button class="drop-item replyDelete" type="button">삭제</button></li>
@@ -396,14 +402,18 @@
 
 		/*<![CDATA[*/
 		const p = /*[[${p}]]*/1;
-		const loginUser = /*[[${session.loginUser}]]*/1;
-		/*]]>*/
+		let loginUser = /*[[${session.loginUser}]]*/1;
 		
-		console.log(loginUser);
+		if(loginUser == null) {
+			loginUser = /*[[${isKakao}]]*/null;
+		}
+		
+		let savedCount = /*[[${savedCount}]]*/1; 
+		let reviewCount = /*[[${rList.size}]]*/1;
+		/*]]>*/
 		
         window.addEventListener('scroll', function () {
             var scrollY = window.scrollY || document.documentElement.scrollTop;
-
             // 일정 y축 좌표를 기준으로 확인
             var triggerY = 950; // 조정 가능
 
@@ -507,6 +517,64 @@
 		});
 		
 		
+		document.getElementById('stampBtn').addEventListener('click', () => {
+			const sip = document.getElementById('stampImgParent');
+			const stampWord = sip.children[0].children[1];
+			const stampImg = sip.children[0].children[2];
+			if(loginUser != null){
+				if(stampImg.classList.contains('isEmpty')) {
+					$.ajax({
+						url: "/shop/insertStampProduct",
+						data: {mbId:loginUser.mbId, pId:p.productId, type:'P'},
+						success: data => {
+							console.log(data);
+							if(data == 'success'){
+								savedCount = savedCount + 1
+								stampWord.innerText = '찜하기 : ' + savedCount + '건';
+								stampImg.innerText = '❤';
+								stampImg.classList.remove('isEmpty');
+								stampImg.classList.add('isFill');
+							} else {
+								alert("알수 없는 오류가 발생하여 페이지를 새로고침합니다.");
+								location.reload();
+							}
+						},
+						error: data => {
+							console.log(data);
+						}
+					});	
+				}
+				
+				if(stampImg.classList.contains('isFill')){
+					$.ajax({
+						url: "/shop/deleteStampProduct",
+						data: {mbId:loginUser.mbId, pId:p.productId, type: 'P'},
+						success: data => {
+							console.log(data);
+							if(data == 'success'){
+								savedCount = savedCount - 1
+								stampWord.innerText = '찜하기 : ' + savedCount + '건';
+								stampImg.innerText = '🤍';
+								stampImg.classList.remove('isFill');
+								stampImg.classList.add('isEmpty');
+							} else {
+								alert("알수 없는 오류가 발생하여 페이지를 새로고침합니다.");
+								location.reload();
+							}
+						},
+						error: data => {
+							console.log(data);
+						}
+					})
+				}
+					
+			} else {
+				alert("로그인 후 이용해주세요.");
+			}
+		});
+		
+		
+		
 		function colorNameMath(color) {
         	var match = ntc.name(color);
         	const colorName = match[1];
@@ -541,8 +609,10 @@
         const insertBtn = document.getElementById('insertReply');
         
 		const topReply = document.getElementById('replyContents');
-		
+		const reviewWord = document.getElementsByClassName('reviewWord')[0];
         /*<![CDATA[*/
+        const isBought = /*[[${isBought}]]*/2;
+        console.log(isBought);
 		$(document).on('click', '#insertReply', function() {
 			// 로그인 유저 다루는 로직 짜기
 			const textarea = document.getElementById('replyContent');
@@ -551,71 +621,79 @@
 			const boardNo = p.productId;
 			const loginUserId = /*[[${ session.loginUser?.mbId}]]*/id;
 			
-			
 			textarea.value = '';
 			
 			if(replyContent != '' && loginUserId != null) {
-				$.ajax({
-					url: '/shop/insertReply',
-					data: {reContent:replyContent, bNo:boardNo, mbId:loginUserId },
-					success: data => {
-						topReply.innerHTML = '';
-						for(const r of data.rList){
-							const isLiked = r.userLiked;
-							
-							const newReply = `
-								<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black replyOne">
-			                    	<input type="hidden" value="${r.rNo}">
-			                        <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
-			                        <div class="col-8 reContent" style="line-height: 40px;">${r.reContent}</div>
-			                        <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
-			                        <div class="col-2 d-flex align-items-center justify-content-end m-1 utility" name="devDiv">
-			                        	<div class="mx-2">
-			                        		${r.reLike}
-			                        	</div>
-			                        	<div class="changeImage">
-			                        		${isLiked ? 
-				                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="black" viewBox="0 0 16 16">
-				                                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-				                                </svg>`
-		                        				: 
-				                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16">
-				                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-				                                </svg>`
-			                        		}
-			                        	</div>
-			
-				                        <div class="dropend me-2">
-					                        <button type="button" class="btn drop-btn" aria-expanded="false">
-					                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-					                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-					                            </svg>
-											</button>
-				                            <ul class="drop-menu">
-				                                <li><button class="drop-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
-				                                <th:block th:if="${ loginUser != null && loginUser.mbId == r.mbId}">
-				                                ${loginUser != null && loginUser.mbId == r.mbId ? ` 
-					                                <li><button class="drop-item replyUpdate" type="button">수정</button></li>
-					                                <li><button class="drop-item replyDelete" type="button">삭제</button></li>
-					                                `
-					                                :
-					                                ``	
-				                                }
-				                                </th:block>
-				                            </ul>
+				if(isBought == 'Y') {
+					$.ajax({
+						url: '/shop/insertReply',
+						data: {reContent:replyContent, bNo:boardNo, mbId:loginUserId},
+						success: data => {
+							topReply.innerHTML = '';
+							for(const r of data.rList){
+								const isLiked = r.userLiked;
+								
+								const newReply = `
+									<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black replyOne">
+				                    	<input type="hidden" value="${r.rNo}">
+				                        <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
+				                        <div class="col-8 reContent" style="line-height: 40px;">${r.reContent}</div>
+				                        <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
+				                        <div class="col-2 d-flex align-items-center justify-content-end m-1 utility" name="devDiv">
+				                        	<div class="mx-2">
+				                        		${r.reLike}
+				                        	</div>
+				                        	<div class="changeImage">
+				                        		${isLiked ? 
+					                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="black" viewBox="0 0 16 16">
+					                                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+					                                </svg>`
+			                        				: 
+					                                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="white" viewBox="0 0 16 16">
+					                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+					                                </svg>`
+				                        		}
+				                        	</div>
+				
+					                        <div class="dropend me-2">
+						                        <button type="button" class="btn drop-btn" aria-expanded="false">
+						                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+						                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+						                            </svg>
+												</button>
+					                            <ul class="drop-menu">
+					                                <li><button class="drop-item" data-bs-toggle="modal" data-bs-target="#modal1">신고</button></li>
+					                                <th:block th:if="${ loginUser != null && loginUser.mbId == r.mbId}">
+					                                ${loginUser != null && loginUser.mbId == r.mbId ? ` 
+						                                <li><button class="drop-item replyUpdate" type="button">수정</button></li>
+						                                <li><button class="drop-item replyDelete" type="button">삭제</button></li>
+						                                `
+						                                :
+						                                ``	
+					                                }
+					                                </th:block>
+					                            </ul>
+					                        </div>
 				                        </div>
-			                        </div>
-		                    	</div>
-								`;
+			                    	</div>
+									`;
+								
+								topReply.innerHTML += newReply;
+								
+							}
+							reviewCount = reviewCount + 1;
+							reviewWord.innerText = '리뷰 : ' + reviewCount + '건';
 							
-							topReply.innerHTML += newReply;
+						},
+						error : data => {
+							console.log(data);
 						}
-					},
-					error : data => {
-						console.log(data);
-					}
+						
+					})
 					
-				})
+				} else {
+					alert("결제하신 상품만 리뷰 작성이 가능합니다.");
+				}
 			} else {
 				alert("로그인 후 이용해주세요.");
 			}
@@ -723,14 +801,6 @@
         		
         		$('#confirm').modal('show');
         	}
-        	
-        	
-        	//if(isOut){ // 흠..
-        	//	const menu = dropEnd.parentElement.children[1];
-        	//	if(menu.classList.contains('show')){
-        	//		menu.classList.toggle('show');
-        	//	}
-        	//}
         	
         })
         

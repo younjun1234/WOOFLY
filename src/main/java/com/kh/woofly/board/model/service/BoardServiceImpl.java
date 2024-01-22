@@ -375,7 +375,9 @@ private BoardServiceImpl boardDAO;
 
 	@Override
 	public ArrayList<WmBoard> selectWmBoardList(PageInfo pi, int i) {
-		return bDAO.selectWmBoardList(pi, i);
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectWmBoardList(i, rowBounds);
 	}
 
 	@Override
@@ -390,7 +392,9 @@ private BoardServiceImpl boardDAO;
 
 	@Override
 	public ArrayList<WmBoard> selectWmRvBoardList(PageInfo pi, int i) {
-		return bDAO.selectWmRvBoardList(pi, i);
+		int offset = (pi.getCurrentPage() - 1) * pi.getBoardLimit();
+		RowBounds rowBounds = new RowBounds(offset, pi.getBoardLimit());
+		return bDAO.selectWmRvBoardList(i, rowBounds);
 	}
 
 	@Override
@@ -643,20 +647,12 @@ private BoardServiceImpl boardDAO;
 
 
 
-
-//	@Override
-//	public Reply selectReplyLostBoard(Integer rNo) {
-//		// TODO Auto-generated method stub
-//		return bDAO.selectReplyLostBoard(rNo);
-//	}
-	
 	
 //======// 중고게시판 "/board/used"  //===============================
 	
 		
 	@Override
 	public int getUlistCount(int i) {
-		// TODO Auto-generated method stub
 		return bDAO.uListCount(i);
 	}
 

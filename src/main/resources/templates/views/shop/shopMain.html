@@ -17,6 +17,20 @@
 	}
 	.album .col{cursor: pointer;}
 	.card *:hover{cursor: pointer;}
+	
+	.card img {
+      width: 100%; /* Make the image fill its container */
+      height: auto; /* Maintain aspect ratio */
+   }
+   
+   .emp {
+   		font-weight: bold; 
+   		font-size: 20px;
+   }
+   
+   .arrayGroup li:hover{
+   		cursor: pointer;
+   }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 </head>
@@ -27,7 +41,7 @@
 	<main>
 		<div class="container-fluid d-flex mx-5">
 			<div class="navbar w-20 ">
-				<div class="container-fluid flex-column align-items-start">
+				<div class="container-fluid flex-column align-items-start mb-auto">
 					<a class="navbar-brand" href="/shopMain"><h2>쇼핑몰 카테고리</h2></a>
 					<th:block th:each="b : ${bList}">
 						<h4 class="mt-5" th:text="${b.productCategory}"></h4>
@@ -44,7 +58,9 @@
 				<div class="col-10 mb-5 pt-3 me-4">
 					<div class="d-flex justify-content-between border-bottom border-black border-2 pb-3 mb-3">
 						<h3 class="col-10">쇼핑몰</h3>
-						<button class="btn btn-outline-dark" id="productWrite">등록</button>
+						<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+							<button class="btn btn-outline-dark" id="productWrite">등록</button>
+						</th:block>
 					</div>
 					
 					<div class="d-flex mb-4 justify-content-between">
@@ -60,18 +76,72 @@
 							</div>
 						</div>
 						
-						<!-- 조회수같은거 없는데? / 판매순은 주문내역에서 / 추천순은 콘테스트등록할 때 상품정보로-->
-						
-						<div class="btn-group">
-							<button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-							  정렬
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end">
-							  <li><button class="dropdown-item" type="button">인기순</button></li>
-							  <li><button class="dropdown-item" type="button">판매순</button></li>
-							  <li><button class="dropdown-item" type="button">추천순</button></li>
-							</ul>
+						<!-- descending ascending-->
+						 <div class="arraysBtn" id="arrayBtn">
+						 	<ul class="d-flex m-2 arrayGroup" style="list-style:none;">
+						 		<th:block th:if="${sort == null}">
+								 	<li class="popularity descending">
+								 		인기순 ↓↓
+								 	</li>
+								 	<li class="sales descending">
+								 		판매순 ↓↓
+								 	</li>
+								 	<li class="price descending">
+								 		가격순 ↓↓
+								 	</li>
+							 	</th:block>
+							 	<th:block th:unless="${sort == null}">
+							 		<th:block th:if="${sort == 'popularity'}">
+									 	<li th:class="'popularity ' + ${direction == 'DESC' ? 'descending emp' : 'ascending emp'}">
+									 		<th:block th:if="${direction == 'DESC'}">
+									 			인기순 ↓↓
+									 		</th:block>
+									 		<th:block th:unless="${direction == 'DESC'}">
+									 			인기순 ↑↑
+									 		</th:block>
+									 	</li>
+								 	</th:block>
+								 	<th:block th:unless="${sort == 'popularity'}">
+									 	<li class="popularity descending">
+									 		인기순 ↓↓
+									 	</li>
+									 </th:block>
+									 
+									 <th:block th:if="${sort == 'sales'}">
+									 	<li th:class="'sales ' + ${direction == 'DESC' ? 'descending emp' : 'ascending emp'}">
+									 		<th:block th:if="${direction == 'DESC'}">
+									 			판매순 ↓↓
+									 		</th:block>
+									 		<th:block th:unless="${direction == 'DESC'}">
+									 			판매순 ↑↑
+									 		</th:block>
+									 	</li>
+								 	</th:block>
+								 	<th:block th:unless="${sort == 'sales'}">
+									 	<li class="sales descending">
+									 		판매순 ↓↓
+									 	</li>
+									 </th:block>
+									 
+									  <th:block th:if="${sort == 'price'}">
+									 	<li th:class="'price ' + ${direction == 'DESC' ? 'descending emp' : 'ascending emp'}">
+									 		<th:block th:if="${direction == 'DESC'}">
+									 			가격순 ↓↓
+									 		</th:block>
+									 		<th:block th:unless="${direction == 'DESC'}">
+									 			가격순 ↑↑
+									 		</th:block>
+									 	</li>
+								 	</th:block>
+								 	<th:block th:unless="${sort == 'price'}">
+									 	<li class="price descending">
+									 		가격순 ↓↓
+									 	</li>
+									 </th:block>
+							 	</th:block>
+						 	</ul>
 						 </div>
+						 
 					</div>
 					
 					<!-- 상품화면 시작 -->
@@ -79,10 +149,10 @@
 					<div class="album py-5" th:if="${pList.size != 0}">
 						<div class="container">
 							<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3" id="productContainer">
-								<div class="col" th:each="p: ${pList}">
+								<div class="col-md-3" th:each="p: ${pList}" th:value="${p.productId}" >	<!-- pList : aList 매칭 되는거 없으면 div하나만 생성됨; -->
 									<div class="card shadow-sm products" th:each="a: ${aList}" th:if="${p.productId == a.attmRefNo}">
 										<input type="hidden" name="productId" th:value="${p.productId}">
-										<img alt="..." th:src="'/image/shopFiles/' + ${ a.renameName}">
+										<img alt="..." th:src="'/image/shopFiles/' + ${ a.renameName}"  style="height: 200px;">
 										<div class="card-body">
 											<div class="category fw-bold mb-2" th:each="c: ${cList}" th:if="${p.productDetailNo == c.productDetailNo}">
 												[[${c.productDetailCategory}]]
@@ -144,13 +214,20 @@
 	</main>
 	<script th:inline="javascript">
 	
+		/*<![CDATA[*/
 		const categoryAll = /*[[${cList}]]*/0;	
-	
+		const pList = /*[[${pList}]]*/null;
+		const isDetail = /*[[${isDetail}]]*/null;
+		const admin =/*[[${session.loginUser}]]*/null;
+
+		/*]]>*/
 		window.onload = () => {
-			const write = document.getElementById('productWrite');
-			write.addEventListener('click', () =>{
-				location.href='/shop/shopWrite';
-			});
+			if(admin != null && admin.isAdmin == 'Y') {
+				const write = document.getElementById('productWrite');
+				write.addEventListener('click', () =>{
+					location.href='/shop/shopWrite';
+				});
+			}
 			
 			const products = document.querySelectorAll('.products');
 			for(product of products) {
@@ -173,13 +250,68 @@
 			
 			const topCategory = document.getElementsByClassName('topCategory');
 			
-			console.log(topCategory);
-			
 			for(const cate of topCategory){
 				cate.addEventListener('click', function() {
 					location.href = '/shop/selectDetail?productDetailNo=' + this.value;
 				});
 			}
+			
+			// ↑↑↓↓   popularity(인기순) sales(판매순) price(가격순)  descending ascending
+			const arrayBtns = document.getElementById('arrayBtn');
+			arrayBtns.addEventListener('click', function(event) {
+				const target = event.target;
+				const isPopular = target.classList.contains('popularity');
+				const isSales = target.classList.contains('sales');
+				const isPrice = target.classList.contains('price');
+				
+				let sort;
+				let direction;
+				
+				if(isPopular){
+					sort = 'popularity';
+					if(target.classList.contains('ascending')){
+						direction = 'DESC'
+					} else if(target.classList.contains('descending')){
+						direction = 'ASC'
+					} else {
+						direction = 'DESC'
+					}
+				}
+				
+				if(isSales){
+					sort = 'sales';
+					if(target.classList.contains('ascending')){
+						direction = 'DESC'
+					} else if(target.classList.contains('descending')){
+						direction = 'ASC'
+					} else {
+						direction = 'DESC'
+					}
+				}
+				
+				if(isPrice){
+					sort = 'price';
+					if(target.classList.contains('ascending')){
+						direction = 'DESC'
+					} else if(target.classList.contains('descending')){
+						direction = 'ASC'
+					} else {
+						direction = 'DESC'
+					}
+				}
+				
+				
+				if(isPopular || isSales || isPrice) {
+					if(isDetail == null) {
+						
+						location.href="/shopMain?sort="+ sort + "&direction=" + direction
+					} else {
+						
+						location.href="/shop/selectDetail?productDetailNo="+ isDetail +"&sort=" + sort + "&direction=" + direction;
+					}
+				}
+				
+			});
 			
 		}
 		

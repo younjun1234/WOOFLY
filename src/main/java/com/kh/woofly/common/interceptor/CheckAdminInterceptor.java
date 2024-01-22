@@ -19,7 +19,7 @@ public class CheckAdminInterceptor implements HandlerInterceptor {
 	         Member loginUser = (Member)session.getAttribute("loginUser");
 	         if(loginUser == null || loginUser.getIsAdmin().equals("N")) {
 	        	 response.setContentType("text/html; charset=UTF-8");
-	        	 response.getWriter().write("<script>alert('접근이 불가합니다.'); location.href='home.do';</script>");
+	        	 response.getWriter().write("<script>alert('접근이 불가합니다.'); location.href='/';</script>");
 	            	return false;
 	         }
 	      

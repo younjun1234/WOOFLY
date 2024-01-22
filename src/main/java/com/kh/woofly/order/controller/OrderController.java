@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.woofly.board.model.vo.UsedBoard;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
 import com.kh.woofly.member.model.vo.Member;
@@ -59,6 +60,7 @@ public class OrderController {
 			paList.add(oService.selectOrderAttm(o));
 			pList.add(oService.selectMostExpensive(o));
 		}
+		
         int result = oService.deletePoints(id);
         ArrayList<Point> pointList = oService.selectMyPoints(id);
         int pointsUsable = 0;
@@ -70,10 +72,17 @@ public class OrderController {
         	}
         }
         
+        ArrayList<UsedBoard> uList = oService.selectMySelling(map);
+        ArrayList<Saved> sList = oService.selectMySavedHome(map);
+        
+        
         model.addAttribute("pointsUsable", pointsUsable);
+        model.addAttribute("sList", sList);
+        model.addAttribute("uList", uList);
 		model.addAttribute("pList", pList);
 		model.addAttribute("paList", paList);
 		model.addAttribute("oList", oList);
+		
 		return "myHome";
 	}
 	
@@ -119,7 +128,7 @@ public class OrderController {
 			e.printStackTrace();
 		}
 		
-		int listCount = oService.getBuyingCount(id);
+		int listCount = oService.getBuyingCount(map);
 		PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
 		map.put(sort.split(" ")[0], sort.split(" ")[1]);
 

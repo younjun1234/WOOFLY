@@ -107,6 +107,10 @@ public interface PetService {
 
 	int getListCount(int i);
 
+	int insertReplyNotice(HashMap<String, Object> map);
+
+	int insertBoardNotice(HashMap<String, Object> map);
+
 	//int getPhotoCount(HashMap<String, String> map);
 
 }

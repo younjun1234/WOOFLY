@@ -27,7 +27,7 @@
 			<form  action="/board/usedReview/insertUsedRvBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3">
                     <label for="buyerId" class="form-label">거래 선택</label>
-                    <select class="form-select" id="prodNo" name="prodNo">
+                    <select class="form-select" id="prodNo" name="prodNo" required>
                     	<option value="" disabled selected>후기를 작성할 거래내역을 선택해주세요</option>
                         <option th:each="p : ${prodList}" th:value="${p.uNo}" th:text="|${p.productName}(${p.mbNickName})|">
                         	
@@ -42,12 +42,14 @@
 			
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" name="uTitle" placeholder="제목을 입력하세요">
+				  	<input type="text" class="form-control" id="title" name="uTitle" placeholder="제목을 입력하세요" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" name="uContent" rows="20" style="resize: none;"></textarea>
+				  	<textarea class="form-control" id="content" name="uContent" rows="20" style="resize: none;" required></textarea>
 				</div>
+				
+							
 				<label for="file" class="form-label">첨부파일</label><br>
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
 					<div id="fileArea">
@@ -67,6 +69,23 @@
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd6");
 		$(boardNav).addClass('active');
+		
+		function validateForm() {
+    	    // 필수 필드 검증
+    	    var form = document.getElementById("attmForm");
+    	    var isValid = form.checkValidity();
+
+    	    if (!isValid) {
+    	        // 필수 필드 중 하나라도 비어 있다면
+    	        var requiredFields = form.querySelectorAll(':invalid');
+    	        
+    	        // 첫 번째 필수 필드로 포커스 이동
+    	        requiredFields[0].focus();
+    	    } else {
+    	        // 유효성 검사 통과 시 다음 동작 수행
+    	        form.submit(); // 또는 원하는 동작 수행
+    	    }
+    	}
 		
 		 window.onload = () =>{
 				const fileArea = document.querySelector('#fileArea');

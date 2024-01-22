@@ -35,18 +35,18 @@
 			<form  action="/board/lost/insertLostBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">
 					<label for="title" class="form-label">실종 상태 여부</label>
-				    <select class="form-select mb-1" id="lostStatus" name="mRescue">
+				    <select class="form-select mb-1" id="lostStatus" name="mRescue" required>
 				    	<option th:value="1" value="1">구조중</option>
 						<option th:value="2" value="2">구조완료</option>
 					</select>
 				</div>
 				<div class="mb-3">
 					<label for="title" class="form-label"></label><!--제목-->
-				  	<input type="text" class="form-control" id="title" name="mTitle">
+				  	<input type="text" class="form-control" id="title" name="mTitle" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label"></label><!--내용-->
-				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent"></textarea>
+				  	<textarea class="form-control" id="content" rows="20" style="resize: none;" name="mContent" required></textarea>
 				</div>
 				<label for="file" class="form-label"></label><br><!--첨부파일-->
 				<button type="button" class="btn btn-dark btn-sm h-50" id="addFile">파일추가</button> <br><br>
@@ -59,6 +59,24 @@
 					<button class="btn btn-dark">등록</button>
 				</div>
 			</form>
+			<script>
+            // 문서가 로드되면 실행되는 함수를 정의합니다.
+            document.addEventListener('DOMContentLoaded', function() {
+              // 폼 요소를 선택하고 onsubmit 이벤트 핸들러를 추가합니다.
+              document.getElementById('attmForm').onsubmit = function() {
+                // 파일 인풋 요소를 선택합니다.
+                var fileInput = document.querySelector('input[type="file"]');
+                
+                // 파일 인풋에 파일이 없는 경우
+                if (!fileInput.value) {
+                  // 경고창을 표시합니다.
+                  alert('사진을 첨부하세요');
+                  // 기본 이벤트(폼 제출)를 중단합니다.
+                  return false;
+                }
+              };
+            });
+         </script>
 		</div>
 		
 		
@@ -70,6 +88,22 @@
 		const boardNav = document.getElementById("topAdd7");
 		$(boardNav).addClass('active');
 		
+		function validateForm() {
+    	    // 필수 필드 검증
+    	    var form = document.getElementById("attmForm");
+    	    var isValid = form.checkValidity();
+
+    	    if (!isValid) {
+    	        // 필수 필드 중 하나라도 비어 있다면
+    	        var requiredFields = form.querySelectorAll(':invalid');
+    	        
+    	        // 첫 번째 필수 필드로 포커스 이동
+    	        requiredFields[0].focus();
+    	    } else {
+    	        // 유효성 검사 통과 시 다음 동작 수행
+    	        form.submit(); // 또는 원하는 동작 수행
+    	    }
+    	}
 		
 		// 수업시간
 		window.onload = () =>{

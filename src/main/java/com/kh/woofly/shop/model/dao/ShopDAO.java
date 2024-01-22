@@ -9,6 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;
@@ -22,7 +23,7 @@ public interface ShopDAO {
 
 	int insertAttm(ArrayList<ProductAttm> list);
 
-	ArrayList<Product> selectProducts(RowBounds rowBounds, Integer cNumber);
+	ArrayList<Product> selectProducts(RowBounds rowBounds, HashMap<String, Object> sortMap);
 
 	ArrayList<ProductAttm> selectProductAttm(Integer productId);
 
@@ -69,5 +70,21 @@ public interface ShopDAO {
 	int updateReply(Reply r);
 
 	int deleteReply(int rNo);
+
+	int insertStampProduct(HashMap<String, Object> stamp);
+
+	int selectMyStampProduct(HashMap<String, Object> stampParam);
+
+	int selectSavedProduct(int productId);
+
+	int deleteStampProduct(HashMap<String, Object> stamp);
+
+	int insertNotify(HashMap<String, Object> notifyMap);
+
+	ArrayList<Product> recentlyProductFive();
+
+	ArrayList<Product> popularityProductFive();
+
+	int selectMyOrder(HashMap<String, Object> orderConfirm);
 
 }

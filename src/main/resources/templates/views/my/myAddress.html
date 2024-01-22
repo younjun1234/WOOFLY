@@ -42,7 +42,7 @@
 								<span class="badge rounded-pill text-bg-light">기본 배송지</span>
 							</div>
 						</div>
-						<p class="mb-0">[[|010-${session.loginUser.mbTel[3]}***-*${#strings.substring(session.loginUser.mbTel, 8, 11)}|]]</p>
+						<p class="mb-0">[[|010-${address.mbTel[3]}***-*${#strings.substring(address.mbTel, 8, 11)}|]]</p>
 						<p>[[|(${address.postcode})${address.addr} ${address.addrDetail != null ? address.addrDetail : ""}]]</p>
 					</div>
 					<div class="my-auto">
@@ -272,6 +272,8 @@
 					error: data => console.log(data)
 					
 				})
+			} else {
+				document.getElementById("updateAddrForm").submit();
 			}
 
 		});

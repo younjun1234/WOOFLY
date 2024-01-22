@@ -26,7 +26,7 @@
 			<div class="mb-2 w-50 bg-white mx-auto">
 				<div class="d-flex align-content-center mx-4" style="height: 140px" th:each="cart, cartStat: ${cList}" th:classappend="${!cartStat.last} ? 'border-bottom'">
 					<th:block th:each="attm : ${paList}" th:if="${attm.attmRefNo == cart.productId}">
-						<img class="rounded float-start my-auto" th:src="'/image/' + ${attm.renameName}" style="width: 80px; height: 80px;">
+						<img class="rounded float-start my-auto" th:src="'/image/shopFiles/' + ${attm.renameName}" style="width: 80px; height: 80px;">
 					</th:block>
 					<div class="d-flex flex-column justify-content-center">
 						<input type="hidden" name="cartId" th:value="${cart.cartId}">
@@ -47,17 +47,17 @@
 					</div>
 				</div>
 				<div class="d-flex justify-content-between mt-2 align-items-center">
-					<div class="d-flex gap-5 align-items-start">
-						<div class="d-flex flex-column justify-content-center">
+					<div class="d-flex align-items-start col-11">
+						<div class="d-flex flex-column justify-content-center col-3">
 							<div>받는 분</div>
 							<div>연락처</div>
 							<div>배송 주소</div>
 						</div>
 						<div class="d-flex flex-column justify-content-center col-9" id="addrView">
-							<div>[[|${#strings.substring(maList[0].mbName, 0, 1)}**|]]</div>
-							<div>[[|010-${maList[0].mbTel[3]}***-*${#strings.substring(maList[0].mbTel, 8, 11)}|]]</div>
-							<div>[[|(${maList[0].postcode})${maList[0].addr} ${maList[0].addrDetail != null ? maList[0].addrDetail : ""}]]</div>
-							<input type="hidden" id="addrViewId" th:value="${maList[0].addrId}" name="addrId">
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|${#strings.substring(maList[0].mbName, 0, 1)}**|]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|010-${maList[0].mbTel[3]}***-*${#strings.substring(maList[0].mbTel, 8, 11)}|]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(maList)}"> [[|(${maList[0].postcode})${maList[0].addr} ${maList[0].addrDetail != null ? maList[0].addrDetail : ""}]]</th:block></div>
+							<th:block th:if="${!#arrays.isEmpty(maList)}"> <input type="hidden" id="addrViewId" th:value="${maList[0].addrId}" name="addrId"></th:block>
 						</div>
 					</div>
 					<div class="col-1">
@@ -86,7 +86,7 @@
 				[[${#numbers.formatInteger(session.loginUser.mbPoint, 3, 'COMMA')}]]P
 				<div class="d-flex align-items-center mt-2">
 					<div class="col-10">
-						<input type="number" class="form-control" th:disabled="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
+						<input type="number" class="form-control" th:readonly="${session.loginUser.mbPoint < 1000}" name="usedPoints" value="0" th:style="${session.loginUser.mbPoint < 1000} ? 'cursor: not-allowed;'">
 					</div>
 					&nbsp;&nbsp;&nbsp;
 					<div>
@@ -115,9 +115,14 @@
 				<br>
 				<div class="d-flex justify-content-between align-items-center rounded border border-black p-2" role="button" id="selectedPayment">
 					<div class="ms-2">
-						<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey"> 
-						<div>[[${pList[0].cardCompany}]]</div>
-						<div>****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</div>
+							<th:block th:if="${!#arrays.isEmpty(pList)}">
+								<input type="hidden" th:value="${pList[0].billingKey}" name="billingKey">
+							</th:block>
+							<th:block th:if="${#arrays.isEmpty(pList)}">
+								<input type="hidden" name="billingKey">
+							 </th:block>
+							<div><th:block th:if="${!#arrays.isEmpty(pList)}">[[${pList[0].cardCompany}]]</th:block></div>
+							<div><th:block th:if="${!#arrays.isEmpty(pList)}">****-****-****-[[${#strings.substring(pList[0].cardNumber, 12)}]]</th:block></div>
 					</div>
 					<div class="me-2">
 						<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
@@ -429,6 +434,17 @@
 	</div>
 	
 	<script  th:inline="javascript">
+		
+		window.onload = () => {
+			/*<![CDATA[*/
+			const pList = /*[[${pList}]]*/null;
+			/*]]>*/
+			
+			if (pList == null || pList.length == 0) {
+				alert('결제 정보를 먼저 등록해주세요.');
+				window.location.href = '/my/payment'; 
+			}
+		}
 	
 		const selectedPayment = document.querySelector('#selectedPayment');
 		selectedPayment.addEventListener('click', () => {
@@ -582,7 +598,7 @@
 			
 			const addrView = document.getElementById('addrView');
 			addrView.children[0].innerText = mbName.substring(0, 1) + '**';
-			addrView.children[1].innerText = '010' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);
+			addrView.children[1].innerText = '010-' + mbTel.substring(3, 4) + '***-*' + mbTel.substring(8);
 			addrView.children[2].innerText = '(' + postcode + ')' + address + addressDetail;
 			addrView.children[3].value = addrId;
 			

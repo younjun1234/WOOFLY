@@ -82,7 +82,9 @@ public interface ContestService {
 
 	ContestAttm productAttm(Integer outO);
 
+	ArrayList<Participants> topFiveBest(int cNo);
 
+	
 
 
 //	Date sDate();

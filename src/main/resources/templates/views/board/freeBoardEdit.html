@@ -24,16 +24,16 @@
 					</div>
 				</div>
 			</div>
-			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/free/edit">
+			<form class="needs-validation" method="POST" enctype="multipart/form-data" action="/board/free/edit"  id="attmForm">
 				<input type = "hidden" th:value ="${ b.bNo }" name="bNo">
 				<input type = "hidden" th:value ="${ page }" name ="page">
 				<div class="mb-3">
 					<label for="title" class="form-label">제목</label>
-				  	<input type="text" class="form-control" id="title" name="bTitle" th:value="${b.bTitle}">
+				  	<input type="text" class="form-control" id="title" name="bTitle" th:value="${b.bTitle}" required>
 				</div>
 				<div class="mb-3">
 				  	<label for="content" class="form-label">내용</label>
-				  	<textarea class="form-control" id="content" rows="20" name="bContent" style="resize: none;">[[${b.bContent}]]</textarea>
+				  	<textarea class="form-control" id="content" rows="20" name="bContent" style="resize: none;" required>[[${b.bContent}]]</textarea>
 				</div>
 				
 				
@@ -62,6 +62,23 @@
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd3");
 		$(boardNav).addClass('active');
+		
+		function validateForm() {
+    	    // 필수 필드 검증
+    	    var form = document.getElementById("attmForm");
+    	    var isValid = form.checkValidity();
+
+    	    if (!isValid) {
+    	        // 필수 필드 중 하나라도 비어 있다면
+    	        var requiredFields = form.querySelectorAll(':invalid');
+    	        
+    	        // 첫 번째 필수 필드로 포커스 이동
+    	        requiredFields[0].focus();
+    	    } else {
+    	        // 유효성 검사 통과 시 다음 동작 수행
+    	        form.submit(); // 또는 원하는 동작 수행
+    	    }
+    	}
 		
 		window.onload = () =>{
 			const fileArea = document.querySelector('#fileArea');

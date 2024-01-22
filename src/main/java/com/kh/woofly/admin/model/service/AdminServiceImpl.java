@@ -2,6 +2,7 @@ package com.kh.woofly.admin.model.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.kh.woofly.admin.model.dao.AdminDAO;
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -87,6 +89,61 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public int getMembersCount(String mbId) {
 		return aDAO.getMembersCount(mbId);
+	}
+
+	@Override
+	public int updateKickOutMembers(String mbId) {
+		return aDAO.updateKickOutMembers(mbId);
+	}
+
+	@Override
+	public int updateInfo(Properties prop) {
+		return aDAO.updateInfo(prop);
+	}
+
+	@Override
+	public int selectMonthlyEarnings() {
+		return aDAO.selectMonthlyEarnings();
+	}
+
+	@Override
+	public int selectAnnualEarnings() {
+		return aDAO.selectAnnualEarnings();
+	}
+
+	@Override
+	public HashMap<String, Object> selectContestRatio() {
+		return aDAO.selectContestRatio();
+	}
+
+	@Override
+	public int selectCompanyCount() {
+		return aDAO.selectCompanyCount();
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> selectMonthlyList() {
+		return aDAO.selectMonthlyList();
+	}
+
+	@Override
+	public HashMap<String, Object> selectBoardsCount() {
+		return aDAO.selectBoardsCount();
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> selectReportBoardCount() {
+		return aDAO.selectReportBoardCount();
+	}
+
+	@Override
+	public int insertNotify(HashMap<String, Object> notifyMap) {
+		return aDAO.insertNotify(notifyMap);
+	}
+
+	@Override
+	public ArrayList<Contest> selectAfterContest() {
+		return aDAO.selectAfterContest();
 	}
 
 }

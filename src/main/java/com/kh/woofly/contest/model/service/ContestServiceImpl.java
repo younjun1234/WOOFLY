@@ -233,8 +233,6 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.bestDogCountUpdate(pNo);
 	}
 
-
-
 	@Override
 	public Integer voteCheck(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -253,8 +251,12 @@ public class ContestServiceImpl implements ContestService {
 		return cDAO.productAttm(outO);
 	}
 
+  @Override 
+	public ArrayList<Participants> topFiveBest(int cNo) {
+		return cDAO.topFiveBest(cNo);
+	}
 
-
+	
 
 
 //	@Override
