@@ -17,11 +17,11 @@
 	<main>
 		<div class="container-fluid d-flex mx-5">
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<th:block th:if="${admin == 'Y'}">
-				<div th:replace="~{common/adminNav :: adminNav}"></div>
-			</th:block>
-			<th:block th:unless="${admin == 'Y'}">
+			<th:block th:if="${session.loginUser == null or session.loginUser.isAdmin == 'N'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
+			</th:block>
+			<th:block th:if="${session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
 			</th:block>
 			
 			<!-- 마이페이지 아래만 수정해주세요 -->
