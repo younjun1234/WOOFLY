@@ -44,6 +44,17 @@ public class PetController {
 	@Autowired
 	private PetService pService;
 	
+	@GetMapping("profile/{mbId}")
+	public String userProfile(Model model, @PathVariable("mbId") String mbId) {
+		Member user = pService.selectMember(mbId);
+		ArrayList<Pet> list =pService.petInfoList(mbId);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("list", list);
+		
+		return "userProfile";
+	}
+	
 	//마이펫 리스트
 	@GetMapping("pet/petInfo")
 	public String petInfo(Model model, HttpSession session, @ModelAttribute Pet p) {
@@ -75,6 +86,36 @@ public class PetController {
 		}
     }
 
+    
+    	@GetMapping("pet/userPhoto")
+    	public String userPhotoView(Model model, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request,
+    								@RequestParam(value="petName", required=false) Integer petId, @RequestParam(value="mbId") String mbId) {
+    		System.out.println(123);
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("id", mbId);
+			map.put("petId", petId);
+  
+			int listCount = pService.getListCount(1);
+			PageInfo pi = Pagination.getPageInfo(page, listCount, 10);
+			ArrayList<Album> aList = pService.selectMyAlbums(map);
+			ArrayList<Pet> pList = pService.petInfoList(mbId);
+			ArrayList<Reply> rList = pService.repliesList(mbId);
+			System.out.println(aList);
+			if(aList != null) {
+				 model.addAttribute("pi", pi);
+				 model.addAttribute("loc", request.getRequestURI());
+				 model.addAttribute("pList", pList);
+				 model.addAttribute("aList", aList);
+				 model.addAttribute("rList", rList);
+				 return "userPhoto";
+					     
+			} else {
+			     throw new PetException("사진첩 조회에 실패하였습니다.");
+			}
+    	}
+			    	
+    
+    
 	  @GetMapping("pet/petPhoto")
 	   public String petPhotoView(HttpSession session, Model model, @RequestParam(value="page", defaultValue="1") int page,
 			   @RequestParam(value="petName", required=false) Integer petId, HttpServletRequest request) {
