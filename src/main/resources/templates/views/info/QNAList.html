@@ -87,8 +87,8 @@
 									<input type="hidden" th:value="${ pi.currentPage }" name="page">
 									
 									<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
-										<button class="btn btn-lg rounded-2 btn-outline-dark" >수정</button>
-										<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" >삭제</button>
+										<button class="btn btn rounded-2 btn-outline-dark" >수정</button>
+										<button type="button" name="modalOpen" class="btn btn rounded-2 btn-outline-danger" >삭제</button>
 									</th:block>
 									
 									<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
