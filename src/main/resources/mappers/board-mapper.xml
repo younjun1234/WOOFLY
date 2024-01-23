@@ -962,7 +962,7 @@
 	
 	<!-- 특정 게시글 조회 -->
 	<select id="selectUsedBoard" resultType="UsedBoard">
-	    select u.*, m.mb_nickName
+	    select u.*, m.mb_nickName , m.mb_photo as "mbPhoto" 
 	    from Used_Board u
 	    join Member m on u.mb_id = m.mb_id
 	    where u.u_status = 'Y' and u.u_no = #{uNo}

@@ -2707,6 +2707,9 @@ public class BoardController {
                                  @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
                                         Model model,
                                         HttpServletRequest request) throws BoardException {
+               // 1번, 아래 로직은 서치타입이랑 서치키워드가 없을 때만 발동
+              // else 둘 다 존재하면(검색했을때) -> if문 발동 안함
+              //
               ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
                if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
                    int listCount = bService.getMlistCount(1);
