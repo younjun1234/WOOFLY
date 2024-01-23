@@ -42,7 +42,7 @@
             <!--작성자 프로필 사진-->
             <img id="img" role="button" class="float-start me-4" th:src="'/image/' + ${m.mbPhoto}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
             <div class="header-text-container">
-               <h6 th:text="${m.mNo}" name="mNo">글번호</h6>
+               <input type="hidden" name="mNo" th:value="${m.mNo}">
                <h6 th:text="${m.mbNickName}">작성자</h6>
                <p th:text="${m.mCreateDate}">2023.10.16</p>
             </div>
