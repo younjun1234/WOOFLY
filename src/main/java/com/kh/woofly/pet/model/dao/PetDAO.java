@@ -11,6 +11,7 @@ import com.kh.woofly.board.model.vo.Attachment;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
@@ -115,4 +116,6 @@ public interface PetDAO {
 	int insertReplyNotice(HashMap<String, Object> map);
 
 	int insertBoardNotice(HashMap<String, Object> map);
+
+	Member selectMember(String mbId);
 }

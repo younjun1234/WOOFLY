@@ -3,6 +3,10 @@
 
 <mapper namespace="com.kh.woofly.pet.model.dao.PetDAO">
 
+	<select id="selectMember" resultType="Member">
+		select * from member where mb_id = #{mbId}
+	</select>
+
 	<update id="updatePetPhoto">
 		update album
 		set ab_content = #{abContent}, pet_id = #{petId}
