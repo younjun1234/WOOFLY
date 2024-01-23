@@ -694,7 +694,7 @@ public class ContestController {
 				if( result1 == 1) {
 					int result2 = cService.bestDogCountUpdate(pNo);
 					
-					return "contestDetail";
+					return  "redirect:/contest/list";
 				} else {
 					throw new ContestException("콘테스트 투표 실패하였습니다");
 				}
