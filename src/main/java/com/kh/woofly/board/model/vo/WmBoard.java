@@ -25,4 +25,5 @@ public class WmBoard {
 	private String mbId;
 	private String mbNickName;
 	private int wmLike;
+	private String mbPhoto;
 }

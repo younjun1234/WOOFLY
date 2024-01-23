@@ -81,13 +81,13 @@
 						 	<ul class="d-flex m-2 arrayGroup" style="list-style:none;">
 						 		<th:block th:if="${sort == null}">
 								 	<li class="popularity descending">
-								 		인기순 ↓↓
+								 		인기순 ↓↓ &nbsp;&nbsp;
 								 	</li>
 								 	<li class="sales descending">
-								 		판매순 ↓↓
+								 		판매순 ↓↓ &nbsp;&nbsp;
 								 	</li>
 								 	<li class="price descending">
-								 		가격순 ↓↓
+								 		가격순 ↓↓ 
 								 	</li>
 							 	</th:block>
 							 	<th:block th:unless="${sort == null}">
@@ -170,41 +170,82 @@
 						<h1>죄송합니다. 준비된 상품이 없습니다.</h1>
 					</div>
 					
-					<nav class="center" aria-label="Standard pagination example" style="float: right;" th:if="${pList.size != 0}" th:with="loc=${loc}">
-			        	<ul class="pagination">
-			        		<th:block th:if="${ pi.currentPage <= 1}">
-			        			<li class="page-item">
-			        				<a class="page-link disable" aria-label="Previous">
-			        					<span aria-hidden="true">&laquo;</span>
-			        				</a>
-			        			</li>
-			        		</th:block>
-			        		<th:block th:unless="${ pi.currentPage <= 1}">
-				        		<li class="page-item">
-						            <a class="page-link" th:href="@{${loc}(page=${pi.currentPage - 1})}" aria-label="Previous">
-						            	<span aria-hidden="true">&laquo;</span>
-						            </a>
-						        </li>
-						    </th:block>
-					        
-			                  <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
-			                      <a class="page-link" th:href="@{${loc}(page=${p})}" th:text="${p}"></a>
-			                  </li>
-					           	
-				           	<li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
-				            	<a class="page-link" aria-label="Next">
-				            		<span aria-hidden="true">&raquo;</span>
-				            	</a>
-			         		 </li>
-				           	<th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
-				          	 	<li class="page-item">
-				            		<a class="page-link" th:href="@{${loc}(page=${pi.currentPage + 1})}" aria-label="Next">
-				            			<span aria-hidden="true">&raquo;</span>
-				            		</a>
-				            	</li>
-			            	</th:block>
-				    	</ul>
-			        </nav>
+					<th:block th:if="${isDetail == null}">
+						<nav class="center" aria-label="Standard pagination example" style="float: right;" th:if="${pList.size != 0}" th:with="loc=${loc}">
+				        	<ul class="pagination">
+				        		<th:block th:if="${ pi.currentPage <= 1}">
+				        			<li class="page-item">
+				        				<a class="page-link disable" aria-label="Previous">
+				        					<span aria-hidden="true">&laquo;</span>
+				        				</a>
+				        			</li>
+				        		</th:block>
+				        		<th:block th:unless="${ pi.currentPage <= 1}">
+					        		<li class="page-item">
+							            <a class="page-link" th:href="@{${loc}(page=${pi.currentPage - 1})}" aria-label="Previous">
+							            	<span aria-hidden="true">&laquo;</span>
+							            </a>
+							        </li>
+							    </th:block>
+						        
+				                  <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+				                      <a class="page-link" th:href="@{${loc}(page=${p})}" th:text="${p}"></a>
+				                  </li>
+						           	
+					           	<li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
+					            	<a class="page-link" aria-label="Next">
+					            		<span aria-hidden="true">&raquo;</span>
+					            	</a>
+				         		 </li>
+					           	<th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
+					          	 	<li class="page-item">
+					            		<a class="page-link" th:href="@{${loc}(page=${pi.currentPage + 1})}" aria-label="Next">
+					            			<span aria-hidden="true">&raquo;</span>
+					            		</a>
+					            	</li>
+				            	</th:block>
+					    	</ul>
+				        </nav>
+			        </th:block>
+			        
+			        <!-- productDetailNo 유지해야함.. -->
+			        <th:block th:unless="${isDetail == null}">
+				        <nav class="center" aria-label="Standard pagination example" style="float: right;" th:if="${pList.size != 0}" th:with="loc=${loc}">
+				        	<ul class="pagination">
+				        		<th:block th:if="${ pi.currentPage <= 1}">
+				        			<li class="page-item">
+				        				<a class="page-link disable" aria-label="Previous">
+				        					<span aria-hidden="true">&laquo;</span>
+				        				</a>
+				        			</li>
+				        		</th:block>
+				        		<th:block th:unless="${ pi.currentPage <= 1}">
+					        		<li class="page-item">
+							            <a class="page-link" th:href="@{${loc}(productDetailNo=${isDetail}, page=${pi.currentPage - 1})}" aria-label="Previous">
+							            	<span aria-hidden="true">&laquo;</span>
+							            </a>
+							        </li>
+							    </th:block>
+						        
+				                  <li class="page-item" th:each="p : ${#numbers.sequence(pi.startPage, pi.endPage)}">
+				                      <a class="page-link" th:href="@{${loc}(productDetailNo=${isDetail}, page=${p})}" th:text="${p}"></a>
+				                  </li>
+						           	
+					           	<li class="page-item" th:if="${ pi.currentPage >= pi.maxPage }">
+					            	<a class="page-link" aria-label="Next">
+					            		<span aria-hidden="true">&raquo;</span>
+					            	</a>
+				         		 </li>
+					           	<th:block th:unless="${ pi.currentPage >= pi.maxPage }")>
+					          	 	<li class="page-item">
+					            		<a class="page-link" th:href="@{${loc}(productDetailNo=${isDetail}, page=${pi.currentPage + 1})}" aria-label="Next">
+					            			<span aria-hidden="true">&raquo;</span>
+					            		</a>
+					            	</li>
+				            	</th:block>
+					    	</ul>
+				        </nav>
+			        </th:block>
 			        <div class="text-center mt-5"  th:unless="${pList.size != 0}">
 			        	<a class="btn btn-dark mt-5" type="button" href="javascript:history.back()">이전 상품으로 돌아가기</a>
 			        </div>
@@ -222,13 +263,13 @@
 
 		/*]]>*/
 		window.onload = () => {
-			if(admin != null && admin.isAdmin == 'Y') {
-				const write = document.getElementById('productWrite');
-				write.addEventListener('click', () =>{
-					location.href='/shop/shopWrite';
-				});
-			}
-			
+			if(admin !=null && admin.isAdmin == 'Y') {
+				
+	            const write = document.getElementById('productWrite');
+	            write.addEventListener('click', () =>{
+	               location.href='/shop/shopWrite';
+	            });
+	         }
 			const products = document.querySelectorAll('.products');
 			for(product of products) {
 				product.addEventListener('click', function(){
