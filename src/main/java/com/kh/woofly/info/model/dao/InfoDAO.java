@@ -71,6 +71,10 @@ public interface InfoDAO {
 	int noticeNo();
 
 	ArrayList<NoticeAttm> selectAttmNList(int nNum);
+
+	int deleteAttm(String string);
+
+	int selectComNo();
 	
 	
 
