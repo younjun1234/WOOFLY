@@ -18,10 +18,10 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<th:block th:if="${session.loginUser.isAdmin == 'Y'}">
+			<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/adminNav :: adminNav}"></div>
 			</th:block>
-			<th:block th:unless="${session.loginUser.isAdmin == 'Y'}">
+			<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
 			</th:block>
 			
