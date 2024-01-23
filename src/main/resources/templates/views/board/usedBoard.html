@@ -29,7 +29,7 @@
 				<form action="/board/used" method="get" id="searchForm" name="search-form" class="row"> 
 					<!--select의 부모 div-->
 					<div class="col-auto">
-					<select class="form-select" name="searchType">
+					<select class="form-select" name="searchType" id="selectOption">
 						<option value="" disabled selected>검색조건</option>
 						<option value="u_title">제목</option>
 						<option value="mb_nickname">작성자</option>
@@ -42,7 +42,7 @@
 				</div>
 				<!--button의 부모 div-->
 				<div class="col-auto">
-					<button type="submit" class="btn btn-dark">검색 하기</button>
+					<button type="submit" class="btn btn-dark" id="searchButton">검색 하기</button>
 				</div>
 				</form>
 			</div>
@@ -133,6 +133,37 @@
 			const condition = this.previousElementSibling.previousElementSibling.value;  // 검색할 조건
 			location.href='${contextPath}/search.bo?value=' +value+ "&condition=" + condition;
 		}) */
+		
+		// 검색 버튼 클릭하면 옵션(셀렉트)를 검사해서 만약 셀렉트가 셀렉티드를 false면 선택이 안된거야
+			// 그때는 폼 서브밋이 안되게 하는거고
+			// 반대면 그때 되게하며돼
+			//폼아이ㅣ값, 검색 아이디값, 셀렉티드 아이디 값 받아놓기
+			const form = document.getElementById('searchForm');
+			const searchBtn = document.getElementById('searchButton');
+			
+			searchBtn.addEventListener('click', () => {
+			    const selectDiv = document.getElementById('selectOption');
+			    const searchContent = document.getElementById('search-box');
+			
+			    let categorySelected = false;
+			
+			    for (const option of selectDiv.children) {
+			        if (option.value !== '' && option.selected) {
+			            categorySelected = true;
+			
+			            if (searchContent.value.trim() !== '') {
+			                form.submit();
+			            } else {
+			                alert("검색어를 입력해주세요.");
+			                break;
+			            }
+			        }
+			    }
+			
+			    if (!categorySelected) {
+			        alert("카테고리를 선택해주세요.");
+			    }
+			});
 	</script>
 </body>
 </html>

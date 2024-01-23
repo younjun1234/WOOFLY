@@ -731,6 +731,9 @@
 	        </if>
 	    ) A
 	    WHERE 1=1
+	    <if test="bId == null">
+			AND RNUM = 1
+		</if>
 		order by attm_id ASC
 	</select>
 	    
