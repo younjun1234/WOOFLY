@@ -2249,9 +2249,6 @@ public class BoardController {
 	        	int listCount = bService.getUlistCount(1);
 	        	
 	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
-	        	// 하은아 pi 왜 만들었어? 페이징처리 할려고()
-	        	// 너가 어떤 기능을 쓰려고 pi를 보낸거임 ㅋㅋ 이게 준비물이야
-	        	// 어디에 쓰려고?
 	        	ArrayList<UsedBoard> uList = bService.selectUsedBoardList(pi, 1); 
 	        	
 	        	System.out.println(uList);
@@ -2279,7 +2276,7 @@ public class BoardController {
 				model.addAttribute("pi", pi);
 	        }
 	        
-	        model.addAttribute("loc", request.getRequestURI()); // 이전 정보에 대한 uri 담고 있음(나중에 뒤로가기같은거 할 때 준비하려고)
+	        model.addAttribute("loc", request.getRequestURI()); // 이전 정보에 대한 uri 담고 있음
 	        
 	        return "usedBoard";
 	    }
@@ -2289,17 +2286,16 @@ public class BoardController {
 		
 //		 // 첨부파일 게시글 상세보기 //
 		@GetMapping("/board/used/detail")
-		public String usedBoardDetail(@RequestParam(value="page", defaultValue="1") String page, @RequestParam("uNo") int uNo, HttpSession session, Model model){
+		public String usedBoardDetail(@RequestParam(value="page", defaultValue="1") String page, 
+									  @RequestParam("uNo") int uNo, 
+									  HttpSession session, 
+									  Model model){
 			
 			Member loginUser = (Member)session.getAttribute("loginUser");
 			String mbId = null;
 			if(loginUser != null) {
 				mbId = loginUser.getMbId();
 			}
-			
-			System.out.println(uNo);
-			
-			
 			
 			UsedBoard u = bService.selectUsedBoard(uNo, mbId);
 			ArrayList<Attachment> aList = bService.selectAttmUsedBoardList((Integer)uNo); 
@@ -2326,7 +2322,6 @@ public class BoardController {
 				model.addAttribute("aList", aList);
 				model.addAttribute("rList", rList);
 				model.addAttribute("lList", likeList);
-				//System.out.println(m);
 				return "usedBoardDetail";
 			} else {
 				throw new BoardException("게시글 상세보기를 실패하였습니다.");
@@ -2342,7 +2337,10 @@ public class BoardController {
 		 }
 
 		@PostMapping("/board/used/insertUsedBoard")/*@RequestParam("dwType") String dwTypeStr*/
-		 public String insertUsedBoard (@ModelAttribute UsedBoard u, @RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, HttpSession session, HttpServletRequest request) {
+		 public String insertUsedBoard (@ModelAttribute UsedBoard u, 
+				 						@RequestParam(value = "file", required = false) ArrayList<MultipartFile> files, 
+				 						HttpSession session, 
+				 						HttpServletRequest request) {
 		 
 				
 				String boardWriter = ((Member)session.getAttribute("loginUser")).getMbId();
@@ -2744,7 +2742,6 @@ public class BoardController {
 		//	첨부파일 게시글 조회 //
 		// 게시글 목록 페이지로 이동할 때 필요한 데이터를 모델에 담아 뷰로 전달하는 역할
 		
-		// 게시글 목록 조회
 			// 게시글 목록 조회
 		       @GetMapping("/board/lost")
 		       public String lostBoardView(
@@ -2768,13 +2765,14 @@ public class BoardController {
 		                 model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
 		                 model.addAttribute("aList", aList); // 첨부파일 목록 추가
 		                 
-		                 System.out.println("mList: " + mList.toString());
-		                 System.out.println("aList: " + aList.toString());
 		              }
 		           } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
 		              HashMap<String, String> map = new HashMap<>();
 		            map.put("searchKeyword", searchKeyword);
 		            map.put("searchType", searchType);
+		            
+		            System.out.println(searchKeyword);
+		            System.out.println(searchType);
 		            int listCount = bService.getMlistCount(1); // 추가
 		            PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
 		            ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
@@ -2854,43 +2852,13 @@ public class BoardController {
 	         
 	      
 	      
-		/*
-		 * // 파일 저장소 파일 저장(copy) private String[] saveFile(MultipartFile upload) {
-		 * 
-		 * String root = "C:\\woofly\\"; String savePath = root + "\\board";
-		 * 
-		 * File folder = new File(savePath); if(!folder.exists()) { folder.mkdirs(); }
-		 * 
-		 * Date time = new Date(System.currentTimeMillis()); SimpleDateFormat sdf = new
-		 * SimpleDateFormat("yyyyMMddHHmmssSSS"); int ranNum =
-		 * (int)(Math.random()*100000);
-		 * 
-		 * String originFileName = upload.getOriginalFilename(); String renameFileName =
-		 * sdf.format(time) + ranNum +
-		 * originFileName.substring(originFileName.lastIndexOf("."));
-		 * 
-		 * String renamePath = folder + "\\" + renameFileName;
-		 * 
-		 * try { upload.transferTo(new File(renamePath)); } catch (IllegalStateException
-		 * e) { e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-		 * 
-		 * String[] returnArr = new String[2]; returnArr[0] = savePath; returnArr[1] =
-		 * renameFileName;
-		 * 
-		 * return returnArr; }
-		 * 
-		 * 
-		 * private void deleteFile(String renameName) { String root = "C:\\woofly\\";
-		 * String savePath = root + "\\board";
-		 * 
-		 * File f = new File(savePath + "\\" + renameName); if(f.exists()) { f.delete();
-		 * } }
-		 */
-
 		
 	   // 첨부파일 게시글 상세보기 //
 			@GetMapping("/board/lost/detail")
-			public String lostBoardDetail(@RequestParam(value="page", defaultValue="1") String page, @RequestParam("mNo") int mNo, HttpSession session, Model model) {
+			public String lostBoardDetail(@RequestParam(value="page", defaultValue="1") String page, 
+										  @RequestParam("mNo") int mNo, 
+										  HttpSession session, 
+										  Model model) {
 				
 				Member loginUser = (Member)session.getAttribute("loginUser");
 				String mbId = null;
