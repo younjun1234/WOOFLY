@@ -7,6 +7,7 @@ import com.kh.woofly.cart.model.vo.Cart;
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
+import com.kh.woofly.order.model.vo.OrderDetail;
 import com.kh.woofly.shop.model.vo.Product;
 import com.kh.woofly.shop.model.vo.ProductAttm;
 import com.kh.woofly.shop.model.vo.ProductCategory;
@@ -72,6 +73,12 @@ public interface ShopService {
 	int deleteStampProduct(HashMap<String, Object> stamp);
 
 	int insertNotify(HashMap<String, Object> notifyMap);
+
+	ArrayList<Product> recentlyProductFive();
+
+	ArrayList<Product> popularityProductFive();
+
+	int selectMyOrders(HashMap<String, Object> orderConfirm);
 
 
 

@@ -186,8 +186,7 @@
       // 해당 페이지 nav bar 강조 넣기
       // 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
       const boardNav = document.getElementById("topAdd6");
-      $(boardNav).addClass('active');
-      
+      $(boardNav).addClass('active');      
    
        
       //주소
@@ -270,6 +269,25 @@
                
                fileArea.append(newDiv);
             });
+       
+       
+	       // 폼 제출 시 파일 첨부 여부 확인
+	       document.getElementById('attmForm').addEventListener('submit', function(event) {
+	          const fileInputs = document.querySelectorAll('input[type="file"]');
+	          let hasFile = false;
+	
+	          fileInputs.forEach(input => {
+	             if (input.files.length > 0) {
+	                hasFile = true;
+	                return;
+	             }
+	          });
+	
+	          if (!hasFile) {
+	             alert('사진을 첨부해주세요!');
+	             event.preventDefault(); // 폼 제출 막기
+	          }
+	       });
          }
    </script>
    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

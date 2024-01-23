@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import com.kh.woofly.admin.model.vo.Report;
 import com.kh.woofly.common.PageInfo;
+import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.member.model.vo.MemberAddress;
 
@@ -54,6 +55,8 @@ public interface AdminService {
 	ArrayList<HashMap<String, Object>> selectReportBoardCount();
 
 	int insertNotify(HashMap<String, Object> notifyMap);
+
+	ArrayList<Contest> selectAfterContest();
 	
 
 }

@@ -112,5 +112,9 @@ public interface PetDAO {
 
 	int getListCount(int i);
 
+	int insertReplyNotice(HashMap<String, Object> map);
+
+	int insertBoardNotice(HashMap<String, Object> map);
+
 
 }

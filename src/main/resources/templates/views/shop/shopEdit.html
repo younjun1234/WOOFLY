@@ -266,8 +266,6 @@
         	let oldConCount = 0;
         	let oldThumbCount = 0;
         	
-        	console.log(colorCount);// color 개수 따라서 카운팅 처리 후 주석 뺴셈
-        	
         	for(const a of aList) {
         		if(a.attmLevel == 1) {
         			fileAreaCount += 1;
@@ -277,7 +275,6 @@
         			oldConCount += 1;
         		}
         	}
-            
 
 			const fileArea = document.querySelector('#fileArea');
             const thumbDiv = document.getElementById('thumbnail');
@@ -320,8 +317,6 @@
 				               
 			});
 			
-			
-
             const contentFileArea = document.querySelector('#contentFileArea');
             const contentDiv = document.getElementById('contentImage');
             document.getElementById('addFileContent').addEventListener('click', () =>{
@@ -400,7 +395,6 @@
             	});
             }
             
-            
             let filesIsEmpty = true;
             let contentIsEmpty = true;
             // 제출 이벤트
@@ -419,7 +413,6 @@
                 }
 
                 <!-- 썸네일 이미지와 내용 이미지 둘 다 한장은 존재해야함.-->
-
 				for(const f of files) {
 					if(f.value != '') {
 						filesIsEmpty = false;
@@ -451,7 +444,6 @@
                 }
     
             });
-
 
             // thumbDiv의 자식 요소 divChildren을 innerHTML = "" 하면 아래 요소는 삭제 된다. == 초기화
             // thumbDiv 아래에 넣기(썸네일의 최대 부모div)
@@ -567,8 +559,6 @@
                     }
                 }
             });
-
-			
             
             // 사이즈 정보
             const standardSize = document.getElementById('standardSize');

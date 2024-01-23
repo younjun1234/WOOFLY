@@ -141,7 +141,7 @@
 	<select id="selectAttmNList" resultType="NoticeAttm">
 		select *
 		from ATTACHMENT
-		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{nNum}
+		WHERE ATTM_STATUS = 'Y' AND ATTM_REF_NO = #{nNum}  AND ATTM_REF_TYPE = 'N'
 	</select>
 	
 	<!-- 조회수 -->

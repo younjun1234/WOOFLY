@@ -142,18 +142,9 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public Participants selectParticipants(int pNo, String id) {
-		Participants p = cDAO.selectParticipants(pNo);
-		
-		if(p != null && id != null) {
-			if(id != null & !p.getMbId().equals(id)) {
-				int result = cDAO.updateCount(id);
-				if(result > 0) {
-					p.setPCount(p.getPCount() + 1);
-				}
-			}
-		}
-		return p;
+	public Participants selectParticipants(int pNo,  String id) {
+
+		return cDAO.selectParticipants(pNo);
 	}
 
 	@Override
@@ -178,7 +169,7 @@ public class ContestServiceImpl implements ContestService {
 	@Override
 	public ArrayList<Participants> bestParticipantstList(int cNo, PageInfo pi) {
 		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
-		int limit = pi.getBoardLimit();		
+		int limit = pi.getBoardLimit();
 		RowBounds rowBounds = new RowBounds(offset, limit);
 		
 		return cDAO.bestParticipantstList(rowBounds, cNo);
@@ -186,19 +177,12 @@ public class ContestServiceImpl implements ContestService {
 
 	@Override
 	public ArrayList<Participants> searchParticipantstList(Map<String, Object> map, PageInfo pi) {
-		
-		return null;
-	}
-	
-	
-
-	@Override
-	public ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search) {
-		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
-		int limit = pi.getBoardLimit();		
-		RowBounds rowBounds = new RowBounds(offset, limit);
-		
-		return cDAO.searchBestParticipantstList(rowBounds, cNo, search);
+		if(pi != null) {
+			int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+			int limit = pi.getBoardLimit();		
+			RowBounds rowBounds = new RowBounds(offset, limit);
+		}
+		return cDAO.searchParticipantstList(map);
 	}
 
 	@Override
@@ -208,12 +192,72 @@ public class ContestServiceImpl implements ContestService {
 	}
 
 	@Override
-	public int allContestNo() {
+	public ArrayList<Integer> allContestNo() {
 		
 		return cDAO.allContestNo();
 	}
 
+	@Override
+	public ArrayList<Participants> allTimeBestList(int generationNo, PageInfo pi) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.allTimeBestList(rowBounds, generationNo);
+	}
+
+	@Override
+	public ArrayList<Participants> best3Dog(int generationNo) {
+		// TODO Auto-generated method stub
+		return cDAO.best3Dog(generationNo);
+	}
+
+	@Override
+	public ArrayList<Participants> searchBestParticipantstList(Map<String, Object> map, PageInfo pi) {
+		int offset = (pi.getCurrentPage() -1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		
+		return cDAO.searchBestParticipantstList(map);
+	}
+
+	@Override
+	public int bestDogVote(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return cDAO.bestDogVote(map);
+	}
+
+	@Override
+	public int bestDogCountUpdate(int pNo) {
+		// TODO Auto-generated method stub
+		return cDAO.bestDogCountUpdate(pNo);
+	}
+
+	@Override
+	public Integer voteCheck(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return cDAO.voteCheck(map);
+	}
+
+	@Override
+	public Integer wOProductList(String aa) {
+		// TODO Auto-generated method stub
+		return cDAO.wOProductList(aa);
+	}
+
+	@Override
+	public ContestAttm productAttm(Integer outO) {
+		// TODO Auto-generated method stub
+		return cDAO.productAttm(outO);
+	}
+
+  @Override 
+	public ArrayList<Participants> topFiveBest(int cNo) {
+		return cDAO.topFiveBest(cNo);
+	}
+
 	
+
 
 //	@Override
 //	public Date sDate() {

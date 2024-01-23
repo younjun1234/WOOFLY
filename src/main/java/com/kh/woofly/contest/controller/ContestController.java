@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,17 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Pagination;
+import com.kh.woofly.contest.model.exception.ContestException;
 import com.kh.woofly.contest.model.service.ContestService;
 import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
-import com.kh.woofly.info.model.vo.Notice;
-import com.kh.woofly.info.model.vo.NoticeAttm;
-import com.kh.woofly.info.model.vo.QNA;
 import com.kh.woofly.member.model.vo.Member;
-import com.kh.woofly.shop.model.exception.ShopException;
-import com.kh.woofly.shop.model.vo.ProductAttm;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -53,38 +51,32 @@ public class ContestController {
 		if(loginUser != null) {
 			id = loginUser.getMbId();
 		}
-		LocalDate today = LocalDate.now(); // 오늘 날짜 가져오기
-		
-		System.out.println(today);
-		
 		//현재 콘태스트 가져오기
 		Integer cNo = cService.todayContestNo();
-		
-		// 현재 진행중인 콘테스트 없을때 반환
+		// 현재 진행중인 콘테스트 없을때 null 반환
 		if(cNo == null) {
-			
 			return "contestXList";
 		}
-		
-		System.out.println(cNo);
-		
 		int listCount = cService.getListCount(cNo);
 		int currentPage = page;
 		
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 12);
 		
 		ArrayList<Participants> participantstList = cService.participantstList(cNo, pi);
-		
 		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 		
-		model.addAttribute("check", check);
-		model.addAttribute("pi", pi);
-		model.addAttribute("id", id);
-		model.addAttribute("pList", participantstList);
-		model.addAttribute("aList", cAttmList);
-		model.addAttribute("loc", request.getRequestURI());
-		
-		return "contestList";
+		if( participantstList != null ) {
+			model.addAttribute("check", check);
+			model.addAttribute("pi", pi);
+			model.addAttribute("id", id);
+			model.addAttribute("pList", participantstList);
+			model.addAttribute("aList", cAttmList);
+			model.addAttribute("loc", request.getRequestURI());
+			
+			return "contestList";
+		} else {
+			throw new ContestException("콘테스트 리스트를 불러올 수 없습니다");
+		}
 	}
 	
 	// 현재 콘테스트 인기순
@@ -99,7 +91,11 @@ public class ContestController {
 			id = loginUser.getMbId();
 		}
 		//현재 콘태스트 가져오기
-		int cNo = cService.todayContestNo();
+		Integer cNo = cService.todayContestNo();
+		
+		if(cNo == null) {
+			return "contestXList";
+		}
 		
 		int listCount = cService.getListCount(cNo);
 		int currentPage = page;
@@ -120,46 +116,45 @@ public class ContestController {
 		return "contestList";
 	}
 	
-	
 	//  역대 콘테스트 인기순(최신순없음)
 	@GetMapping("/contest/allList")
 	public String contestAllList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
 		
+		// 역대 콘테스트로 가져와야함   allCNo.get(0)
+		ArrayList<Integer> allCNo = cService.allContestNo();
 		
-//		//현재 콘태스트 가져오기
-//		int allCNo = cService.allContestNo();
-//		// 역대 콘테스트로 가져와야함
-//		System.out.println(allCNo);
-//		
-//		
-//		int listCount = cService.getListCount(allCNo);
-//		int currentPage = page;
-//		
-//		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
-//		
-//		ArrayList<Participants> participantstList = cService.participantstList(allCNo, pi);
-//		
-//		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
-//		
-//		model.addAttribute("pi", pi);
-//		model.addAttribute("pList", participantstList);
-//		model.addAttribute("aList", cAttmList);
-//		model.addAttribute("loc", request.getRequestURI());
+		int listCount = cService.getListCount(allCNo.get(0));
+		int currentPage = page;
+		
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
+		int i = 0;
+		int generationNo = allCNo.get(i);
+		
+		ArrayList<Participants> allParticipantstList = cService.allTimeBestList(generationNo, pi);
+		
+		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList(); //해당 기수만 가져오게 바꿔야 될지도? 
+		
+		//best 3 강아지 가져오기
+		ArrayList<Participants> best3Dog = cService.best3Dog(generationNo);
+		
+		if (best3Dog.isEmpty()) {
+		    return "contestXList";
+		}
+		model.addAttribute("best3Dog", best3Dog);
+		model.addAttribute("allCNo", allCNo);
+		model.addAttribute("pi", pi);
+		model.addAttribute("pList", allParticipantstList);
+		model.addAttribute("aList", cAttmList);
+		model.addAttribute("loc", request.getRequestURI());
 		
 		return "contestAllList";
 	}
 	
-	
-	
-	// 콘테스트 검색
+	// 현재 콘테스트 검색
 	@GetMapping("/contest/searchContestList")
 	public String searchContestList(@RequestParam(name = "options-outlined 1", defaultValue="off" ) String check1, @RequestParam(name = "options-outlined 2", defaultValue="off") String check2,
             @RequestParam("search") String search, Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
 		// 검색 키워드
-		System.out.println(check1);
-		System.out.println(check2);
-		System.out.println(search);
-		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		
 		String id = null;
@@ -170,28 +165,21 @@ public class ContestController {
 			id = loginUser.getMbId();
 		}
 		//현재 콘태스트 가져오기
-		System.out.println("1111");
 		int cNo = cService.todayContestNo();
-		
-		
 		Map<String, Object> map = new HashMap<>();
 		map.put("search", search);
 		map.put("cNo", cNo);
 		
-		
 		int listCount = cService.getListCount(cNo);
 		int currentPage = page;
-		System.out.println("2222");
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 12);
 		
 		// 최신순 리스트
 		if(check1.equals("on")) {
-			System.out.println("3333");
 			check = 1;
+			
 			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
 			
-			System.out.println(participantstList);
-			
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
 			model.addAttribute("check", check);
@@ -200,15 +188,13 @@ public class ContestController {
 			model.addAttribute("pList", participantstList);
 			model.addAttribute("aList", cAttmList);
 			model.addAttribute("loc", request.getRequestURI());
-			System.out.println("4444");
-			return "contestList";
 			
+			return "contestList";
 		// 베스트순 리스트
-		}else if(check2 == "on"){
-			System.out.println("5555");
+		}else if(check2.equals("on")){
 			check = 2;
 			
-			ArrayList<Participants> participantstList = cService.searchBestParticipantstList(cNo, pi, search);
+			ArrayList<Participants> participantstList = cService.searchBestParticipantstList(map , pi);
 			
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			
@@ -219,14 +205,58 @@ public class ContestController {
 			model.addAttribute("pList", participantstList);
 			model.addAttribute("aList", cAttmList);
 			model.addAttribute("loc", request.getRequestURI());
-			System.out.println("6666");
 			return "contestList";
 		} else {
-			System.out.println("7777");
-			return null;
+			throw new ContestException("콘테스트 검색을 실패하였습니다");
 		}
+	}
+	
+	// 역대 콘테스트 검색
+	@GetMapping("/contest/searchBestContestList")
+	public String searchBestContestList( @RequestParam("gen") int gen,
+            @RequestParam("search") String search, Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
 		
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		
+		ArrayList<Integer> allCNo = cService.allContestNo();
+		
+		String id = null;
+		
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("search", search);
+		map.put("cNo", gen);
+		
+		//그 기수 최고 3마리 
+		ArrayList<Participants> best3Dog = cService.best3Dog(gen);
+		
+		ArrayList<Participants> searchListCount = cService.searchParticipantstList(map, null);
+		
+//		System.out.println(searchListCount.size());
+		
+		int listCount = searchListCount.size();
+		int currentPage = page;
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 12);
+		
+		//검색
+		ArrayList<Participants> participantstList = cService.searchBestParticipantstList(map, pi);
+			
+		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
+		
+		model.addAttribute("allCNo", allCNo);
+		model.addAttribute("gen", gen);
+		model.addAttribute("search", search);
+		model.addAttribute("best3Dog", best3Dog);
+		model.addAttribute("pi", pi);
+		model.addAttribute("id", id);
+		model.addAttribute("pList", participantstList);
+		model.addAttribute("aList", cAttmList);
+		model.addAttribute("loc", request.getRequestURI());
+		
+		return "contestAllList";
+	
 	}
 	
 	
@@ -252,7 +282,7 @@ public class ContestController {
 		if(result > 0) {
 			return "redirect:/contest/edit";
 		}else {
-			return null;
+			throw new ContestException("콘테스트 개최를 실패하였습니다");
 		}
 	}
 	
@@ -263,10 +293,15 @@ public class ContestController {
 		Contest c = cService.contestNewList();
 		ArrayList<Contest> contestList = cService.contestList();
 		
-		model.addAttribute("c", c);
-		model.addAttribute("contestList", contestList);
+		if(contestList != null) {
+			model.addAttribute("c", c);
+			model.addAttribute("contestList", contestList);
+			
+			return "contestEdit";
+		}else {
+			throw new ContestException("콘테스트 수정페이지 이동을 실패하였습니다");
+		}
 		
-		return "contestEdit";
 	}
 	
 	// 콘테스트 수정
@@ -282,7 +317,7 @@ public class ContestController {
 			model.addAttribute("contestList", contestList);
 			return "contestEdit";
 		}else {
-			return null;
+			throw new ContestException("콘테스트 수정을 실패하였습니다");
 		}
 	}
 	
@@ -294,25 +329,24 @@ public class ContestController {
 		
 		String id = loginUser.getMbId();
 		
-// 		비로그인 유저는 로그인 페이지로 
-
+		// 유저의 펫 리스트
 		ArrayList<String> petList = cService.petList(id);
 		
 		int cNo = cService.todayContestNo();
-		
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", id);
 		map.put("cNo", cNo);
 		 
+		// 유저의 콘테스트 참가 기록
 		ArrayList<String> cPetList = cService.cPetList(map);
 		
-//		// 펫이 없으면 펫 등록으로? ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 펫이 없으면 펫 등록으로 
 		if(petList.isEmpty()) {
-			System.out.println(petList);
+	//		System.out.println(petList);
 		}
 		
-		// 나의 구매내역
+		// 나의 구매내역 
 		ArrayList<ContestItem> itemList = cService.itemList(id);
 		
 		model.addAttribute("itemList", itemList);
@@ -324,7 +358,7 @@ public class ContestController {
 			model.addAttribute("loc", request.getRequestURI()); //getRequestURI == contextpath 제외하고 가져옴
 			return "contestParticipation";
 		} else {
-			return null;
+			throw new ContestException("콘테스트 참가에 실패하였습니다");
 		}
 	}
 	
@@ -335,47 +369,44 @@ public class ContestController {
 		
 		ArrayList<ContestItem> list = cService.searchItem(pSearch);
 		
-		return list;
+		if(list != null) {
+			return list;
+		}else {
+			throw new ContestException("콘테스트 참가에 실패하였습니다");
+		}
+		
 	}
 	
 	// 콘테스트 참가
 	@PostMapping("/contest/contestEnroll")
 	public String contestEnroll(@ModelAttribute Participants p, HttpSession session, @RequestParam("thumbnailFile") ArrayList<MultipartFile> thumbFiles, @RequestParam(value = "selectedItemsNum", defaultValue = "") ArrayList<String> itemNums) {
 		
-		String id = ((Member)session.getAttribute("loginUser")).getMbId();
-		String nickName = ((Member)session.getAttribute("loginUser")).getMbNickName();
-				
-		System.out.println(p);
-		
-		Integer pId = Integer.parseInt(p.getPPet());
-		System.out.println(pId);
-		p.setPetId(pId);
-		
-		String petName = cService.petName(pId);
-		p.setPPet(petName);
-		
 		LocalDate today = LocalDate.now();
-		
 		Contest c = cService.contestId(today);
 		
+		String id = ((Member)session.getAttribute("loginUser")).getMbId();
+		String nickName = ((Member)session.getAttribute("loginUser")).getMbNickName();
+		Integer pId = Integer.parseInt(p.getPPet());
+		String petName = cService.petName(pId);
 		int cNo = c.getConNo();
 		
-		p.setContestId(cNo);
 		p.setMbId(id);
 		p.setMbName(nickName);
+		p.setPetId(pId);
+		p.setPPet(petName);
+		p.setContestId(cNo);
+		// 문자열 연결 ( 문자 사이에 + 추가하면서 연결)
 		StringBuilder result = new StringBuilder();
-		
         for (String itemNum : itemNums) {
         	
-            // 배열의 마지막 항목이 아니라면 '+'를 추가
-            if (result.length() > 0) {
+        	if (result.length() > 0) {
                 result.append("+");
             }
-            // 현재 항목을 추가
             result.append(itemNum);
         }
         p.setPProduct(result.toString());
       
+        // 포인트 등록 참가 자격 확인 ( 이번 기수에 참가 이력 없으면 마일리지 증가 )
         int countList = cService.countList(p);
         
         if(countList == 0) {
@@ -383,7 +414,6 @@ public class ContestController {
         }
 //      콘테스트 참가등록 되는곳
 		int result1 = cService.contestEnroll(p);
-		
 		
 		Participants thisParticipant = cService.thisParticipant(pId);
 		
@@ -406,14 +436,12 @@ public class ContestController {
 					t.setAttmPath(returnArr[0]);
 					t.setAttmRefNo(pNo);// 참가자번호
 					t.setAttmLevel(1);
-					
 					list.add(t);
 					
 					break;
 				}
 			}
 		}
-		
 		for(int i = 1; i < thumbFiles.size(); i++) {
 			MultipartFile upload = thumbFiles.get(i);
 			
@@ -433,7 +461,6 @@ public class ContestController {
 				}
 			}
 		}
-		
 		int result2 = cService.insertAttm(list);
 		
 		if( result1 + result2 == list.size() + 1) {
@@ -442,9 +469,8 @@ public class ContestController {
 			for(ContestAttm a : list) {
 				deleteFile(a.getRenameName());
 			}
-			throw new ShopException("콘테스트 참가 실패하였습니다.");
+			throw new ContestException("콘테스트 참가등록에 실패하였습니다");
 		}
-		
 	}
 	
 	private String[] saveFile(MultipartFile upload) {
@@ -491,42 +517,79 @@ public class ContestController {
 		}
 	}
 	
-	
-	
 	// 콘테스트 상세페이지 이동
 	@GetMapping("/contest/selectContest")
-	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam("page") int page) {						
+	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam(value="page", defaultValue="1") int page, HttpSession session) {					
 		
-//		Member loginUser = (Member)session.getAttribute("loginUser");
+		Member loginUser = (Member)session.getAttribute("loginUser");
 		String id = null;
 		
-//		if(loginUser != null) {
-//			id = loginUser.getId();
-//		}
-		// id 조횟수 시간나면
+		if(loginUser != null) {
+			id = loginUser.getMbId();
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", id);
+		map.put("pNo", pNo);
+		
+		Integer  voteCheck = cService.voteCheck(map);
+		
+		if( voteCheck > 0 ) {
+			voteCheck = 1;
+		}
+		
+		
+		// id 조횟수 시간나면 ㄱ
 		Participants p = cService.selectParticipants(pNo, id);
 		
+        // 참가자가 가지고 있는 상품 사진 리스트 ( 중복 상품 제외 )
+        ArrayList<ContestAttm> productList = new ArrayList<ContestAttm>();
+        
+        // 주문번호
+		ArrayList<String> withO = new ArrayList<>();
+		// 물품번호
+        ArrayList<Integer> withoutO = new ArrayList<>();
+		
 		if(p.getPProduct() != null) {
+	//		System.out.println(p.getPProduct());
 			// 콘테스트 아이템
 			String[] parts = p.getPProduct().split("\\+");
-			// 주문번호
-			ArrayList<String> withO = new ArrayList<>();
-			// 물품번호
-	        ArrayList<String> withoutO = new ArrayList<>();
-
+	        
 	        // 분리된 각 부분을 검사하여 withO 또는 withoutO에 추가
 	        for (String part : parts) {
 	            if (part.startsWith("o")) {
 	                withO.add(part.substring(1)); // 'o'를 제외하고 추가
 	            } else {
-	                withoutO.add(part);
+	                withoutO.add(Integer.parseInt(part));
 	            }
 	        }
+	//        System.out.println(withO);
+	        ArrayList<Integer> wOs = new ArrayList<>();
+	        for(String wO : withO) {
+//	        	System.out.println(Integer.parseInt(wO));
+	        	Integer wO2 = cService.wOProductList(wO);
+	        	 wOs.add(wO2);
+	        }
 	        
-	        System.out.println(withO);
-	        System.out.println(withoutO);
+//	        System.out.println(wOs);
+	        
+	        // withoutO에 중복 없이 추가
+	        Set<Integer> withoutOSet = new HashSet<>(withoutO);
+	        withoutOSet.addAll(wOs);
+
+	        // 중복이 제거된 리스트 얻기
+	        withoutO.clear();
+	        withoutO.addAll(withoutOSet);
+	        
+	        // 결과 출력
+	        for(Integer outO : withoutO) {
+//	        	System.out.println(outO);
+	        	
+	        	ContestAttm productAttm = cService.productAttm(outO);
+	        	
+	        	productList.add(productAttm);
+	        }
 		}
-		
 		
 		if(p != null) {
 			int pNum = p.getPNo();
@@ -552,18 +615,67 @@ public class ContestController {
 				}
 			}
 			
+			model.addAttribute("withoutO", withoutO);
+			model.addAttribute("productList", productList);
 			model.addAttribute("pList", pList);
+			model.addAttribute("voteCheck", (int)voteCheck);
+			model.addAttribute("pNo", pNo);
 			model.addAttribute("mList", mList);
 			model.addAttribute("aList", aList);
 			model.addAttribute("p", p);
 			model.addAttribute("page", page);
 			return "contestDetail";
 		} else {
-			return null;
+			throw new ContestException("콘테스트를 불러올 수 없습니다.");
 		}
 	}	
 	
-	
-	
+	// 콘테스트 투표
+		@GetMapping("/contest/bestDogVote")
+		public String bestDogVote(@RequestParam("pNo") int pNo, HttpSession session) {
+			// 최신 콘테스트 1개값 가져옴
+			System.out.println(pNo);
+			
+			Member loginUser = (Member)session.getAttribute("loginUser");
+			
+			String id = null;
+			
+			if(loginUser != null) {
+				id = loginUser.getMbId();
+			}
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("id", id);
+			map.put("pNo", pNo);
+			
+			Integer  voteCheck = cService.voteCheck(map);
+			
+			if(voteCheck == 0) {
+				int result1 = cService.bestDogVote(map);
+				
+				if( result1 == 1) {
+					int result2 = cService.bestDogCountUpdate(pNo);
+					
+					return "contestDetail";
+				} else {
+					throw new ContestException("콘테스트 투표 실패하였습니다");
+				}
+			} else {
+				throw new ContestException("콘테스트 투표 실패하였습니다");
+			}
+			
+		}
+		
+		
+		
+		
 	
 }
+
+
+
+
+
+
+
+

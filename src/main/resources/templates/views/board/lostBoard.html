@@ -107,6 +107,11 @@
 	</div>
 	
 	<script th:inline="javascript">
+	
+		// 해당 페이지 nav bar 강조 넣기
+	    // 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
+	    const boardNav = document.getElementById("topAdd7");
+	    $(boardNav).addClass('active');
 		
 		window.onload = () => {
 			console.log('나는 스크립트야');
