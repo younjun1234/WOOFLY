@@ -87,7 +87,7 @@ public class PetController {
     }
 
     
-    	@GetMapping("pet/userPhoto")
+    	@GetMapping("/userPhoto")
     	public String userPhotoView(Model model, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request,
     								@RequestParam(value="petName", required=false) Integer petId, @RequestParam(value="mbId") String mbId) {
     		System.out.println(123);

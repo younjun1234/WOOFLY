@@ -21,8 +21,8 @@ public class CheckLoginInterceptor implements HandlerInterceptor {
 	      if(loginUser == null) {
 	         String url = request.getRequestURI();
 	         System.out.println(url);
-	         if(url.contains("my")) {
-				response.getWriter().write("<script>location.href='/account/login';</script>");
+	         if(url.contains("/my/") || url.contains("/pet/")) {
+				response.getWriter().write("<script>alert('로그인 후 이용해주세요');location.href='/account/login';</script>");
 	         }
 	         
 	         return false; //세션만료되었으면 login 화면으로 넘어가지 selectBoard.bo .at으로 넘어가면 안되기 때문에 false 반환

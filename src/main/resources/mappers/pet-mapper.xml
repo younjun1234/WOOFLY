@@ -135,7 +135,7 @@
 		select *
 		from diary
 			 join pet using(pet_id)
-		where dr_status = 'Y' and writer_Id=#{id}
+		where dr_status = 'Y' and writer_Id=#{id} and pet_status = 'Y'
 			<if test="startDate != null">
 		    	and dr_date >= #{startDate}
 		    </if>
