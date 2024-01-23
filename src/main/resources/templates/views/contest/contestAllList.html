@@ -10,7 +10,7 @@
 	crossorigin="anonymous">
 
 <link rel="stylesheet" type="text/css" th:href="@{/css/yh/contestAllList.css}" /> 
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>	
 	<div th:replace="~{common/top :: top}"></div>
@@ -19,7 +19,12 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
+				<div th:replace="~{common/contestNav :: contestNav}"></div>
+			</th:block>
 			
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
@@ -33,16 +38,24 @@
 						<div class="row g-0 text-center" style="margin-top: 10px;">
 							<div class="col-6 col-md-1" style="margin-top: 7px;">
 							
-								<select class="form-select form-select-lg mb-3" aria-label="Large select example" style="margin-left: 20px;" name="gen">
-									<option th:each=" n : ${allCNo}"  th:value="${n}"  th:selected="${ n == gen  }"  > [[${n}]]기 </option>
+								<select class="form-select form-select-lg mb-3" aria-label="Large select example" style="margin-left: 20px;" name="gen" id="selectGens">
+									<option th:each=" n : ${allCNo}"  th:value="${n}"  th:selected="${ n == generationNo  }"  > [[${n}]]기 </option>
 								</select>
 								
 							</div>
 							<div class="col-6 col-md-2" style="margin-top: 5px;"></div>
-							<div class="col-6 col-md-6" style="margin-top: 10px;"><h3>5기 최우수 강아지들</h3></div>
+							
+							<th:block th:if="${generationNo == null }">
+								<div class="col-6 col-md-6" style="margin-top: 10px;"><h3> [[${allCNo[0]}]]기 최우수 강아지들</h3></div>
+							</th:block>
+							<th:block th:if="${generationNo != null }">
+								<div class="col-6 col-md-6" style="margin-top: 10px;"><h3> [[${generationNo}]]기 최우수 강아지들</h3></div>
+							</th:block>
+							
 							<div class="col-sm-6 col-md-2 input-group-lg" style="margin-top: 5px;">
 								<input type="text"  name="search"  id="search-box" class="form-control" placeholder="검색">
 							</div>
+							<input type="hidden" th:value="${generationNo}"  name="${generationNo}">
 							<div class="col-6 col-md-1" style="margin-top: 5px;">
 								<button type="submit" class="btn btn-outline-dark btn-lg">검색</button>
 							</div>
@@ -140,17 +153,42 @@
 	<script th:inline="javascript">
 		window.onload = () => {
 			const anav = document.getElementById('myNav4')
-			anav.style.fontWeight = 'bold';
+			if(anav != null){
+				anav.style.fontWeight = 'bold';
+			}
+			const canav = document.getElementById('cmyNav2')
+			if(canav != null){
+				canav.style.fontWeight = 'bold';
+			}
 			
 			const classes = document.getElementsByClassName('dogimage');
+			
 			for(const c of classes) {
 				c.addEventListener('click', function() {
 					const pNo = this.querySelector('.pNo').innerText;
+					const type = 1;
 					/*<![CDATA[*/
-			        location.href = '/contest/selectContest?pNo=' + pNo + "&page=" + /*[[${pi.currentPage}]]*/123;
+			        location.href = '/contest/selectContest?pNo=' + pNo  +  "&type="+ type + "&page=" + /*[[${pi.currentPage}]]*/123;
 			        /*]]>*/
 				})
 			}
+			
+			const selctGen = document.getElementById('selectGens');
+			console.log(selctGen);
+			console.log(selctGen.value);
+			
+			selctGen.addEventListener('change', function() {
+				
+				console.log(selctGen.value);
+				const selectValue = selctGen.value;
+				
+		        // 페이지 리다이렉트
+		        /*<![CDATA[*/
+		        var redirectUrl = '/contest/allList?selectValue=' + selectValue + "&page=" + /*[[${pi.currentPage}]]*/123;
+		        /*]]>*/
+		        location.href = redirectUrl;
+			})
+			
 		}
 	</script>
 	
