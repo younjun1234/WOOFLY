@@ -682,13 +682,13 @@ private BoardServiceImpl boardDAO;
 	}
 
 	@Override
-	public int selectMyUsedBuyingCount(String id) {
-		return bDAO.selectMyUsedBuyingCount(id);
+	public int selectMyUsedBuyingCount(HashMap<String, Object> map) {
+		return bDAO.selectMyUsedBuyingCount(map);
 	}
 
 	@Override
-	public int selectMySellingCount(String id) {
-		return bDAO.selectMySellingCount(id);
+	public int selectMySellingCount(HashMap<String, Object> map) {
+		return bDAO.selectMySellingCount(map);
 	}
 
 	@Override

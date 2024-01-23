@@ -29,7 +29,20 @@
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where buyer_id = #{id}  and u_status = 'Y' and u_type = '일반'
+			 join attachment on (u_no = attm_ref_no)
+		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1  and u_status = 'Y' and u_type = '일반'
+			<if test="startDate != null">
+		    	and sold_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and sold_date <![CDATA[<]]> #{endDate}
+		    </if>
+			<if test="orderDate != null">
+			    order by sold_date ${orderDate}
+			</if>
+			<if test="price != null">
+			    order by product_price ${price}
+			</if>
 	</select>
 	
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
@@ -54,7 +67,26 @@
 	<select id="selectMySellingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where mb_id = #{id}  and u_status = 'Y' and u_type = '일반'
+			 join attachment on (u_no = attm_ref_no)
+		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_status = 'Y' and u_type = '일반'
+			<if test="startDate != null">
+		    	and sold_date >= #{startDate}
+		    </if>
+		    <if test="endDate != null">
+		    	and sold_date <![CDATA[<]]> #{endDate}
+		    </if>
+	        <if test="startDate != null">
+		    	or (mb_id = #{id} and sold_date is null and attm_ref_type = 'U' and attm_level = 1 and u_status = 'Y' and u_type = '일반')
+		    </if>
+			<if test="soldDate != null">
+			    order by sold_date ${soldDate}
+			</if>
+			<if test="price != null">
+			    order by product_price ${price}
+			</if>
+			<if test="uEnd != null">
+			    order by u_end ${uEnd}
+			</if>
 	</select>
 	
 	<select id="selectMySelling" resultType="UsedBoard">
@@ -69,7 +101,7 @@
 		    	and sold_date <![CDATA[<]]> #{endDate}
 		    </if>
 	        <if test="startDate != null">
-		    	or (mb_id = #{id} and sold_date is null)
+		    	or (mb_id = #{id} and sold_date is null and attm_ref_type = 'U' and attm_level = 1 and u_status = 'Y' and u_type = '일반')
 		    </if>
 			<if test="soldDate != null">
 			    order by sold_date ${soldDate}
