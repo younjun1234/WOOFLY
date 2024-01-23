@@ -23,11 +23,11 @@
 	<main>
 		<div class="container-fluid d-flex mx-5">
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<th:block th:if="${admin == 'Y'}">
-				<div th:replace="~{common/adminNav :: adminNav}"></div>
-			</th:block>
-			<th:block th:unless="${admin == 'Y'}">
+			<th:block th:if="${session.loginUser == null or session.loginUser.isAdmin == 'N'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
+			</th:block>
+			<th:block th:if="${session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
 			</th:block>
 			
 			<div class="col-10 mb-5">
@@ -76,7 +76,7 @@
 										</div>
 										<!-- 사진  있을때만!!!!!!!!!!!!!!!!!!-->
 										<div class="text1" th:each="i : ${iList}"> <!--공지 사진-->
-											<img th:src="'/image/noticeFiles/' + ${i.renameName}" alt="공지사진">
+											<img th:src="'/image/noticeFiles/' + ${i.renameName}" alt="공지사진" style="height: 200px; width: 300px">
 										</div>
 									</div>
 									<div style="text-align: center; margin-top: 10px;">
