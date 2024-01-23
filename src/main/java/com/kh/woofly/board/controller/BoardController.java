@@ -2198,51 +2198,46 @@ public class BoardController {
 		
 
 		// 게시글 목록 조회
-	    @GetMapping("/board/used")
-	    public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page,
-					    			@RequestParam(value = "searchType", required = false) String searchType,
-					    			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
-	                                Model model,
-	                                HttpServletRequest request) throws BoardException {
-	    	
-	    	if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
-	        	int listCount = bService.getUlistCount(1);
-	        	
-	        	PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
-	        	// 하은아 pi 왜 만들었어? 페이징처리 할려고()
-	        	// 너가 어떤 기능을 쓰려고 pi를 보낸거임 ㅋㅋ 이게 준비물이야
-	        	// 어디에 쓰려고?
-	        	ArrayList<UsedBoard> uList = bService.selectUsedBoardList(pi, 1); 
-	        	
-	        	System.out.println(uList);
-	        	ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
-	        	System.out.println(aList);
-	        	if(uList.isEmpty()) {
-	        		model.addAttribute("message", "게시글이 없습니다.");
-	        	} else {
-	        		model.addAttribute("pi", pi);
-	        		model.addAttribute("uList", uList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
-	        		model.addAttribute("aList", aList); // 첨부파일 목록 추가
-	        		
-	        		System.out.println("uList: " + uList.toString());
-	        		System.out.println("aList: " + aList.toString());
-	        	}
-	        } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
-	        	HashMap<String, String> map = new HashMap<>();
-				map.put("searchKeyword", searchKeyword);
-				map.put("searchType", searchType);
-				int listCount = bService.getUlistCount(1); // 추가
-				System.out.println(listCount);
-				PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
-				ArrayList<UsedBoard> searchResults = bService.searchUsedBoards(map);
-				model.addAttribute("uList", searchResults);
-				model.addAttribute("pi", pi);
-	        }
-	        
-	        model.addAttribute("loc", request.getRequestURI()); // 이전 정보에 대한 uri 담고 있음(나중에 뒤로가기같은거 할 때 준비하려고)
-	        
-	        return "usedBoard";
-	    }
+	       @GetMapping("/board/used")
+	       public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page,
+	                            @RequestParam(value = "searchType", required = false) String searchType,
+	                            @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+	                                   Model model,
+	                                   HttpServletRequest request) throws BoardException {
+	          
+	          ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
+	          
+	          if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+	              int listCount = bService.getUlistCount(1);
+	              
+	              PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
+	              ArrayList<UsedBoard> uList = bService.selectUsedBoardList(pi, 1); 
+	              
+	              System.out.println(aList);
+	              if(uList.isEmpty()) {
+	                 model.addAttribute("message", "게시글이 없습니다.");
+	              } else {
+	                 model.addAttribute("pi", pi);
+	                 model.addAttribute("uList", uList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
+	                 
+	              }
+	           } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+	              HashMap<String, String> map = new HashMap<>();
+	            map.put("searchKeyword", searchKeyword);
+	            map.put("searchType", searchType);
+	            
+	            int listCount = bService.getUlistCount(1); // 추가
+	            PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
+	            ArrayList<UsedBoard> searchResults = bService.searchUsedBoards(map);
+	            model.addAttribute("uList", searchResults);
+	            model.addAttribute("pi", pi);
+	           }
+	           
+	          model.addAttribute("aList", aList); 
+	           model.addAttribute("loc", request.getRequestURI()); // 이전 정보에 대한 uri 담고 있음
+	           
+	           return "usedBoard";
+	       }
 	    
 	   
 	    
@@ -2704,48 +2699,48 @@ public class BoardController {
 		//	첨부파일 게시글 조회 //
 		// 게시글 목록 페이지로 이동할 때 필요한 데이터를 모델에 담아 뷰로 전달하는 역할
 		
-		// 게시글 목록 조회
 			// 게시글 목록 조회
-		       @GetMapping("/board/lost")
-		       public String lostBoardView(
-		                            @RequestParam(value="page", defaultValue="1") int page,
-		                            @RequestParam(value = "searchType", required = false) String searchType,
-		                            @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
-		                                   Model model,
-		                                   HttpServletRequest request) throws BoardException {
-		          
-		          if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
-		              int listCount = bService.getMlistCount(1);
-		              
-		              PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
-		              ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
-		              ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
-		              System.out.println(aList);
-		              if(mList.isEmpty()) {
-		                 model.addAttribute("message", "게시글이 없습니다.");
-		              } else {
-		                 model.addAttribute("pi", pi);
-		                 model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
-		                 model.addAttribute("aList", aList); // 첨부파일 목록 추가
-		                 
-		                 System.out.println("mList: " + mList.toString());
-		                 System.out.println("aList: " + aList.toString());
-		              }
-		           } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
-		              HashMap<String, String> map = new HashMap<>();
-		            map.put("searchKeyword", searchKeyword);
-		            map.put("searchType", searchType);
-		            int listCount = bService.getMlistCount(1); // 추가
-		            PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
-		            ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
-		            model.addAttribute("mList", searchResults);
-		            model.addAttribute("pi", pi);
-		           }
-		           
-		           model.addAttribute("loc", request.getRequestURI());
-		           
-		           return "lostBoard";
-		       }
+            @GetMapping("/board/lost")
+            public String lostBoardView(
+                                 @RequestParam(value="page", defaultValue="1") int page,
+                                 @RequestParam(value = "searchType", required = false) String searchType,
+                                 @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+                                        Model model,
+                                        HttpServletRequest request) throws BoardException {
+              ArrayList<Attachment> aList = bService.selectAttmLostBoardList(null);
+               if (searchType == null || searchKeyword == null) { // 게시글 검색을 하지 않을 때(=검색어가 없을 때)
+                   int listCount = bService.getMlistCount(1);
+                   
+                   PageInfo pi = Pagination.getPageInfo(page, listCount, 9);
+                   ArrayList<LostBoard> mList = bService.selectLostBoardList(pi, 1);      
+                   
+                   System.out.println(aList);
+                   if(mList.isEmpty()) {
+                      model.addAttribute("message", "게시글이 없습니다.");
+                   } else {
+                      model.addAttribute("pi", pi);
+                      model.addAttribute("mList", mList); // 게시글 목록을 'mList'라는 이름으로 모델에 추가
+                      
+                   }
+                } else { // 게시글 검색을 할 때(= 검색어가 있을 때// searchType(작성자, 글제목, 작성자+글제목), searchKeyword()
+                   HashMap<String, String> map = new HashMap<>();
+                 map.put("searchKeyword", searchKeyword);
+                 map.put("searchType", searchType);
+                 
+                 System.out.println(searchKeyword);
+                 System.out.println(searchType);
+                 int listCount = bService.getMlistCount(1); // 추가
+                 PageInfo pi = Pagination.getPageInfo(page, listCount, 9); // 추가
+                 ArrayList<LostBoard> searchResults = bService.searchLostBoards(map);
+                 model.addAttribute("mList", searchResults);
+                 model.addAttribute("pi", pi);
+                }
+               
+                model.addAttribute("aList", aList); // 첨부파일 목록 추가
+                model.addAttribute("loc", request.getRequestURI());
+                
+                return "lostBoard";
+            }
 		
 
 //	    글작성 //
@@ -3168,48 +3163,6 @@ public class BoardController {
 		
 		
 
-//		첨부파일 게시글 조회 //
-//			@GetMapping("/board/used")
-//			public String usedBoardView(@RequestParam(value="page", defaultValue="1") int page, 
-//										Model model,
-//										HttpServletRequest request) throws BoardException {
-//				
-//				int uListCount = bService.getUlistCount(1);
-//				
-//				PageInfo pi = Pagination.getPageInfo(page, uListCount, 10);
-//				ArrayList<UsedBoard> mList = bService.selectUsedBoardList(pi, 1);		
-//				ArrayList<Attachment> aList = bService.selectAttmUsedBoardList(null);
-//				
-//				if(uList != null) {
-//					model.addAttribute("pi", pi);
-//					model.addAttribute("uList", uList);
-//					model.addAttribute("aList", aList);
-//					model.addAttribute("loc", request.getRequestURI());
-//					
-//					return "usedBoard";
-//				} else {
-//					throw new BoardException("게시글 조회 실패");
-//				}
-//			}
-		
-		/*@GetMapping("/board/used/detail")
-		public String usedBoardDetail() {
-			
-			return "usedBoardDetail";
-		}
-		
-		@GetMapping("/board/used/write")
-		public String usedBoardWrite() {
-			
-			
-			return "usedBoardWrite";
-		}
-		
-		@GetMapping("/board/used/edit")
-		public String usedBoardEdit() {
-			
-			return "usedBoardEdit";
-		}*/
 		
 }
     

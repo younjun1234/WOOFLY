@@ -32,7 +32,7 @@ public class UsedBoard {
 	private String productStatus;
 	private int productPrice;
 	private String mbPhoto;
-	
+	private String buyerNickName;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date soldDate;
 	private String buyerId;
