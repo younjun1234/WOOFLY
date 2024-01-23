@@ -54,12 +54,11 @@
                  </th:block> 
                  <div class="card-body">
                     <p class="card-text">
-                  <p th:text="${m.mbNickName}">작성자</p>
-                   <label class="bId" th:text="${m.mNo}">No. [[${ m.mNo }]]</label> | 
-                   <label class="writer" th:text="${m.mbNickName}">[[${ m.mbNickName }]]</label>
+                      <label class="bId" th:text="${m.mNo}">No. [[${ m.mNo }]]</label> | 
+                      <label class="writer" th:text="${m.mbNickName}">[[${ m.mbNickName }]]</label>
                     </p>
                     <div class="d-flex justify-content-between align-items-center" style="display: inline-block;">
-                  <h6 th:text="${m.mTitle}">글제목</h6><h6 th:text="${m.mCount}">조회수</h6>
+                       <h6 th:text="${m.mTitle}">글제목</h6><h6 th:text="${m.mCount}">조회수</h6>
                     </div>
                  </div>
               </div>
@@ -67,8 +66,8 @@
         </div>
         
         <!--페이지네이션-->
-        <nav class="center" aria-label="Standard pagination example" style="float: right;" th:with="loc=${loc}">
-             <ul class="pagination">
+        <nav class="center mt-5" aria-label="Standard pagination example" style="text-align: center;" th:with="loc=${loc}">
+             <ul class="pagination justify-content-center">
              <!-- << -->
                 <th:block th:if="${ pi.currentPage <= 1}">
                    <li class="page-item">
@@ -120,10 +119,10 @@
             const target = event.target;
             const topCard = target.closest('.card');
             if(topCard.classList.contains('card')){
-               const boardId = topCard.children[1].children[2].innerText
+               const boardId = topCard.children[1].children[0].children[0].innerText
                
                const currentPage = /*[[${pi.currentPage}]]*/1;
-               console.log(topCard.children[1].children[2].innerText);
+               console.log(topCard.children[1].children[0].children[0].innerText);
                location.href = '/board/lost/detail?mNo=' + boardId + '&page=' +/*<![CDATA[*/  /*[[${pi.currentPage}]]*/1 /*]]>*/; 
             }
          });
