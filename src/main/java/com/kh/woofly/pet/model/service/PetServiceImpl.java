@@ -13,6 +13,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.dao.PetDAO;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
@@ -218,7 +219,7 @@ public class PetServiceImpl implements PetService{
 	}
 
 	@Override
-	public ArrayList<Participants> petContestList(HashMap<String, String> map) {
+	public ArrayList<Participants> petContestList(HashMap<String, Object> map) {
 		return pDAO.petContestList(map);
 	}
 
@@ -265,6 +266,11 @@ public class PetServiceImpl implements PetService{
 	@Override
 	public int insertBoardNotice(HashMap<String, Object> map) {
 		return pDAO.insertBoardNotice(map);
+	}
+
+	@Override
+	public Member selectMember(String mbId) {
+		return pDAO.selectMember(mbId);
 	}
 
 

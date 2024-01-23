@@ -175,7 +175,7 @@ public class AccountController {
 	         if(bcrypt.matches(m.getMbPwd(), loginUser.getMbPwd())) {
 	            model.addAttribute("loginUser",loginUser);
 	            
-	            if(!beforeURL.equals("http://localhost:8080/logout.dw") && !beforeURL.equals("http://localhost:8080/signUp.dw"))
+	            if(!beforeURL.equals("http://192.168.20.217:8080/logout.dw") && !beforeURL.equals("http://92.168.20.217:8080/signUp.dw"))
 	            {
 	               return "redirect:" + beforeURL;
 	            }else {

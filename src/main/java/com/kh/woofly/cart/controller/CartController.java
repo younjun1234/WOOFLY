@@ -189,7 +189,6 @@ public class CartController {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
 		return "redirect:/my/buying";
 	}
 	

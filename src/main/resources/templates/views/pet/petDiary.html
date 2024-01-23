@@ -75,25 +75,25 @@
 				</form>	
 				
 				<div th:each="d : ${list}" class="rounded d-flex justify-content-between mb-3" style="border: 1px solid black; height: 100px;" role="button" th:onclick="|location.href='/pet/petDiaryDetail/${d.drNo}'|">
-				    <div class="d-flex align-content-center ms-3">
+				    <div class="d-flex align-content-center ms-3 col-9">
 				        <div class="ms-3 d-flex" style="line-height: 100px;">
 				            <strong style="width: 100px;">[[${d.petName}]]</strong>
 				            <div><img th:src="'/image/' + ${d.petProfile}" class="me-3" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey;"></div>&nbsp;&nbsp;
 				        	<!-- 제목이 따로 없기 때문에 subString으로 끊어주기 -->
-				        	<div class="text-truncate" th:text="${d.drContent}"></div>
+				        	<div class="d-block text-truncate" th:text="${d.drContent}"></div>
 				        	<!-- <div th:if="${#strings.length(d.drContent) le 20}" th:text="${d.drContent}"></div>
 							<div th:if="${#strings.length(d.drContent) gt 20}" th:text="${#strings.substring(d.drContent, 0, 20)} + '...'"></div> -->
 				        </div>
 				    </div>
-				    <div class="d-flex">
-				        <th:block class="me-1" style="width: 100px;" th:switch="${d.petHealth}">
-					        <p class="text-truncate" th:case="A" style="line-height: 100px;">😻 신나요</p>
-					        <p class="text-truncate" th:case="B" style="line-height: 100px;">😸 그냥 그래요</p>
-					        <p class="text-truncate" th:case="C" style="line-height: 100px;">😺 무기력해요</p>
-					        <p class="text-truncate" th:case="D" style="line-height: 100px;">😿 아파요</p>
+				    <div class="d-flex col-3">
+				        <th:block th:switch="${d.petHealth}" class="text-truncate">
+					        <div class="text-truncate col-6" th:case="A" style="line-height: 100px;">😻 신나요</div>
+					        <div class="text-truncate col-6" th:case="B" style="line-height: 100px;">😸 그냥 그래요</div>
+					        <div class="text-truncate col-6" th:case="C" style="line-height: 100px;">😺 무기력해요</div>
+					        <div class="text-truncate col-6" th:case="D" style="line-height: 100px;">😿 아파요</div>
 					    </th:block>
 					    &nbsp;&nbsp;
-				        <div class="me-3 text-truncate" style="width: 100px; line-height: 100px;" th:text="${#dates.format(d.drDate, 'yyyy-MM-dd')}"></div>&nbsp;
+				        <div class="me-3 col-6 text-truncate" style="line-height: 100px;" th:text="${#dates.format(d.drDate, 'yyyy-MM-dd')}"></div>&nbsp;
 				    </div>
 				</div>
 				
