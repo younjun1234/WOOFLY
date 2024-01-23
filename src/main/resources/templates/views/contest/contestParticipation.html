@@ -402,6 +402,7 @@
                             divChildren[index].innerHTML = '';
 
                             const preImage = document.createElement('img');
+                            preImage.setAttribute('height', '100%');
                             const selectedFile = target.files[0];
                             const objectURL = URL.createObjectURL(selectedFile);
                             preImage.src = objectURL;

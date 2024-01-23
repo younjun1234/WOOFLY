@@ -219,10 +219,6 @@ public class ContestController {
 			check = 1;
 			
 			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
-<<<<<<< HEAD
-=======
-			
->>>>>>> refs/heads/develop
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
 			model.addAttribute("check", check);
