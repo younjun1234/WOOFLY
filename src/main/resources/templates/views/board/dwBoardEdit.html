@@ -18,7 +18,7 @@
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
-					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+					<img class="float-start me-4" th:src="'/image/' + ${dw.mbPhoto}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
 						<h6>[[${dw.mbNickName}]]</h6>
 						<p>[[${dw.dwCreateDate}]]</p>
@@ -119,6 +119,7 @@
 		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
 		const boardNav = document.getElementById("topAdd4");
 		$(boardNav).addClass('active');
+		
 		
 		//주소
 	      function execDaumPostcode() {

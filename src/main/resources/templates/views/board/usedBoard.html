@@ -15,7 +15,7 @@
     <div class="container mt-5 mb-3">
          <div class="container d-flex px-0 mb-4 border-bottom border-black border-3 justify-content-between align-items-center">
          <h1>중고게시판</h1>
-         <a role="button" href="/board/used/write" class="btn btn-dark btn-sm h-50">글 작성</a>
+         <a role="button" href="/board/used/write" class="btn btn-dark btn-sm h-50" th:if="${ session.loginUser != null}">글 작성</a>
       </div>
       <div>
          <a class="btn btn-outline-secondary btn-sm px-3 active" >중고거래게시판</a>
