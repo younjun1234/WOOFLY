@@ -381,8 +381,14 @@ public class ShopController {
 		// true면 같은 항목이 비어있음을 나타냄 //productName
 		if(isEmpty) {
 			Properties prop = new Properties();
-			System.out.println(pSize);
-			System.out.println(color);
+			
+			if(pSize == null) {
+				pSize = "N";
+			}
+			if(color == null) {
+				color = "N";
+			}
+			
 			selectC.setMbId(mbId);
 			selectC.setPSize(pSize);
 			selectC.setColor(color);

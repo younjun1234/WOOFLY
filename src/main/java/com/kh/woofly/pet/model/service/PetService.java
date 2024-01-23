@@ -9,6 +9,7 @@ import com.kh.woofly.common.PageInfo;
 import com.kh.woofly.common.Reply;
 import com.kh.woofly.common.ReplyLike;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.member.model.vo.Member;
 import com.kh.woofly.pet.model.vo.Album;
 import com.kh.woofly.pet.model.vo.Diary;
 import com.kh.woofly.pet.model.vo.Pet;
@@ -91,7 +92,7 @@ public interface PetService {
 
 	int insertReplyLike(HashMap<String, Object> map);
 
-	ArrayList<Participants> petContestList(HashMap<String, String> map);
+	ArrayList<Participants> petContestList(HashMap<String, Object> map);
 
 	int albumLike(HashMap<String, Object> map);
 
@@ -110,6 +111,8 @@ public interface PetService {
 	int insertReplyNotice(HashMap<String, Object> map);
 
 	int insertBoardNotice(HashMap<String, Object> map);
+
+	Member selectMember(String mbId);
 
 	//int getPhotoCount(HashMap<String, String> map);
 

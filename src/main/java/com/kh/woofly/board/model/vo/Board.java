@@ -24,6 +24,7 @@ public class Board {
 	private String bContent;
 	private String mbNickName;
 	private int bLike;
+	private String mbPhoto;
 	
 	
 }

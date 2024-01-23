@@ -20,7 +20,7 @@
 		select * from (
 			select * from used_board
 				join attachment on (u_no = attm_ref_no)
-			where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1
+			where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
 			order by sold_date desc)
 		<![CDATA[
 		 where rownum <= 5

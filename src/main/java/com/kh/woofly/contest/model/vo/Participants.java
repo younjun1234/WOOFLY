@@ -27,4 +27,5 @@ public class Participants {
 	private String mbName;
 	private String ownerId;
 	private int conGen;
+	private String renameName;
 }
