@@ -52,7 +52,7 @@
 					<div th:if="${#arrays.isEmpty(list)}" style="width: 500px;" class="mx-auto text-center">
 						<img src="/images/cryingdog.png" style="width:200px;">
 						<h3>해당 회원은 펫이 없습니다.</h3>
-						<button class="btn btn-outline-dark">뒤로가기</button>
+						<button class="btn btn-outline-dark" onclick="window.history.go(-1);">뒤로가기</button>
 					</div>
 				</div>
 			</div>
