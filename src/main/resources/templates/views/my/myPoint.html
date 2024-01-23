@@ -36,7 +36,7 @@
 				<div class="border rounded d-flex align-items-center" style="height: 120px;">
 					<div class="h-70 col-3 border-end ms-5">
 						<p class='mb-0'>사용 가능한 포인트</p>
-						<h3>[[${#numbers.formatInteger(pointsUsable, 3, 'COMMA')}]]P</h3>
+						<h3>[[${#numbers.formatInteger(session.loginUser.mbPoint, 3, 'COMMA')}]]P</h3>
 					</div>
 					<div class="h-70 col-3 ms-5">
 						<p class='mb-0'>소멸 예정 포인트</p>
@@ -49,6 +49,7 @@
 					<thead class="border-bottom">
 						<tr style="height: 40px;">
 							<th>상세 내역</th>
+							<th class="text-end">사용일시</th>
 							<th class="text-end">적립 사용</th>
 						</tr>
 					</thead>
@@ -58,8 +59,9 @@
 						</tr>
 						<tr th:each="point : ${list}" style="height: 50px; line-height: 50px;" class="border-bottom">
 							<td th:if="${point.transactionType == 'A'}">&nbsp;&nbsp;상품 구매 <b>[[${#numbers.formatInteger(point.pointChange, 3, 'COMMA')}]]</b>P</td>
-							<td class="text-end" th:if="${point.transactionType=='A'}"><b>적립</b></td>
 							<td th:if="${point.transactionType == 'S'}">&nbsp;&nbsp;포인트 사용 <b>[[${#numbers.formatInteger(point.pointChange, 3, 'COMMA')}]]</b>P</td>
+							<td class="text-end"><b>[[${#dates.format(point.transactionDatetime, 'yy/MM/dd HH:mm:ss')}]]</b>P</td>
+							<td class="text-end" th:if="${point.transactionType=='A'}"><b>적립</b></td>
 							<td class="text-end" th:if="${point.transactionType=='S'}"><b>사용</b></td>
 						</tr>
 					</tbody>

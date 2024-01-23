@@ -13,15 +13,14 @@
 		</div>
 	<form id="detailForm">
 		<div class="container">
-			
-				<input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
-				<input type="hidden" id="mbId"  name="mbId" th:value="${session.loginUser?.mbId}">
-				<input type="hidden" id="mbNickname"  name="mbNickname" th:value="${session.loginUser?.mbNickName}">
-				<input type = "hidden" th:value ="${ page }" name ="page">
+			<input type="hidden" th:value='${ dw.dwNo }'  id="dwNo" name="dwNo">
+			<input type="hidden" id="mbId"  name="mbId" th:value="${session.loginUser?.mbId}">
+			<input type="hidden" id="mbNickname"  name="mbNickname" th:value="${session.loginUser?.mbNickName}">
+			<input type = "hidden" th:value ="${ page }" name ="page">
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
-					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+					<img id="img" role="button" class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
 						<h6 style="display: inline;">[[${dw.mbNickName}]]</h6>&nbsp;&nbsp;•&nbsp;&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">[[${dw.dwLocation}]]</h6>
 						<p>[[${dw.dwCreateDate}]]</p>
@@ -134,7 +133,7 @@
 			<div class="ms-auto d-block">
 				<div class="d-flex align-items-center" th:each="r : ${rList}">
 					<div class="p-2">
-						<!-- <img th:src="'/image/' + ${r.mbPhoto}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey"> -->
+						<img class="userProfile" role="button" th:data-index="${r.mbId}" th:src="'/image/' + ${r.mbPhoto}" style="width: 50px; height: 50px; border-radius: 100px; border: 1px grey">
 					</div>
 					<div class="d-flex align-items-center p-2 col-9">
 						<p class="col-3" th:text="${r.mbNickName}"></p>
@@ -289,6 +288,40 @@
 	
 	
 	<script th:inline="javascript">
+		// 해당 페이지 nav bar 강조 넣기
+		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
+		const boardNav = document.getElementById("topAdd4");
+		$(boardNav).addClass('active');
+	
+		const userView = (mbId) => {
+			/*<!CDATA[[*/
+			const loginId = /*[[${session.loginUser?.mbId}]]*/null;
+			/*]]>*/
+			
+			console.log(mbId);
+		
+			if (mbId != loginId) {
+				window.location.href = '/profile/' + mbId;
+			} else {
+				window.location.href = '/my';
+			}
+		}
+		document.querySelector('#img').addEventListener('click', () => {
+			/*<!CDATA[[*/
+			const mbId = /*[[${dw.mbId}]]*/null;
+			/*]]>*/
+			userView(mbId);
+		})
+		
+		const userProfiles = document.getElementsByClassName('userProfile');
+		for(const userProfile of userProfiles) {
+			userProfile.addEventListener('click', () => {
+				const mbId = userProfile.dataset.index;
+				userView(mbId);
+	
+			})
+		}
+		
 	
 		//좋아요		
 		const boardLike = (target) => {
@@ -455,10 +488,7 @@
 	  
 	
 	
-		// 해당 페이지 nav bar 강조 넣기
-		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
-		const boardNav = document.getElementById("topAdd4");
-		$(boardNav).addClass('active');
+
 		
 		window.onload = () =>{
 			//const loginUser = /*[[${session.loginUser}]]*/null;

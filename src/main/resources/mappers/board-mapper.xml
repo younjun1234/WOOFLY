@@ -16,7 +16,7 @@
 	<select id="selectUsedSaved" resultType="_int">
 		select count(*)
 		from saved
-		where mb_id = #{mbId} and saved_type = 'U' and product_id = #{uNo}
+		where mb_id = #{mbId} and saved_type = 'U' and product_id = #{uNo} 
 	</select>
 
 	<select id="getReplyListCount" resultType="_int">
@@ -29,14 +29,14 @@
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where buyer_id = #{id} and u_type = '일반'
+		where buyer_id = #{id}  and u_status = 'Y' and u_type = '일반'
 	</select>
 	
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1  and u_status = 'Y' and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -54,14 +54,14 @@
 	<select id="selectMySellingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where mb_id = #{id} and u_type = '일반'
+		where mb_id = #{id}  and u_status = 'Y' and u_type = '일반'
 	</select>
 	
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_status = 'Y' and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
