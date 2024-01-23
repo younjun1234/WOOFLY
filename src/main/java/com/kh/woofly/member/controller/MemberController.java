@@ -453,6 +453,10 @@ public class MemberController {
 			}
 		}
 		
+		if(loginUser.getIsKakao().equals("Y")) {
+			loginUser.setIsKakao("N");
+		}
+		
 		int result = mService.editMbPhoto(loginUser);
 		
 		if (result > 0) {

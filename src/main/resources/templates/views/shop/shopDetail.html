@@ -123,7 +123,7 @@
               			<input type="hidden" th:value="${p.productId}" name="productId">
               			<input type="hidden" value="N" name="isMove" id="isMove">
               			<input type="hidden" th:value="${page}" name="page">
-	                    <div class="product_info border-1 border-secondary border-bottom">
+	                    <div class="product_info border-2 border-bottom">
 	                        <div class="fw-bold row">
 	                            <p class="fs-2 col-10" th:text="${p.productName}"></p>
 	                            <!-- 관리자아이디 일 때만 -->
@@ -148,7 +148,7 @@
 	                            <div class="fw-bold">배송정보</div>
 	                            <div id="deli" class="fs-4"></div>
 	                        </li>
-	                         <li class="fs-3 d-flex p-2 justify-content-between">
+	                         <li class="fs-3 d-flex p-2 justify-content-between border-2 border-bottom">
 	                        	<div class="fw-bold">현재 남은 수량</div>
 	                        	<div class="fs-4">[[${#numbers.formatInteger(p.quantity, 3, 'COMMA')}]]개</div>
 	                        </li>
@@ -156,13 +156,13 @@
 	                            <div class="fw-bold">사이즈</div>
 	                            <div class="sizeSelect" th:if="${p.usedStandard == 'Y'}">
 	                                <input type="radio" class="btn-check" name="pSize" id="optionS" autocomplete="off" value="S" checked>
-	                                <label class="btn btn-outline-success btn-lg" for="optionS">S</label>
+	                                <label class="btn btn-outline-success btn" for="optionS">S</label>
 	                                <input type="radio" class="btn-check" name="pSize" id="optionM" autocomplete="off" value="M">
-	                                <label class="btn btn-outline-success btn-lg" for="optionM">M</label>
+	                                <label class="btn btn-outline-success btn" for="optionM">M</label>
 	                                <input type="radio" class="btn-check" name="pSize" id="optionL" autocomplete="off" value="L">
-	                                <label class="btn btn-outline-success btn-lg" for="optionL">L</label>
+	                                <label class="btn btn-outline-success btn" for="optionL">L</label>
 	                                <input type="radio" class="btn-check" name="pSize" id="optionXL" autocomplete="off" value="XL">
-	                                <label class="btn btn-outline-success btn-lg" for="optionXL">XL</label>
+	                                <label class="btn btn-outline-success btn" for="optionXL">XL</label>
 	                            </div>
 	                            <div class="sizeSelect" th:unless="${p.usedStandard == 'Y'}">
 	                            	<span class="fs-5 fw-bold">사이즈 정보가 없습니다.</span>
@@ -192,11 +192,11 @@
 	                        	</div>
 	                        </li>
 	                    </ul>
-	                    <div class="p-2 col product_btns" aria-label="Large button group">
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="buyBtn">구매하기</button>
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="stampBtn">찜하기</button>
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="putBtn">장바구니에 담기</button>
-	                        <button type="button" class="btn btn-outline-info rounded-pill m-1" id="goToReply">리뷰 보기</button>
+	                    <div class="p-2 col product_btns text-center mt-5" aria-label="Large button group">
+	                        <button type="button" class="btn btn-outline-success rounded-pill m-1" id="buyBtn">구매하기</button>
+	                        <button type="button" class="btn btn-outline-success rounded-pill m-1" id="stampBtn">찜하기</button>
+	                        <button type="button" class="btn btn-outline-success rounded-pill m-1" id="putBtn">장바구니에 담기</button>
+	                        <button type="button" class="btn btn-outline-success rounded-pill m-1" id="goToReply">리뷰 보기</button>
 	                    </div>
                		</form>
                 </div>
@@ -325,7 +325,7 @@
                     
                     <!-- 댓글 조회 영역 -->
                     <!-- 좋아요 버튼 클릭 이벤트, 내 댓글이면 수정 삭제 -->
-                    <div id="replyContents">
+                    <div id="replyContents" class="mb-5">
 	                    <div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black replyOne" th:each="r: ${rList}">
 	                    	<input type="hidden" th:value="${r.rNo}">
 	                        <div class="col-1" style="line-height: 40px;">[[${r.mbNickName}]]</div>
