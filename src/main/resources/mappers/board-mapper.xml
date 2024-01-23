@@ -16,7 +16,7 @@
 	<select id="selectUsedSaved" resultType="_int">
 		select count(*)
 		from saved
-		where mb_id = #{mbId} and saved_type = 'U' and product_id = #{uNo}
+		where mb_id = #{mbId} and saved_type = 'U' and product_id = #{uNo} 
 	</select>
 
 	<select id="getReplyListCount" resultType="_int">
@@ -29,14 +29,14 @@
 	<select id="selectMyUsedBuyingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where buyer_id = #{id} and u_type = '일반'
+		where buyer_id = #{id}  and u_status = 'Y' and u_type = '일반'
 	</select>
 	
 	<select id="selectMyUsedBuying" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
+ 		where buyer_id = #{id} and attm_ref_type = 'U' and attm_level = 1  and u_status = 'Y' and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -54,14 +54,14 @@
 	<select id="selectMySellingCount" resultType="_int">
 		select count(*)
 		from used_board
-		where mb_id = #{id} and u_type = '일반'
+		where mb_id = #{id}  and u_status = 'Y' and u_type = '일반'
 	</select>
 	
 	<select id="selectMySelling" resultType="UsedBoard">
 		select *
 		from used_board
 			 join attachment on (u_no = attm_ref_no)
- 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_type = '일반'
+ 		where mb_id = #{id} and attm_ref_type = 'U' and attm_level = 1 and u_status = 'Y' and u_type = '일반'
  			<if test="startDate != null">
 		    	and sold_date >= #{startDate}
 		    </if>
@@ -108,7 +108,7 @@
 	</select>
 
 	<select id="selectFreeBoardList" resultType="Board">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 	    from board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.b_status = 'Y' 
@@ -128,7 +128,7 @@
 	</select>
 	
 	<select id="selectFreeBoard" resultType="board">
-		select  b.*, m.mb_nickname as "mbNickName" 
+		select  b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 		from board b
 			join member m on b.mb_id = m.mb_id 
 		where b.b_status = 'Y' and b.b_no = #{ bNo }
@@ -207,7 +207,7 @@
 	</update>
 	
 	<select id="selectFreeReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{bNo} and r.re_d_status = 'Y' and r.b_type = 'B'
@@ -283,7 +283,7 @@
 	</select>
 
 	<select id="selectDwBoardList" resultType="DwBoard">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 	    from dw_board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.dw_status = 'Y' and dw_type = '0'
@@ -325,7 +325,7 @@
 	</select>
 
 	<select id="selectDwRvBoardList" resultType="DwBoard">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 	    from dw_board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.dw_status = 'Y' and dw_type = '1'
@@ -346,14 +346,14 @@
 	
 	
 	<select id="selectDwBoard" resultType="DwBoard">
-		select  b.*, m.mb_nickname as "mbNickName" 
+		select  b.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from dw_board b
 			join member m on b.mb_id = m.mb_id 
 		where b.dw_status = 'Y' and b.dw_no = #{ dwNo }
 	</select>
 	
 	<select id="selectDwReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{dwNo} and r.re_d_status = 'Y' and r.b_type = 'DW'
@@ -516,7 +516,7 @@
 	</select>
 
 	<select id="selectWmBoardList" resultType="WmBoard">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 	    from wm_board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.wm_status = 'Y' and wm_type = '0'
@@ -542,7 +542,7 @@
 	</select>
 
 	<select id="selectWmRvBoardList" resultType="WmBoard">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 	    from wm_board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.wm_status = 'Y' and wm_type = '1'
@@ -580,7 +580,7 @@
 	</insert>
 	
 	<select id="selectWmBoard" resultType="WmBoard">
-		select  b.*, m.mb_nickname as "mbNickName" 
+		select  b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 		from wm_board b
 			join member m on b.mb_id = m.mb_id 
 		where b.wm_status = 'Y' and b.wm_no = #{ wmNo }
@@ -627,7 +627,7 @@
 	
 	
 	<select id="selectWmReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{wmNo} and r.re_d_status = 'Y' and r.b_type = 'WM'
@@ -840,7 +840,7 @@
 	</update>
 	
 	<select id="selectLostReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{mNo} and r.re_d_status = 'Y' and r.b_type = 'M'
@@ -1043,7 +1043,7 @@
 	</update>
 	
 	<select id="selectUsedReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{uNo} and r.re_d_status = 'Y' and r.b_type = 'U'
@@ -1099,7 +1099,7 @@
 	</select>
 
 	<select id="selectUsedRvBoardList" resultType="UsedBoard">
-	    select b.*, m.mb_nickname as "mbNickName" 
+	    select b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 	    from used_board b 
 	    join member m on b.mb_id = m.mb_id 
 	    where b.u_status = 'Y' and u_type = '후기'
@@ -1135,7 +1135,7 @@
    </select>
    
 	<select id="selectUsedRvBoard" resultType="UsedBoard">
-		select  b.*, m.mb_nickname as "mbNickName" 
+		select  b.*, m.mb_nickname as "mbNickName", m.mb_photo as "mbPhoto"  
 		from used_board b
 			join member m on b.mb_id = m.mb_id 
 		where b.u_status = 'Y' and b.u_no = #{ uNo }
@@ -1154,7 +1154,7 @@
 	</select>
 	
 	<select id="selectUsedRvReply" resultType="Reply">
-		select  r.*, m.mb_nickname as "mbNickName" 
+		select  r.*, m.mb_nickname as "mbNickName" , m.mb_photo as "mbPhoto" 
 		from reply r
 			join member m on r.mb_id = m.mb_id 
 		where r.b_no = #{uNo} and r.re_d_status = 'Y' and r.b_type = 'U'

@@ -65,7 +65,7 @@
  	
  	<update id="editMbPhoto">
  		update member
- 		set mb_photo = #{ mbPhoto }
+ 		set mb_photo = #{ mbPhoto } , isKakao = #{isKakao}
  		where mb_id = #{ mbId }
  	</update>
  	
