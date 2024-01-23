@@ -38,7 +38,7 @@
       </div>
       <div class="header-container d-flex mt-5 justify-content-between">
          <div class="d-flex">
-            <img id="img" role="button" class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+            <img id="img" role="button" class="float-start me-4" th:src="'/image/' + ${u.mbPhoto}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
             <div class="header-text-container">
                <h6 style="display: inline;" th:text="${u.mbNickName}" name="mbNickName"></h6>
                <p th:text="${#dates.format(u.uCreateDate, 'yyyy-MM-dd')}"></p>
@@ -322,6 +322,11 @@
    
    <script th:inline="javascript">
    
+	   // 해당 페이지 nav bar 강조 넣기
+	   // 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
+	   const boardNav = document.getElementById("topAdd6");
+	   $(boardNav).addClass('active');
+   
 
 	   const userView = (mbId) => {
 			/*<!CDATA[[*/
@@ -507,13 +512,6 @@
 				})
 		  }  
 		   
-   
-   
-      // 해당 페이지 nav bar 강조 넣기
-      // 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
-      const boardNav = document.getElementById("topAdd6");
-      $(boardNav).addClass('active');
-      
       window.onload = () =>{
     	  	
     	    const upd = document.getElementById("updateForm");

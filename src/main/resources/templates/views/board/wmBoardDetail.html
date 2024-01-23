@@ -23,7 +23,7 @@
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
-					<img id="img" role="button" class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+					<img id="img" role="button" class="float-start me-4" th:src="'/image/' + ${wm.mbPhoto}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
 						<h6 style="display: inline;">[[${wm.mbNickName}]]</h6>&nbsp;&nbsp;•&nbsp;&nbsp;<img width="22" height="22" src="https://img.icons8.com/ios-filled/22/marker.png" alt="marker"/><h6 style="display: inline;">[[${wm.wmLocation}]]</h6>
 						<p>[[${wm.wmCreateDate}]]</p>
@@ -267,6 +267,11 @@
 	
 	<script th:inline="javascript">
 	
+		// 해당 페이지 nav bar 강조 넣기
+		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
+		const boardNav = document.getElementById("topAdd5");
+		$(boardNav).addClass('active');
+	
 
 		const userView = (mbId) => {
 			/*<!CDATA[[*/
@@ -454,12 +459,6 @@
 			})
 	    }  
 	
-		
-		// 해당 페이지 nav bar 강조 넣기
-		// 페이지 별로 id만 수정 하면 됨 eg.) topAdd1, topAdd2, ...
-		const boardNav = document.getElementById("topAdd5");
-		$(boardNav).addClass('active');
-		
 		window.onload = () =>{
 			
 			const upd = document.getElementById("updateForm");
