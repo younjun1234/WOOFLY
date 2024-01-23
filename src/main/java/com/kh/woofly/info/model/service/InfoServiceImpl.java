@@ -238,6 +238,12 @@ public class InfoServiceImpl implements InfoService{
 		return iDAO.deleteAttm(string);
 	}
 
+	@Override
+	public int selectComNo() {
+		// TODO Auto-generated method stub
+		return iDAO.selectComNo();
+	}
+
 
 	
 }

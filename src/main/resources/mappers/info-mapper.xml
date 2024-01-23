@@ -280,4 +280,17 @@
 		SET ATTM_STATUS = 'N'
 		WHERE ATTM_REF_TYPE = 'N' AND RENAME_NAME = #{string}
 	</update>
+	
+	<select id="selectComNo" resultType="_int">
+		SELECT COM_NO
+			FROM (
+			select COM_NO
+			from COMPANY
+			ORDER BY COM_NO DESC
+		)
+		<![CDATA[
+		WHERE ROWNUM <= 1
+		]]>
+	</select>
+	
 </mapper>

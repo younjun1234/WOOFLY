@@ -69,4 +69,6 @@ public interface InfoService {
 
 	int deleteAttm(String string);
 
+	int selectComNo();
+
 }

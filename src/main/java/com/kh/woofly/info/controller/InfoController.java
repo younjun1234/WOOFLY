@@ -96,7 +96,7 @@ public class InfoController {
 	
   // 공지사항 등록
 	@PostMapping("/info/insertNotice")
-	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles, Model model) {
+	public String insertNotice(@ModelAttribute Notice n, HttpSession session, @RequestPart(value = "NoticeFile", required = false) ArrayList<MultipartFile> noticeFiles, Model model, RedirectAttributes redirectAttributes) {
 		
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
@@ -152,7 +152,9 @@ public class InfoController {
 		}
 		
 		if( result + result2 == list.size() + 1) {
+			
 			return "redirect:/info/notice";
+			
 		} else {
 			for(NoticeAttm a : list) {
 				deleteFile(a.getRenameName());
@@ -884,7 +886,7 @@ public class InfoController {
 	
 	// 협력업체 등록
 	@PostMapping("/info/insertCompany")
-	public String insertCompany(@ModelAttribute Company c, @RequestParam("sample6_postcode")String postcode,@RequestParam("sample6_address")String address,
+	public String insertCompany(@ModelAttribute Company c, @RequestParam("sample6_postcode")String postcode,@RequestParam("sample6_address")String address, RedirectAttributes redirectAttributes, 
 			@RequestParam("sample6_detailAddress")String detailAddress,@RequestParam("sample6_extraAddress")String extraAddress, @RequestParam("tel1") String t1, @RequestParam("tel2") String t2, @RequestParam("tel3") String t3, HttpSession session) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
@@ -898,8 +900,14 @@ public class InfoController {
 			
 			int result = iService.insertCompany(c);
 			
+			int comNo = iService.selectComNo();
+			int page = 1;
+			System.out.println("asdsadasdsadsadsad"+comNo);
+			
 			if(result > 0) {
-				return "redirect:/info/company";
+				redirectAttributes.addAttribute("comNo", comNo);
+				redirectAttributes.addAttribute("page", page);
+				return "redirect:/info/selectCompany";
 			}else {
 				return null;
 			}	
@@ -985,7 +993,7 @@ public class InfoController {
 	
 	// 협력업체 삭제(상태 변경)
 	@GetMapping("/info/deleteCompany")
-	public String deleteCompany(@RequestParam("comNo") int comNo, @RequestParam("page") int page, RedirectAttributes re, HttpSession session) {
+	public String deleteCompany(@RequestParam("comNo") int comNo, @RequestParam(value="page", defaultValue="1") int page, RedirectAttributes re, HttpSession session) {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		

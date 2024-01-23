@@ -120,14 +120,12 @@ public class ContestController {
 	@GetMapping("/contest/allList")
 	public String contestAllList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request, @RequestParam(value="selectValue", defaultValue="0") int selectValue) {
 		
-		System.out.println(selectValue);
-		
 		int sv = 0;
 		
 		// 역대 콘테스트로 가져와야함   allCNo.get(0)
 		ArrayList<Integer> allCNo = cService.allContestNo();
 		
-		System.out.println(allCNo.get(0));
+//		System.out.println(allCNo.get(0));
 		
 		int listCount = 0;
 		int currentPage = 0;
@@ -565,7 +563,6 @@ public class ContestController {
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		String id = null;
-		System.out.println(type);
 		
 		if(loginUser != null) {
 			id = loginUser.getMbId();
@@ -657,7 +654,6 @@ public class ContestController {
 				}
 			}
 			
-			
 			model.addAttribute("type", type);
 			model.addAttribute("withoutO", withoutO);
 			model.addAttribute("productList", productList);
@@ -678,8 +674,6 @@ public class ContestController {
 		@GetMapping("/contest/bestDogVote")
 		public String bestDogVote(@RequestParam("pNo") int pNo, HttpSession session) {
 			// 최신 콘테스트 1개값 가져옴
-			System.out.println(pNo);
-			
 			Member loginUser = (Member)session.getAttribute("loginUser");
 			
 			String id = null;
