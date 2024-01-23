@@ -35,7 +35,7 @@
 							<h4>협력업체 상세정보</h4>
 							<input type="hidden" th:value="${ c.comNo }" name="comNo">
 							<input type="hidden" th:value="${ page }" name="page">
-							<div class="d-flex gap-3" th:if="${session.loginUser.isAdmin == 'Y'}">
+							<div class="d-flex gap-3" th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
 								<button class="btn btn-outline-warning bg-warning-subtle">수정</button>
 								<button type="button" id="modalOpen" class="btn btn-outline-danger bg-danger-subtle">삭제</button>                                         
 							</div>
@@ -105,7 +105,7 @@
 		</div>
 	</main>
 	
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7011684e150b0f31e392b1c34e907b9f&libraries=services"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c10658eae848049b696170710e304723&libraries=services"></script>
 	<script>
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = {

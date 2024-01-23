@@ -24,6 +24,7 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+
 			<th:block th:if="${session.loginUser == null or session.loginUser.isAdmin == 'N'}">
 				<div th:replace="~{common/infoNav :: infoNav}"></div>
 			</th:block>
@@ -33,12 +34,17 @@
 			
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
+				
+				
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>FAQ</h1>
 						<h3>자주 묻는 질문과 답변을 미리 확인해 보세요!</h3>
 						<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-						<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50" th:if="${session.loginUser.isAdmin == 'Y'}">글 작성</a>
+						<div>
+							<a role="button" href="/info/QNAWrite" class="btn btn-dark btn-sm h-50" th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">글 작성</a>
+						</div>
 					</div>
+					
 					<!-- 카테고리 버튼들 -->
 					<div class="container text-center mt-3 row-cols-6 catagoryBar">
 						<button type="button" class="btn btn-outline-dark" name="categoryBtn" value="쇼핑몰">쇼핑몰</button>
@@ -76,20 +82,30 @@
 						    </button>
 						    <div class="pannel">	
 						  		<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-						    	<form th:if="${ l.qWriter == 'admin' }" action="/info/QNAEdit" method="POST" style="display: inline-block;">
+						    	<form  action="/info/QNAEdit" method="POST" style="display: inline-block;">
 									<input type="hidden" th:value="${ l.qId }" name="qId">
 									<label class="qId" style="display: none;">[[${ l.qId }]]</label>
 									<input type="hidden" th:value="${ pi.currentPage }" name="page">
-									<button class="btn btn-lg rounded-2 btn-outline-dark" th:if="${admin == 'Y'}">수정</button>
-									<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" th:if="${admin == 'Y'}">삭제</button>
-									<p style="display: inline-block; margin-left: 50px;">
-										[[${ l.qContent }]]
-									</p>
+									
+									<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+										<button class="btn btn-lg rounded-2 btn-outline-dark" >수정</button>
+										<button type="button" name="modalOpen" class="btn btn-lg rounded-2 btn-outline-danger" >삭제</button>
+									</th:block>
+									
+									<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+										<p style="display: inline-block; margin-left: 50px;">
+											[[${ l.qContent }]]
+										</p>
+									</th:block>
+									<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
+										<p style="display: inline-block; margin-left: 160px;">
+											[[${ l.qContent }]]
+										</p>
+									</th:block>
+									
 									<input type="hidden" th:value="page" name="page">
 								</form>
-								<p style="display: inline-block; margin-left: 150px;" th:if="${ l.qWriter != 'admin' }">
-									[[${ l.qContent }]]
-								</p>
+								
 						    </div>
 						</div>
 					</div>

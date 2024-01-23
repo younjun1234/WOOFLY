@@ -10,7 +10,7 @@
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
-
+	
 	<link rel="stylesheet" type="text/css" th:href="@{/css/yh/contestParticipation.css}" /> 
 </head>
 <body>
@@ -18,8 +18,14 @@
 	<main>
 		<form action="/contest/contestEnroll" method="POST" id="contestParticipation" enctype="multipart/form-data">
 			<div class="container-fluid d-flex mx-5">
-				<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+			
+			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
+			<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
 				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
+				<div th:replace="~{common/contestNav :: contestNav}"></div>
+			</th:block>
 				
 				<div class="col-10 b-5">
 				 <div class="container mt-4">
@@ -244,6 +250,14 @@
 		let divChildren = document.getElementById('thumbnail').querySelectorAll('div');
 		
 		window.onload = () =>{
+			const anav = document.getElementById('myNav5')
+			if(anav != null){
+				anav.style.fontWeight = 'bold';
+			}
+			const canav = document.getElementById('cmyNav1')
+			if(canav != null){
+				canav.style.fontWeight = 'bold';
+			}
 			
 			var fileAreaCount = 2;
 
@@ -669,7 +683,7 @@
                 }
 	        }
 	        /*]]>*/
-		    
+	        
 		});
 
 	</script>

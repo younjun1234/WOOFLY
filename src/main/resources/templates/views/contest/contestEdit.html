@@ -24,7 +24,12 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
+				<div th:replace="~{common/contestNav :: contestNav}"></div>
+			</th:block>
 			
 			<div class="container mt-4 col-10 mb-5">
 				<div class="col-md-12 mt=1 mb-4">
@@ -147,7 +152,14 @@
 		}
 		
 		window.onload = () => {
-			document.getElementById('myNav7').style.fontWeight = 'bold';
+			const anav = document.getElementById('myNav7')
+			if(anav != null){
+				anav.style.fontWeight = 'bold';
+			}
+			const canav = document.getElementById('cmyNav1')
+			if(canav != null){
+				canav.style.fontWeight = 'bold';
+			}
 			
 			var conNoSelect = document.getElementById("conNo");
 			const aDate = lists[1].conEndDate;
