@@ -118,34 +118,74 @@ public class ContestController {
 	
 	//  역대 콘테스트 인기순(최신순없음)
 	@GetMapping("/contest/allList")
-	public String contestAllList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request) {
+	public String contestAllList(Model model, HttpSession session, @RequestParam(value="page", defaultValue="1") int page, HttpServletRequest request, @RequestParam(value="selectValue", defaultValue="0") int selectValue) {
+		
+		int sv = 0;
 		
 		// 역대 콘테스트로 가져와야함   allCNo.get(0)
 		ArrayList<Integer> allCNo = cService.allContestNo();
 		
-		int listCount = cService.getListCount(allCNo.get(0));
-		int currentPage = page;
+//		System.out.println(allCNo.get(0));
 		
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
-		int i = 0;
-		int generationNo = allCNo.get(i);
+		int listCount = 0;
+		int currentPage = 0;
 		
-		ArrayList<Participants> allParticipantstList = cService.allTimeBestList(generationNo, pi);
 		
-		ArrayList<ContestAttm> cAttmList = cService.selectAttmNList(); //해당 기수만 가져오게 바꿔야 될지도? 
-		
-		//best 3 강아지 가져오기
-		ArrayList<Participants> best3Dog = cService.best3Dog(generationNo);
-		
-		if (best3Dog.isEmpty()) {
-		    return "contestXList";
+		if(selectValue == 0) {
+			sv = allCNo.get(0);
+			
+			listCount = cService.getListCount(sv);
+			currentPage = page;
+			
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
+			int i = 0;
+			int generationNo = allCNo.get(i);
+			
+			ArrayList<Participants> allParticipantstList = cService.allTimeBestList(generationNo, pi);
+			
+			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList(); //해당 기수만 가져오게 바꿔야 될지도? 
+			
+			//best 3 강아지 가져오기
+			ArrayList<Participants> best3Dog = cService.best3Dog(generationNo);
+			if (best3Dog.isEmpty()) {
+			    return "contestXList";
+			}
+			
+			model.addAttribute("best3Dog", best3Dog);
+			model.addAttribute("allCNo", allCNo);
+			model.addAttribute("pi", pi);
+			model.addAttribute("pList", allParticipantstList);
+			model.addAttribute("aList", cAttmList);
+			model.addAttribute("loc", request.getRequestURI());
+		} else {
+			sv = selectValue;
+			
+			listCount = cService.getListCount(sv);
+			currentPage = page;
+			
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount, 8);
+			
+			int generationNo = sv;
+			
+			ArrayList<Participants> allParticipantstList = cService.allTimeBestList(generationNo, pi);
+			
+			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList(); //해당 기수만 가져오게 바꿔야 될지도? 
+			
+			//best 3 강아지 가져오기
+			ArrayList<Participants> best3Dog = cService.best3Dog(generationNo);
+			if (best3Dog.isEmpty()) {
+			    return "contestXList";
+			}
+			
+			
+			model.addAttribute("generationNo", generationNo);
+			model.addAttribute("best3Dog", best3Dog);
+			model.addAttribute("allCNo", allCNo);
+			model.addAttribute("pi", pi);
+			model.addAttribute("pList", allParticipantstList);
+			model.addAttribute("aList", cAttmList);
+			model.addAttribute("loc", request.getRequestURI());
 		}
-		model.addAttribute("best3Dog", best3Dog);
-		model.addAttribute("allCNo", allCNo);
-		model.addAttribute("pi", pi);
-		model.addAttribute("pList", allParticipantstList);
-		model.addAttribute("aList", cAttmList);
-		model.addAttribute("loc", request.getRequestURI());
 		
 		return "contestAllList";
 	}
@@ -179,6 +219,10 @@ public class ContestController {
 			check = 1;
 			
 			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
+<<<<<<< HEAD
+=======
+			
+>>>>>>> refs/heads/develop
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
 			model.addAttribute("check", check);
@@ -518,7 +562,7 @@ public class ContestController {
 	
 	// 콘테스트 상세페이지 이동
 	@GetMapping("/contest/selectContest")
-	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam(value="page", defaultValue="1") int page, HttpSession session) {					
+	public String selectNotice(@RequestParam("pNo") int pNo, Model model, @RequestParam(value="page", defaultValue="1") int page, HttpSession session, @RequestParam(value="type", defaultValue="0") int type) {					
 		
 		Member loginUser = (Member)session.getAttribute("loginUser");
 		String id = null;
@@ -536,7 +580,6 @@ public class ContestController {
 		if( voteCheck > 0 ) {
 			voteCheck = 1;
 		}
-		
 		
 		// id 조횟수 시간나면 ㄱ
 		Participants p = cService.selectParticipants(pNo, id);
@@ -614,6 +657,7 @@ public class ContestController {
 				}
 			}
 			
+			model.addAttribute("type", type);
 			model.addAttribute("withoutO", withoutO);
 			model.addAttribute("productList", productList);
 			model.addAttribute("pList", pList);
@@ -633,8 +677,6 @@ public class ContestController {
 		@GetMapping("/contest/bestDogVote")
 		public String bestDogVote(@RequestParam("pNo") int pNo, HttpSession session) {
 			// 최신 콘테스트 1개값 가져옴
-			System.out.println(pNo);
-			
 			Member loginUser = (Member)session.getAttribute("loginUser");
 			
 			String id = null;

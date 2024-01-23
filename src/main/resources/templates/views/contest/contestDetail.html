@@ -14,43 +14,41 @@
 </head>
 
 <style>
-
-
-.abcd {
-  display: flex;
-}
-
-.left {
-  flex: 1;
-}
-
-.left img {
-  width: 100%;
-  height: auto;
-}
-
-.right {
-  flex: 1;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.image-gallery {
-  display: flex;
-  flex-direction: column; /* 세로로 배열하도록 설정 */
-  margin-top: 20px;
-}
-
-.image-gallery img {
-  width: 100%; /* 조절 가능한 크기로 설정 */
-  height: auto;
-  margin-bottom: 10px; /* 이미지 간 간격 조절 */
-}
-.horizontal-images img {
-  width: calc(10% - 10px); /* 조절 가능한 크기로 설정 (간격 포함) */
-  height: auto;
-  margin-right: 10px; /* 이미지 간 간격 조절 */
-}
+	.abcd {
+	  display: flex;
+	}
+	
+	.left {
+	  flex: 1;
+	}
+	
+	.left img {
+	  width: 100%;
+	  height: auto;
+	}
+	
+	.right {
+	  flex: 1;
+	  padding: 20px;
+	  box-sizing: border-box;
+	}
+	
+	.image-gallery {
+	  display: flex;
+	  flex-direction: column; /* 세로로 배열하도록 설정 */
+	  margin-top: 20px;
+	}
+	
+	.image-gallery img {
+	  width: 100%; /* 조절 가능한 크기로 설정 */
+	  height: auto;
+	  margin-bottom: 10px; /* 이미지 간 간격 조절 */
+	}
+	.horizontal-images img {
+	  width: calc(10% - 10px); /* 조절 가능한 크기로 설정 (간격 포함) */
+	  height: auto;
+	  margin-right: 10px; /* 이미지 간 간격 조절 */
+	}
 </style>
 
 <body>
@@ -61,16 +59,20 @@
 		<div class="container-fluid d-flex mx-5">
 			
 			<!-- 관리자만 보이게!!!!!!!!!!!!!!!!!!! -->
-			<div th:replace="~{common/adminNav :: adminNav}"></div>
+			<th:block th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+				<div th:replace="~{common/adminNav :: adminNav}"></div>
+			</th:block>
+			<th:block th:if="${ session.loginUser == null || session.loginUser.isAdmin != 'Y'}">
+				<div th:replace="~{common/contestNav :: contestNav}"></div>
+			</th:block>
 			
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
-				
 				<div class="container mx-5 mt-5">
 					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
 						<h1>콘테스트</h1>
 						<!-- 회원만 보이도록 -->
-						<a role="button" href="#" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
+						<a role="button" href="/contest/contestParticipation" class="btn btn-dark btn-sm h-50">콘테스트 참가</a>
 					</div>
 					
 					<div class="abcd">
@@ -85,25 +87,25 @@
 								<p>내 용 :  &emsp;[[${ p.pContent }]]</p>
 								<p>견 종 : 왜 없지?</p>
 								<p>닉네임 : </p>
-								<form action="/contest/bestDogVote" id="bestDogVote">
-					    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
-						    <input type="hidden" name="pNo" th:value="${pNo}" id="pNo">
-						    <input type="hidden" name="page" th:value="${page}" id="page">
-						    
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="heart" th:if="${ session.loginUser != null &&  voteCheck == 0 }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="duplication" th:if="${session.loginUser != null &&  voteCheck == 1}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="nologin" th:if="${ session.loginUser == null }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
- 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
-						    
-					    </form>
+								<form action="/contest/list" id="bestDogVote">
+							    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
+								    <input type="hidden" name="pNo" th:value="${pNo}" id="pNo">
+								    <input type="hidden" name="page" th:value="${page}" id="page">
+								    <div th:if="${ type == 0 }">
+									    <button type="button" class="btn btn-outline-dark btn-lg" id="heart" th:if="${ session.loginUser != null &&  voteCheck == 0 }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
+									    <button type="button" class="btn btn-outline-dark btn-lg" id="duplication" th:if="${session.loginUser != null &&  voteCheck == 1}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
+									    <button type="button" class="btn btn-outline-dark btn-lg" id="nologin" th:if="${ session.loginUser == null }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> 추천 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
+			 									<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg></button>
+									 </div>   
+						  		  </form>
 						    </div>
 						</div>
-					
+						
 						<div class="image-gallery">
 							<th:block th:each="m : ${mList}">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
@@ -120,7 +122,7 @@
 					    	</th:block>
 
 						</div>
-					
+						
 					
 					
 					
@@ -142,14 +144,7 @@
 					        <div style="background-image:url(https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg);"></div>
 					    </div>
 					    
-					    <form action="/contest/bestDogVote" id="bestDogVote">
-					    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
-						    <input type="hidden" name="pNo" th:value="${pNo}" id="pNo">
-						    <input type="hidden" name="page" th:value="${page}" id="page">
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="heart">추천</button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="duplication">추천(중복) 안눌리게?</button>
-						    <button type="button" class="btn btn-outline-dark btn-lg" id="nologin">추천(비회원) 이건 로그인으로?</button>
-					    </form>
+					    
 					    
 					     <th:block th:each=" m : ${mList}">
 						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${m.renameName} + ');'  " alt="콘테스트 사진" style="width: 100px; height: 100px">
@@ -192,82 +187,117 @@
 	</main>
 	
 	<script th:inline="javascript">
-
-	
-	
+		
 		window.onload = () => {
 			const anav = document.getElementById('myNav5')
-			anav.style.fontWeight = 'bold';
+			if(anav != null){
+				anav.style.fontWeight = 'bold';
+			}
+			const canav = document.getElementById('cmyNav1')
+			if(canav != null){
+				canav.style.fontWeight = 'bold';
+			}
+			
 		}
 		
 		
-		
-		document.getElementById('heart').addEventListener('click', () =>{
+		document.addEventListener('DOMContentLoaded', function () {    
 			
-			const form = document.getElementById('bestDogVote');
-			var newTitle = '추천 하시겠습니까';
-	        var newContent = '추천시 취소 불가합니다.';
+			const a = document.getElementById('heart');
+			const b = document.getElementById('duplication');
+			const c = document.getElementById('nologin')
 			
-			document.getElementById('modalTitle').innerText = newTitle;
-		    document.getElementById('modalContent').innerText = newContent;
-			$('#modalChoice').modal('show');
+			console.log(a);
+			console.log(b);
+			console.log(c);
 			
-			form.submit();
+			if(a != null ){
+				document.getElementById('heart').addEventListener('click', () =>{
+					
+					const form = document.getElementById('bestDogVote');
+					var newTitle = '추천 하시겠습니까';
+			        var newContent = '추천시 취소 불가합니다.';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+					$('#modalChoice').modal('show');
+					
+					
+					document.getElementById('checkFile').addEventListener('click', () =>{	
+						form.submit();
+					});
+					
+					
+					
+				});
+			}
 			
-		});
-		
-		document.getElementById('duplication').addEventListener('click', () =>{
+			if(b != null){
+				document.getElementById('duplication').addEventListener('click', () =>{
+					
+					var newTitle = '이미 추천 하셨습니다.';
+			        var newContent = '중복 추천은 불가능 합니다.';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+				    
+					$('#modalChoice').modal('show');
+					
+				});
+			}
 			
-			var newTitle = '이미 추천 하셨습니다.';
-	        var newContent = '중복 추천은 불가능 합니다.';
-			
-			document.getElementById('modalTitle').innerText = newTitle;
-		    document.getElementById('modalContent').innerText = newContent;
-		    
-			$('#modalChoice').modal('show');
-			
-		});
-		
-		document.getElementById('nologin').addEventListener('click', () =>{
+			if( c != null){
+				document.getElementById('nologin').addEventListener('click', () =>{
 
-			var newTitle = '로그인시 추천 가능합니다.';
-	        var newContent = ' 로그인을 원하시면 "네"를 눌러주세요  ';
+					var newTitle = '로그인시 추천 가능합니다.';
+			        var newContent = ' 로그인을 원하시면 "네"를 눌러주세요  ';
+					
+					document.getElementById('modalTitle').innerText = newTitle;
+				    document.getElementById('modalContent').innerText = newContent;
+				    
+				    var checkFileId = document.getElementById('checkFile')
+				    
+				    // 새로운 아이디로 변경
+				    var newElementId = 'newCheckFileId';  // 여기에 새로운 아이디 이름을 지정하세요
+				    
+				    if(checkFileId != null){
+				    	checkFileId.id = newElementId;
+				    }
+				    if(newElementId != null){
+				    	 newElementId.id = newElementId;
+				    }
+				   
+				    
+					$('#modalChoice').modal('show');
+					
+					document.getElementById('newCheckFileId').addEventListener('click', () =>{
+						
+						var checkFileId = document.getElementById('newCheckFileId')
+						
+						 // 새로운 아이디로 변경
+					    var newElementId = 'checkFile';  // 여기에 새로운 아이디 이름을 지정하세요
+					    checkFileId.id = newElementId;
+					   
+						
+						location.href = '/account/login'  ;
+					});
+					
+				});
+			}
 			
-			document.getElementById('modalTitle').innerText = newTitle;
-		    document.getElementById('modalContent').innerText = newContent;
-		    
-		    var checkFileId = document.getElementById('checkFile')
-		    
-		    // 새로운 아이디로 변경
-		    var newElementId = 'newCheckFileId';  // 여기에 새로운 아이디 이름을 지정하세요
-		    checkFileId.id = newElementId;
-		    
-			$('#modalChoice').modal('show');
-			
-			document.getElementById('newCheckFileId').addEventListener('click', () =>{
+			document.getElementById('checkFile').addEventListener('click', () =>{
 				
-				var checkFileId = document.getElementById('newCheckFileId')
+				const pNo = document.getElementById('pNo').value;
+				const page = document.getElementById('page').value;
 				
-				 // 새로운 아이디로 변경
-			    var newElementId = 'checkFile';  // 여기에 새로운 아이디 이름을 지정하세요
-			    checkFileId.id = newElementId;
+				location.href = '/contest/selectContest?pNo=' + pNo + '&page=' + page + '&id=' + null;
 				
-				location.href = '/account/login'  ;
+				
 			});
 			
-		});
-		
-		document.getElementById('checkFile').addEventListener('click', () =>{
 			
-			const pNo = document.getElementById('pNo').value;
-			const page = document.getElementById('page').value;
 			
-			location.href = '/contest/selectContest?pNo=' + pNo + '&page=' + page ;
 		});
-		
-		
-		
-		
 		
 	</script>
 	

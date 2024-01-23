@@ -35,7 +35,11 @@
 							<h4>협력업체 상세정보</h4>
 							<input type="hidden" th:value="${ c.comNo }" name="comNo">
 							<input type="hidden" th:value="${ page }" name="page">
+<<<<<<< HEAD
 							<div class="d-flex gap-3" th:if="${session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+=======
+							<div class="d-flex gap-3" th:if="${ session.loginUser != null && session.loginUser.isAdmin == 'Y'}">
+>>>>>>> refs/heads/develop
 								<button class="btn btn-outline-warning bg-warning-subtle">수정</button>
 								<button type="button" id="modalOpen" class="btn btn-outline-danger bg-danger-subtle">삭제</button>                                         
 							</div>

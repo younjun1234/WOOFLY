@@ -634,13 +634,12 @@
 							topReply.innerHTML = '';
 							for(const r of data.rList){
 								const isLiked = r.userLiked;
-								
 								const newReply = `
 									<div class="comment-container d-flex mt-3 justify-content-center text-center border-top border-black replyOne">
 				                    	<input type="hidden" value="${r.rNo}">
 				                        <div class="col-1" style="line-height: 40px;">${r.mbNickName}</div>
-				                        <div class="col-8 reContent" style="line-height: 40px;">${r.reContent}</div>
-				                        <div class="col-1" style="line-height: 40px;">${r.reDate}</div>
+				                        <div class="col-7 reContent" style="line-height: 40px;">${r.reContent}</div>
+				                        <div class="col-2" style="line-height: 40px;">${r.reDate}</div>
 				                        <div class="col-2 d-flex align-items-center justify-content-end m-1 utility" name="devDiv">
 				                        	<div class="mx-2">
 				                        		${r.reLike}
