@@ -1,6 +1,5 @@
 package com.kh.woofly.contest.model.service;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
@@ -63,15 +62,30 @@ public interface ContestService {
 
 	ArrayList<Participants> searchParticipantstList(Map<String, Object> map, PageInfo pi);
 	
-	ArrayList<Participants> searchBestParticipantstList(int cNo, PageInfo pi, String search);
-
 	ArrayList<String> cPetList(Map<String, Object> map);
 
-	int allContestNo();
+	ArrayList<Integer> allContestNo();
+
+	ArrayList<Participants> allTimeBestList(int generationNo, PageInfo pi);
+
+	ArrayList<Participants> best3Dog(int generationNo);
+
+	ArrayList<Participants> searchBestParticipantstList(Map<String, Object> map, PageInfo pi);
+
+	int bestDogVote(Map<String, Object> map);
+
+	int bestDogCountUpdate(int pNo);
+
+	Integer voteCheck(Map<String, Object> map);
+
+	Integer wOProductList(String aa);
+
+	ContestAttm productAttm(Integer outO);
 
 	ArrayList<Participants> topFiveBest(int cNo);
 
 	
+
 
 //	Date sDate();
 
