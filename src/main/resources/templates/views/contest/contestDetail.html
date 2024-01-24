@@ -69,7 +69,7 @@
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
-					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
+					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center mb-3">
 						<h1>콘테스트</h1>
 						<!-- 회원만 보이도록 -->
 						<th:block th:if="${ session.loginUser != null }">
@@ -86,7 +86,7 @@
 						<div class="right" style="margin-left: 3%;">
 							<br>
 							<h2>[[${ p.pTitle }]]</h2><br>
-							<p>강아지 이름 : [[${ p.pPet }]]</p>
+							<p>이 름 : [[${ p.pPet }]]</p>
 							<p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
 			 								<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> : [[${p.pCount}]] </p>
 							<p>내 용 :  &emsp;[[${ p.pContent }]]</p>
@@ -127,42 +127,8 @@
 								</div>
 					    	</th:block>
 						</div>
-					<div class="slider-2">    
-						<div class="side-btns">
-							<div><span><i class="fas fa-caret-left"> pNo :  [[${  pNo  }]]</i></span></div>
-							<div><span><i class="fas fa-caret-left"> voteCheck :  [[${  voteCheck  }]]   0 중복없음</i></span></div>
-							<div><span><i class="fas fa-caret-left"> mList :  [[${  mList  }]] 메인 이미지</i></span></div>
-							<div><span><i class="fas fa-caret-left"> aList :  [[${  aList  }]] 서브 이미지</i></span></div>
-							<div><span><i class="fas fa-caret-left"> p :  [[${  p  }]]  내 정보 </i></span></div>
-					    	<div><span><i class="fas fa-caret-left"> page :  [[${  page  }]] 페이지</i></span></div>
-					        <div><span><i class="fas fa-caret-right"> pList :  [[${  pList  }]]  상품리스트</i></span></div>
-					    </div>
-					    
-					    <div class="slides">
-					        <div class="active" style="background-image:url(https://thumb.mt.co.kr/06/2023/08/2023081414301516852_16.jpg/dims/optimize/);"></div>
-					        <div style="background-image:url(https://m1.daumcdn.net/cfile249/image/99DAB3335E0A135C292D12);"></div>
-					        <div style="background-image:url(https://image.dongascience.com/Photo/2020/03/5bddba7b6574b95d37b6079c199d7101.jpg);"></div>
-					        <div style="background-image:url(https://flotshop.com/web/product/big/202103/b7725b727acd64d50a94a584034d23da.jpg);"></div>
-					    </div>
-					    
-					    
-					    
-					     <th:block th:each=" m : ${mList}" th:if="${mList.size > 0}">
-						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${m.renameName} + ');'  " alt="콘테스트 사진" style="width: 100px; height: 100px">
-							</div>
-						</th:block>	
-						<th:block th:each=" a : ${aList}" th:if="${aList.size > 0}">
-						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');' " alt="콘테스트 사진" style="width: 100px; height: 100px">werewr
-							</div>
-						</th:block>
-					    
-					    <div class="page-nav">
-					        <div class="active"></div>
-					        <div></div>
-					        <div></div>
-					        <div></div>
-					    </div>
-					</div>
+						
+						
 				</div>	
 			</div>
 		</div>

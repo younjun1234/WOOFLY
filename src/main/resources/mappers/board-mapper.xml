@@ -803,7 +803,7 @@
 	
 	<!-- 특정 게시글 조회 -->
 	<select id="selectLostBoard" parameterType="int" resultMap="LostBoardWithAttachmentsMap">
-	    select mb.*, m.mb_nickName
+	    select mb.*, m.mb_nickName, m.mb_photo as "mbPhoto"  
 	    from Missing_Board mb
 	    join Member m on mb.mb_id = m.mb_id
 	    where mb.m_status = 'Y' and mb.m_no = #{mNo}
