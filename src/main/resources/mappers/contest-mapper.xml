@@ -62,7 +62,7 @@
 	<select id="searchItem" resultType="ContestItem">
 		select *
 		from PRODUCT
-		WHERE PRODUCT_NAME LIKE '%${pSearch}%'
+		WHERE PRODUCT_NAME LIKE '%${pSearch}%' AND PRODUCT_STATUS = 'Y'
 	</select>	
 	
 	<!-- count -->
@@ -279,6 +279,12 @@
 	    <![CDATA[
 	    WHERE ROWNUM <= 1
 	    ]]>
+	</select>
+	
+	<select id="selectDog" resultType="Pet">
+	    SELECT *
+		FROM PET
+		WHERE OWNER_ID = #{mbId}
 	</select>
 	
 </mapper>
