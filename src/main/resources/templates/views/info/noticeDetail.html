@@ -75,11 +75,11 @@
 											
 										</div>
 										<div class="text"> <!--글 내용-->
-											<pre style="margin-left: 40px">[[${ n.nContent }]]</pre>
+											<div style="margin-left: 40px">[[${ n.nContent }]]</div>
 										</div>
 										<!-- 사진  있을때만!!!!!!!!!!!!!!!!!!-->
 										<div class="text1" th:each="i : ${iList}"> <!--공지 사진-->
-											<img th:src="'/image/noticeFiles/' + ${i.renameName}" alt="공지사진" style="height: 200px; width: 300px">
+											<img th:src="'/image/noticeFiles/' + ${i.renameName}" alt="공지사진" style="height: 100%; width: 100%">
 										</div>
 									</div>
 									<div style="text-align: center; margin-top: 10px;">

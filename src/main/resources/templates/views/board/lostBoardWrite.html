@@ -13,24 +13,8 @@
 			<h3>게시글 작성하기</h3>
 		</div>
 		<div class="container">
-			<!-- 사진 작성자 작성일자 드롭다운 -->
-			<div class="header-container d-flex mt-3 justify-content-between">
-				<div class="d-flex">
-					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
-					<div class="header-text-container">
-						<h6>작성자 <!-- 사용자 정보가 있을 때만 출력 -->
-							 <!--loginUser가 null이 아닐 떄(로그인된 상태)는 작성자 부분에 회원의 닉네임을 띄우고,
-							 	 loginUser가 null일 때(로그인 되지 않은 상태)는 작성자 부분에 Guest를 띄운다-->
-							 <span th:if="${session.loginUser == null}">Guest</span>
-							 <span th:unless="${session.loginUser == null}" name="mbNickName">[[${session.loginUser.mbNickName}]]</span>
-   							 <!--<span th:unless="${session.loginUser != null}">Guest</span>-->
-			            </h6>
-			            <p>날짜 <!-- 현재 날짜 출력 -->
-			                <span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" name="mCreateDate"></span>
-			            </p>
-					</div>
-				</div>
-			</div>
+		
+			<br>
 			
 			<form  action="/board/lost/insertLostBoard" method="POST" enctype="multipart/form-data" id="attmForm">
 				<div class="mb-3" style="width: 24%;">

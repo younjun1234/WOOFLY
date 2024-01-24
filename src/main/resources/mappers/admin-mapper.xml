@@ -84,6 +84,7 @@
 		<if test="mbId != null">
 			WHERE MB_ID LIKE '%' || #{mbId} || '%'
 		</if>
+		ORDER BY mb_Id ASC
 	</select>
 	
 	<select id="selectAllAddress" resultType="MemberAddress">

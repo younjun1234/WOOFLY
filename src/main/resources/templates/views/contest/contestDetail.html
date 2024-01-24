@@ -87,7 +87,7 @@
 								<p>내 용 :  &emsp;[[${ p.pContent }]]</p>
 								<p>견 종 : 왜 없지?</p>
 								<p>닉네임 : </p>
-								<form action="/contest/list" id="bestDogVote">
+								<form action="/contest/bestDogVote" id="bestDogVote">
 							    	<input type="hidden" name="voteCheck" th:value="${voteCheck}">
 								    <input type="hidden" name="pNo" th:value="${pNo}" id="pNo">
 								    <input type="hidden" name="page" th:value="${page}" id="page">
@@ -115,15 +115,11 @@
 					    	</th:block>
 						</div>
 						<div class="horizontal-images">
-							
 							<th:block th:if="${productList.size > 0}"  th:each="p : ${productList}">
 								<img th:src="'/image/shopFiles/' + ${p?.renameName}" >
 								<p class="image-title" style="display: inline-block;">Image 1 Title</p>
 					    	</th:block>
-
 						</div>
-						
-					
 					
 					
 					<div class="slider-2">    
@@ -163,7 +159,6 @@
 					    </div>
 					</div>
 					
-
 				</div>	
 			</div>
 		</div>
@@ -197,9 +192,7 @@
 			if(canav != null){
 				canav.style.fontWeight = 'bold';
 			}
-			
 		}
-		
 		
 		document.addEventListener('DOMContentLoaded', function () {    
 			
@@ -216,19 +209,15 @@
 					
 					const form = document.getElementById('bestDogVote');
 					var newTitle = '추천 하시겠습니까';
-			        var newContent = '추천시 취소 불가합니다.';
+			        var newContent = '추천시 취소가 불가능합니다.';
 					
 					document.getElementById('modalTitle').innerText = newTitle;
 				    document.getElementById('modalContent').innerText = newContent;
 					$('#modalChoice').modal('show');
 					
-					
-					document.getElementById('checkFile').addEventListener('click', () =>{	
+					document.getElementById('checkFile').addEventListener('click', () =>{
 						form.submit();
 					});
-					
-					
-					
 				});
 			}
 			
@@ -292,10 +281,7 @@
 				
 				location.href = '/contest/selectContest?pNo=' + pNo + '&page=' + page + '&id=' + null;
 				
-				
 			});
-			
-			
 			
 		});
 		
