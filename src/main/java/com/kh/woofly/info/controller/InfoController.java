@@ -146,7 +146,7 @@ public class InfoController {
 		
 		int result = iService.insertNotice(n);
 		int result2 = 0;
-		System.out.println("111111111111111111111111111111111111111"+list);
+//		System.out.println("111111111111111111111111111111111111111"+list);
 		if(!list.isEmpty()) {
 			result2 = iService.insertAttm(list);
 		}
@@ -302,7 +302,7 @@ public class InfoController {
 		
 		// noticeFiles 정제하기 - saveFIles
 		
-		System.out.println(noticeFiles);
+//		System.out.println(noticeFiles);
 		
 		// 썸네일 리네임 과정
 		ArrayList<NoticeAttm> list = new ArrayList<NoticeAttm>();
@@ -336,7 +336,7 @@ public class InfoController {
 				}
 			}
 		}
-		System.out.println(list);
+//		System.out.println(list);
 		int result3 = 0;
 		int result2 = 0;
 		
@@ -346,7 +346,7 @@ public class InfoController {
 		
 		if(checkbox != null) {
 			for(int i = 0; i < checkbox.length; i++) {
-				System.out.println(checkbox[i]);
+		//		System.out.println(checkbox[i]);
 				// 체크된 리스트 날려버리기
 				// 이 때 DB랑 어디? deleteFiles 메소드로 보내서 지우기
 				deleteFile(checkbox[i]);
@@ -902,7 +902,7 @@ public class InfoController {
 			
 			int comNo = iService.selectComNo();
 			int page = 1;
-			System.out.println("asdsadasdsadsadsad"+comNo);
+//			System.out.println("asdsadasdsadsadsad"+comNo);
 			
 			if(result > 0) {
 				redirectAttributes.addAttribute("comNo", comNo);
