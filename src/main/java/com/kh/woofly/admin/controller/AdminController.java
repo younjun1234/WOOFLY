@@ -160,8 +160,6 @@ public class AdminController {
 	    // 오늘 날짜 기준으로 endDate가 이후인 콘테스트 가져오기
 	    ArrayList<Contest> contestList = aService.selectAfterContest();
 	    
-	    System.out.println(contestList);
-	    
 	    model.addAttribute("admin", admin);
 		model.addAttribute("monthlyEarnings", monthlyEarnings);
 		model.addAttribute("percents", percents);
