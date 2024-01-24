@@ -30,6 +30,7 @@ import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.member.model.vo.Member;
+import com.kh.woofly.pet.model.vo.Pet;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -409,7 +410,20 @@ public class ContestController {
 		
 		ArrayList<ContestItem> list = cService.searchItem(pSearch);
 		
+		ArrayList<ContestAttm> productList = new ArrayList<ContestAttm>();
+		
+		
 		if(list != null) {
+			
+			for(int i = 1; i < list.size(); i++) {
+				int outO = list.get(i).getProductId();
+				
+				ContestAttm productAttm = cService.productAttm(outO);
+	        	
+	        	productList.add(productAttm);
+			}
+			
+			
 			return list;
 		}else {
 			throw new ContestException("콘테스트 참가에 실패하였습니다");
@@ -581,6 +595,16 @@ public class ContestController {
 		// id 조횟수 시간나면 ㄱ
 		Participants p = cService.selectParticipants(pNo, id);
 		
+		String mbId = p.getMbId();
+		
+		ArrayList<Pet> petLists = cService.selectDog(mbId);
+		
+		System.out.println(petLists);
+		
+		
+		
+		
+		
         // 참가자가 가지고 있는 상품 사진 리스트 ( 중복 상품 제외 )
         ArrayList<ContestAttm> productList = new ArrayList<ContestAttm>();
         
@@ -654,6 +678,11 @@ public class ContestController {
 				}
 			}
 			
+		
+			
+			
+			
+			System.out.println(productList);
 			model.addAttribute("type", type);
 			model.addAttribute("withoutO", withoutO);
 			model.addAttribute("productList", productList);
@@ -717,3 +746,4 @@ public class ContestController {
 
 
 
+//01240902

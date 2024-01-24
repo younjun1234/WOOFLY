@@ -12,6 +12,7 @@ import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.pet.model.vo.Pet;
 
 @Mapper
 public interface ContestDAO {
@@ -96,6 +97,8 @@ public interface ContestDAO {
 
 
 	ArrayList<Participants> topFiveBest(int cNo);
+
+	ArrayList<Pet> selectDog(String mbId);
 
 //	Date sDate();
 

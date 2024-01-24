@@ -16,6 +16,7 @@ import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
 import com.kh.woofly.info.model.vo.Notice;
+import com.kh.woofly.pet.model.vo.Pet;
 
 @Service
 public class ContestServiceImpl implements ContestService {
@@ -255,6 +256,12 @@ public class ContestServiceImpl implements ContestService {
 	public ArrayList<Participants> topFiveBest(int cNo) {
 		return cDAO.topFiveBest(cNo);
 	}
+
+@Override
+public ArrayList<Pet> selectDog(String mbId) {
+	// TODO Auto-generated method stub
+	return cDAO.selectDog(mbId);
+}
 
 	
 

@@ -9,6 +9,7 @@ import com.kh.woofly.contest.model.vo.Contest;
 import com.kh.woofly.contest.model.vo.ContestAttm;
 import com.kh.woofly.contest.model.vo.ContestItem;
 import com.kh.woofly.contest.model.vo.Participants;
+import com.kh.woofly.pet.model.vo.Pet;
 	
 public interface ContestService {
 	
@@ -83,6 +84,8 @@ public interface ContestService {
 	ContestAttm productAttm(Integer outO);
 
 	ArrayList<Participants> topFiveBest(int cNo);
+
+	ArrayList<Pet> selectDog(String mbId);
 
 	
 
