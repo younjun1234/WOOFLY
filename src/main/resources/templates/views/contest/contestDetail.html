@@ -77,7 +77,7 @@
 					
 					<div class="abcd">
 						<div class="left">
-							<th:block th:each="m : ${mList}">
+							<th:block th:each="m : ${mList}" th:if="${mList.size > 0 }">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
 					    	</th:block>
 					    </div>
@@ -107,17 +107,17 @@
 						</div>
 						
 						<div class="image-gallery">
-							<th:block th:each="m : ${mList}">
+							<th:block th:each="m : ${mList}" th:if="${mList.size > 0}">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
 					    	</th:block>
-							<th:block th:each="a : ${aList}">
+							<th:block th:each="a : ${aList}" th:if="${aList.size > 0}">
 								<img th:src="'/image/contestFiles/' + ${a.renameName}" alt="Image">
 					    	</th:block>
 						</div>
 						<div class="horizontal-images">
-						
-							<th:block th:each="p : ${productList}">
-								<img th:src="'/image/shopFiles/' + ${p.renameName}" >
+							
+							<th:block th:if="${productList.size > 0}"  th:each="p : ${productList}">
+								<img th:src="'/image/shopFiles/' + ${p?.renameName}" >
 								<p class="image-title" style="display: inline-block;">Image 1 Title</p>
 					    	</th:block>
 
@@ -146,11 +146,11 @@
 					    
 					    
 					    
-					     <th:block th:each=" m : ${mList}">
+					     <th:block th:each=" m : ${mList}" th:if="${mList.size > 0}">
 						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${m.renameName} + ');'  " alt="콘테스트 사진" style="width: 100px; height: 100px">
 							</div>
 						</th:block>	
-						<th:block th:each=" a : ${aList}">
+						<th:block th:each=" a : ${aList}" th:if="${aList.size > 0}">
 						    <div class="album-cover" th:style="'background-image: url(/image/contestFiles/' + ${a.renameName} + ');' " alt="콘테스트 사진" style="width: 100px; height: 100px">werewr
 							</div>
 						</th:block>
