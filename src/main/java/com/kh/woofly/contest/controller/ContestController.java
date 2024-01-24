@@ -676,21 +676,6 @@ public class ContestController {
 					}
 				}
 			}
-			
-<<<<<<< HEAD
-			System.out.println("pList :" + pList);
-			System.out.println("aList : " + aList);
-			System.out.println("mList : " + mList);
-			System.out.println("product:" + productList);
-			
-			
-=======
-		
-			
-			
-			
-			System.out.println(productList);
->>>>>>> refs/heads/develop
 			model.addAttribute("type", type);
 			model.addAttribute("withoutO", withoutO);
 			model.addAttribute("productList", productList);
