@@ -17,7 +17,7 @@
 			<!-- 사진 작성자 작성일자 드롭다운 -->
 			<div class="header-container d-flex mt-3 justify-content-between">
 				<div class="d-flex">
-					<img class="float-start me-4" src="/image/dog1.jpg" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
+					<img class="float-start me-4" th:src="'/image/' + ${wm.mbPhoto}" alt="" style="height: 50px; width: 50px; border-radius: 50px;">
 					<div class="header-text-container">
 						<h6>[[${wm.mbNickName}]]</h6>
 						<p>[[${wm.wmCreateDate}]]</p>
