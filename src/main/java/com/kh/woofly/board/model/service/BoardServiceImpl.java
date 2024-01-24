@@ -111,8 +111,8 @@ private BoardServiceImpl boardDAO;
 	}
 	
 	@Override
-	public int statusNAttm(int bNo) {
-		return bDAO.statusNAttm(bNo);
+	public int statusNAttm(HashMap<String, Object> board) {
+		return bDAO.statusNAttm(board);
 	}
 
 	@Override

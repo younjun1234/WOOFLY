@@ -44,7 +44,7 @@ public interface BoardService {
 	
 	void updateAttmLevel(int bNo);
 	
-	int statusNAttm(int bNo);
+	int statusNAttm(HashMap<String, Object> board);
 
 	int insertFreeReply(Reply r);
 	

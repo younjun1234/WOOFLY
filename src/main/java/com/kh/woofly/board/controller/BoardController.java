@@ -556,7 +556,11 @@ public class BoardController {
 		@GetMapping("/board/free/delete")
 		public String deleteFreeBoard(@RequestParam("bNo") int bNo) throws BoardException {
 			int result1 = bService.deleteFreeBoard(bNo);
-			int result2 = bService.statusNAttm(bNo);
+			String type = "B";
+			HashMap<String, Object> board = new HashMap<>();
+			board.put("type", type);
+			board.put("bNo", bNo);
+			int result2 = bService.statusNAttm(board);
 			//System.out.println(bNo);
 			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/free";
@@ -1057,7 +1061,11 @@ public class BoardController {
 		@GetMapping("/board/dw/delete")
 		public String deleteDwBoard(@RequestParam("dwNo") int dwNo) throws BoardException {
 			int result1 = bService.deleteDwBoard(dwNo);
-			int result2 = bService.statusNAttm(dwNo);
+			String type = "DW";
+			HashMap<String, Object> board = new HashMap<>();
+			board.put("type", type);
+			board.put("bNo", dwNo);
+			int result2 = bService.statusNAttm(board);
 			//System.out.println(bNo);
 			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/dw";
@@ -1542,7 +1550,12 @@ public class BoardController {
 		@GetMapping("/board/wm/delete")
 		public String deleteWmBoard(@RequestParam("wmNo") int wmNo) throws BoardException {
 			int result1 = bService.deleteWmBoard(wmNo);
-			int result2 = bService.statusNAttm(wmNo);
+			String type = "WM";
+			HashMap<String, Object> board = new HashMap<>();
+			board.put("type", type);
+			board.put("bNo", wmNo);
+			
+			int result2 = bService.statusNAttm(board);
 			//System.out.println(bNo);
 			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/wm";
@@ -2018,7 +2031,11 @@ public class BoardController {
 		@GetMapping("/board/usedReview/delete")
 		public String deleteUsedRvBoard(@RequestParam("uNo") int uNo) throws BoardException {
 			int result1 = bService.deleteUsedRvBoard(uNo);
-			int result2 = bService.statusNAttm(uNo);
+			String type = "U";
+			HashMap<String, Object> board = new HashMap<>();
+			board.put("type", type);
+			board.put("bNo", uNo);
+			int result2 = bService.statusNAttm(board);
 			//System.out.println(bNo);
 			if(result1 > 0 || result2> 0) {
 				return "redirect:/board/usedReview";
