@@ -114,12 +114,12 @@
                         <table class="all-report table table-light">
                             <thead>
                                 <tr class="text-center table-warning">
-                                    <th>신고번호</th>
-                                    <th>신고대상</th>
-                                    <th>신고구분</th>
-                                    <th>신고내용</th>
-                                    <th>글 구분</th>
-                                    <th>상태(현황)</th>
+                                    <th class="col-1">신고번호</th>
+                                    <th class="col-1">신고대상</th>
+                                    <th class="col-1">신고구분</th>
+                                    <th class="col-6">신고내용</th>
+                                    <th class="col-2">글 구분</th>
+                                    <th class="col-1">상태(현황)</th>
                                 </tr>
                             </thead>
                             <tbody class="table-group-divider" id="reportAllList">
@@ -129,7 +129,7 @@
                                     <td th:text="${#strings.arraySplit(r.rContent, '&^')[0]}"></td>
                                     <td th:text="${#strings.arraySplit(r.rContent, '&^')[1]}"></td>
                                     <td th:text="${r.rType == 'B' ? '게시글' : '댓글'}"></td>
-                                    <td th:text="${r.rSituation == 'A' ? '접수' : (r.rSituation == 'W' ? '경고' : '반려')}"></td>
+                                    <td th:text="${r.rSituation == 'A' ? '접수' : (r.rSituation == 'W' ? '경고' : (r.rSituation == 'B' ? '정지' : '반려'))}"></td>
                                 </tr>
                             </tbody>
                         </table>
