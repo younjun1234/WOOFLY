@@ -191,7 +191,7 @@
 	<update id="statusNAttm">
 		update attachment
 		set attm_status = 'N'
-		where attm_ref_no = #{attmRefNo}
+		where attm_ref_no = #{bNo} and attm_ref_type=#{type}
 	</update>
 	
 	<insert id="insertFreeReply">
