@@ -3,10 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>petPhoto</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<title>WOOFLY</title>
 <link rel="icon" href="/image/woofly.png">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <style>
 	.active {
 		color: black !important;
@@ -17,7 +15,7 @@
 <body>
 	<!-- top navigation bar -->
 	<!-- 마이 페이지에 공통으로 들어가는 navigation bar -->
-	<div th:replace="~{common/top :: top}"></div>
+	<div th:replace="~{common/topAdd :: topAdd}"></div>
 	<!-- 메인 네비게이션 바 아래 있는 모든 요소들 -->
 	<main>
 		<div class="d-flex justify-content-between mx-5">
@@ -35,7 +33,7 @@
 					<h3>마이펫 사진첩</h3>
 					<br>
 				</div>
-				<form action="/pet/userPhoto" method="get">
+				<form action="/userPhoto" method="get">
 					<input type="hidden" name="mbId" th:value="${pList[0].ownerId}">
 					<div class="d-flex justify-content-center mt-3 mb-3">
 						<div class = "p-2 bd-highlight">
@@ -119,9 +117,6 @@
 	</main>
 	
 	<script>
-		const myNav = document.getElementById("myPet2");
-		$(myNav).removeClass('text-secondary');
-		$(myNav).addClass('active');
 	</script>
 </body>
 </html>

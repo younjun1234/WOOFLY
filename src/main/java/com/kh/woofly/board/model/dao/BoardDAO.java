@@ -207,9 +207,9 @@ public interface BoardDAO {
 	
 	ArrayList<UsedBoard> selectMyUsedBuying(RowBounds rowbounds, HashMap<String, Object> map);
 
-	int selectMyUsedBuyingCount(String id);
+	int selectMyUsedBuyingCount(HashMap<String, Object> map);
 
-	int selectMySellingCount(String id);
+	int selectMySellingCount(HashMap<String, Object> map);
 
 	ArrayList<UsedBoard> selectMySelling(RowBounds rowbounds, HashMap<String, Object> map);
 

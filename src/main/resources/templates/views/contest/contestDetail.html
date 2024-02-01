@@ -69,7 +69,7 @@
 			<!-- 마이페이지 아래만 수정해주세요 -->
 			<div class="col-10 mb-5">
 				<div class="container mx-5 mt-5">
-					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center">
+					<div class="container d-flex px-0 border-bottom border-black border-3 justify-content-between align-items-center mb-3">
 						<h1>콘테스트</h1>
 						<!-- 회원만 보이도록 -->
 						<th:block th:if="${ session.loginUser != null }">
@@ -79,14 +79,14 @@
 					
 					<div class="abcd">
 						<div class="left">
-							<th:block th:each="m : ${mList}">
+							<th:block th:each="m : ${mList}" th:if="${mList.size > 0 }">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
 					    	</th:block>
 					    </div>
 						<div class="right" style="margin-left: 3%;">
 							<br>
 							<h2>[[${ p.pTitle }]]</h2><br>
-							<p>강아지 이름 : [[${ p.pPet }]]</p>
+							<p>이 름 : [[${ p.pPet }]]</p>
 							<p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-hearts" viewBox="0 0 16 16">
 			 								<path fill-rule="evenodd" d="M4.931.481c1.627-1.671 5.692 1.254 0 5.015-5.692-3.76-1.626-6.686 0-5.015Zm6.84 1.794c1.084-1.114 3.795.836 0 3.343-3.795-2.507-1.084-4.457 0-3.343ZM7.84 7.642c2.71-2.786 9.486 2.09 0 8.358-9.487-6.268-2.71-11.144 0-8.358Z"/></svg> : [[${p.pCount}]] </p>
 							<p>내 용 :  &emsp;[[${ p.pContent }]]</p>
@@ -111,26 +111,24 @@
 						</div>
 						
 						<div class="image-gallery">
-							<th:block th:each="m : ${mList}">
+							<th:block th:each="m : ${mList}" th:if="${mList.size > 0}">
 					    		<img th:src="'/image/contestFiles/' + ${m.renameName}" alt="Image">
 					    	</th:block>
-							<th:block th:each="a : ${aList}">
+							<th:block th:each="a : ${aList}" th:if="${aList.size > 0}">
 								<img th:src="'/image/contestFiles/' + ${a.renameName}" alt="Image">
 					    	</th:block>
 						</div>
 						
 						<div class="horizontal-images">
-							<th:block th:each="p : ${productList}">
+							<th:block th:if="${productList.size > 0}"  th:each="p : ${productList}">
 								<div style="display: inline-block;">
-								<img th:src="'/image/shopFiles/' + ${p?.renameName}" ><br> 
-								<p class="image-title" ></p>
+									<img th:src="'/image/shopFiles/' + ${p?.renameName}" ><br> 
+									<p class="image-title" ></p>
 								</div>
 					    	</th:block>
 						</div>
-					
-					
-					
-					
+						
+						
 				</div>	
 			</div>
 		</div>

@@ -220,7 +220,6 @@ public class ContestController {
 			check = 1;
 			
 			ArrayList<Participants> participantstList = cService.searchParticipantstList(map, pi);
-			
 			ArrayList<ContestAttm> cAttmList = cService.selectAttmNList();
 			model.addAttribute("search", search);
 			model.addAttribute("check", check);
@@ -677,12 +676,6 @@ public class ContestController {
 					}
 				}
 			}
-			
-		
-			
-			
-			
-			System.out.println(productList);
 			model.addAttribute("type", type);
 			model.addAttribute("withoutO", withoutO);
 			model.addAttribute("productList", productList);

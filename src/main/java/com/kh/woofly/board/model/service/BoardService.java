@@ -188,9 +188,9 @@ public interface BoardService {
 
 	ArrayList<UsedBoard> selectMyUsedBuying(PageInfo pi, HashMap<String, Object> map);
 
-	int selectMyUsedBuyingCount(String id);
+	int selectMyUsedBuyingCount(HashMap<String, Object> map);
 
-	int selectMySellingCount(String id);
+	int selectMySellingCount(HashMap<String, Object> map);
 
 	ArrayList<UsedBoard> selectMySelling(PageInfo pi, HashMap<String, Object> map);
 

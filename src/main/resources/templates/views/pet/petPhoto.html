@@ -125,14 +125,14 @@
 				
 				<div class="d-flex justify-content-center align-items-center" style="min-height: 500px" th:if="${ #arrays.isEmpty(aList) }">
 					<div class="d-flex flex-column justify-content-center align-items-center">
-						<img src="/'images/'+${cryingdog.png}" style="width:200px;">
+						<img src="/images/cryingdog.png" style="width:200px;">
 						<p>사진이 없습니다.😢</p>
 					</div>
 				</div>
 				<div th:if="${session.loginUser == null}">
 					<div class="d-flex justify-content-center align-items-center" style="min-height: 500px" th:if="${ #arrays.isEmpty(aList) }">
 						<div class="d-flex flex-column justify-content-center align-items-center">
-							<img src="|/images/cryingdog.png|" style="width:200px;">
+							<img src="/images/cryingdog.png" style="width:200px;">
 							<p>로그인 후 이용해주세요!</p>
 						</div>
 					</div>

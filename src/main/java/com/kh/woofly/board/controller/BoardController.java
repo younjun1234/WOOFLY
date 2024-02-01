@@ -99,7 +99,7 @@ public class BoardController {
 				e.printStackTrace();
 			}
 			
-			int listCount = bService.selectMyUsedBuyingCount(id);
+			int listCount = bService.selectMyUsedBuyingCount(map);
 			PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
 			map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
@@ -167,7 +167,7 @@ public class BoardController {
 				e.printStackTrace();
 			}
 			
-			int listCount = bService.selectMySellingCount(id);
+			int listCount = bService.selectMySellingCount(map);
 			PageInfo pi = new Pagination().getPageInfo(page, listCount, 10);
 			map.put(sort.split(" ")[0], sort.split(" ")[1]);
 
@@ -177,7 +177,7 @@ public class BoardController {
 //			for(UsedBoard ub : list) {
 //				aList.add(bService.selectUsedAttm(ub.getUNo()));
 //			}
-			
+			System.out.println(list);
 			if (list != null) {
 				model.addAttribute("sort", sort);
 				model.addAttribute("startDate", startDate);

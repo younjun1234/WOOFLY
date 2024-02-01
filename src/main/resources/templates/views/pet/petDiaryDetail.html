@@ -61,16 +61,16 @@
 								  <div class="p-2">
 								  	<strong>[[${d.petName}]]</strong> 
 								  </div>
-								  <div>
-								  <div class="dropdown">
-										<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
-				                          	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-				                   		</svg>
-										<ul class="dropdown-menu">
-											<li><a class="dropdown-item" th:href="'/pet/petDiaryEdit/' + ${d.drNo}" role="button">수정</a></li>
-											<li><a class="dropdown-item" role="button" id="deleteDiaryBtn">삭제</a></li>
-										</ul>
-									</div>
+								  <div class="p-2 ms-auto">
+									  <div class="dropdown">
+											<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" role="button" viewBox="0 0 16 16">
+					                          	<path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+					                   		</svg>
+											<ul class="dropdown-menu">
+												<li><a class="dropdown-item" th:href="'/pet/petDiaryEdit/' + ${d.drNo}" role="button">수정</a></li>
+												<li><a class="dropdown-item" role="button" id="deleteDiaryBtn">삭제</a></li>
+											</ul>
+										</div>
 									   <!-- <a th:href="'/pet/petDiaryEdit/' + ${d.drNo}" class="btn btn-outline-dark btn-sm">수정</a>
 								       <a role="button" class="btn btn-dark btn-sm" id="deleteDiaryBtn">삭제</a> -->
 									       <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

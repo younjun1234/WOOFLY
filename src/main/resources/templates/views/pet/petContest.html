@@ -45,12 +45,12 @@
 					  	</div>
 				  	</form>
 					<div class="d-flex ms-auto p-2 align-items-center bd-highlight">
-					    <a href="..." class="btn btn-dark btn">콘테스트 참가</a>
+					    <a href="/contest/contestParticipation" class="btn btn-dark btn">콘테스트 참가</a>
 					</div>
 				</div>
 				<div class="mb-5">
 					<div class="d-flex flex-wrap gap-5 mt-2">	
-						<div class="card" style="width: 14rem;" th:each="pt : ${ptList}">
+						<div class="card" style="width: 14rem;" th:each="pt : ${ptList}" th:onclick="|location.href='/contest/selectContest?pNo=${pt.pNo}&page=1'|">
 						  <img th:src="'/image/contestFiles/' + ${pt.renameName}" class="card-img-top mt-2 mx-auto" alt="..." style="width: 200px; height: 200px; cursor:pointer;">
 						  <div class="card-body">
 						  	<div class="d-flex justify-content-between">
@@ -58,7 +58,6 @@
 						    	<p th:text="${pt.conGen}+기"></p>
 						    </div>
 						    <p class="card-text" th:text="${pt.pTitle}"></p>
-						    <a href="/pet/petDetail" class="btn btn-dark btn-sm">자세히 보기</a>
 						  </div>
 						</div>
 					</div>

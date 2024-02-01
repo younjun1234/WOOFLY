@@ -26,10 +26,10 @@
 				<img th:if="${session.loginUser.isKakao == 'N'}" th:src="@{${ '/image/' + session.loginUser.mbPhoto }}" class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
 				<img th:if="${session.loginUser.isKakao == 'Y'}" th:src="${session.loginUser.mbPhoto}" class="ms-3" alt="PROFILE_IMAGE" style="width: 100px; height: 100px; border-radius: 100px; border: 1px solid black">
 				<div class="ps-3">
-					<p class="mb-0">
+					<p class="mb-1">
 						[[${ session.loginUser.mbEmail }]]
 						<br>
-						[[${ session.loginUser.mbId }]]
+						[[${ session.loginUser.mbNickName }]]
 					</p>
 					<div>
 						<a class="btn btn-sm btn-outline-secondary" href="/my/profile-edit">프로필 관리</a>
