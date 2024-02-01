@@ -37,19 +37,40 @@
 						<button class="btn btn-outline-dark btn-sm" onclick="addPayment()">+새 카드 추가하기</button>
 					</div>
 				</div>
-				<div class="d-flex justify-content-between border-bottom border-black border-2 pb-5">
+				<div th:if="${#arrays.isEmpty(list)}" class="d-flex justify-content-center align-items-center" style="height: 500px; line-height: 500px;">카드 정보를 등록해주세요</div>
+				<div class="d-flex justify-content-between border-bottom border-black border-2 pb-5 mb-5" th:each="card : ${list}">
 					<div class="d-flex">
 						<div class="d-flex align-items-center">
-							<button class="btn btn-outline-dark disabled">BC</button>
+							<button class="btn btn-outline-dark disabled">[[${card.cardCompany}]]</button>
 						</div>
 						&nbsp;&nbsp;&nbsp;
 						<div>
-							<p class="mb-0">●●●●-●●●●-●●●●-2015</p>
-							<span class="badge rounded-pill text-bg-secondary">기본 결제</span>
+							
+							<p class="mb-0">[[|●●●●-●●●●-●●●●-${#strings.substring(card.cardNumber, 12, 15)}●|]]</p>
+							<span class="badge rounded-pill text-bg-secondary" th:if="${ card.paymentType == 'Y' }">기본 결제</span>
 						</div>
 					</div>
 					<div class="my-auto">
-						<button class="btn btn-sm btn-outline-dark">삭제</button>
+						<button class="btn btn-sm btn-outline-dark paymentStatus" th:if="${ card.paymentType == 'N' }" data-bs-toggle="modal" data-bs-target="#updatePaymentModal">기본 결제</button>
+						<input type="hidden" th:value="${card.paymentNo}">
+						<button class="btn btn-sm btn-outline-dark paymentDelete" th:if="${ card.paymentType != 'Y'}">삭제</button>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="updatePaymentModal" tabindex="-1">
+				<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+					<div class="modal-content">
+						<div class="modal-body text-start">
+							<div class="text-center">
+								<h3>기본 결제로</h3>
+								<h3>변경하시겠습니까?</h3>
+								<p>이미 진행 중인 거래를 포함하여 앞으로<br>모든 거래의 결제가 해당카드로 변경됩니다.</p>
+								<button class="btn btn-outline-secondary" data-bs-dismiss="modal">취소</button>
+								<button class="btn btn-dark" id="updatePaymentBtn">계속 변경</button>
+							</div>
+							
+						</div>
 					</div>
 				</div>
 			</div>
@@ -62,7 +83,7 @@
 			<!-- 여기까지가 수정 -->
 		</div>
 	</main>
-	<script>
+	<script th:inline="javascript">
 		const myNav = document.getElementById("myNav7");
 		$(myNav).removeClass('text-secondary');
 		$(myNav).addClass('active');
@@ -80,9 +101,11 @@
 		    	.requestBillingAuth('카드', {
 		        	// 결제수단 파라미터 (자동결제는 카드만 지원합니다.)
 		        	// 결제 정보 파라미터
-		        	customerKey: 'younjun1234', // 고객 ID로 상점에서 만들어야 합니다. 빌링키와 매핑됩니다. 자세한 파라미터 설명은 파라미터 설명을 참고하세요: https://docs.tosspayments.com/reference/js-sdk#결제-정보-5
-		        	successUrl: 'http://localhost:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
-		        	failUrl: 'http://localhost:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
+		        	/*<![CDATA[*/
+		        	customerKey: /*[[${session.loginUser.mbId}]]*/null, 
+		        	/*]]>*/
+		        	successUrl: 'http://192.168.20.217:8080/my/addPayment', // 카드 등록에 성공하면 이동하는 페이지(직접 만들어주세요)
+		        	failUrl: 'http://192.168.20.217:8080/my/payment', // 카드 등록에 실패하면 이동하는 페이지(직접 만들어주세요)
 		      	})
 				.catch(function (error) {
 		        	if (error.code === 'USER_CANCEL') {
@@ -90,6 +113,28 @@
 		        	}
 		      	})
 		}
+		
+		let paymentNo;
+		const paymentStatus = document.getElementsByClassName('paymentStatus');
+		for(const payment of paymentStatus) {
+			payment.addEventListener('click', () => {
+				paymentNo = payment.nextElementSibling.value;
+			})
+		}
+		
+		document.getElementById('updatePaymentBtn').addEventListener('click', () => {
+			window.location.href = "/updatePayment.yj?paymentNo=" + paymentNo;
+		})
+		
+		const deletePayments = document.getElementsByClassName('paymentDelete');
+		for(const deletePayment of deletePayments) {
+			deletePayment.addEventListener('click', () => {
+				const paymentNo = deletePayment.previousElementSibling.value;
+				console.log(deletePayment);
+				window.location.href = '/deletePayment.yj?paymentNo=' + paymentNo;
+			})
+		}
+		
 		
 	</script>
 </body>
