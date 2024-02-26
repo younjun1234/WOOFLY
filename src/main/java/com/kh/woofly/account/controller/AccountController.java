@@ -256,7 +256,7 @@ public class AccountController {
         Random r = new Random();
 		int checkNum = r.nextInt(888888) + 111111; // 난수 생성
 		
-        message.setFrom("01064954499");
+        message.setFrom("010"); // 해킹우려로 인해 지웠음
         message.setTo(mbPhone);
         message.setText("인증코드는 " + checkNum + "입니다");
 
